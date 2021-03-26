@@ -1,0 +1,13 @@
+.svn
+test
+*.o
+*.a
+*.so
+*.swp
+*.patch
+tags
+*.dylib
+
+*.pyc
+.axioenvs
+.axiodeps

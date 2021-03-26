@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="renderer" content="webkit" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="initial-scale=1.0, huser-scalable=no" />
+	<meta name="format-detection" content="telephone=no, email=no, adress=no" />
+	<meta name="theme-color" content="#0088cc" />
+	<title>AWorks Test Sever</title>
+	<script type="text/javascript">
+function $(o) {
+	return document.getElementById(o);
+}
+function getXHR() {
+	var xhr = false;
+	if (window.XMLHttpRequest) {
+		xhr = new XMLHttpRequest();
+		if (xhr.overrideMimeType) {
+			xhr.overrideMimeType('text/xml');
+		}
+	} else if (window.ActiveXObject) {
+		try {
+			xhr = new ActiveXObject("Msxml2.XMLHTTP");
+		} catch (e) {
+			try {
+				xhr = new ActiveXObject("Microsoft.XMLHTTP");
+			} catch (e) {}
+
+		}
+	}
+	if (!xhr) {
+		return false;
+	}
+	return xhr;
+}
+function make_request(url, content, onload, onerror) {
+	var xhr = getXHR();
+	if (xhr) {
+		xhr.onload = function () {
+			onload(xhr);
+		};
+		xhr.onerror = function () {
+			onerror(xhr);
+		}
+		xhr.open("POST", url, true);
+		xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded;");
+		xhr.send(content);
+	} else {
+		alert("Request failed!")
+	}
+	return xhr;
+}
+function myclear() {
+	$("year").value = '';
+	$("mon").value = '';
+	$("day").value = '';
+	$("hour").value = '';
+	$("min").value = '';
+	$("sec").value = '';
+}
+function myrestore() {
+	function restore_onload(x) {
+		// console.log(x.responseText);
+		if ('done' == x.responseText) {
+			alert("ok");
+		} else {
+			alert('failed: ' + x.responseText);
+		}
+	}
+	function restore_onerror(x) {
+		// console.log(x);
+		alert('error');
+	}
+	if (confirm("Do factory reset?")) {
+		make_request("index.php", "restore", restore_onload, restore_onerror);
+	}
+}
+function myreboot() {
+	function reboot_onload(x) {
+		// console.log(x.responseText);
+		if ('done' == x.responseText) {
+			alert("ok");
+		} else {
+			alert('failed: ' + x.responseText);
+		}
+	}
+	function reboot_onerror(x) {
+		// console.log(x);
+		alert('error');
+	}
+	if (confirm("REBOOT?")) {
+		make_request("index.php", "reboot", reboot_onload, reboot_onerror);
+	}
+}
+function myled() {
+	function led_onload(x) {
+		// console.log(x.responseText);
+		if ('done' == x.responseText) {
+			alert("ok");
+		} else {
+			alert('failed: ' + x.responseText);
+		}
+	}
+	function led_onerror(x) {
+		// console.log(x);
+		alert('error');
+	}
+	make_request("index.php", "led", led_onload, led_onerror);
+}
+function mybuzzer() {
+	function buzzer_onload(x) {
+		// console.log(x.responseText);
+		if ('done' == x.responseText) {
+			alert("ok");
+		} else {
+			alert('failed: ' + x.responseText);
+		}
+	}
+	function buzzer_onerror(x) {
+		// console.log(x);
+		alert('error');
+	}
+	make_request("index.php", "buzzer", buzzer_onload, buzzer_onerror);
+}
+function myrtcget() {
+	function rtcget_onload(x) {
+		// console.log(x.responseText);
+		var json = JSON.parse(x.responseText);
+		$("year").value = decodeURIComponent(json.year);
+		$("mon").value = decodeURIComponent(json.mon);
+		$("day").value = decodeURIComponent(json.day);
+		$("hour").value = decodeURIComponent(json.hour);
+		$("min").value = decodeURIComponent(json.min);
+		$("sec").value = decodeURIComponent(json.sec);
+	}
+	function rtcget_onerror(x) {
+		// console.log(x);
+		alert('error');
+	}
+	make_request("index.php", "rtcget", rtcget_onload, rtcget_onerror);
+}
+function myrtcset() {
+	function rtcset_onload(x) {
+		// console.log(x.responseText);
+		if ('done' == x.responseText) {
+			alert("ok");
+		} else {
+			alert('failed: ' + x.responseText);
+		}
+	}
+	function rtcset_onerror(x) {
+		// console.log(x);
+		alert('error');
+	}
+	function rtcset_collector() {
+		var p = {
+			year: encodeURIComponent($("year").value),
+			mon: encodeURIComponent($("mon").value),
+			day: encodeURIComponent($("day").value),
+			hour: encodeURIComponent($("hour").value),
+			min: encodeURIComponent($("min").value),
+			sec: encodeURIComponent($("sec").value)
+		};
+		return JSON.stringify(p);
+	}
+	// console.log(save_collector());
+	if (confirm("Confirm?")) {
+		make_request("index.php", "rtcset=" + rtcset_collector(), rtcset_onload, rtcset_onerror);
+	}
+}
+window.onload = function () {
+	// myrtcget();
+};
+	</script>
+</head>
+
+<body>
+	<h1 class="title">AWorks test</h1>
+	<p><button type="button" onclick="myled()">LED</button></p>
+	<p><button type="button" onclick="mybuzzer()">BUZZER</button></p>
+	<p><button type="button" onclick="myrtcget()">RTC_G</button></p>
+	<p><button type="button" onclick="myrtcset()">RTC_S</button></p>
+	<h2>RTC Time:</h2>
+	<p>
+	<button type="button" onclick="myrtcget()">RTC_GET</button>
+	<button type="button" onclick="myrtcset()">RTC_SET</button>
+	</p>
+	<p>
+	<h4>年-月-日
+	<input type="text" name="year" id="year" value="" placeholder="YEAR">-
+	<input type="text" name="mon" id="mon" value="" placeholder="MON">-
+	<input type="text" name="day" id="day" value="" placeholder="DAY"> 
+	</h4>
+	</p>
+	<p>
+	<h4>时:分:秒
+	<input type="text" name="hour" id="hour" value="" placeholder="HOUR">:
+	<input type="text" name="min" id="min" value="" placeholder="MIN">:
+	<input type="text" name="sec" id="sec" value="" placeholder="SEC">
+	</h4>
+	</p>
+	<p><button type="button" onclick="myclear()">CLEAR</button></p>
+	<p><button type="button" onclick="myrestore()">RESTORE</button></p>
+	<p><button type="button" onclick="myreboot()">REBOOT</button></p>
+</body>
+</html>

@@ -1,0 +1,12 @@
+
+
+sources {
+    aworks="Debug\m1052_awtk.elf";
+}
+
+section (0)
+{
+    load 0x55555555 > 0x400ac044;
+    load aworks ;
+    call aworks:Reset_Handler;
+}

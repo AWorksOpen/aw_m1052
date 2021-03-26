@@ -1,0 +1,412 @@
+[
+  {
+    "params": [],
+    "annotation": {
+      "global": true
+    },
+    "desc": "注册控件。",
+    "name": "date_picker_register",
+    "return": {
+      "type": "ret_t",
+      "desc": "返回RET_OK表示成功，否则表示失败。"
+    },
+    "type": "method",
+    "header": "src/date_picker_register.h",
+    "level": 1
+  },
+  {
+    "params": [],
+    "annotation": {
+      "global": true
+    },
+    "desc": "获取支持的渲染模式。",
+    "name": "date_picker_supported_render_mode",
+    "return": {
+      "type": "const char*",
+      "desc": "返回渲染模式。"
+    },
+    "type": "method",
+    "header": "src/date_picker_register.h",
+    "level": 1
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "parent",
+            "desc": "父控件"
+          },
+          {
+            "type": "xy_t",
+            "name": "x",
+            "desc": "x坐标"
+          },
+          {
+            "type": "xy_t",
+            "name": "y",
+            "desc": "y坐标"
+          },
+          {
+            "type": "wh_t",
+            "name": "w",
+            "desc": "宽度"
+          },
+          {
+            "type": "wh_t",
+            "name": "h",
+            "desc": "高度"
+          }
+        ],
+        "annotation": {
+          "constructor": true,
+          "scriptable": true
+        },
+        "desc": "创建date_edit对象",
+        "name": "date_edit_create",
+        "return": {
+          "type": "widget_t*",
+          "desc": "date_edit对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "date_edit对象。"
+          }
+        ],
+        "annotation": {
+          "cast": true,
+          "scriptable": true
+        },
+        "desc": "转换为date_edit对象(供脚本语言使用)。",
+        "name": "date_edit_cast",
+        "return": {
+          "type": "widget_t*",
+          "desc": "date_edit对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "year",
+            "desc": "年。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置 年。",
+        "name": "date_edit_set_year",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "month",
+            "desc": "月。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置 月。",
+        "name": "date_edit_set_month",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "day",
+            "desc": "日。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置 日。",
+        "name": "date_edit_set_day",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [
+      {
+        "name": "EVT_VALUE_CHANGED",
+        "desc": "值改变事件。",
+        "type": "event_t"
+      }
+    ],
+    "properties": [
+      {
+        "name": "year",
+        "desc": "年。",
+        "type": "uint32_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "month",
+        "desc": "月。",
+        "type": "uint32_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "day",
+        "desc": "日。",
+        "type": "uint32_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      }
+    ],
+    "header": "date_picker/date_edit.h",
+    "desc": "日期编辑控件。\n\ndate\\_edit\\_t是[widget\\_t](widget_t.md)的子类控件，widget\\_t的函数均适用于date\\_edit\\_t控件。\n\ndate\\_edit 需要两个特殊名称的子控件，它们的名称和功能如下：\n\n* date 用于显示和编辑日期，通常用edit控件，并指定input type为\"date\"\n* pick 用于点击后弹出日期选择控件。通常用button控件。点击pick按钮后，会打开名为\"date_picker\"的弹出窗口。\n\n子控件的大小和风格可以自行设定，遵循命名规则即可。\n\n在xml中使用\"date\\_edit\"标签创建日期编辑控件。如：\n\n```xml\n<!-- ui -->\n<date_edit x=\"10\" y=\"10\" w=\"148\" h=\"30\" year=\"2020\" month=\"12\" day=\"31\">\n<edit name=\"date\" x=\"0\" y=\"m\" w=\"100%\" h=\"100%\" input_type=\"date\" />\n<button name=\"pick\" style=\"pick\" x=\"r:2\" y=\"m\" w=\"26\" h=\"26\" text=\"...\" />\n</date_edit>\n```\n\n可用通过style来设置控件的显示风格，如字体的大小和颜色等等。如：\n\n```xml\n<!-- style -->\n<button>\n<style name=\"pick\">\n<normal text_color=\"#222222\"/>\n<pressed text_color=\"#ffffff\" bg_color=\"#1971dd\" border_color=\"#1971dd\"/>\n<over text_color=\"#ffffff\" bg_color=\"#338fff\" border_color=\"#338fff\"/>\n<focused text_color=\"#444444\" bg_color=\"#f4f4f4\" border_color=\"#338fff\" />\n<disable text_color=\"gray\"/>\n</style>\n</button>\n```",
+    "name": "date_edit_t",
+    "parent": "widget_t",
+    "annotation": {
+      "scriptable": true,
+      "design": true,
+      "widget": true
+    },
+    "level": 2
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "parent",
+            "desc": "父控件"
+          },
+          {
+            "type": "xy_t",
+            "name": "x",
+            "desc": "x坐标"
+          },
+          {
+            "type": "xy_t",
+            "name": "y",
+            "desc": "y坐标"
+          },
+          {
+            "type": "wh_t",
+            "name": "w",
+            "desc": "宽度"
+          },
+          {
+            "type": "wh_t",
+            "name": "h",
+            "desc": "高度"
+          }
+        ],
+        "annotation": {
+          "constructor": true,
+          "scriptable": true
+        },
+        "desc": "创建date_picker对象",
+        "name": "date_picker_create",
+        "return": {
+          "type": "widget_t*",
+          "desc": "date_picker对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "date_picker对象。"
+          }
+        ],
+        "annotation": {
+          "cast": true,
+          "scriptable": true
+        },
+        "desc": "转换为date_picker对象(供脚本语言使用)。",
+        "name": "date_picker_cast",
+        "return": {
+          "type": "widget_t*",
+          "desc": "date_picker对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "year",
+            "desc": "年。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置 年。",
+        "name": "date_picker_set_year",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "month",
+            "desc": "月。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置 月。",
+        "name": "date_picker_set_month",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "day",
+            "desc": "日。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置 日。",
+        "name": "date_picker_set_day",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [
+      {
+        "name": "EVT_VALUE_CHANGED",
+        "desc": "值改变事件。",
+        "type": "event_t"
+      }
+    ],
+    "properties": [
+      {
+        "name": "year",
+        "desc": "年。",
+        "type": "uint32_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "month",
+        "desc": "月。",
+        "type": "uint32_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "day",
+        "desc": "日。",
+        "type": "uint32_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      }
+    ],
+    "header": "date_picker/date_picker.h",
+    "desc": "日期选择控件。\ndate\\_picker\\_t是[widget\\_t](widget_t.md)的子类控件，widget\\_t的函数均适用于date\\_picker\\_t控件。\n\ndate\\_picker 需要几个特殊名称的子控件，它们的名称和功能如下：\n\n* prev_year 切换到前一年的按钮。\n* prev_month 切换到前一月的按钮。\n* year_month 显示当前年月的文本。\n* next_month 切换到后一月的按钮。\n* next_year 切换到后一年的按钮。\n* days 存放\"天\"的容器控件，里面放42个按钮。\n* today \"今天\"按钮。\n\n子控件的大小和风格可以自行设定，遵循命名规则即可。\n\n在xml中使用\"date\\_picker\"标签创建日期选择控件。如：\n\n```xml\n<!-- ui -->\n<date_picker x=\"c\" y=\"m\" w=\"200\" h=\"200\">\n<view name=\"title\" x=\"0\" y=\"0\" w=\"100%\" h=\"30\">\n<button name=\"prev_year\" x=\"0\" y=\"m\" w=\"30\" h=\"26\" text=\"<<\"/>\n<button name=\"prev_month\" x=\"35\" y=\"m\" w=\"30\" h=\"26\" text=\"<\"/>\n<label name=\"year_month\" x=\"c\" y=\"m\" w=\"50%\" h=\"100%\" text=\"2020/7\"/>\n<button name=\"next_month\" x=\"r:35\" y=\"m\" w=\"30\" h=\"26\" text=\">\"/>\n<button name=\"next_year\" x=\"r\" y=\"m\" w=\"30\" h=\"26\" text=\">>\"/>\n</view>\n\n<view name=\"week\" x=\"0\" y=\"32\" w=\"100%\" h=\"30\" children_layout=\"default(r=1,c=7,m=2,s=2)\">\n<label name=\"sun\" tr_text=\"Su\"/>\n<label name=\"mon\" tr_text=\"Mo\"/>\n<label name=\"tue\" tr_text=\"Tu\"/>\n<label name=\"wed\" tr_text=\"We\"/>\n<label name=\"thu\" tr_text=\"Th\"/>\n<label name=\"fri\" tr_text=\"Fr\"/>\n<label name=\"sat\" tr_text=\"Sa\"/>\n</view>\n\n<view name=\"days\" x=\"0\" y=\"64\" w=\"100%\" h=\"-100\" children_layout=\"default(r=6,c=7,m=2,s=2)\">\n<button text=\"0\"/>\n<button text=\"1\"/>\n<button text=\"2\"/>\n<button text=\"3\"/>\n<button text=\"4\"/>\n<button text=\"5\"/>\n<button text=\"6\"/>\n\n<button text=\"0\"/>\n<button text=\"1\"/>\n<button text=\"2\"/>\n<button text=\"3\"/>\n<button text=\"4\"/>\n<button text=\"5\"/>\n<button text=\"6\"/>\n\n<button text=\"0\"/>\n<button text=\"1\"/>\n<button text=\"2\"/>\n<button text=\"3\"/>\n<button text=\"4\"/>\n<button text=\"5\"/>\n<button text=\"6\"/>\n\n<button text=\"0\"/>\n<button text=\"1\"/>\n<button text=\"2\"/>\n<button text=\"3\"/>\n<button text=\"4\"/>\n<button text=\"5\"/>\n<button text=\"6\"/>\n\n<button text=\"0\"/>\n<button text=\"1\"/>\n<button text=\"2\"/>\n<button text=\"3\"/>\n<button text=\"4\"/>\n<button text=\"5\"/>\n<button text=\"6\"/>\n\n<button text=\"0\"/>\n<button text=\"1\"/>\n<button text=\"2\"/>\n<button text=\"3\"/>\n<button text=\"4\"/>\n<button text=\"5\"/>\n<button text=\"6\"/>\n</view>\n<button name=\"today\" x=\"c\" y=\"b:2\" w=\"60\" h=\"30\" tr_text=\"Today\"/>\n</date_picker>\n```\n\n可用通过style来设置控件的显示风格，如字体的大小和颜色等等。如：\n\n```xml\n<!-- style -->\n<button>\n<style name=\"day\">\n<normal text_color=\"#222222\"/>\n<pressed text_color=\"#ffffff\" bg_color=\"#1971dd\" border_color=\"#1971dd\"/>\n<over text_color=\"#ffffff\" bg_color=\"#338fff\" border_color=\"#338fff\"/>\n<focused text_color=\"#444444\" bg_color=\"#f4f4f4\" border_color=\"#338fff\" />\n<disable text_color=\"gray\"/>\n</style>\n<style name=\"day_current\">\n<normal text_color=\"#444444\" bg_color=\"#338fff\"/>\n<pressed text_color=\"#ffffff\" bg_color=\"#1971dd\" border_color=\"#1971dd\"/>\n<over text_color=\"#ffffff\" bg_color=\"#338fff\" border_color=\"#338fff\"/>\n<focused text_color=\"#444444\" bg_color=\"#f4f4f4\" border_color=\"#338fff\" />\n<disable text_color=\"#444444\" />\n</style>\n</button>\n```",
+    "name": "date_picker_t",
+    "parent": "widget_t",
+    "annotation": {
+      "scriptable": true,
+      "design": true,
+      "widget": true
+    },
+    "level": 2
+  }
+]

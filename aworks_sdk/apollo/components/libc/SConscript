@@ -1,0 +1,84 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+from config_build_common import build_common_config
+from config_compoents import compoents_config
+
+env = DefaultEnvironment()
+
+awlibc_source = []
+awlibc_source.append('awlibc/malloc/calloc.c')
+awlibc_source.append('awlibc/malloc/free.c')
+awlibc_source.append('awlibc/malloc/malloc.c')
+awlibc_source.append('awlibc/printf/printf.c')
+awlibc_source.append('awlibc/printf/snprintf.c')
+awlibc_source.append('awlibc/printf/sprintf.c')
+awlibc_source.append('awlibc/printf/vsnprintf.c')
+awlibc_source.append('awlibc/sscanf/sscanf.c')
+awlibc_source.append('awlibc/sscanf/xscanf.c')
+awlibc_source.append('awlibc/sscanf/xsfef.c')
+awlibc_source.append('awlibc/str2x/str2x.c')
+awlibc_source.append('awlibc/time/asctime.c')
+awlibc_source.append('awlibc/time/asctime_r.c')
+awlibc_source.append('awlibc/time/clock.c')
+awlibc_source.append('awlibc/time/ctime.c')
+awlibc_source.append('awlibc/time/ctime_r.c')
+awlibc_source.append('awlibc/time/daylight.c')
+awlibc_source.append('awlibc/time/difftime.c')
+awlibc_source.append('awlibc/time/gmtime.c')
+awlibc_source.append('awlibc/time/gmtime_r.c')
+awlibc_source.append('awlibc/time/localtime.c')
+awlibc_source.append('awlibc/time/localtime_r.c')
+awlibc_source.append('awlibc/time/mktime.c')
+awlibc_source.append('awlibc/time/strftime.c')
+awlibc_source.append('awlibc/time/time.c')
+awlibc_source.append('awlibc/time/timezone.c')
+awlibc_source.append('awlibc/time/tzname.c')
+
+awlibc_include = []
+awlibc_include.append('awlibc/include')
+
+
+# newlib
+newlib_source = []
+newlib_source.append('newlib/source/libc.c')
+newlib_source.append('newlib/cpp_runtime/cppEabiLib.cpp')
+newlib_source.append('newlib/cpp_runtime/cppMemLib.cpp')
+newlib_source.append('newlib/cpp_runtime/cppRuntime.cpp')
+newlib_source.append('newlib/cpp_runtime/cppSupLib.cpp')
+
+newlib_include = []
+newlib_include.append('newlib/source')
+
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE.append(build_common_config.AWORKS_ROOT+'components/base/include')
+
+__gnu_cross_compiler=('arm-none-eabi-gcc', 'riscv32-unknown-elf-gcc', 'riscv-none-embed-gcc', 'cl6x')
+
+if build_common_config.AW_COMPILER_TOOLS in __gnu_cross_compiler:  
+    if compoents_config.AWORKS_LIBC_VERSION == 'newlib' :
+        SOURCE = newlib_source
+        INCLUDE.extend(newlib_include);
+
+        if build_common_config.AW_COMPILER_TOOLS in __gnu_cross_compiler:
+            SOURCE_SYSCALLS = ['newlib/source/syscalls.c'];
+        else :
+            SOURCE_SYSCALLS = [];
+        OBJ_SYSCALLS = Object(SOURCE_SYSCALLS,CPPPATH = INCLUDE);
+        Install(build_common_config.AW_SDK_LIB_INSTALL_PATH,OBJ_SYSCALLS);
+        INCLUDE_H = []
+    elif compoents_config.AWORKS_LIBC_VERSION == 'awlibc' :
+        SOURCE = awlibc_source
+        INCLUDE.extend(awlibc_include)
+        INCLUDE_H = ['awlibc/include/aw_libc.h']
+        INCLUDE_H += ['awlibc/include/malloc.h']
+        INCLUDE_H += ['awlibc/include/time.h']
+        
+    lib_file=StaticLibrary('aw_libc',SOURCE,CPPPATH = INCLUDE )
+    Return('lib_file')
+else :
+    SOURCE = []
+    INCLUDE_H = []
+
+
+

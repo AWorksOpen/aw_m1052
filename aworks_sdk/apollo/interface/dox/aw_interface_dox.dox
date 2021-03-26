@@ -1,0 +1,212 @@
+
+
+ 
+/** @~chinese @defgroup  grp_aw_if_input             Input标准服务 */
+/** @~english @defgroup  grp_aw_if_input             input_serv */
+
+/** @~chinese @defgroup  grp_aw_if_input_code         按键和按钮输入值定义 */
+/** @~english @defgroup  grp_aw_if_input_code         key_defines */
+
+/** @~chinese @defgroup  grp_aw_if_ts      	          触摸屏ts标准接口 */
+/** @~english @defgroup  grp_aw_if_ts                 touch_screen */
+ 
+
+/** @~chinese @defgroup  grp_aw_if_crc            CRC校验 */
+/** @~english @defgroup  grp_aw_if_crc            CRC */
+/** @~chinese @defgroup  grp_aw_if_md5            MD5 */
+/** @~english @defgroup  grp_aw_if_md5            MD5 */
+
+/** @~chinese @defgroup  grp_aw_if_memheap        堆管理器 */
+/** @~english @defgroup  grp_aw_if_memheap        memheap */
+
+/** @~chinese @defgroup  grp_aw_if_rngbuf         环形缓冲区 */
+/** @~english @defgroup  grp_aw_if_rngbuf         ringbuf */
+/** @~chinese @defgroup  grp_aw_if_pool           内存池 */
+/** @~english @defgroup  grp_aw_if_pool           pool */
+
+/** @~chinese @defgroup  grp_aw_log_lib            日志消息库 */
+/** @~english @defgroup  grp_aw_log_lib           logger */
+/** @~chinese @defgroup  grp_aw_log_blk           日志存储至blk中 */
+/** @~english @defgroup  grp_aw_log_blk           logger block */
+/** @~chinese @defgroup  grp_aw_log_fs            日志存储至文件系统中 */
+/** @~english @defgroup  grp_aw_log_fs            logger fs */
+/** @~chinese @defgroup  grp_aw_log_ftl           日志存储至ftl中 */
+/** @~english @defgroup  grp_aw_log_ftl           logger ftl */
+/** @~chinese @defgroup  grp_aw_if_sftimer_lib    软件定时器库 */
+/** @~english @defgroup  grp_aw_if_sftimer_lib    sftimer_lib */
+
+/** @~chinese @defgroup  grp_aw_if_pbuf           通用PBUF组件接口 */
+/** @~english @defgroup  grp_aw_if_pbuf           pbuf */
+/** @~chinese @defgroup  grp_aw_if_pipe           通用管道缓冲区 */
+/** @~english @defgroup  grp_aw_if_pipe           pipe */
+/** @~chinese @defgroup  grp_aw_if_common         通用工具宏 */
+/** @~english @defgroup  grp_aw_if_common         define */
+/** @~chinese @defgroup  grp_aw_if_list           通用链表 */
+/** @~english @defgroup  grp_aw_if_list           list */
+/** @~chinese @defgroup  grp_aw_if_bitops         通用位操作 */
+/** @~english @defgroup  grp_aw_if_bitops         bitops */
+/** @~chinese @defgroup  grp_aw_if_byteops        通用字节操作 */
+/** @~english @defgroup  grp_aw_if_byteops        byteops */
+
+/** @~chinese @defgroup  grp_aw_if_refcnt         引用计数组件接口 */
+/** @~english @defgroup  grp_aw_if_refcnt         refcnt */
+
+
+
+
+
+/** @~chinese @defgroup  grp_aw_if_shell     Shell */
+/** @~english @defgroup  grp_aw_if_shell     Shell */
+
+/** @~chinese @defgroup  grp_aw_if_slab      SLAB内存分配器 */
+/** @~english @defgroup  grp_aw_if_slab      SLAB allocator */
+
+/** @~chinese @defgroup  grp_aw_if_errno     错误编码 */
+/** @~english @defgroup  grp_aw_if_errno     Errnum */
+/** @~chinese @defgroup  grp_aw_if_assert    断言 */
+/** @~english @defgroup  grp_aw_if_assert    Assert */
+
+/** @~chinese @defgroup  grp_aw_if_vdebug    可视化调试 */
+/** @~english @defgroup  grp_aw_if_vdebug    Visualdebug */
+
+/** @~chinese @defgroup  grp_aw_if_event     事件报告 */
+/** @~english @defgroup  grp_aw_if_event     EventReport */
+/** @~chinese @defgroup  grp_aw_if_time      时间标准服务 */
+/** @~english @defgroup  grp_aw_if_time      Time */
+/** @~chinese @defgroup  grp_aw_if_timestamp 时间戳服务 */
+/** @~english @defgroup  grp_aw_if_timestamp Timestamp */
+
+/** @~chinese @defgroup  grp_aw_if_system    系统 */
+/** @~english @defgroup  grp_aw_if_system    System */
+/** @~chinese @defgroup  grp_aw_if_delay     延时 */
+/** @~english @defgroup  grp_aw_if_delay     delay */
+/** @~chinese @defgroup  grp_aw_if_exc       异常 */
+/** @~english @defgroup  grp_aw_if_exc       Except */
+/** @~chinese @defgroup  grp_aw_if_int       中断 */
+/** @~english @defgroup  grp_aw_if_int       Interrupt */
+/** @~chinese @defgroup  grp_aw_if_spinlock  自旋锁 */
+/** @~english @defgroup  grp_aw_if_spinlock  Spinlock */
+
+
+
+
+/** @~chinese @defgroup  grp_aw_if_task2         动态任务 */
+/** @~english @defgroup  grp_aw_if_task2         dynamic task */
+/** @~chinese @defgroup  grp_aw_if_task          任务管理 */
+/** @~english @defgroup  grp_aw_if_task          task */
+/** @~chinese @defgroup  grp_aw_if_timer         软件定时器 */
+/** @~english @defgroup  grp_aw_if_timer         timer */
+
+/** @~chinese @defgroup  grp_aw_if_flag_grp      事件标记组 */
+/** @~english @defgroup  grp_aw_if_flag_grp      event flag group */
+
+/** @~chinese @defgroup  grp_aw_if_sys_defer     系统延迟作业 */
+/** @~english @defgroup  grp_aw_if_sys_defer     system defer */
+/** @~chinese @defgroup  grp_aw_if_msgq          消息队列 */
+/** @~english @defgroup  grp_aw_if_msgq          msgqueue */
+/** @~chinese @defgroup  grp_aw_if_sem           信号量 /互斥量 */
+/** @~english @defgroup  grp_aw_if_sem           semaphore */
+
+/** @~chinese @defgroup  grp_aw_if_defer         延时/异步处理 */
+/** @~english @defgroup  grp_aw_if_defer         defer */
+/** @~chinese @defgroup  grp_aw_if_delayed_work  延迟作业 */
+/** @~english @defgroup  grp_aw_if_delayed_work  delaywork */
+/** @~chinese @defgroup  grp_aw_if_mailbox       邮箱 */
+/** @~english @defgroup  grp_aw_if_mailbox       Mailbox */
+
+/** @~chinese @defgroup  grp_aw_if_isr_defer     中断延迟处理 */
+/** @~english @defgroup  grp_aw_if_isr_defer     isr_defer */
+/** @~chinese @defgroup  grp_aw_if_job_queue     作业队列 */
+/** @~english @defgroup  grp_aw_if_job_queue     job_queue */
+
+/** @~chinese @defgroup  grp_aw_if_fb            帧缓冲设备 */
+/** @~english @defgroup  grp_aw_if_fb            frame buffer */
+
+ 
+ 
+/** @~ @defgroup  grp_aw_if_adc                    ADC*/
+/** @~chinese @defgroup  grp_aw_if_can             CAN总线控制器 */
+/** @~english @defgroup  grp_aw_if_can             CAN */
+/** @~ @defgroup  grp_aw_if_dac                    DAC */
+/* @~chinese @defgroup   grp_aw_serv_dma           DMA服务 */
+/* @~english @defgroup   grp_aw_serv_dma           DMA */
+/** @~chinese @defgroup  grp_aw_if_ftl             Flash传输层 */
+/** @~english @defgroup  grp_aw_if_ftl             Flash transfer */
+
+/** @~ @defgroup  grp_aw_if_gpio                   GPIO */
+/** @~chinese @defgroup  grp_aw_if_gprs            GPRS */
+/** @~english @defgroup  grp_aw_if_gprs            GPRS */
+/** @~chinese @defgroup  grp_aw_if_gnss            GPS */
+/** @~english @defgroup  grp_aw_if_gnss            GPS */
+/** @~chinese @defgroup  grp_aw_if_i2c             I2C总线控制器 */
+/** @~english @defgroup  grp_aw_if_i2c             I2C */
+/** @~chinese @defgroup  grp_aw_if_led             LED设备 */
+/** @~english @defgroup  grp_aw_if_led             LED */
+
+/** @~chinese @defgroup  grp_aw_if_nvram           NVRAM 非易失性存储 */
+/** @~english @defgroup  grp_aw_if_nvram           NVRAM */
+/** @~chinese @defgroup  grp_aw_if_pwm             PWM脉冲宽度调制*/
+/** @~english @defgroup  grp_aw_if_pwm             PWM */
+/** @~chinese @defgroup  grp_aw_if_rtc             RTC时钟服务 */
+/** @~english @defgroup  grp_aw_if_rtc             RTC */
+
+/** @~chinese @defgroup  grp_aw_if_sdcard          SD卡 */
+/** @~english @defgroup  grp_aw_if_sdcard          SDCARD */
+/** @~chinese @defgroup  grp_aw_if_spi             SPI总线控制器 */
+/** @~english @defgroup  grp_aw_if_spi             SPI */
+/** @~chinese @defgroup  grp_aw_if_spi_flash       SPI Flash */
+/** @~english @defgroup  grp_aw_if_spi_flash       SPI Flash */
+
+
+/** @~chinese @defgroup  grp_aw_if_serial          串口设备 */
+/** @~english @defgroup  grp_aw_if_serial          serial */
+/** @~chinese @defgroup  grp_aw_if_buzzer          蜂鸣器设备 */
+/** @~english @defgroup  grp_aw_if_buzzer          buzzer */
+/** @~chinese @defgroup  grp_aw_if_relay           继电器 */
+/** @~english @defgroup  grp_aw_if_relay           relay */
+/** @~chinese @defgroup  grp_aw_if_watchdog        看门狗服务 */
+/** @~english @defgroup  grp_aw_if_watchdog        WATCHDOG */
+
+/** @~chinese @defgroup  grp_aw_if_hotplug_event   热插拔 */
+/** @~english @defgroup  grp_aw_if_hotplug_event   HOTPLUG */
+/** @~chinese @defgroup  grp_aw_if_capture         输入捕获 */
+/** @~english @defgroup  grp_aw_if_capture         CAPTURE */
+/** @~chinese @defgroup  grp_aw_if_digitron_disp   数码管显示设备 */
+/** @~english @defgroup  grp_aw_if_digitron_disp   digitron */
+
+/** @~chinese @defgroup  am_if_mprinter            微型打印机 */
+/** @~english @defgroup  am_if_mprinter            mprinter */
+/** @~chinese @defgroup  grp_aw_if_temp            温度设备 */
+/** @~english @defgroup  grp_aw_if_temp            temperature */
+/** @~chinese @defgroup  grp_aw_if_hwtimer         硬件定时器 */
+/** @~english @defgroup  grp_aw_if_hwtimer         hwtimer */
+
+/** @~chinese @defgroup  grp_aw_if_wifi            WIFI设备*/
+/** @~english @defgroup  grp_aw_if_wifi            WIFI */
+
+/** @~chinese @defgroup  grp_aw_if_cop             CANopen*/
+/** @~english @defgroup  grp_aw_if_cop             CANopen */
+
+/** @~chinese @defgroup  grp_aw_if_cop_mst             CANopen主机接口 */
+/** @~english @defgroup  grp_aw_if_cop_mst             CANopen主机接口 */
+
+/** @~chinese @defgroup  grp_aw_if_sensor             传感器操作接口 */
+/** @~english @defgroup  grp_aw_if_sensor             传感器操作接口 */
+
+/** \~chinese \defgroup  grp_aw_if_cache    DMA-safe内存 */
+/** \~english \defgroup  grp_aw_if_cache    DMA-safe Memory */
+
+/** \~chinese \defgroup  grp_aw_if_mem	    内存管理 */
+/** \~english \defgroup  grp_aw_if_mem	    mem manage */
+
+/** \~chinese \defgroup  grp_aw_if_intensity    强度调节 */
+/** \~english \defgroup  grp_aw_if_intensity    INTENSITY */
+
+/** \~chinese \defgroup  grp_aw_if_io    IO定义 */
+/** \~english \defgroup  grp_aw_if_io    IO定义 */
+
+/* \~chinese \defgroup  grp_aw_if_dma	    DMA服务     */
+/* \~english \defgroup  grp_aw_if_dma	    DMA service */
+/* \~chinese \defgroup  grp_aw_if_ti_edma3	增强型DMA   */
+/* \~english \defgroup  grp_aw_if_ti_edma3	Enhance DMA */
+

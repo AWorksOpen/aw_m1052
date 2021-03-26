@@ -1,0 +1,29 @@
+{
+  "name":"number_label",
+  "date":"2020-05-31",
+  "team":"AWTK Develop Team",
+  "author":"Li XianJing <xianjimli@hotmail.com>",
+  "desc":"用于显示数值的文本控件。",
+  "copyright":"Guangzhou ZHIYUAN Electronics Co.,Ltd.",
+  "includes":[],
+  "props": [
+    {
+      "name":"value",
+      "desc":"值。",
+      "init_value":0,
+      "type":"double"
+    },
+    {
+      "name":"format",
+      "desc":"格式字符串。",
+      "init_value":"%.4f",
+      "type":"char*"
+    },
+    {
+      "name":"decimal_font_size_scale",
+      "desc":"小数部分字体大小与整数部分字体大小之比。",
+      "init_value":0.5,
+      "type":"double"
+    }
+  ]
+}

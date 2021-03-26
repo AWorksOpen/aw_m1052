@@ -1,0 +1,27 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+import os.path
+from   config_build_common import build_common_config 
+
+#
+# 生成库文件
+#
+zlib_a = Library('zlib_1_2_11', source=Glob('*.c'))
+
+#
+# 安装头文件
+#
+INSTALL=os.path.join(build_common_config.AW_SDK_INSTALL_PATH,'include')
+
+EXPORT="""
+    zlib.h
+"""
+
+
+
+#
+# 返回
+#
+Return('zlib_a')

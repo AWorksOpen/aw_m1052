@@ -1,0 +1,179 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+from config_build_common import     build_common_config, get_common_drivers
+from config_lwip import             aw_lwip_config
+import config_sdk_version
+
+env = DefaultEnvironment()
+env = env.Clone()
+
+REL_COMMON_SOURCE_PATH = '../cpu/imxrt10xx_common/board/imxrt102x/cpu/'
+ABS_COMMON_SOURCE_PATH = build_common_config.BOARD_COMMON_PATH + '/board/imxrt102x/cpu/'
+output_ffconf_file = os.path.join(build_common_config.PROJECT_CONFIG_ROOT,'imx1020_sdk_version.h')
+
+# 首先尝试生成SDK版本信息文件
+TARGET = output_ffconf_file
+config_py_file = config_sdk_version.__file__
+(file_name,ext_name) = os.path.splitext(config_py_file)
+if ext_name == '.pyc':
+    config_py_file = file_name + '.py'
+SOURCE = ['imx1020_sdk_version.h.pyconfig','imx1020_sdk_version.defconf']
+SOURCE.append(config_py_file)
+SOURCE.append(config_sdk_version.get_changelog_path())
+env.configure_file(TARGET,SOURCE)
+
+#代码
+SOURCE = []
+SOURCE_CLK = []
+SOURCE_CLK.append('source/clk/imx_clk.c');
+SOURCE_CLK.append('source/clk/imx_clk_pll_audio.c');
+SOURCE_CLK.append('source/clk/imx_clk_pll_enet.c');
+SOURCE_CLK.append('source/clk/imx_clk_pll_usb.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_ahb_podf.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_arm_podf.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_can.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_enc.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_enet_tx_ref.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_flexio1.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_flexio2.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_flexspi.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_gate2.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_gpr1.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_ipg_podf.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_lpi2c.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_lpspi.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_osc.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_perclk_clk_sel.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_perclk_podf.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_periph_clk_sel.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_periph_clk2_sel.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_periph_clk2_podf.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_pll_pfd.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_pll_sys.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_pll3_div.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_pre_periph_clk_sel.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_sai1.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_sai2.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_sai3.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_semc.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_spdif.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_trace.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_uart.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_usdhc1_clk_sel.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_usdhc1_podf.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_usdhc2_clk_sel.c');
+SOURCE_CLK.append('source/clk/imx1020_clk_usdhc2_podf.c');
+
+if build_common_config.AW_COMPILER_TOOLS == 'armcc' :
+    SOURCE.append('source/imx102x_cpu_idle_for_armcc.S');
+else:
+    SOURCE.append('source/imx102x_cpu_idle.S');
+SOURCE.append('source/aw_sdk_version.c');
+
+
+#私有驱动
+SOURCE.append('source/imx1020_ccm.c')
+SOURCE.append('source/imx1020_pmu.c')
+SOURCE.append('source/imx1020_xtal_osc24m.c')
+SOURCE.append('source/driver/gpio/awbl_imx1020_gpio.c');
+SOURCE.append('source/driver/flexspi/awbl_imx1020_flexspi.c');
+SOURCE.append('source/driver/flexspi/awbl_imx1020_flexspi_mtd.c');
+SOURCE.append('source/driver/flexspi/awbl_imx1020_flexspi_nvram.c');
+SOURCE.append('source/driver/flexspi/awbl_imx1020_flexspi_service.c');
+SOURCE.append('source/driver/mqs/awbl_imx1020_mqs.c');
+SOURCE.append('source/driver/otp/awbl_imx1020_ocotp.c');
+SOURCE.append('source/driver/sai/awbl_imx1020_sai.c');
+SOURCE.append('source/driver/timestamp/awbl_imx1020_timestamp.c');
+
+#音频框架源文件添加
+SOURCE.append('source/awsa/source/core/awsa_core.c');
+SOURCE.append('source/awsa/source/core/awsa_core_ctl.c');
+SOURCE.append('source/awsa/source/core/awsa_core_jack.c');
+SOURCE.append('source/awsa/source/core/awsa_core_mixer.c');
+SOURCE.append('source/awsa/source/core/awsa_core_pcm.c');
+SOURCE.append('source/awsa/source/core/awsa_core_pcm_lib.c');
+SOURCE.append('source/awsa/source/core/awsa_core_tlv.c');
+SOURCE.append('source/awsa/source/soc/awsa_soc.c');
+SOURCE.append('source/awsa/source/soc/awsa_soc_dai.c');
+SOURCE.append('source/awsa/source/soc/awsa_soc_dapm.c');
+SOURCE.append('source/awsa/source/soc/awsa_soc_jack.c');
+#SOURCE.append('source/awsa/source/soc/codec/awbl_uda1380.c');
+
+#imxrt10xx_common
+RT_COMMON_REL_DIR = os.path.join('../../../')
+RT_COMMON_ABS_DIR = build_common_config.BOARD_COMMON_PATH
+
+#添加imxrt10xx_common中的驱动与头文件
+COMMON_DRIVERS_CONFIG = os.path.join(build_common_config.PROJECT_ROOT, 'build_config/common_drivers.json')
+SOURCE_COMMON, HEADERS_COMMON = get_common_drivers(COMMON_DRIVERS_CONFIG, RT_COMMON_ABS_DIR, '../../../' + os.path.sep)
+
+#头文件添加
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE.append('include_notinsdk');
+INCLUDE.append(os.path.join(RT_COMMON_REL_DIR,'include'));
+INCLUDE.append(os.path.join(build_common_config.AWORKS_ROOT,'components/clock/include') );
+INCLUDE.append(os.path.join(build_common_config.AWORKS_ROOT,'components/base/include') );
+INCLUDE.append(os.path.join(build_common_config.AWORKS_ROOT,'components/gui/emwin5xx_adapter/include') );
+INCLUDE.append(aw_lwip_config.LWIP_INCLUDE);
+INCLUDE.append(os.path.join(build_common_config.AWORKS_ROOT,'components/usb/include') );
+INCLUDE.append(os.path.join(build_common_config.AW_SDK_INSTALL_PATH, 'include'))
+
+#net
+INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/net/core/include')
+INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/net/dhcp_server/include')
+INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/net/ping/include')
+
+#音频框架头文件添加
+INCLUDE.append('source/awsa/include')
+INCLUDE.append('source/awsa/include/core')
+INCLUDE.append('source/awsa/include/soc')
+INCLUDE.append('source/awsa/include/soc/codec')
+
+CPPDEFINES= env['CPPDEFINES'];
+if build_common_config.CRP_ENABLE:
+    CPPDEFINES.append('CRP_ENABLE=1');
+	
+lib_file_cpu1=env.StaticLibrary('aw_cpu_1',SOURCE,CPPPATH = INCLUDE ,CPPDEFINES=CPPDEFINES);
+lib_file_clk=env.StaticLibrary('aw_cpu_clk',SOURCE_CLK,CPPPATH = INCLUDE ,CPPDEFINES=CPPDEFINES);
+lib_file_rt_common=env.StaticLibrary('aw_cpu_rt_common',SOURCE_COMMON,CPPPATH = INCLUDE ,CPPDEFINES=CPPDEFINES);
+
+lib_file_name = env['LIBPREFIX'] + 'aw_cpu' + env['LIBSUFFIX']
+libraries_list = [lib_file_clk, lib_file_cpu1,lib_file_rt_common]
+env.merge_lib(lib_file_name, libraries_list)
+lib_file = [File(lib_file_name)]
+
+cur_build_path = Dir('.',False);
+org_build_path = str(cur_build_path.srcnode())
+InstallDir(build_common_config.AW_SDK_INSTALL_PATH+'/include/cpu', os.path.join(org_build_path,'include'))
+
+# 安装RT COMMON头文件
+RT_COMMON_INCLUDE_DIR=os.path.join(RT_COMMON_ABS_DIR,'include');
+RT_COMMON_INCLUDE_DIR=os.path.realpath(RT_COMMON_INCLUDE_DIR);
+if not RT_COMMON_INCLUDE_DIR.endswith(os.path.sep):
+    RT_COMMON_INCLUDE_DIR += os.path.sep;
+RT_COMMON_INCLUDE_INSTALL_BASE_DIR = os.path.join(build_common_config.AW_SDK_INSTALL_PATH,'include','cpu');
+
+for header in HEADERS_COMMON:
+    header=os.path.realpath(header);
+    if not header.startswith(RT_COMMON_INCLUDE_DIR):
+        raise IOError;
+    header_install_dir=header[len(RT_COMMON_INCLUDE_DIR):];
+    header_install_dir = os.path.dirname(header_install_dir);
+    header_install_dir = os.path.join(RT_COMMON_INCLUDE_INSTALL_BASE_DIR,header_install_dir);
+    Install(header_install_dir, header)
+	
+# 如果存在libstackoverflowcheck的源码，则执行其编译脚本
+overflow_check_source_path = os.path.join(org_build_path,'libstackoverflowcheck/awbl_stack_overflow.c');
+if os.path.isfile(overflow_check_source_path) :
+    SConscript_file_path = 'libstackoverflowcheck/SConscript';
+    overflow_lib_file = SConscript(SConscript_file_path);
+else :
+    overflow_lib_file_name = env['LIBPREFIX'] + 'awbl_stack_overflow' + env['LIBSUFFIX']
+    overflow_lib_file_path = os.path.join(build_common_config.BUILT_LIBS_SEARCH_PATH,overflow_lib_file_name);
+    overflow_lib_file = [File(overflow_lib_file_path)];
+	
+if build_common_config.CRP_ENABLE:
+    lib_file.extend(overflow_lib_file);
+Return('lib_file');

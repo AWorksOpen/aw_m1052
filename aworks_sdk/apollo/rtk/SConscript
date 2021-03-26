@@ -1,0 +1,101 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+import config_rtk
+from config_build_common import build_common_config 
+
+env = DefaultEnvironment();
+env = env.Clone()
+
+cur_build_path = Dir('.',False);
+org_build_path = str(cur_build_path.srcnode())
+
+# 配置rtk_config.h
+output_config_file = os.path.join(build_common_config.PROJECT_CONFIG_ROOT,'rtk_autoconf.h')
+
+# 首先尝试生成rtk的配置文件
+config_py_file = config_rtk.__file__;
+(file_name,ext_name) = os.path.splitext(config_py_file)
+if ext_name == '.pyc':
+    config_py_file = file_name + '.py'
+    
+SOURCE = [os.path.join(org_build_path ,'rtk_autoconf.h.pyconfig')];
+SOURCE.append(os.path.join(org_build_path ,'rtk_autoconf.defconf') );
+SOURCE.append(config_py_file)
+env.configure_file(output_config_file,SOURCE)
+
+# RTK核心代码
+SOURCE = [];
+SOURCE.append('source/core/rtk_init.c')
+SOURCE.append('source/core/rtk_task.c')
+SOURCE.append('source/core/rtk_int.c')
+SOURCE.append('source/core/rtk_semb.c')
+SOURCE.append('source/core/rtk_semc.c')
+SOURCE.append('source/core/rtk_mutex.c')
+SOURCE.append('source/core/rtk_mutex_sync_lock.c')
+SOURCE.append('source/core/rtk_base_mutex.c')
+SOURCE.append('source/core/rtk_waitq.c')
+SOURCE.append('source/core/rtk_waitq_const_time.c')
+SOURCE.append('source/core/rtk_priority_q.c')
+SOURCE.append('source/core/rtk_priority_config.c')
+SOURCE.append('source/core/rtk_tick_down_counter.c')
+SOURCE.append('source/core/rtk_mem.c')
+SOURCE.append('source/core/rtk_msgq.c')
+SOURCE.append('source/core/rtk_scheduler.c')
+SOURCE.append('source/core/rtk_systick.c')
+SOURCE.append('source/core/rtk_idle.c')
+SOURCE.append('source/core/rtk_list.c')
+SOURCE.append('source/core/rtk_atomic.c')
+SOURCE.append('source/core/tick_lib.c')
+SOURCE.append('source/core/lock/spinlock_isr_up.c')
+
+RTK_DEFINES = env['CPPDEFINES']
+
+
+ARCH_DIR_STRING='source/arch/' + \
+                build_common_config.AW_CPU_MAIN_NAME + '/' + \
+                build_common_config.AW_CPU_CORE_NAME +'/'
+
+#如果arch目录存在SConscript文件，则使用此文件来决定arch源码
+ARCH_SConscript_file = os.path.join(org_build_path,ARCH_DIR_STRING,'SConscript');
+if os.path.isfile(ARCH_SConscript_file):
+    ARCH_SConscript_file = os.path.join(ARCH_DIR_STRING,'SConscript');
+    ARCH_RETURN = SConscript(ARCH_SConscript_file);
+    ARCH_SOURCE = ARCH_RETURN['ARCH_SOURCE']
+    ARCH_INCLUDE = ARCH_RETURN['ARCH_INCLUDE']
+    ARCH_CDEFINES = ARCH_RETURN['ARCH_CDEFINES']
+    RTK_DEFINES.extend(ARCH_CDEFINES);
+    SOURCE.extend(ARCH_SOURCE);
+    pass;
+else:
+    #否则采用默认的规则搜索arch对应的源码
+    SOURCE.append(Glob(ARCH_DIR_STRING+'*.c'));
+    ARCH_DIR_STRING += build_common_config.AW_COMPILER_TOOLS + '/';
+    SOURCE.append(Glob(ARCH_DIR_STRING+'*.c'));
+    SOURCE.append(Glob(ARCH_DIR_STRING+'*.S'));
+    SOURCE.append(Glob(ARCH_DIR_STRING+'*.s'));
+    # 添加可能存在的浮点数支持
+    if build_common_config.AW_CPU_MAIN_NAME == 'arm':
+        if build_common_config.ARM_FLOAT_ABI != 'soft':
+            RTK_DEFINES += ['RTK_ENABLE_FPU'];
+            ARCH_DIR_STRING += build_common_config.ARM_FPU_TYPE + os.path.sep;
+            SOURCE.append(Glob(ARCH_DIR_STRING+'*.c'));
+            SOURCE.append(Glob(ARCH_DIR_STRING+'*.S'));
+            SOURCE.append(Glob(ARCH_DIR_STRING+'*.s'));
+
+
+#增加RTK编译所需的参数
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE.append(build_common_config.AWORKS_ROOT+'components/shell/include')
+INCLUDE.append(build_common_config.AWORKS_ROOT+'components/base/include')
+
+INCLUDE +=['include']
+
+lib_rtk_file=StaticLibrary('rtk',SOURCE,CPPPATH = INCLUDE,CPPDEFINES=RTK_DEFINES )
+
+
+Install(build_common_config.AW_SDK_INSTALL_PATH + 'include/config',output_config_file);
+
+
+Return('lib_rtk_file');

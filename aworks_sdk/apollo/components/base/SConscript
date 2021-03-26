@@ -1,0 +1,110 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+from config_build_common import build_common_config
+from config_aw_base import aw_base_config
+from config_compoents import compoents_config
+
+env = DefaultEnvironment()
+
+SOURCE = [
+    'source/eio/aw_eio.c',
+    'source/fs/aw_blk_cache.c',
+    'source/fs/aw_blk_dev.c',
+    'source/fs/aw_fs_type.c',
+    'source/fs/aw_mkfs.c',
+    'source/fs/aw_mount.c',
+    'source/fs/aw_auto_mount.c',
+    'source/fs/aw_ram_disk.c',
+    'source/fs/aw_raw_fs.c',
+    'source/fs/aw_root_fs.c',
+    'source/ftl/aw_ftl.c',
+    'source/ftl/aw_ftl_blk.c',
+    'source/ftl/aw_ftl_flash.c',
+    'source/ftl/aw_ftl_map.c',
+    'source/ftl/aw_ftl_sys.c',
+    'source/ftl/aw_ftl_utils.c',
+    'source/io/aw_dirent.c',
+    'source/io/aw_io_device.c',
+    'source/io/aw_io_entry.c',
+    'source/io/aw_io_lib.c',
+    'source/io/aw_io_path.c',
+    'source/io/aw_io_shell.c',
+    'source/io/aw_stat.c',
+    'source/io/aw_statvfs.c',
+    'source/io/aw_unistd.c',
+    'source/io/aw_utime.c',
+    'source/mtd/aw_mtd.c',
+    'source/mtd/aw_mtd_part.c',
+    'source/mtd/aw_mtd_ram.c',
+    'source/os/aw_defer.c',
+    'source/os/aw_delay.c',
+    'source/os/aw_delayed_work.c',
+    'source/os/aw_isr_defer.c',
+    'source/os/aw_job_queue.c',
+    'source/os/aw_koutput.c',
+    'source/os/aw_koutput_sio.c',
+    'source/os/aw_kprintf.c',
+    'source/os/aw_memheap.c',
+    'source/os/aw_pool_lib.c',
+    'source/os/aw_slab.c',
+    'source/os/aw_task2.c',
+    'source/os/aw_time.c',
+    'source/os/aw_time_keeper.c',
+    'source/util/aw_event.c',
+    'source/util/awbl_input_event.c',
+    'source/util/awbl_input_if.c',
+    'source/util/aw_flag_grp.c',
+    'source/util/aw_hotplug_event.c',
+    'source/util/aw_log_blk.c',
+    'source/util/aw_log_fs.c',
+    'source/util/aw_log_ftl.c',
+    'source/util/aw_loglib.c',
+    'source/util/aw_md5.c',
+    'source/util/aw_mprinter.c',
+    'source/util/aw_pbuf.c',
+    'source/util/aw_pipe.c',
+    'source/util/aw_ring_buffer.c',
+    'source/util/aw_sftimer_lib.c',
+    'source/util/aw_soft_bch.c',
+    'source/util/aw_ts_lib.c',
+    'source/util/aw_reqsched.c'
+]
+
+# 'source/util/aw_flash_eeprom.c',
+
+# SEGGER_RTT
+if get_config_val(compoents_config, 'EN_SEGGER_RTT', False) is True:
+    if get_config_val(compoents_config, 'EN_SYSVIEW', False) is True:
+        raise EnvironmentError(
+            'ERROR:segger sysview and rtt can\'t work together for now.')
+    SOURCE.append('source/os/aw_koutput_segger_rtt.c')
+
+
+if aw_base_config.AWORKS_PRINTF_VERSION == 'full_function':
+    SOURCE.append('source/os/aw_snprintf_full.c')
+elif aw_base_config.AWORKS_PRINTF_VERSION == 'mini':
+    SOURCE.extend([
+        'source/os/aw_vfprintf_do.c',
+        'source/os/aw_vsnprintf.c',
+        'source/os/aw_snprintf.c'
+    ])
+else:
+    raise IOError('Invalid config of AWORKS_PRINTF_VERSION')
+
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/shell/include')
+INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/utils/reqsched/src')
+INCLUDE += ['include']
+INCLUDE.append(os.path.join(
+    build_common_config.AW_SDK_INSTALL_PATH, 'include'))
+
+lib_file = Library('aw_base', SOURCE, CPPPATH=INCLUDE)
+
+cur_build_path = Dir('.', False)
+org_build_path = str(cur_build_path.srcnode())
+
+
+
+Return('lib_file')

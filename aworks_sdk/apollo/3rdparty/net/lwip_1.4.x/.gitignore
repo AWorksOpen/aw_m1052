@@ -1,0 +1,6 @@
+
+*.pyc
+.axioenvs
+.axiodeps
+.config
+.config.old

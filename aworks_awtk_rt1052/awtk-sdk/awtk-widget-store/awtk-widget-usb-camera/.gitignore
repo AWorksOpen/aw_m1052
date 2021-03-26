@@ -1,0 +1,12 @@
+/.sconsign.dblite
+/.vscode
+/src/*.obj
+/src/*/*.obj
+/src/*/*/*.obj
+/demos/*.obj
+/tests/*.obj
+/bin/*.ilk
+/bin/*.pdb
+/bin/*.lib
+/bin/*.exp
+/format.sh

@@ -1,0 +1,66 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+from config_build_common import     build_common_config 
+from config_lwip import             aw_lwip_config
+import config_sdk_version
+
+env = DefaultEnvironment();
+env = env.Clone();
+
+# 代码
+SOURCE = []
+
+# 驱动
+SOURCE.append('source/driver/acmp/awbl_imx10xx_acmp.c')
+SOURCE.append('source/driver/acmp/awbl_acmp_service.c')
+SOURCE.append('source/driver/adc/awbl_imx10xx_adc.c')
+SOURCE.append('source/driver/can/awbl_imx10xx_can.c')
+SOURCE.append('source/driver/canfd/awbl_imx10xx_canfd.c')
+SOURCE.append('source/driver/cap/awbl_imx10xx_gpt_cap.c')
+SOURCE.append('source/driver/cap/awbl_imx10xx_qtimer_cap.c')
+SOURCE.append('source/driver/edma/awbl_imx10xx_edma.c')
+SOURCE.append('source/driver/edma/awbl_imx10xx_edma_service.c')
+SOURCE.append('source/driver/enc/awbl_enc_service.c')
+SOURCE.append('source/driver/enc/awbl_imx10xx_enc.c')
+SOURCE.append('source/driver/flexio/awbl_imx10xx_flexio_uart.c')
+SOURCE.append('source/driver/lpi2c/awbl_imx10xx_lpi2c.c')
+SOURCE.append('source/driver/lpspi/awbl_imx10xx_lpspi.c')
+SOURCE.append('source/driver/net/awbl_imx10xx_enet.c')
+SOURCE.append('source/driver/pwm/awbl_imx10xx_eflex_pwm.c')
+SOURCE.append('source/driver/pwm/awbl_imx10xx_gpt_pwm.c')
+SOURCE.append('source/driver/pwm/awbl_imx10xx_qtimer_pwm.c')
+SOURCE.append('source/driver/rtc/awbl_imx10xx_rtc.c')
+SOURCE.append('source/driver/rtwdt/awbl_imx10xx_rtwdt.c')
+SOURCE.append('source/driver/sdio/awbl_imx10xx_sdio.c')
+SOURCE.append('source/driver/serial/awbl_imx10xx_lpuart.c')
+SOURCE.append('source/driver/tempmon/awbl_imx10xx_tempmon.c')
+SOURCE.append('source/driver/timer/awbl_imx10xx_gpt.c')
+SOURCE.append('source/driver/timer/awbl_imx10xx_pit.c')
+SOURCE.append('source/driver/timer/awbl_imx10xx_qtimer_timer.c')
+SOURCE.append('source/driver/usb/awbl_imx10xx_usbd.c')
+SOURCE.append('source/driver/usb/awbl_imx10xx_usbh.c')
+SOURCE.append('source/driver/wdt/awbl_imx10xx_wdt.c')
+
+# 头文件添加
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE.append('include_notinsdk')
+INCLUDE.append(os.path.join(build_common_config.AWORKS_ROOT, 'components/clock/include'))
+INCLUDE.append(os.path.join(build_common_config.AWORKS_ROOT, 'components/base/include'))
+INCLUDE.append(os.path.join(build_common_config.AWORKS_ROOT, 'components/gui/emwin5xx_adapter/include'))
+INCLUDE.append(aw_lwip_config.LWIP_INCLUDE);
+INCLUDE.append(os.path.join(build_common_config.AWORKS_ROOT, 'components/usb/include'))
+INCLUDE.append(os.path.join(build_common_config.AW_SDK_INSTALL_PATH, 'include'))
+INCLUDE +=['include']
+
+CPPDEFINES= env['CPPDEFINES']
+if build_common_config.CRP_ENABLE:
+    CPPDEFINES.append('CRP_ENABLE=1')
+
+lib_file_common = env.StaticLibrary('aw_cpu_common', SOURCE, CPPPATH = INCLUDE, CPPDEFINES=CPPDEFINES)
+
+cur_build_path = Dir('.', False);
+org_build_path = str(cur_build_path.srcnode())
+
+Return('lib_file_common')

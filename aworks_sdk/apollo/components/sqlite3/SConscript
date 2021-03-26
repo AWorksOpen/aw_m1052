@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import os
+from config_compoents import compoents_config
+from config_build_common import build_common_config 
+
+env = DefaultEnvironment()
+
+cur_build_path = Dir('.', False)
+org_build_path = str(cur_build_path.srcnode())
+
+#sqlite3源码绝对路径
+sqlite3_src_path = os.path.join(build_common_config.AWORKS_ROOT, '3rdparty', 'sqlite3')
+#由sqlite3源码相对路径
+sqlite3_rel_dir = cal_relative_dir(org_build_path, sqlite3_src_path)
+
+
+SOURCE = []
+
+# sqlite3
+SOURCE += [sqlite3_rel_dir + 'sqlite3.c']
+
+# sqlite3_adapter
+SOURCE += ['source/aw_sqlite3_io.c']
+SOURCE += ['source/aw_sqlite3_os.c']
+
+# sqlite3 include
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE.append(sqlite3_rel_dir)
+INCLUDE.append('include')
+INCLUDE.append(os.path.join(build_common_config.AWORKS_ROOT, 'components/base/include'))
+
+lib_files = Library('aw_sqlite3_adapter', SOURCE, CPPPATH = INCLUDE)
+
+Return('lib_files')

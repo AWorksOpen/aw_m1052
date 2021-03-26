@@ -1,0 +1,72 @@
+<popup theme="date_picker" w="300" h="300" close_when_click_outside="true">
+  <date_picker x="c" y="m" w="280" h="280">
+    <view name="title" x="0" y="0" w="100%" h="30">
+      <button name="prev_year" x="0" y="m" w="30" h="26" text="<<"/>
+      <button name="prev_month" x="35" y="m" w="30" h="26" text="<"/>
+      <label name="year_month" x="c" y="m" w="50%" h="100%" text="2020/7"/>
+      <button name="next_month" x="r:35" y="m" w="30" h="26" text=">"/>
+      <button name="next_year" x="r" y="m" w="30" h="26" text=">>"/>
+    </view>
+
+    <view name="week" x="0" y="32" w="100%" h="30" children_layout="default(r=1,c=7,m=2,s=2)">
+      <label name="sun" tr_text="Su"/>
+      <label name="mon" tr_text="Mo"/>
+      <label name="tue" tr_text="Tu"/>
+      <label name="wed" tr_text="We"/>
+      <label name="thu" tr_text="Th"/>
+      <label name="fri" tr_text="Fr"/>
+      <label name="sat" tr_text="Sa"/>
+    </view>
+
+    <view name="days" x="0" y="64" w="100%" h="-100" children_layout="default(r=6,c=7,m=2,s=2)">
+      <button text="0"/>
+      <button text="1"/>
+      <button text="2"/>
+      <button text="3"/>
+      <button text="4"/>
+      <button text="5"/>
+      <button text="6"/>
+      
+      <button text="0"/>
+      <button text="1"/>
+      <button text="2"/>
+      <button text="3"/>
+      <button text="4"/>
+      <button text="5"/>
+      <button text="6"/>
+      
+      <button text="0"/>
+      <button text="1"/>
+      <button text="2"/>
+      <button text="3"/>
+      <button text="4"/>
+      <button text="5"/>
+      <button text="6"/>
+
+      <button text="0"/>
+      <button text="1"/>
+      <button text="2"/>
+      <button text="3"/>
+      <button text="4"/>
+      <button text="5"/>
+      <button text="6"/>
+
+      <button text="0"/>
+      <button text="1"/>
+      <button text="2"/>
+      <button text="3"/>
+      <button text="4"/>
+      <button text="5"/>
+      <button text="6"/>
+
+      <button text="0"/>
+      <button text="1"/>
+      <button text="2"/>
+      <button text="3"/>
+      <button text="4"/>
+      <button text="5"/>
+      <button text="6"/>
+    </view>
+    <button name="today" x="c" y="b:2" w="60" h="30" tr_text="Today"/>
+  </date_picker>
+</popup>

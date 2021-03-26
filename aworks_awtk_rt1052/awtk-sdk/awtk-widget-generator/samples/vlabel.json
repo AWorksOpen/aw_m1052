@@ -1,0 +1,17 @@
+{
+  "name":"vlabel",
+  "date":"2020-10-01",
+  "team":"AWTK Develop Team",
+  "author":"Li XianJing <xianjimli@hotmail.com>",
+  "desc":"垂直显示文本的控件。",
+  "copyright":"Guangzhou ZHIYUAN Electronics Co.,Ltd.",
+  "includes":[],
+  "props": [
+    {
+      "name":"right_to_left",
+      "desc":"是否从右向左排列。",
+      "init_value":"FALSE",
+      "type":"bool_t"
+    }
+  ]
+}

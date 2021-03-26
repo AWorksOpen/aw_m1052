@@ -1,0 +1,33 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+from config_build_common import build_common_config 
+
+env = DefaultEnvironment();
+
+#代码
+SOURCE = []
+
+SOURCE.append('aw_clk.c')
+SOURCE.append('clk_provider.c')
+SOURCE.append('clk_divider.c')
+SOURCE.append('clk_fixed_factor.c')
+SOURCE.append('clk_gate.c')
+SOURCE.append('clk_mux.c')
+SOURCE.append('clk_fixed_rate.c')
+
+SOURCE.append('simple_div_const_clk.c')
+SOURCE.append('simple_div_table_clk.c')
+SOURCE.append('simple_gate_clk.c')
+SOURCE.append('simple_mux_clk.c')
+SOURCE.append('simple_div_clk.c')
+
+
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE +=['include']
+
+lib_file=StaticLibrary('aw_clk_framework',SOURCE,CPPPATH = INCLUDE )
+
+
+
+Return('lib_file');

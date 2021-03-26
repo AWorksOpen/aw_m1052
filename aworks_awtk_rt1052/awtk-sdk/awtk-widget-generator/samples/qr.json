@@ -1,0 +1,16 @@
+{
+  "name":"qr",
+  "date":"2020-06-01",
+  "team":"AWTK Develop Team",
+  "author":"Li XianJing <xianjimli@hotmail.com>",
+  "desc":"显示二维码的控件",
+  "copyright":"Guangzhou ZHIYUAN Electronics Co.,Ltd.",
+  "includes":[],
+  "props": [
+    {
+      "name":"value",
+      "desc":"值",
+      "type":"char*"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+
+from config_build_common import build_common_config 
+
+env = DefaultEnvironment();
+
+cur_build_path = Dir('.',False);
+

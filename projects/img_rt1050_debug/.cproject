@@ -1,0 +1,1519 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?fileVersion 4.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
+	<storageModule moduleId="org.eclipse.cdt.core.settings">
+		<cconfiguration id="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.374613545">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.374613545" moduleId="org.eclipse.cdt.core.settings" name="Debug">
+				<macros>
+					<stringMacro name="AW_ROOT" type="VALUE_TEXT" value="${ProjDirPath}/../../aworks_sdk"/>
+					<stringMacro name="AWTK" type="VALUE_TEXT" value="${ProjDirPath}/../../aworks_sdk/include/GUI/awtk"/>
+				</macros>
+				<externalSettings/>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="${cross_rm} -rf" description="" errorParsers="org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.CWDLocator;org.eclipse.cdt.core.GCCErrorParser" id="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.374613545" name="Debug" parent="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug" postannouncebuildStep="" postbuildStep="" preannouncebuildStep="" prebuildStep="">
+					<folderInfo id="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.374613545." name="/" resourcePath="">
+						<toolChain errorParsers="" id="ilg.gnuarmeclipse.managedbuild.cross.toolchain.elf.debug.960352003" name="Cross ARM GCC" superClass="ilg.gnuarmeclipse.managedbuild.cross.toolchain.elf.debug">
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.level.826170566" name="Optimization Level" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.level" useByScannerDiscovery="true" value="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.level.none" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.messagelength.899020317" name="Message length (-fmessage-length=0)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.messagelength" useByScannerDiscovery="true" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.signedchar.409316374" name="'char' is signed (-fsigned-char)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.signedchar" useByScannerDiscovery="true" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.functionsections.1908051951" name="Function sections (-ffunction-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.functionsections" useByScannerDiscovery="true" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.datasections.1651798274" name="Data sections (-fdata-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.datasections" useByScannerDiscovery="true" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.level.122576401" name="Debug level" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.level" useByScannerDiscovery="true" value="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.level.max" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.format.1929346906" name="Debug format" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.format" useByScannerDiscovery="true"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.name.990226376" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.name" useByScannerDiscovery="false" value="GNU Tools for ARM Embedded Processors" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.architecture.111772407" name="Architecture" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.architecture" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.architecture.arm" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.family.301710380" name="ARM family" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.family" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.mcpu.cortex-m7" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.instructionset.351380724" name="Instruction set" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.instructionset" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.instructionset.thumb" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.prefix.1423771865" name="Prefix" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.prefix" useByScannerDiscovery="false" value="arm-none-eabi-" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.c.1919189828" name="C compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.c" useByScannerDiscovery="false" value="gcc" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.cpp.1486605402" name="C++ compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.cpp" useByScannerDiscovery="false" value="g++" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.ar.931121347" name="Archiver" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.ar" useByScannerDiscovery="false" value="ar" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.objcopy.1816847863" name="Hex/Bin converter" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.objcopy" useByScannerDiscovery="false" value="objcopy" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.objdump.1873666852" name="Listing generator" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.objdump" useByScannerDiscovery="false" value="objdump" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.size.1827725690" name="Size command" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.size" useByScannerDiscovery="false" value="size" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.make.1078884141" name="Build command" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.make" useByScannerDiscovery="false" value="make" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.rm.1800301245" name="Remove command" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.rm" useByScannerDiscovery="false" value="rm" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createflash.1523802837" name="Create flash image" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createflash" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.printsize.1271364368" name="Print size" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.printsize" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.thumbinterwork.995202871" name="Thumb interwork (-mthumb-interwork)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.thumbinterwork" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.endianness.307716973" name="Endianness" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.endianness" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.endianness.little" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.abi.470169992" name="Float ABI" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.abi" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.abi.hard" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.unalignedaccess.48567118" name="Unaligned access" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.unalignedaccess" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.unalignedaccess.disabled" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createlisting.2126271908" name="Create extended listing" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createlisting" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.allwarn.346969479" name="Enable all common warnings (-Wall)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.allwarn" useByScannerDiscovery="true" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.uninitialized.1360227678" name="Warn on uninitialized variables (-Wuninitialised)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.uninitialized" useByScannerDiscovery="true" value="false" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.unit.679925908" name="FPU Type" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.unit" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.unit.fpv5d16" valueType="enumerated"/>
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="ilg.gnuarmeclipse.managedbuild.cross.targetPlatform.665653351" isAbstract="false" osList="all" superClass="ilg.gnuarmeclipse.managedbuild.cross.targetPlatform"/>
+							<builder buildPath="${workspace_loc:/img_rt1050_debug}/Debug" errorParsers="org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.CWDLocator" id="ilg.gnuarmeclipse.managedbuild.cross.builder.827119046" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="optimal" superClass="ilg.gnuarmeclipse.managedbuild.cross.builder"/>
+							<tool command="${cross_prefix}${cross_c}${cross_suffix}" commandLinePattern="${COMMAND} ${cross_toolchain_flags} ${FLAGS} -c ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GCCErrorParser" id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.996078649" name="Cross ARM GNU Assembler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.usepreprocessor.1940575913" name="Use preprocessor" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.usepreprocessor" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.include.paths.2034627301" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.include.paths" useByScannerDiscovery="false"/>
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input.1148989159" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input"/>
+							</tool>
+							<tool command="${cross_prefix}${cross_c}${cross_suffix}" commandLinePattern="${COMMAND} ${cross_toolchain_flags} ${FLAGS} -c ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GCCErrorParser" id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.1497575" name="Cross ARM C Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths.685175386" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/include/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/example&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/lwip_2.x_adapter/extra_include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/littlefs_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/micropython/aw_micropython_1.12_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/littlefs-master&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CANopen&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CANopen/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CANopen_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lua/lua-5.3.4_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/extras/fixture/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/aworks_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include/ftpd&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/tools/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CanFestival-3.8_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CanFestival-3.8_adapter/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/resources/firmware&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/sqlite3&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/lora_sx1276/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/lora_utilities/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/loranet_stack/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/modbus/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/goahead-2.5_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include/ftpd&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/goahead-2.5&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/yaffs2_e57244d/direct&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/yaffs2_e57244d_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/lffs/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/fatfs/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/fatfs_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/tools/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/shell/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/shell/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/core/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/lwip_2.x_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/interface/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/rtk/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/rtk/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/psp/rtk/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/psp/rtk/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/awbus_lite/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/awbus_lite/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/base/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/base/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/resources/firmware&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/include/ipv4&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/netif&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CanFestival-3.8/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/libcrul_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/libcurl/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/mbedtls-2.24.0-adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/mbedtls-2.24.0/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_code}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_config}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_config/awbl_hwconf_usrcfg}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/source/awsa/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/source/awsa/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/bsp&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_code/app_enet_web_demo}&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs.717218839" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs" useByScannerDiscovery="false" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="AW_DEBUG"/>
+									<listOptionValue builtIn="false" value="AW_COM_CANOPEN_MST"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_INFO"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_WARN"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_ERROR"/>
+									<listOptionValue builtIn="false" value="AW_CORTEX_M7"/>
+									<listOptionValue builtIn="false" value="HAS_AWTK_CONFIG"/>
+									<listOptionValue builtIn="false" value="UNITY_TEST_FTL"/>
+									<listOptionValue builtIn="false" value="UNITY_TEST_MTD"/>
+								</option>
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input.615340495" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input"/>
+							</tool>
+							<tool command="${cross_prefix}${cross_cpp}${cross_suffix}" commandLinePattern="${COMMAND} ${cross_toolchain_flags} ${FLAGS} -c ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GCCErrorParser" id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.1687691612" name="Cross ARM C++ Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.defs.1817404219" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.defs" useByScannerDiscovery="false" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="AW_DEBUG"/>
+									<listOptionValue builtIn="false" value="AW_COM_CANOPEN_MST"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_INFO"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_WARN"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_ERROR"/>
+									<listOptionValue builtIn="false" value="AW_CORTEX_M7"/>
+									<listOptionValue builtIn="false" value="HAS_AWTK_CONFIG"/>
+									<listOptionValue builtIn="false" value="UNITY_TEST_FTL"/>
+									<listOptionValue builtIn="false" value="UNITY_TEST_MTD"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.include.paths.2094811923" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/include/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/example&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/littlefs_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/lwip_2.x_adapter/extra_include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/micropython/aw_micropython_1.12_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/littlefs-master&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CANopen&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CANopen/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CANopen_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lua/lua-5.3.4_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/extras/fixture/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/aworks_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/tools/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include/ftpd&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CanFestival-3.8_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CanFestival-3.8_adapter/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/resources/firmware&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/sqlite3&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/lora_sx1276/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/lora_utilities/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/loranet_stack/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/modbus/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/goahead-2.5_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include/ftpd&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/goahead-2.5&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/yaffs2_e57244d/direct&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/yaffs2_e57244d_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/lffs/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/fatfs/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/fatfs_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/tools/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/shell/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/shell/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/core/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/lwip_2.x_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/interface/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/rtk/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/rtk/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/psp/rtk/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/psp/rtk/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/awbus_lite/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/awbus_lite/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/base/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/base/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/resources/firmware&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/include/ipv4&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/netif&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CanFestival-3.8/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_code}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_config}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_config/awbl_hwconf_usrcfg}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/source/awsa/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/source/awsa/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/bsp&quot;"/>
+								</option>
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input.822379728" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input"/>
+							</tool>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.linker.1775968680" name="Cross ARM C Linker" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.linker">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.gcsections.1129292743" name="Remove unused sections (-Xlinker --gc-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.gcsections" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.scriptfile.1797881293" name="Script files (-T)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.scriptfile" valueType="stringList">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/rt1050_sdram.ld}&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.nostart.110848167" name="Do not use standard start files (-nostartfiles)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.nostart" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.libs.1637403851" name="Libraries (-l)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="aw_qrcode"/>
+									<listOptionValue builtIn="false" value="aw_canfestival_3_8_adapter"/>
+									<listOptionValue builtIn="false" value="aw_psp"/>
+									<listOptionValue builtIn="false" value="rtk"/>
+									<listOptionValue builtIn="false" value="reqsched"/>
+									<listOptionValue builtIn="false" value="awbl_common"/>
+									<listOptionValue builtIn="false" value="awbl_core"/>
+									<listOptionValue builtIn="false" value="aw_base"/>
+									<listOptionValue builtIn="false" value="aw_shell"/>
+									<listOptionValue builtIn="false" value="aw_clk_framework"/>
+									<listOptionValue builtIn="false" value="aw_fatfs_adapter"/>
+									<listOptionValue builtIn="false" value="aw_fatfs"/>
+									<listOptionValue builtIn="false" value="aw_lffs"/>
+									<listOptionValue builtIn="false" value="aw_yaffs"/>
+									<listOptionValue builtIn="false" value="aw_unity"/>
+									<listOptionValue builtIn="false" value="aw_modbus"/>
+									<listOptionValue builtIn="false" value="aw_libc"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x_adapter"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x_ext"/>
+									<listOptionValue builtIn="false" value="aw_net_core"/>
+									<listOptionValue builtIn="false" value="aw_net_tools"/>
+									<listOptionValue builtIn="false" value="aw_ftpd"/>
+									<listOptionValue builtIn="false" value="aw_goahead"/>
+									<listOptionValue builtIn="false" value="aw_usb"/>
+									<listOptionValue builtIn="false" value="lua_5_3_4"/>
+									<listOptionValue builtIn="false" value="lua_5_3_4_adapter"/>
+									<listOptionValue builtIn="false" value="micropython_1_12_temp1"/>
+									<listOptionValue builtIn="false" value="micropython_1_12_temp2"/>
+									<listOptionValue builtIn="false" value="micropython_1_12"/>
+									<listOptionValue builtIn="false" value="aw_micropython_1_12_adapter"/>
+									<listOptionValue builtIn="false" value="zlib_1_2_11_adapter"/>
+									<listOptionValue builtIn="false" value="aw_cjson_2_0_0"/>
+									<listOptionValue builtIn="false" value="aw_loranet_adapter"/>
+									<listOptionValue builtIn="false" value="aw_loranet"/>
+									<listOptionValue builtIn="false" value="aw_smf_adapter"/>
+									<listOptionValue builtIn="false" value="am_smf"/>
+									<listOptionValue builtIn="false" value="aw_sqlite3_adapter"/>
+									<listOptionValue builtIn="false" value="firmware_cyw43362"/>
+									<listOptionValue builtIn="false" value="aw_bsp"/>
+									<listOptionValue builtIn="false" value="aw_cpu"/>
+									<listOptionValue builtIn="false" value="awbl_stack_overflow"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.paths.810730583" name="Library search path (-L)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.paths" valueType="libPaths">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/Release&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.otherobjs.1515424609" name="Other objects" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.otherobjs" valueType="userObjs">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/Release/syscalls.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/Release/memcpy-armv7m.o&quot;"/>
+								</option>
+							</tool>
+							<tool command="${cross_prefix}${cross_cpp}${cross_suffix}" commandLinePattern="${COMMAND} ${cross_toolchain_flags} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} -Wl,--start-group  ${INPUTS}  -Wl,--end-group" errorParsers="" id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker.1174941348" name="Cross ARM C++ Linker" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.gcsections.1241337699" name="Remove unused sections (-Xlinker --gc-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.gcsections" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.nostart.1871396518" name="Do not use standard start files (-nostartfiles)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.nostart" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.scriptfile.275942903" name="Script files (-T)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.scriptfile" useByScannerDiscovery="false" valueType="stringList">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/rt1050_sdram.ld}&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.libs.2131280567" name="Libraries (-l)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.libs" useByScannerDiscovery="false" valueType="libs">
+									<listOptionValue builtIn="false" value="aw_qrcode"/>
+									<listOptionValue builtIn="false" value="aw_canfestival_3_8_adapter"/>
+									<listOptionValue builtIn="false" value="aw_psp"/>
+									<listOptionValue builtIn="false" value="rtk"/>
+									<listOptionValue builtIn="false" value="reqsched"/>
+									<listOptionValue builtIn="false" value="awbl_common"/>
+									<listOptionValue builtIn="false" value="awbl_core"/>
+									<listOptionValue builtIn="false" value="aw_base"/>
+									<listOptionValue builtIn="false" value="aw_shell"/>
+									<listOptionValue builtIn="false" value="aw_clk_framework"/>
+									<listOptionValue builtIn="false" value="aw_fatfs_adapter"/>
+									<listOptionValue builtIn="false" value="aw_fatfs"/>
+									<listOptionValue builtIn="false" value="aw_lffs"/>
+									<listOptionValue builtIn="false" value="aw_yaffs"/>
+									<listOptionValue builtIn="false" value="aw_unity"/>
+									<listOptionValue builtIn="false" value="aw_modbus"/>
+									<listOptionValue builtIn="false" value="aw_libc"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x_adapter"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x_ext"/>
+									<listOptionValue builtIn="false" value="aw_net_core"/>
+									<listOptionValue builtIn="false" value="aw_net_tools"/>
+									<listOptionValue builtIn="false" value="aw_ftpd"/>
+									<listOptionValue builtIn="false" value="aw_goahead"/>
+									<listOptionValue builtIn="false" value="aw_usb"/>
+									<listOptionValue builtIn="false" value="lua_5_3_4"/>
+									<listOptionValue builtIn="false" value="lua_5_3_4_adapter"/>
+									<listOptionValue builtIn="false" value="micropython_1_12_temp1"/>
+									<listOptionValue builtIn="false" value="micropython_1_12_temp2"/>
+									<listOptionValue builtIn="false" value="micropython_1_12"/>
+									<listOptionValue builtIn="false" value="aw_micropython_1_12_adapter"/>
+									<listOptionValue builtIn="false" value="zlib_1_2_11_adapter"/>
+									<listOptionValue builtIn="false" value="aw_cjson_2_0_0"/>
+									<listOptionValue builtIn="false" value="aw_loranet_adapter"/>
+									<listOptionValue builtIn="false" value="aw_loranet"/>
+									<listOptionValue builtIn="false" value="aw_smf_adapter"/>
+									<listOptionValue builtIn="false" value="am_smf"/>
+									<listOptionValue builtIn="false" value="aw_sqlite3_adapter"/>
+									<listOptionValue builtIn="false" value="firmware_cyw43362"/>
+									<listOptionValue builtIn="false" value="aw_bsp"/>
+									<listOptionValue builtIn="false" value="aw_cpu"/>
+									<listOptionValue builtIn="false" value="awbl_stack_overflow"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.paths.943982237" name="Library search path (-L)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.paths" useByScannerDiscovery="false" valueType="libPaths">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/Release&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.otherobjs.1634061451" name="Other objects" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.otherobjs" useByScannerDiscovery="false" valueType="userObjs">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/Release/syscalls.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/Release/memcpy-armv7m.o&quot;"/>
+								</option>
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker.input.125900853" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker.input">
+									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
+									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
+								</inputType>
+							</tool>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.archiver.1932353648" name="Cross ARM GNU Archiver" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.archiver"/>
+							<tool command="${cross_prefix}${cross_objcopy}${cross_suffix}" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT}" errorParsers="" id="ilg.gnuarmeclipse.managedbuild.cross.tool.createflash.2027503426" name="Cross ARM GNU Create Flash Image" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.createflash">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createflash.choice.1665543671" name="Output file format (-O)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createflash.choice" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.createflash.choice.srec" valueType="enumerated"/>
+							</tool>
+							<tool command="${cross_prefix}${cross_objdump}${cross_suffix}" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT}" errorParsers="" id="ilg.gnuarmeclipse.managedbuild.cross.tool.createlisting.349884869" name="Cross ARM GNU Create Listing" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.createlisting">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.source.1325725956" name="Display source (--source|-S)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.source" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.allheaders.1612150450" name="Display all headers (--all-headers|-x)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.allheaders" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.demangle.1741918508" name="Demangle names (--demangle|-C)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.demangle" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.linenumbers.1071663728" name="Display line numbers (--line-numbers|-l)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.linenumbers" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.wide.169474438" name="Wide lines (--wide|-w)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.wide" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+							</tool>
+							<tool command="${cross_prefix}${cross_size}${cross_suffix}" commandLinePattern="${COMMAND} ${FLAGS}" errorParsers="" id="ilg.gnuarmeclipse.managedbuild.cross.tool.printsize.611362973" name="Cross ARM GNU Print Size" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.printsize">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.printsize.format.571385524" name="Size format" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.printsize.format" useByScannerDiscovery="false"/>
+							</tool>
+						</toolChain>
+					</folderInfo>
+					<fileInfo id="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.374613545.1745533471" name="awbl_ov5640.h" rcbsApplicability="disable" resourcePath="user_code/awbl_ov5640.h" toolsToInvoke=""/>
+					<sourceEntries>
+						<entry excluding="user_code/unity_test|user_code/spi|user_code/aw_psp_task.c|user_code/awbl_ov7725.c|user_code/awbl_gc0308.h|user_code/rtk_task.c|user_code/peripheral/common/camera|user_code/peripheral/common/lcd|user_code/peripheral/m105x/pxp|user_code/peripheral/amic110|user_code/peripheral/lpc54616|user_code/peripheral/imx6ul|user_code/component/logger|user_code/application/app_enet_web_demo|user_code/application/app_meter_demo|user_code/application/app_qrcode_demo|user_code/application/app_shell_demo/app_shell_demo.c|user_code/application/app_shell_demo/app_lcd.c|user_code/application/app_wifi_web_demo|user_code/application/app_video_demo|user_code/application/app_face_demo|user_code/application/app_emwin_demo|user_code/application/app_awtk_demo|user_code/examples/peripheral/m105x/pxp|aw_common_examples/component/ftpd|aw_common_examples/feature|aw_common_examples/peripheral/lpc54616|aw_common_examples/component/canfestival/CanFestival-3.0-rc3|aw_common_examples/application|examples/cpu/imxrt1050/instruction_speed/demo_instruction_speed_for_armcc.S|examples/peripheral/sai/sound_wav_armcc.S" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+					</sourceEntries>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+			<storageModule moduleId="ilg.gnuarmeclipse.managedbuild.packs"/>
+		</cconfiguration>
+		<cconfiguration id="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.374613545.1892629761">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.374613545.1892629761" moduleId="org.eclipse.cdt.core.settings" name="Release">
+				<macros>
+					<stringMacro name="AW_ROOT" type="VALUE_TEXT" value="${ProjDirPath}/../../aworks_sdk"/>
+					<stringMacro name="AWTK" type="VALUE_TEXT" value="${ProjDirPath}/../../aworks_sdk/include/GUI/awtk"/>
+				</macros>
+				<externalSettings/>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="${cross_rm} -rf" description="" errorParsers="org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.CWDLocator;org.eclipse.cdt.core.GCCErrorParser" id="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.374613545.1892629761" name="Release" parent="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug" postannouncebuildStep="" postbuildStep="" preannouncebuildStep="" prebuildStep="">
+					<folderInfo id="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.374613545.1892629761." name="/" resourcePath="">
+						<toolChain errorParsers="" id="ilg.gnuarmeclipse.managedbuild.cross.toolchain.elf.debug.1370789520" name="Cross ARM GCC" superClass="ilg.gnuarmeclipse.managedbuild.cross.toolchain.elf.debug">
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.level.1327295726" name="Optimization Level" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.level" useByScannerDiscovery="true" value="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.level.none" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.messagelength.1819955514" name="Message length (-fmessage-length=0)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.messagelength" useByScannerDiscovery="true" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.signedchar.2042290794" name="'char' is signed (-fsigned-char)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.signedchar" useByScannerDiscovery="true" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.functionsections.69714911" name="Function sections (-ffunction-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.functionsections" useByScannerDiscovery="true" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.datasections.1396218662" name="Data sections (-fdata-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.datasections" useByScannerDiscovery="true" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.level.855961116" name="Debug level" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.level" useByScannerDiscovery="true" value="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.level.max" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.format.1006944292" name="Debug format" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.format" useByScannerDiscovery="true"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.name.1387265919" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.name" useByScannerDiscovery="false" value="GNU Tools for ARM Embedded Processors" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.architecture.1748307767" name="Architecture" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.architecture" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.architecture.arm" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.family.332582639" name="ARM family" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.family" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.mcpu.cortex-m7" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.instructionset.656033215" name="Instruction set" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.instructionset" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.instructionset.thumb" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.prefix.156761357" name="Prefix" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.prefix" useByScannerDiscovery="false" value="arm-none-eabi-" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.c.1226263215" name="C compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.c" useByScannerDiscovery="false" value="gcc" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.cpp.705178226" name="C++ compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.cpp" useByScannerDiscovery="false" value="g++" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.ar.1767744128" name="Archiver" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.ar" useByScannerDiscovery="false" value="ar" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.objcopy.642920146" name="Hex/Bin converter" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.objcopy" useByScannerDiscovery="false" value="objcopy" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.objdump.501260943" name="Listing generator" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.objdump" useByScannerDiscovery="false" value="objdump" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.size.2031826787" name="Size command" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.size" useByScannerDiscovery="false" value="size" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.make.640435681" name="Build command" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.make" useByScannerDiscovery="false" value="make" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.rm.391714311" name="Remove command" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.rm" useByScannerDiscovery="false" value="rm" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createflash.582710346" name="Create flash image" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createflash" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.printsize.1264556870" name="Print size" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.printsize" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.thumbinterwork.375436919" name="Thumb interwork (-mthumb-interwork)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.thumbinterwork" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.endianness.970385624" name="Endianness" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.endianness" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.endianness.little" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.abi.1759034867" name="Float ABI" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.abi" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.abi.hard" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.unalignedaccess.2070817841" name="Unaligned access" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.unalignedaccess" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.unalignedaccess.disabled" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createlisting.750309451" name="Create extended listing" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createlisting" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.allwarn.314053792" name="Enable all common warnings (-Wall)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.allwarn" useByScannerDiscovery="true" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.uninitialized.1767885192" name="Warn on uninitialized variables (-Wuninitialised)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.uninitialized" useByScannerDiscovery="true" value="false" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.unit.1453967248" name="FPU Type" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.unit" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.unit.fpv5d16" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.lto.458116645" name="Link-time optimizer (-flto)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.lto" useByScannerDiscovery="true" value="false" valueType="boolean"/>
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="ilg.gnuarmeclipse.managedbuild.cross.targetPlatform.1868045849" isAbstract="false" osList="all" superClass="ilg.gnuarmeclipse.managedbuild.cross.targetPlatform"/>
+							<builder buildPath="${workspace_loc:/img_rt1050_debug}/Debug" errorParsers="org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.CWDLocator" id="ilg.gnuarmeclipse.managedbuild.cross.builder.836068076" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="optimal" superClass="ilg.gnuarmeclipse.managedbuild.cross.builder"/>
+							<tool command="${cross_prefix}${cross_c}${cross_suffix}" commandLinePattern="${COMMAND} ${cross_toolchain_flags} ${FLAGS} -c ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GCCErrorParser" id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.595455863" name="Cross ARM GNU Assembler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.usepreprocessor.817777356" name="Use preprocessor" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.usepreprocessor" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.include.paths.1289491312" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.include.paths" useByScannerDiscovery="false"/>
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input.100461964" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input"/>
+							</tool>
+							<tool command="${cross_prefix}${cross_c}${cross_suffix}" commandLinePattern="${COMMAND} ${cross_toolchain_flags} ${FLAGS} -c ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GCCErrorParser" id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.1462490714" name="Cross ARM C Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths.570963808" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/include/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/example&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/lwip_2.x_adapter/extra_include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/littlefs_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/micropython/aw_micropython_1.12_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/littlefs-master&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CANopen&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CANopen/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CANopen_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lua/lua-5.3.4_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/extras/fixture/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/aworks_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include/ftpd&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/tools/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CanFestival-3.8_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CanFestival-3.8_adapter/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/resources/firmware&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/sqlite3&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/lora_sx1276/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/lora_utilities/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/loranet_stack/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/modbus/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/goahead-2.5_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include/ftpd&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/goahead-2.5&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/yaffs2_e57244d/direct&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/yaffs2_e57244d_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/lffs/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/fatfs/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/fatfs_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/tools/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/shell/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/shell/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/core/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/lwip_2.x_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/interface/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/rtk/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/rtk/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/psp/rtk/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/psp/rtk/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/awbus_lite/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/awbus_lite/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/base/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/base/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/resources/firmware&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/include/ipv4&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/netif&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CanFestival-3.8/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/libcrul_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/libcurl/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/mbedtls-2.24.0-adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/mbedtls-2.24.0/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_code}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_config}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_config/awbl_hwconf_usrcfg}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/source/awsa/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/source/awsa/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/bsp&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_code/app_enet_web_demo}&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs.1791976571" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs" useByScannerDiscovery="false" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="AW_DEBUG"/>
+									<listOptionValue builtIn="false" value="AW_COM_CANOPEN_MST"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_INFO"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_WARN"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_ERROR"/>
+									<listOptionValue builtIn="false" value="AW_CORTEX_M7"/>
+									<listOptionValue builtIn="false" value="HAS_AWTK_CONFIG"/>
+									<listOptionValue builtIn="false" value="UNITY_TEST_FTL"/>
+									<listOptionValue builtIn="false" value="UNITY_TEST_MTD"/>
+								</option>
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input.2135984378" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input"/>
+							</tool>
+							<tool command="${cross_prefix}${cross_cpp}${cross_suffix}" commandLinePattern="${COMMAND} ${cross_toolchain_flags} ${FLAGS} -c ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GCCErrorParser" id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.1088900764" name="Cross ARM C++ Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.defs.1355587239" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.defs" useByScannerDiscovery="false" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="AW_DEBUG"/>
+									<listOptionValue builtIn="false" value="AW_COM_CANOPEN_MST"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_INFO"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_WARN"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_ERROR"/>
+									<listOptionValue builtIn="false" value="AW_CORTEX_M7"/>
+									<listOptionValue builtIn="false" value="HAS_AWTK_CONFIG"/>
+									<listOptionValue builtIn="false" value="UNITY_TEST_FTL"/>
+									<listOptionValue builtIn="false" value="UNITY_TEST_MTD"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.include.paths.1947975326" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/include/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/example&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/littlefs_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/lwip_2.x_adapter/extra_include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/micropython/aw_micropython_1.12_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/littlefs-master&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CANopen&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CANopen/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CANopen_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lua/lua-5.3.4_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/extras/fixture/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/aworks_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/tools/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include/ftpd&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CanFestival-3.8_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CanFestival-3.8_adapter/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/resources/firmware&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/sqlite3&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/lora_sx1276/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/lora_utilities/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/loranet_stack/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/modbus/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/goahead-2.5_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include/ftpd&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/goahead-2.5&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/yaffs2_e57244d/direct&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/yaffs2_e57244d_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/lffs/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/fatfs/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/fatfs_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/tools/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/shell/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/shell/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/core/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/lwip_2.x_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/interface/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/rtk/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/rtk/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/psp/rtk/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/psp/rtk/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/awbus_lite/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/awbus_lite/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/base/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/base/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/resources/firmware&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/include/ipv4&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/netif&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CanFestival-3.8/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_code}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_config}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_config/awbl_hwconf_usrcfg}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/source/awsa/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/source/awsa/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/bsp&quot;"/>
+								</option>
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input.434848579" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input"/>
+							</tool>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.linker.1637414185" name="Cross ARM C Linker" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.linker">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.gcsections.1924059452" name="Remove unused sections (-Xlinker --gc-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.gcsections" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.scriptfile.1777513725" name="Script files (-T)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.scriptfile" valueType="stringList">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/rt1050_sdram.ld}&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.nostart.383737463" name="Do not use standard start files (-nostartfiles)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.nostart" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.libs.89156169" name="Libraries (-l)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="aw_qrcode"/>
+									<listOptionValue builtIn="false" value="aw_canfestival_3_8_adapter"/>
+									<listOptionValue builtIn="false" value="aw_psp"/>
+									<listOptionValue builtIn="false" value="rtk"/>
+									<listOptionValue builtIn="false" value="reqsched"/>
+									<listOptionValue builtIn="false" value="awbl_common"/>
+									<listOptionValue builtIn="false" value="awbl_core"/>
+									<listOptionValue builtIn="false" value="aw_base"/>
+									<listOptionValue builtIn="false" value="aw_shell"/>
+									<listOptionValue builtIn="false" value="aw_clk_framework"/>
+									<listOptionValue builtIn="false" value="aw_fatfs_adapter"/>
+									<listOptionValue builtIn="false" value="aw_fatfs"/>
+									<listOptionValue builtIn="false" value="aw_lffs"/>
+									<listOptionValue builtIn="false" value="aw_yaffs"/>
+									<listOptionValue builtIn="false" value="aw_unity"/>
+									<listOptionValue builtIn="false" value="aw_modbus"/>
+									<listOptionValue builtIn="false" value="aw_libc"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x_adapter"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x_ext"/>
+									<listOptionValue builtIn="false" value="aw_net_core"/>
+									<listOptionValue builtIn="false" value="aw_net_tools"/>
+									<listOptionValue builtIn="false" value="aw_ftpd"/>
+									<listOptionValue builtIn="false" value="aw_goahead"/>
+									<listOptionValue builtIn="false" value="aw_usb"/>
+									<listOptionValue builtIn="false" value="lua_5_3_4"/>
+									<listOptionValue builtIn="false" value="lua_5_3_4_adapter"/>
+									<listOptionValue builtIn="false" value="micropython_1_12_temp1"/>
+									<listOptionValue builtIn="false" value="micropython_1_12_temp2"/>
+									<listOptionValue builtIn="false" value="micropython_1_12"/>
+									<listOptionValue builtIn="false" value="aw_micropython_1_12_adapter"/>
+									<listOptionValue builtIn="false" value="zlib_1_2_11_adapter"/>
+									<listOptionValue builtIn="false" value="aw_cjson_2_0_0"/>
+									<listOptionValue builtIn="false" value="aw_loranet_adapter"/>
+									<listOptionValue builtIn="false" value="aw_loranet"/>
+									<listOptionValue builtIn="false" value="aw_smf_adapter"/>
+									<listOptionValue builtIn="false" value="am_smf"/>
+									<listOptionValue builtIn="false" value="aw_sqlite3_adapter"/>
+									<listOptionValue builtIn="false" value="firmware_cyw43362"/>
+									<listOptionValue builtIn="false" value="aw_bsp"/>
+									<listOptionValue builtIn="false" value="aw_cpu"/>
+									<listOptionValue builtIn="false" value="awbl_stack_overflow"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.paths.692617755" name="Library search path (-L)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.paths" valueType="libPaths">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/Release&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.otherobjs.1445940249" name="Other objects" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.otherobjs" valueType="userObjs">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/Release/syscalls.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/Release/memcpy-armv7m.o&quot;"/>
+								</option>
+							</tool>
+							<tool command="${cross_prefix}${cross_cpp}${cross_suffix}" commandLinePattern="${COMMAND} ${cross_toolchain_flags} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} -Wl,--start-group  ${INPUTS}  -Wl,--end-group" errorParsers="" id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker.1895913572" name="Cross ARM C++ Linker" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.gcsections.770365756" name="Remove unused sections (-Xlinker --gc-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.gcsections" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.nostart.2051135265" name="Do not use standard start files (-nostartfiles)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.nostart" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.scriptfile.561191830" name="Script files (-T)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.scriptfile" useByScannerDiscovery="false" valueType="stringList">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/rt1050_sdram.ld}&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.libs.2057820030" name="Libraries (-l)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.libs" useByScannerDiscovery="false" valueType="libs">
+									<listOptionValue builtIn="false" value="aw_qrcode"/>
+									<listOptionValue builtIn="false" value="aw_canfestival_3_8_adapter"/>
+									<listOptionValue builtIn="false" value="aw_psp"/>
+									<listOptionValue builtIn="false" value="rtk"/>
+									<listOptionValue builtIn="false" value="reqsched"/>
+									<listOptionValue builtIn="false" value="awbl_common"/>
+									<listOptionValue builtIn="false" value="awbl_core"/>
+									<listOptionValue builtIn="false" value="aw_base"/>
+									<listOptionValue builtIn="false" value="aw_shell"/>
+									<listOptionValue builtIn="false" value="aw_clk_framework"/>
+									<listOptionValue builtIn="false" value="aw_fatfs_adapter"/>
+									<listOptionValue builtIn="false" value="aw_fatfs"/>
+									<listOptionValue builtIn="false" value="aw_lffs"/>
+									<listOptionValue builtIn="false" value="aw_yaffs"/>
+									<listOptionValue builtIn="false" value="aw_unity"/>
+									<listOptionValue builtIn="false" value="aw_modbus"/>
+									<listOptionValue builtIn="false" value="aw_libc"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x_adapter"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x_ext"/>
+									<listOptionValue builtIn="false" value="aw_net_core"/>
+									<listOptionValue builtIn="false" value="aw_net_tools"/>
+									<listOptionValue builtIn="false" value="aw_ftpd"/>
+									<listOptionValue builtIn="false" value="aw_goahead"/>
+									<listOptionValue builtIn="false" value="aw_usb"/>
+									<listOptionValue builtIn="false" value="lua_5_3_4"/>
+									<listOptionValue builtIn="false" value="lua_5_3_4_adapter"/>
+									<listOptionValue builtIn="false" value="micropython_1_12_temp1"/>
+									<listOptionValue builtIn="false" value="micropython_1_12_temp2"/>
+									<listOptionValue builtIn="false" value="micropython_1_12"/>
+									<listOptionValue builtIn="false" value="aw_micropython_1_12_adapter"/>
+									<listOptionValue builtIn="false" value="zlib_1_2_11_adapter"/>
+									<listOptionValue builtIn="false" value="aw_cjson_2_0_0"/>
+									<listOptionValue builtIn="false" value="aw_loranet_adapter"/>
+									<listOptionValue builtIn="false" value="aw_loranet"/>
+									<listOptionValue builtIn="false" value="aw_smf_adapter"/>
+									<listOptionValue builtIn="false" value="am_smf"/>
+									<listOptionValue builtIn="false" value="aw_sqlite3_adapter"/>
+									<listOptionValue builtIn="false" value="firmware_cyw43362"/>
+									<listOptionValue builtIn="false" value="aw_bsp"/>
+									<listOptionValue builtIn="false" value="aw_cpu"/>
+									<listOptionValue builtIn="false" value="awbl_stack_overflow"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.paths.648029563" name="Library search path (-L)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.paths" useByScannerDiscovery="false" valueType="libPaths">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/${ConfigName}&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.otherobjs.1666146835" name="Other objects" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.otherobjs" useByScannerDiscovery="false" valueType="userObjs">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/${ConfigName}/syscalls.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/${ConfigName}/memcpy-armv7m.o&quot;"/>
+								</option>
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker.input.1508324227" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker.input">
+									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
+									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
+								</inputType>
+							</tool>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.archiver.919423548" name="Cross ARM GNU Archiver" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.archiver"/>
+							<tool command="${cross_prefix}${cross_objcopy}${cross_suffix}" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT}" errorParsers="" id="ilg.gnuarmeclipse.managedbuild.cross.tool.createflash.496277643" name="Cross ARM GNU Create Flash Image" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.createflash">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createflash.choice.1062473191" name="Output file format (-O)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createflash.choice" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.createflash.choice.srec" valueType="enumerated"/>
+							</tool>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.createlisting.1946004646" name="Cross ARM GNU Create Listing" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.createlisting">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.source.1476857183" name="Display source (--source|-S)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.source" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.allheaders.422895610" name="Display all headers (--all-headers|-x)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.allheaders" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.demangle.962861177" name="Demangle names (--demangle|-C)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.demangle" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.linenumbers.1704567252" name="Display line numbers (--line-numbers|-l)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.linenumbers" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.wide.131261315" name="Wide lines (--wide|-w)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.wide" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+							</tool>
+							<tool command="${cross_prefix}${cross_size}${cross_suffix}" commandLinePattern="${COMMAND} ${FLAGS}" errorParsers="" id="ilg.gnuarmeclipse.managedbuild.cross.tool.printsize.721359633" name="Cross ARM GNU Print Size" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.printsize">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.printsize.format.1122252024" name="Size format" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.printsize.format" useByScannerDiscovery="false"/>
+							</tool>
+						</toolChain>
+					</folderInfo>
+					<sourceEntries>
+						<entry excluding="user_code/unity_test|user_code/spi|user_code/aw_psp_task.c|user_code/aw_io_shell.c|user_code/awbl_gc0308.c|user_code/awbl_imx1050_csi.c|user_code/rtk_task.c|user_code/peripheral/common/camera|user_code/peripheral/common/lcd|user_code/peripheral/m105x/pxp|user_code/peripheral/amic110|user_code/peripheral/lpc54616|user_code/peripheral/imx6ul|user_code/component/logger|user_code/application/app_enet_web_demo|user_code/application/app_meter_demo|user_code/application/app_qrcode_demo|user_code/application/app_shell_demo/app_shell_demo.c|user_code/application/app_shell_demo/app_lcd.c|user_code/application/app_wifi_web_demo|user_code/application/app_video_demo|user_code/application/app_face_demo|user_code/application/app_emwin_demo|user_code/application/app_awtk_demo|user_code/examples/peripheral/m105x/pxp|aw_common_examples/component/ftpd|aw_common_examples/feature|aw_common_examples/peripheral/lpc54616|aw_common_examples/component/canfestival/CanFestival-3.0-rc3|aw_common_examples/application|examples/cpu/imxrt1050/instruction_speed/demo_instruction_speed_for_armcc.S|examples/peripheral/sai/sound_wav_armcc.S" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+					</sourceEntries>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+			<storageModule moduleId="ilg.gnuarmeclipse.managedbuild.packs"/>
+		</cconfiguration>
+		<cconfiguration id="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.374613545.1068177797">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.374613545.1068177797" moduleId="org.eclipse.cdt.core.settings" name="flexspi_flash_Debug">
+				<macros>
+					<stringMacro name="AW_ROOT" type="VALUE_TEXT" value="${ProjDirPath}/../../aworks_sdk"/>
+				</macros>
+				<externalSettings/>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="${cross_rm} -rf" description="" errorParsers="org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.CWDLocator;org.eclipse.cdt.core.GCCErrorParser" id="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.374613545.1068177797" name="flexspi_flash_Debug" parent="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug" postannouncebuildStep="" postbuildStep="" preannouncebuildStep="" prebuildStep="">
+					<folderInfo id="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.374613545.1068177797." name="/" resourcePath="">
+						<toolChain errorParsers="" id="ilg.gnuarmeclipse.managedbuild.cross.toolchain.elf.debug.866599240" name="Cross ARM GCC" superClass="ilg.gnuarmeclipse.managedbuild.cross.toolchain.elf.debug">
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.level.989320816" name="Optimization Level" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.level" useByScannerDiscovery="true" value="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.level.none" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.messagelength.2023891671" name="Message length (-fmessage-length=0)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.messagelength" useByScannerDiscovery="true" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.signedchar.1024694024" name="'char' is signed (-fsigned-char)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.signedchar" useByScannerDiscovery="true" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.functionsections.388793905" name="Function sections (-ffunction-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.functionsections" useByScannerDiscovery="true" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.datasections.1199126692" name="Data sections (-fdata-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.datasections" useByScannerDiscovery="true" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.level.1706696026" name="Debug level" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.level" useByScannerDiscovery="true" value="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.level.max" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.format.1069904662" name="Debug format" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.format" useByScannerDiscovery="true"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.name.519803486" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.name" useByScannerDiscovery="false" value="GNU Tools for ARM Embedded Processors" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.architecture.1450993977" name="Architecture" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.architecture" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.architecture.arm" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.family.308464088" name="ARM family" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.family" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.mcpu.cortex-m7" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.instructionset.1155338687" name="Instruction set" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.instructionset" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.instructionset.thumb" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.prefix.1460600080" name="Prefix" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.prefix" useByScannerDiscovery="false" value="arm-none-eabi-" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.c.1731635881" name="C compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.c" useByScannerDiscovery="false" value="gcc" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.cpp.903888756" name="C++ compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.cpp" useByScannerDiscovery="false" value="g++" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.ar.1922972284" name="Archiver" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.ar" useByScannerDiscovery="false" value="ar" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.objcopy.862590332" name="Hex/Bin converter" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.objcopy" useByScannerDiscovery="false" value="objcopy" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.objdump.421412043" name="Listing generator" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.objdump" useByScannerDiscovery="false" value="objdump" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.size.244190447" name="Size command" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.size" useByScannerDiscovery="false" value="size" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.make.1651687031" name="Build command" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.make" useByScannerDiscovery="false" value="make" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.rm.819688342" name="Remove command" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.rm" useByScannerDiscovery="false" value="rm" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createflash.861281479" name="Create flash image" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createflash" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.printsize.847124378" name="Print size" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.printsize" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.thumbinterwork.1176049555" name="Thumb interwork (-mthumb-interwork)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.thumbinterwork" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.endianness.2024901975" name="Endianness" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.endianness" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.endianness.little" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.abi.2078378588" name="Float ABI" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.abi" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.abi.hard" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.unalignedaccess.1652478154" name="Unaligned access" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.unalignedaccess" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.unalignedaccess.disabled" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createlisting.1924729698" name="Create extended listing" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createlisting" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.allwarn.1948122355" name="Enable all common warnings (-Wall)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.allwarn" useByScannerDiscovery="true" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.uninitialized.691091639" name="Warn on uninitialized variables (-Wuninitialised)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.uninitialized" useByScannerDiscovery="true" value="false" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.unit.801700794" name="FPU Type" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.unit" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.unit.fpv5d16" valueType="enumerated"/>
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="ilg.gnuarmeclipse.managedbuild.cross.targetPlatform.911900067" isAbstract="false" osList="all" superClass="ilg.gnuarmeclipse.managedbuild.cross.targetPlatform"/>
+							<builder buildPath="${workspace_loc:/img_rt1050_debug}/Debug" errorParsers="org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.CWDLocator" id="ilg.gnuarmeclipse.managedbuild.cross.builder.951523011" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="optimal" superClass="ilg.gnuarmeclipse.managedbuild.cross.builder"/>
+							<tool command="${cross_prefix}${cross_c}${cross_suffix}" commandLinePattern="${COMMAND} ${cross_toolchain_flags} ${FLAGS} -c ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GCCErrorParser" id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.1846991074" name="Cross ARM GNU Assembler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.usepreprocessor.1677098401" name="Use preprocessor" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.usepreprocessor" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.include.paths.1675716383" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.include.paths" useByScannerDiscovery="false"/>
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input.801300017" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input"/>
+							</tool>
+							<tool command="${cross_prefix}${cross_c}${cross_suffix}" commandLinePattern="${COMMAND} ${cross_toolchain_flags} ${FLAGS} -c ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GCCErrorParser" id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.1750650198" name="Cross ARM C Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths.194123444" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/include/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/example&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/lwip_2.x_adapter/extra_include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/littlefs_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/micropython/aw_micropython_1.12_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/littlefs-master&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CANopen&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CANopen/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CANopen_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lua/lua-5.3.4_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/extras/fixture/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/aworks_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include/ftpd&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/tools/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CanFestival-3.8_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CanFestival-3.8_adapter/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/resources/firmware&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/sqlite3&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/lora_sx1276/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/lora_utilities/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/loranet_stack/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/modbus/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/goahead-2.5_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include/ftpd&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/goahead-2.5&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/yaffs2_e57244d/direct&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/yaffs2_e57244d_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/lffs/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/fatfs/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/fatfs_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/tools/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/shell/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/shell/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/core/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/lwip_2.x_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/interface/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/rtk/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/rtk/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/psp/rtk/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/psp/rtk/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/awbus_lite/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/awbus_lite/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/base/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/base/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/resources/firmware&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/include/ipv4&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/netif&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CanFestival-3.8/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/libcrul_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/libcurl/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/mbedtls-2.24.0-adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/mbedtls-2.24.0/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_code}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_config}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_config/awbl_hwconf_usrcfg}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/source/awsa/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/source/awsa/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/bsp&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_code/app_enet_web_demo}&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs.899961977" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs" useByScannerDiscovery="false" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="AW_DEBUG"/>
+									<listOptionValue builtIn="false" value="AW_COM_CANOPEN_MST"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_INFO"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_WARN"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_ERROR"/>
+									<listOptionValue builtIn="false" value="AW_CORTEX_M7"/>
+									<listOptionValue builtIn="false" value="HAS_AWTK_CONFIG"/>
+									<listOptionValue builtIn="false" value="UNITY_TEST_FTL"/>
+									<listOptionValue builtIn="false" value="UNITY_TEST_MTD"/>
+								</option>
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input.1093765629" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input"/>
+							</tool>
+							<tool command="${cross_prefix}${cross_cpp}${cross_suffix}" commandLinePattern="${COMMAND} ${cross_toolchain_flags} ${FLAGS} -c ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GCCErrorParser" id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.560494654" name="Cross ARM C++ Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.defs.271343402" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.defs" useByScannerDiscovery="false" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="AW_DEBUG"/>
+									<listOptionValue builtIn="false" value="AW_COM_CANOPEN_MST"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_INFO"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_WARN"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_ERROR"/>
+									<listOptionValue builtIn="false" value="AW_CORTEX_M7"/>
+									<listOptionValue builtIn="false" value="HAS_AWTK_CONFIG"/>
+									<listOptionValue builtIn="false" value="UNITY_TEST_FTL"/>
+									<listOptionValue builtIn="false" value="UNITY_TEST_MTD"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.include.paths.1460633050" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/include/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/example&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/littlefs_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/lwip_2.x_adapter/extra_include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/micropython/aw_micropython_1.12_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/littlefs-master&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CANopen&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CANopen/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CANopen_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lua/lua-5.3.4_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/extras/fixture/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/aworks_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/tools/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include/ftpd&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CanFestival-3.8_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CanFestival-3.8_adapter/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/resources/firmware&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/sqlite3&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/lora_sx1276/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/lora_utilities/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/loranet_stack/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/modbus/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/goahead-2.5_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include/ftpd&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/goahead-2.5&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/yaffs2_e57244d/direct&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/yaffs2_e57244d_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/lffs/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/fatfs/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/fatfs_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/tools/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/shell/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/shell/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/core/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/lwip_2.x_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/interface/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/rtk/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/rtk/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/psp/rtk/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/psp/rtk/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/awbus_lite/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/awbus_lite/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/base/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/base/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/resources/firmware&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/include/ipv4&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/netif&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CanFestival-3.8/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_code}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_config}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_config/awbl_hwconf_usrcfg}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/source/awsa/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/source/awsa/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/bsp&quot;"/>
+								</option>
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input.300682498" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input"/>
+							</tool>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.linker.1178783909" name="Cross ARM C Linker" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.linker">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.gcsections.45575459" name="Remove unused sections (-Xlinker --gc-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.gcsections" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.scriptfile.2143929062" name="Script files (-T)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.scriptfile" valueType="stringList">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/rt1050_sdram.ld}&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.nostart.1007403928" name="Do not use standard start files (-nostartfiles)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.nostart" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.libs.442417922" name="Libraries (-l)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="aw_qrcode"/>
+									<listOptionValue builtIn="false" value="aw_canfestival_3_8_adapter"/>
+									<listOptionValue builtIn="false" value="aw_psp"/>
+									<listOptionValue builtIn="false" value="rtk"/>
+									<listOptionValue builtIn="false" value="reqsched"/>
+									<listOptionValue builtIn="false" value="awbl_common"/>
+									<listOptionValue builtIn="false" value="awbl_core"/>
+									<listOptionValue builtIn="false" value="aw_base"/>
+									<listOptionValue builtIn="false" value="aw_shell"/>
+									<listOptionValue builtIn="false" value="aw_clk_framework"/>
+									<listOptionValue builtIn="false" value="aw_fatfs_adapter"/>
+									<listOptionValue builtIn="false" value="aw_fatfs"/>
+									<listOptionValue builtIn="false" value="aw_lffs"/>
+									<listOptionValue builtIn="false" value="aw_yaffs"/>
+									<listOptionValue builtIn="false" value="aw_unity"/>
+									<listOptionValue builtIn="false" value="aw_modbus"/>
+									<listOptionValue builtIn="false" value="aw_libc"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x_adapter"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x_ext"/>
+									<listOptionValue builtIn="false" value="aw_net_core"/>
+									<listOptionValue builtIn="false" value="aw_net_tools"/>
+									<listOptionValue builtIn="false" value="aw_ftpd"/>
+									<listOptionValue builtIn="false" value="aw_goahead"/>
+									<listOptionValue builtIn="false" value="aw_usb"/>
+									<listOptionValue builtIn="false" value="lua_5_3_4"/>
+									<listOptionValue builtIn="false" value="lua_5_3_4_adapter"/>
+									<listOptionValue builtIn="false" value="micropython_1_12_temp1"/>
+									<listOptionValue builtIn="false" value="micropython_1_12_temp2"/>
+									<listOptionValue builtIn="false" value="micropython_1_12"/>
+									<listOptionValue builtIn="false" value="aw_micropython_1_12_adapter"/>
+									<listOptionValue builtIn="false" value="zlib_1_2_11_adapter"/>
+									<listOptionValue builtIn="false" value="aw_cjson_2_0_0"/>
+									<listOptionValue builtIn="false" value="aw_loranet_adapter"/>
+									<listOptionValue builtIn="false" value="aw_loranet"/>
+									<listOptionValue builtIn="false" value="aw_smf_adapter"/>
+									<listOptionValue builtIn="false" value="am_smf"/>
+									<listOptionValue builtIn="false" value="aw_sqlite3_adapter"/>
+									<listOptionValue builtIn="false" value="firmware_cyw43362"/>
+									<listOptionValue builtIn="false" value="aw_bsp"/>
+									<listOptionValue builtIn="false" value="aw_cpu"/>
+									<listOptionValue builtIn="false" value="awbl_stack_overflow"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.paths.1909684782" name="Library search path (-L)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.paths" valueType="libPaths">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/Release&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.otherobjs.645928923" name="Other objects" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.otherobjs" valueType="userObjs">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/Release/syscalls.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/Release/memcpy-armv7m.o&quot;"/>
+								</option>
+							</tool>
+							<tool command="${cross_prefix}${cross_cpp}${cross_suffix}" commandLinePattern="${COMMAND} ${cross_toolchain_flags} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} -Wl,--start-group  ${INPUTS}  -Wl,--end-group" errorParsers="" id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker.1073831549" name="Cross ARM C++ Linker" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.gcsections.616236913" name="Remove unused sections (-Xlinker --gc-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.gcsections" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.nostart.226708495" name="Do not use standard start files (-nostartfiles)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.nostart" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.scriptfile.81936793" name="Script files (-T)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.scriptfile" useByScannerDiscovery="false" valueType="stringList">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/rt1050_flexspi_flash.ld}&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.libs.853159502" name="Libraries (-l)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.libs" useByScannerDiscovery="false" valueType="libs">
+									<listOptionValue builtIn="false" value="aw_qrcode"/>
+									<listOptionValue builtIn="false" value="aw_canfestival_3_8_adapter"/>
+									<listOptionValue builtIn="false" value="aw_psp"/>
+									<listOptionValue builtIn="false" value="rtk"/>
+									<listOptionValue builtIn="false" value="reqsched"/>
+									<listOptionValue builtIn="false" value="awbl_common"/>
+									<listOptionValue builtIn="false" value="awbl_core"/>
+									<listOptionValue builtIn="false" value="aw_base"/>
+									<listOptionValue builtIn="false" value="aw_shell"/>
+									<listOptionValue builtIn="false" value="aw_clk_framework"/>
+									<listOptionValue builtIn="false" value="aw_fatfs_adapter"/>
+									<listOptionValue builtIn="false" value="aw_fatfs"/>
+									<listOptionValue builtIn="false" value="aw_lffs"/>
+									<listOptionValue builtIn="false" value="aw_yaffs"/>
+									<listOptionValue builtIn="false" value="aw_unity"/>
+									<listOptionValue builtIn="false" value="aw_modbus"/>
+									<listOptionValue builtIn="false" value="aw_libc"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x_adapter"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x_ext"/>
+									<listOptionValue builtIn="false" value="aw_net_core"/>
+									<listOptionValue builtIn="false" value="aw_net_tools"/>
+									<listOptionValue builtIn="false" value="aw_ftpd"/>
+									<listOptionValue builtIn="false" value="aw_goahead"/>
+									<listOptionValue builtIn="false" value="aw_usb"/>
+									<listOptionValue builtIn="false" value="lua_5_3_4"/>
+									<listOptionValue builtIn="false" value="lua_5_3_4_adapter"/>
+									<listOptionValue builtIn="false" value="micropython_1_12_temp1"/>
+									<listOptionValue builtIn="false" value="micropython_1_12_temp2"/>
+									<listOptionValue builtIn="false" value="micropython_1_12"/>
+									<listOptionValue builtIn="false" value="aw_micropython_1_12_adapter"/>
+									<listOptionValue builtIn="false" value="zlib_1_2_11_adapter"/>
+									<listOptionValue builtIn="false" value="aw_cjson_2_0_0"/>
+									<listOptionValue builtIn="false" value="aw_loranet_adapter"/>
+									<listOptionValue builtIn="false" value="aw_loranet"/>
+									<listOptionValue builtIn="false" value="aw_smf_adapter"/>
+									<listOptionValue builtIn="false" value="am_smf"/>
+									<listOptionValue builtIn="false" value="aw_sqlite3_adapter"/>
+									<listOptionValue builtIn="false" value="firmware_cyw43362"/>
+									<listOptionValue builtIn="false" value="aw_bsp"/>
+									<listOptionValue builtIn="false" value="aw_cpu"/>
+									<listOptionValue builtIn="false" value="awbl_stack_overflow"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.paths.718834195" name="Library search path (-L)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.paths" useByScannerDiscovery="false" valueType="libPaths">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/Release&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.otherobjs.77948348" name="Other objects" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.otherobjs" useByScannerDiscovery="false" valueType="userObjs">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/Release/syscalls.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/Release/memcpy-armv7m.o&quot;"/>
+								</option>
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker.input.484010883" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker.input">
+									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
+									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
+								</inputType>
+							</tool>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.archiver.1059297413" name="Cross ARM GNU Archiver" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.archiver"/>
+							<tool command="${cross_prefix}${cross_objcopy}${cross_suffix}" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT}" errorParsers="" id="ilg.gnuarmeclipse.managedbuild.cross.tool.createflash.906543629" name="Cross ARM GNU Create Flash Image" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.createflash">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createflash.choice.566176211" name="Output file format (-O)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createflash.choice" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.createflash.choice.srec" valueType="enumerated"/>
+							</tool>
+							<tool command="${cross_prefix}${cross_objdump}${cross_suffix}" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT}" errorParsers="" id="ilg.gnuarmeclipse.managedbuild.cross.tool.createlisting.258228443" name="Cross ARM GNU Create Listing" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.createlisting">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.source.1435914679" name="Display source (--source|-S)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.source" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.allheaders.506027927" name="Display all headers (--all-headers|-x)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.allheaders" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.demangle.1666399975" name="Demangle names (--demangle|-C)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.demangle" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.linenumbers.653065135" name="Display line numbers (--line-numbers|-l)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.linenumbers" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.wide.1329823618" name="Wide lines (--wide|-w)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.wide" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+							</tool>
+							<tool command="${cross_prefix}${cross_size}${cross_suffix}" commandLinePattern="${COMMAND} ${FLAGS}" errorParsers="" id="ilg.gnuarmeclipse.managedbuild.cross.tool.printsize.757245464" name="Cross ARM GNU Print Size" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.printsize">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.printsize.format.1905413750" name="Size format" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.printsize.format" useByScannerDiscovery="false"/>
+							</tool>
+						</toolChain>
+					</folderInfo>
+					<sourceEntries>
+						<entry excluding="user_code/unity_test|user_code/spi|user_code/aw_psp_task.c|user_code/aw_io_shell.c|user_code/awbl_gc0308.c|user_code/awbl_imx1050_csi.c|user_code/rtk_task.c|user_code/peripheral/common/camera|user_code/peripheral/common/lcd|user_code/peripheral/m105x/pxp|user_code/peripheral/amic110|user_code/peripheral/lpc54616|user_code/peripheral/imx6ul|user_code/component/logger|user_code/application/app_enet_web_demo|user_code/application/app_meter_demo|user_code/application/app_qrcode_demo|user_code/application/app_shell_demo/app_shell_demo.c|user_code/application/app_shell_demo/app_lcd.c|user_code/application/app_wifi_web_demo|user_code/application/app_video_demo|user_code/application/app_face_demo|user_code/application/app_emwin_demo|user_code/application/app_awtk_demo|user_code/examples/peripheral/m105x/pxp|aw_common_examples/component/ftpd|aw_common_examples/feature|aw_common_examples/peripheral/lpc54616|aw_common_examples/component/canfestival/CanFestival-3.0-rc3|aw_common_examples/application|examples/cpu/imxrt1050/instruction_speed/demo_instruction_speed_for_armcc.S|examples/peripheral/sai/sound_wav_armcc.S" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+					</sourceEntries>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+			<storageModule moduleId="ilg.gnuarmeclipse.managedbuild.packs"/>
+		</cconfiguration>
+		<cconfiguration id="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.374613545.1892629761.685281923">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.374613545.1892629761.685281923" moduleId="org.eclipse.cdt.core.settings" name="flexspi_flash_Release">
+				<macros>
+					<stringMacro name="AW_ROOT" type="VALUE_TEXT" value="${ProjDirPath}/../../aworks_sdk"/>
+				</macros>
+				<externalSettings/>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="${cross_rm} -rf" description="" errorParsers="org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.CWDLocator;org.eclipse.cdt.core.GCCErrorParser" id="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.374613545.1892629761.685281923" name="flexspi_flash_Release" parent="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug" postannouncebuildStep="" postbuildStep="" preannouncebuildStep="" prebuildStep="">
+					<folderInfo id="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.374613545.1892629761.685281923." name="/" resourcePath="">
+						<toolChain errorParsers="" id="ilg.gnuarmeclipse.managedbuild.cross.toolchain.elf.debug.525543748" name="Cross ARM GCC" superClass="ilg.gnuarmeclipse.managedbuild.cross.toolchain.elf.debug">
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.level.1556306237" name="Optimization Level" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.level" useByScannerDiscovery="true" value="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.level.none" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.messagelength.1426955582" name="Message length (-fmessage-length=0)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.messagelength" useByScannerDiscovery="true" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.signedchar.593674563" name="'char' is signed (-fsigned-char)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.signedchar" useByScannerDiscovery="true" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.functionsections.696387453" name="Function sections (-ffunction-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.functionsections" useByScannerDiscovery="true" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.datasections.2133713240" name="Data sections (-fdata-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.datasections" useByScannerDiscovery="true" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.level.1625841072" name="Debug level" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.level" useByScannerDiscovery="true" value="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.level.max" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.format.1046247101" name="Debug format" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.format" useByScannerDiscovery="true"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.name.678826283" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.name" useByScannerDiscovery="false" value="GNU Tools for ARM Embedded Processors" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.architecture.1537210389" name="Architecture" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.architecture" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.architecture.arm" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.family.152593943" name="ARM family" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.family" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.mcpu.cortex-m7" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.instructionset.1997906777" name="Instruction set" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.instructionset" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.instructionset.thumb" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.prefix.1486701018" name="Prefix" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.prefix" useByScannerDiscovery="false" value="arm-none-eabi-" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.c.410145837" name="C compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.c" useByScannerDiscovery="false" value="gcc" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.cpp.1260803613" name="C++ compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.cpp" useByScannerDiscovery="false" value="g++" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.ar.763880043" name="Archiver" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.ar" useByScannerDiscovery="false" value="ar" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.objcopy.1638575202" name="Hex/Bin converter" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.objcopy" useByScannerDiscovery="false" value="objcopy" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.objdump.497109994" name="Listing generator" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.objdump" useByScannerDiscovery="false" value="objdump" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.size.390389108" name="Size command" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.size" useByScannerDiscovery="false" value="size" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.make.1827242174" name="Build command" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.make" useByScannerDiscovery="false" value="make" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.rm.1402822418" name="Remove command" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.rm" useByScannerDiscovery="false" value="rm" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createflash.1889744336" name="Create flash image" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createflash" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.printsize.1152565887" name="Print size" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.printsize" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.thumbinterwork.268872637" name="Thumb interwork (-mthumb-interwork)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.thumbinterwork" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.endianness.1231743178" name="Endianness" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.endianness" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.endianness.little" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.abi.1344206334" name="Float ABI" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.abi" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.abi.hard" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.unalignedaccess.281888312" name="Unaligned access" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.unalignedaccess" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.unalignedaccess.disabled" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createlisting.1983628138" name="Create extended listing" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createlisting" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.allwarn.1221318672" name="Enable all common warnings (-Wall)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.allwarn" useByScannerDiscovery="true" value="true" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.uninitialized.1026738716" name="Warn on uninitialized variables (-Wuninitialised)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.uninitialized" useByScannerDiscovery="true" value="false" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.unit.99951381" name="FPU Type" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.unit" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.unit.fpv5d16" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.lto.1989902346" name="Link-time optimizer (-flto)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.lto" useByScannerDiscovery="true" value="false" valueType="boolean"/>
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="ilg.gnuarmeclipse.managedbuild.cross.targetPlatform.1608415743" isAbstract="false" osList="all" superClass="ilg.gnuarmeclipse.managedbuild.cross.targetPlatform"/>
+							<builder buildPath="${workspace_loc:/img_rt1050_debug}/Debug" errorParsers="org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.CWDLocator" id="ilg.gnuarmeclipse.managedbuild.cross.builder.584041351" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="optimal" superClass="ilg.gnuarmeclipse.managedbuild.cross.builder"/>
+							<tool errorParsers="org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GCCErrorParser" id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.1896781456" name="Cross ARM GNU Assembler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.usepreprocessor.1602176958" name="Use preprocessor" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.usepreprocessor" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.include.paths.1605307703" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.include.paths" useByScannerDiscovery="false"/>
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input.1594406353" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input"/>
+							</tool>
+							<tool errorParsers="org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GCCErrorParser" id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.1158553410" name="Cross ARM C Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths.506321470" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/include/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/example&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/lwip_2.x_adapter/extra_include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/littlefs_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/micropython/aw_micropython_1.12_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/littlefs-master&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CANopen&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CANopen/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CANopen_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lua/lua-5.3.4_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/extras/fixture/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/aworks_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include/ftpd&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/tools/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CanFestival-3.8_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CanFestival-3.8_adapter/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/resources/firmware&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/sqlite3&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/lora_sx1276/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/lora_utilities/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/loranet_stack/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/modbus/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/goahead-2.5_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include/ftpd&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/goahead-2.5&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/yaffs2_e57244d/direct&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/yaffs2_e57244d_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/lffs/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/fatfs/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/fatfs_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/tools/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/shell/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/shell/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/core/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/lwip_2.x_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/interface/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/rtk/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/rtk/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/psp/rtk/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/psp/rtk/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/awbus_lite/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/awbus_lite/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/base/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/base/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/resources/firmware&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/include/ipv4&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/netif&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CanFestival-3.8/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/libcrul_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/libcurl/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/mbedtls-2.24.0-adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/mbedtls-2.24.0/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_code}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_config}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_config/awbl_hwconf_usrcfg}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/source/awsa/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/source/awsa/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/bsp&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_code/app_enet_web_demo}&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs.870710506" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs" useByScannerDiscovery="false" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="AW_DEBUG"/>
+									<listOptionValue builtIn="false" value="AW_COM_CANOPEN_MST"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_INFO"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_WARN"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_ERROR"/>
+									<listOptionValue builtIn="false" value="AW_CORTEX_M7"/>
+									<listOptionValue builtIn="false" value="HAS_AWTK_CONFIG"/>
+									<listOptionValue builtIn="false" value="UNITY_TEST_FTL"/>
+									<listOptionValue builtIn="false" value="UNITY_TEST_MTD"/>
+								</option>
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input.319088655" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input"/>
+							</tool>
+							<tool errorParsers="org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GCCErrorParser" id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.582048713" name="Cross ARM C++ Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.defs.127078093" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.defs" useByScannerDiscovery="false" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="AW_DEBUG"/>
+									<listOptionValue builtIn="false" value="AW_COM_CANOPEN_MST"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_INFO"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_WARN"/>
+									<listOptionValue builtIn="false" value="AW_VDEBUG_ERROR"/>
+									<listOptionValue builtIn="false" value="AW_CORTEX_M7"/>
+									<listOptionValue builtIn="false" value="HAS_AWTK_CONFIG"/>
+									<listOptionValue builtIn="false" value="UNITY_TEST_FTL"/>
+									<listOptionValue builtIn="false" value="UNITY_TEST_MTD"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.include.paths.939546791" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/include/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/3rd/libmtp/example&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/littlefs_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/lwip_2.x_adapter/extra_include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/micropython/aw_micropython_1.12_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/littlefs-master&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CANopen&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CANopen/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CANopen_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lua/lua-5.3.4_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/extras/fixture/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/Unity/aworks_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/tools/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include/ftpd&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CanFestival-3.8_adapter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/can_stack/CanFestival-3.8_adapter/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/resources/firmware&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/sqlite3&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/lora_sx1276/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/lora_utilities/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/lora/loranet_stack/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/modbus/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/goahead-2.5_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/ftpd/include/ftpd&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/goahead-2.5&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/yaffs2_e57244d/direct&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/usb/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/yaffs2_e57244d_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/lffs/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/fs/fatfs/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/fs/fatfs_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/tools/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/shell/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/shell/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/core/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/net/lwip_2.x_adapter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/interface/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/rtk/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/rtk/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/psp/rtk/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/psp/rtk/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/awbus_lite/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/awbus_lite/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/base/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/components/base/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/resources/firmware&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/include/ipv4&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/net/lwip_2.x/src/netif&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/apollo/3rdparty/can_stack/CanFestival-3.8/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_code}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_config}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/user_config/awbl_hwconf_usrcfg}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/source/awsa/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/cpu/source/awsa/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/source/imxrt10xx_common/board/imxrt105x/bsp&quot;"/>
+								</option>
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input.1003499749" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input"/>
+							</tool>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.linker.1317618827" name="Cross ARM C Linker" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.linker">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.gcsections.702830104" name="Remove unused sections (-Xlinker --gc-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.gcsections" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.scriptfile.183185794" name="Script files (-T)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.scriptfile" valueType="stringList">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/rt1050_sdram.ld}&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.nostart.1369114542" name="Do not use standard start files (-nostartfiles)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.nostart" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.libs.1268969247" name="Libraries (-l)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="aw_qrcode"/>
+									<listOptionValue builtIn="false" value="aw_canfestival_3_8_adapter"/>
+									<listOptionValue builtIn="false" value="aw_psp"/>
+									<listOptionValue builtIn="false" value="rtk"/>
+									<listOptionValue builtIn="false" value="reqsched"/>
+									<listOptionValue builtIn="false" value="awbl_common"/>
+									<listOptionValue builtIn="false" value="awbl_core"/>
+									<listOptionValue builtIn="false" value="aw_base"/>
+									<listOptionValue builtIn="false" value="aw_shell"/>
+									<listOptionValue builtIn="false" value="aw_clk_framework"/>
+									<listOptionValue builtIn="false" value="aw_fatfs_adapter"/>
+									<listOptionValue builtIn="false" value="aw_fatfs"/>
+									<listOptionValue builtIn="false" value="aw_lffs"/>
+									<listOptionValue builtIn="false" value="aw_yaffs"/>
+									<listOptionValue builtIn="false" value="aw_unity"/>
+									<listOptionValue builtIn="false" value="aw_modbus"/>
+									<listOptionValue builtIn="false" value="aw_libc"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x_adapter"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x_ext"/>
+									<listOptionValue builtIn="false" value="aw_net_core"/>
+									<listOptionValue builtIn="false" value="aw_net_tools"/>
+									<listOptionValue builtIn="false" value="aw_ftpd"/>
+									<listOptionValue builtIn="false" value="aw_goahead"/>
+									<listOptionValue builtIn="false" value="aw_usb"/>
+									<listOptionValue builtIn="false" value="lua_5_3_4"/>
+									<listOptionValue builtIn="false" value="lua_5_3_4_adapter"/>
+									<listOptionValue builtIn="false" value="micropython_1_12_temp1"/>
+									<listOptionValue builtIn="false" value="micropython_1_12_temp2"/>
+									<listOptionValue builtIn="false" value="micropython_1_12"/>
+									<listOptionValue builtIn="false" value="aw_micropython_1_12_adapter"/>
+									<listOptionValue builtIn="false" value="zlib_1_2_11_adapter"/>
+									<listOptionValue builtIn="false" value="aw_cjson_2_0_0"/>
+									<listOptionValue builtIn="false" value="aw_loranet_adapter"/>
+									<listOptionValue builtIn="false" value="aw_loranet"/>
+									<listOptionValue builtIn="false" value="aw_smf_adapter"/>
+									<listOptionValue builtIn="false" value="am_smf"/>
+									<listOptionValue builtIn="false" value="aw_sqlite3_adapter"/>
+									<listOptionValue builtIn="false" value="firmware_cyw43362"/>
+									<listOptionValue builtIn="false" value="aw_bsp"/>
+									<listOptionValue builtIn="false" value="aw_cpu"/>
+									<listOptionValue builtIn="false" value="awbl_stack_overflow"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.paths.1376012110" name="Library search path (-L)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.paths" valueType="libPaths">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/Release&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.otherobjs.2025093481" name="Other objects" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.otherobjs" valueType="userObjs">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/Release/syscalls.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/Release/memcpy-armv7m.o&quot;"/>
+								</option>
+							</tool>
+							<tool commandLinePattern="${COMMAND} ${cross_toolchain_flags} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} -Wl,--start-group  ${INPUTS}  -Wl,--end-group" errorParsers="" id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker.506062932" name="Cross ARM C++ Linker" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.gcsections.875903812" name="Remove unused sections (-Xlinker --gc-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.gcsections" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.nostart.1579832109" name="Do not use standard start files (-nostartfiles)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.nostart" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.scriptfile.429666341" name="Script files (-T)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.scriptfile" useByScannerDiscovery="false" valueType="stringList">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/rt1050_flexspi_flash.ld}&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.libs.926578994" name="Libraries (-l)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.libs" useByScannerDiscovery="false" valueType="libs">
+									<listOptionValue builtIn="false" value="aw_qrcode"/>
+									<listOptionValue builtIn="false" value="aw_canfestival_3_8_adapter"/>
+									<listOptionValue builtIn="false" value="aw_psp"/>
+									<listOptionValue builtIn="false" value="rtk"/>
+									<listOptionValue builtIn="false" value="reqsched"/>
+									<listOptionValue builtIn="false" value="awbl_common"/>
+									<listOptionValue builtIn="false" value="awbl_core"/>
+									<listOptionValue builtIn="false" value="aw_base"/>
+									<listOptionValue builtIn="false" value="aw_shell"/>
+									<listOptionValue builtIn="false" value="aw_clk_framework"/>
+									<listOptionValue builtIn="false" value="aw_fatfs_adapter"/>
+									<listOptionValue builtIn="false" value="aw_fatfs"/>
+									<listOptionValue builtIn="false" value="aw_lffs"/>
+									<listOptionValue builtIn="false" value="aw_yaffs"/>
+									<listOptionValue builtIn="false" value="aw_unity"/>
+									<listOptionValue builtIn="false" value="aw_modbus"/>
+									<listOptionValue builtIn="false" value="aw_libc"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x_adapter"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x"/>
+									<listOptionValue builtIn="false" value="aw_lwip_2_x_ext"/>
+									<listOptionValue builtIn="false" value="aw_net_core"/>
+									<listOptionValue builtIn="false" value="aw_net_tools"/>
+									<listOptionValue builtIn="false" value="aw_ftpd"/>
+									<listOptionValue builtIn="false" value="aw_goahead"/>
+									<listOptionValue builtIn="false" value="aw_usb"/>
+									<listOptionValue builtIn="false" value="lua_5_3_4"/>
+									<listOptionValue builtIn="false" value="lua_5_3_4_adapter"/>
+									<listOptionValue builtIn="false" value="micropython_1_12_temp1"/>
+									<listOptionValue builtIn="false" value="micropython_1_12_temp2"/>
+									<listOptionValue builtIn="false" value="micropython_1_12"/>
+									<listOptionValue builtIn="false" value="aw_micropython_1_12_adapter"/>
+									<listOptionValue builtIn="false" value="zlib_1_2_11_adapter"/>
+									<listOptionValue builtIn="false" value="aw_cjson_2_0_0"/>
+									<listOptionValue builtIn="false" value="aw_loranet_adapter"/>
+									<listOptionValue builtIn="false" value="aw_loranet"/>
+									<listOptionValue builtIn="false" value="aw_smf_adapter"/>
+									<listOptionValue builtIn="false" value="am_smf"/>
+									<listOptionValue builtIn="false" value="aw_sqlite3_adapter"/>
+									<listOptionValue builtIn="false" value="firmware_cyw43362"/>
+									<listOptionValue builtIn="false" value="aw_bsp"/>
+									<listOptionValue builtIn="false" value="aw_cpu"/>
+									<listOptionValue builtIn="false" value="awbl_stack_overflow"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.paths.938293303" name="Library search path (-L)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.paths" useByScannerDiscovery="false" valueType="libPaths">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/Release&quot;"/>
+								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.otherobjs.213183033" name="Other objects" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.otherobjs" useByScannerDiscovery="false" valueType="userObjs">
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/Release/syscalls.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${AW_ROOT}/lib/Release/memcpy-armv7m.o&quot;"/>
+								</option>
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker.input.31064332" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker.input">
+									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
+									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
+								</inputType>
+							</tool>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.archiver.1523202739" name="Cross ARM GNU Archiver" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.archiver"/>
+							<tool errorParsers="" id="ilg.gnuarmeclipse.managedbuild.cross.tool.createflash.1100838579" name="Cross ARM GNU Create Flash Image" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.createflash">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createflash.choice.35306905" name="Output file format (-O)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createflash.choice" useByScannerDiscovery="false" value="ilg.gnuarmeclipse.managedbuild.cross.option.createflash.choice.srec" valueType="enumerated"/>
+							</tool>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.createlisting.1007630586" name="Cross ARM GNU Create Listing" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.createlisting">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.source.1303794821" name="Display source (--source|-S)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.source" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.allheaders.27545781" name="Display all headers (--all-headers|-x)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.allheaders" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.demangle.1245037745" name="Demangle names (--demangle|-C)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.demangle" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.linenumbers.1743490636" name="Display line numbers (--line-numbers|-l)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.linenumbers" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.wide.1873918026" name="Wide lines (--wide|-w)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.wide" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+							</tool>
+							<tool errorParsers="" id="ilg.gnuarmeclipse.managedbuild.cross.tool.printsize.1676032502" name="Cross ARM GNU Print Size" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.printsize">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.printsize.format.285360642" name="Size format" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.printsize.format" useByScannerDiscovery="false"/>
+							</tool>
+						</toolChain>
+					</folderInfo>
+					<sourceEntries>
+						<entry excluding="user_code/unity_test|user_code/spi|user_code/aw_psp_task.c|user_code/aw_io_shell.c|user_code/awbl_gc0308.c|user_code/awbl_imx1050_csi.c|user_code/rtk_task.c|user_code/peripheral/common/camera|user_code/peripheral/common/lcd|user_code/peripheral/m105x/pxp|user_code/peripheral/amic110|user_code/peripheral/lpc54616|user_code/peripheral/imx6ul|user_code/component/logger|user_code/application/app_enet_web_demo|user_code/application/app_meter_demo|user_code/application/app_qrcode_demo|user_code/application/app_shell_demo/app_shell_demo.c|user_code/application/app_shell_demo/app_lcd.c|user_code/application/app_wifi_web_demo|user_code/application/app_video_demo|user_code/application/app_face_demo|user_code/application/app_emwin_demo|user_code/application/app_awtk_demo|user_code/examples/peripheral/m105x/pxp|aw_common_examples/component/ftpd|aw_common_examples/feature|aw_common_examples/peripheral/lpc54616|aw_common_examples/component/canfestival/CanFestival-3.0-rc3|aw_common_examples/application|examples/cpu/imxrt1050/instruction_speed/demo_instruction_speed_for_armcc.S|examples/peripheral/sai/sound_wav_armcc.S" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+					</sourceEntries>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+			<storageModule moduleId="ilg.gnuarmeclipse.managedbuild.packs"/>
+		</cconfiguration>
+	</storageModule>
+	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+		<project id="img_rt1050_debug.ilg.gnuarmeclipse.managedbuild.cross.target.elf.434277091" name="Executable" projectType="ilg.gnuarmeclipse.managedbuild.cross.target.elf"/>
+	</storageModule>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="ilg.gnuarmeclipse.managedbuild.cross.config.elf.release.1522455750;ilg.gnuarmeclipse.managedbuild.cross.config.elf.release.1522455750.;ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.1245240722;ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input.336659732">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="ilg.gnuarmeclipse.managedbuild.cross.config.elf.release.1522455750;ilg.gnuarmeclipse.managedbuild.cross.config.elf.release.1522455750.;ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.1178784864;ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input.490625388">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.374613545;ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.374613545.;ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.1687691612;ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input.822379728">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.374613545;ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.374613545.;ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.1497575;ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input.615340495">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="flexspi_flash_Debug">
+			<resource resourceType="PROJECT" workspacePath="/img_rt1050_debug"/>
+		</configuration>
+		<configuration configurationName="MinSizeRel">
+			<resource resourceType="PROJECT" workspacePath="/img_rt1050_debug"/>
+		</configuration>
+		<configuration configurationName="flexspi_flash_Release">
+			<resource resourceType="PROJECT" workspacePath="/img_rt1050_debug"/>
+		</configuration>
+		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/img_rt1050_debug"/>
+		</configuration>
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/img_rt1050_debug"/>
+		</configuration>
+		<configuration configurationName="flexspi_flash_MinSizeRel">
+			<resource resourceType="PROJECT" workspacePath="/img_rt1050_debug"/>
+		</configuration>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+</cproject>

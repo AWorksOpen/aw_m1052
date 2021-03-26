@@ -1,0 +1,86 @@
+<string name="Mo">
+<language name="en_US">Mo</language>
+<language name="zh_CN">一</language>
+</string>
+
+<string name="Tu">
+<language name="en_US">Tu</language>
+<language name="zh_CN">二</language>
+</string>
+
+<string name="We">
+<language name="en_US">We</language>
+<language name="zh_CN">三</language>
+</string>
+
+<string name="Th">
+<language name="en_US">Th</language>
+<language name="zh_CN">四</language>
+</string>
+
+<string name="Fr">
+<language name="en_US">Fr</language>
+<language name="zh_CN">五</language>
+</string>
+
+<string name="Sa">
+<language name="en_US">Sa</language>
+<language name="zh_CN">六</language>
+</string>
+
+<string name="Su">
+<language name="en_US">Su</language>
+<language name="zh_CN">日</language>
+</string>
+
+<string name="Jan">
+<language name="en_US">Jan</language>
+</string>
+
+<string name="Feb">
+<language name="en_US">Feb</language>
+</string>
+
+<string name="Mar">
+<language name="en_US">Mar</language>
+</string>
+
+<string name="Apr">
+<language name="en_US">Apr</language>
+</string>
+
+<string name="May">
+<language name="en_US">May</language>
+</string>
+
+<string name="Jun">
+<language name="en_US">Jun</language>
+</string>
+
+<string name="Jul">
+<language name="en_US">Jul</language>
+</string>
+
+<string name="Aug">
+<language name="en_US">Aug</language>
+</string>
+
+<string name="Sept">
+<language name="en_US">Sept</language>
+</string>
+
+<string name="Oct">
+<language name="en_US">Oct</language>
+</string>
+
+<string name="Nov">
+<language name="en_US">Nov</language>
+</string>
+
+<string name="Dec">
+<language name="en_US">Dec</language>
+</string>
+
+<string name="%d year %d month">
+<language name="zh_CN">%d 年 %d 月</language>
+</string>

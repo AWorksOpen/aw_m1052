@@ -1,0 +1,29 @@
+{
+  "name": "aw_goahead_adapter", 
+  "version": "1.0.3", 
+  "description": "Goahead2.5", 
+  "category": "component", 
+  "dependencies": {
+    "aw_net_core": {}, 
+    "goahead": {}
+  }, 
+  "distype": "sdist", 
+  "build_ref": "0b404ecd32a431f74f541b48a576c81e7caf130c", 
+  "build_id": "59957", 
+  "repository": "http://192.168.23.62/aworks2/aw_goahead_adapter", 
+  "engines": [
+    "axio-engine@1.1.0-a.70", 
+    "axbuilder.component@1.0.0", 
+    "package_manager.component@1.0.0"
+  ], 
+  "status": "stable", 
+  "topic": "System::Internet::Applications", 
+  "src_dir": "source", 
+  "include_dirs": [
+    "include"
+  ], 
+  "src_filter": [
+    "+<*.c>", 
+    "-<webrom.c>"
+  ]
+}

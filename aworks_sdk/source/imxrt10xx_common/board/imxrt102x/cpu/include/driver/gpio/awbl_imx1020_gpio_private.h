@@ -1,0 +1,880 @@
+/*******************************************************************************
+*                                 AWorks
+*                       ----------------------------
+*                       innovating embedded platform
+*
+* Copyright (c) 2001-2017 Guangzhou ZHIYUAN Electronics Co., Ltd.
+* All rights reserved.
+*
+* Contact information:
+* web site:    http://www.zlg.cn/
+*******************************************************************************/
+
+/**
+ * \file
+ * \brief AWBus-lite iMX RT1020 GPIO 驱动上私有的一些功能
+ * \internal
+ * \par modification history:
+ * - 1.00 17-10-10  mex, first implementation
+ * \endinternal
+ */
+
+#ifndef __AWBL_IMX1020_GPIO_PRIVATE_H
+#define __AWBL_IMX1020_GPIO_PRIVATE_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif  /* __cplusplus  */
+
+#include "aworks.h"
+#include "awbl_gpio.h"
+#include "awbl_intctlr.h"
+
+
+typedef enum __tag_imx1020_pinmux_sel {
+    PIN_MUX_ALT0 = 0x0,
+    PIN_MUX_ALT1 = 0x1,
+    PIN_MUX_ALT2 = 0x2,
+    PIN_MUX_ALT3 = 0x3,
+    PIN_MUX_ALT4 = 0x4,
+    PIN_MUX_ALT5 = 0x5,
+    PIN_MUX_ALT6 = 0x6,
+    PIN_MUX_ALT7 = 0x7,
+    PIN_MUX_SI_ON = 0x10,
+    PIN_MUX_SET_ENABLE = 0x20,
+}imx1020_pin_mux_sel_t;
+
+
+typedef enum __tag_imx1020_pad_ctl_sel {
+    SRE_0_Slow_Slew_Rate = 0x0 << 0,
+    SRE_0_Fast_Slew_Rate = 0x1 << 0,
+
+    DSE_0_output_driver_disabled = 0x0 << 3,
+    DSE_1_R0 = 0x1 <<3,
+    DSE_2_R0_2 = 0x2 << 3,
+    DSE_3_R0_3 = 0x3 << 3,
+    DSE_4_R0_4 = 0x4 << 3,
+    DSE_5_R0_5 = 0x5 << 3,
+    DSE_6_R0_6 = 0x6 << 3,
+    DSE_7_R0_7 = 0x7 << 3,
+
+    SPEED_0_low_50MHz = 0x0 << 6,
+    SPEED_1_medium_100MHz = 0x1 << 6,
+    SPEED_2_medium_100MHz = 0x2 << 6,
+    SPEED_3_max_200MHz = 0x3 << 6,
+
+    Open_Drain_Disabled  = 0x0 << 11,
+    Open_Drain_Enabled = 0x1 << 11,
+
+    PKE_0_Pull_Keeper_Disabled  = 0x0 << 12,
+    PKE_1_Pull_Keeper_Enabled = 0x1 << 12,
+
+    PUE_0_Keeper  = 0x0 << 13,
+    PUE_1_Pull = 0x1 << 13,
+
+    PUS_0_100K_Ohm_Pull_Down = 0x0 <<14,
+    PUS_1_47K_Ohm_Pull_Up = 0x1 <<14,
+    PUS_2_100K_Ohm_Pull_Up = 0x2 <<14,
+    PUS_3_22K_Ohm_Pull_Up = 0x3 <<14,
+
+    HYS_0_Hysteresis_Disabled  = 0x0 << 16,
+    HYS_1_Hysteresis_Enabled = 0x1 << 16,
+
+    PAD_CTL_SET_ENABLE = 0x1 << 17,
+} imx1020_pad_ctl_sel_t;
+
+
+/** \brief imx1050 GPIO引脚复用功能位段定义  */
+#define IMX1020_PIN_MUX_BITS_START       6
+#define IMX1020_PIN_MUX_BITS_LEN         6
+#define IMX1020_PIN_MUX(x)               ( ((x) | PIN_MUX_SET_ENABLE) << IMX1020_PIN_MUX_BITS_START)
+#define IMX1020_PIN_MUX_GET(data)        AW_BITS_GET((data), \
+                                                 IMX1020_PIN_MUX_BITS_START, \
+                                                 IMX1020_PIN_MUX_BITS_LEN - 1 )
+#define IS_PIN_MUX_SET_ENABLE(flag)      AW_BIT_ISSET(flag, \
+                                             IMX1020_PIN_MUX_BITS_START + IMX1020_PIN_MUX_BITS_LEN -1)
+
+/** \brief imx1050 GPIO PAD位段定义  */
+#define IMX1020_PAD_CTL_BITS_START       12
+#define IMX1020_PAD_CTL_BITS_LEN         18
+#define IMX1020_PAD_CTL(x)               (((x) | PAD_CTL_SET_ENABLE) << IMX1020_PAD_CTL_BITS_START)
+#define IMX1020_PAD_CTL_GET(data)        AW_BITS_GET((data), \
+                                                 IMX1020_PAD_CTL_BITS_START, \
+                                                 IMX1020_PAD_CTL_BITS_LEN - 1 )
+#define IS_PAD_CTL_SET_ENABLE(flag)      AW_BIT_ISSET(flag, \
+                                             IMX1020_PAD_CTL_BITS_START + IMX1020_PAD_CTL_BITS_LEN - 1)
+
+
+/******************************************************************************/
+/** \brief IMX1020 GPIO 管脚功能编号 */
+
+/* GPIO1 */
+#define  GPIO1_0_JTAG_TMS                    IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_0_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_0_GPT1_COMPARE1               IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO1_1_JTAG_TCK                    IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_1_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_1_GPT1_CAPTURE2               IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO1_2_JTAG_MOD                    IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_2_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_2_GPT1_CAPTURE1               IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO1_3_JTAG_TDI                    IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_3_USDHC2_CD_B                 IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_3_WDOG1_B                     IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_3_SAI1_MCLK                   IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_3_USDHC1_WP                   IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_3_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_3_USB_OTG1_OC                 IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO1_3_CCM_PMIC_RDY                IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO1_4_JTAG_TDO                    IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_4_FLEXCAN1_TX                 IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_4_USDHC1_WP                   IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_4_QTIMER2_TIMER0              IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_4_ENET_MDIO                   IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_4_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_4_USB_OTG1_PWR                IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO1_4_EWM_OUT_B                   IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO1_5_JTAG_TRSTB                  IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_5_FLEXCAN1_RX                 IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_5_USDHC1_CD_B                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_5_QTIMER2_TIMER1              IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_5_ENET_MDC                    IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_5_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_5_USB_OTG1_ID                 IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO1_5_NMI_GLUE_NMI                IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO1_6_PIT_TRIGGER00               IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_6_MQS_RIGHT                   IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_6_LPUART1_TX                  IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_6_QTIMER2_TIMER2              IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_6_FLEXPWM2_PWMA03             IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_6_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_6_REF_32K_OUT                 IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO1_7_PIT_TRIGGER01               IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_7_MQS_LEFT                    IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_7_LPUART1_RX                  IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_7_QTIMER2_TIMER3              IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_7_FLEXPWM2_PWMB03             IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_7_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_7_REF_24M_OUT                 IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO1_8_ENET_TX_CLK                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_8_LPI2C3_SCL                  IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_8_LPUART1_CTS_B               IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_8_KPP_COL00                   IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_8_ENET_REF_CLK1               IMX1020_PIN_MUX(PIN_MUX_ALT4 | PIN_MUX_SI_ON)
+#define  GPIO1_8_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_8_ARM_CM7_TXEV                IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO1_9_ENET_RDATA01                IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_9_LPI2C3_SDA                  IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_9_LPUART1_RTS_B               IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_9_KPP_ROW00                   IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_9_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_9_ARM_CM7_RXEV                IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO1_10_ENET_RDATA00               IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_10_LPSPI1_SCK                 IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_10_LPUART5_TX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_10_KPP_COL01                  IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_10_FLEXPWM2_PWMA02            IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_10_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_10_ARM_CM7_TRACE_CLK          IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO1_11_ENET_RX_EN                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_11_LPSPI1_PCS0                IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_11_LPUART5_RX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_11_KPP_ROW01                  IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_11_FLEXPWM2_PWMB02            IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_11_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_11_ARM_CM7_TRACE_SWO          IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO1_12_ENET_RX_ER                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_12_LPSPI1_SDO                 IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_12_LPUART3_CTS_B              IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_12_KPP_COL02                  IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_12_FLEXPWM2_PWMA01            IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_12_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_12_ARM_CM7_TRACE00            IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO1_12_SNVS_HP_VIO_5_CTL          IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO1_13_ENET_TX_EN                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_13_LPSPI1_SDI                 IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_13_LPUART3_RTS_B              IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_13_KPP_ROW02                  IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_13_FLEXPWM2_PWMB01            IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_13_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_13_ARM_CM7_TRACE01            IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO1_13_SNVS_HP_VIO_5_B            IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO1_14_ENET_TDATA00               IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_14_FLEXCAN2_TX                IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_14_LPUART3_TX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_14_KPP_COL03                  IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_14_FLEXPWM2_PWMA00            IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_14_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_14_ARM_CM7_TRACE02            IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO1_14_WDOG1_ANY                  IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO1_15_ENET_TDATA01               IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_15_FLEXCAN2_RX                IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_15_LPUART3_RX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_15_KPP_ROW03                  IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_15_FLEXPWM2_PWMB00            IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_15_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_15_ARM_CM7_TRACE03            IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO1_16_SEMC_READY                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_16_FLEXSPI_A_DATA03           IMX1020_PIN_MUX(PIN_MUX_ALT1 | PIN_MUX_SI_ON)
+#define  GPIO1_16_FLEXCAN2_TX                IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_16_SAI1_MCLK                  IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_16_FLEXIO1_FLEXIO15           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_16_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_16_ENET_1588_EVENT2_OUT       IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO1_16_KPP_COL04                  IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO1_17_SEMC_CSX00                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_17_FLEXSPI_A_SCLK             IMX1020_PIN_MUX(PIN_MUX_ALT1 | PIN_MUX_SI_ON)
+#define  GPIO1_17_FLEXCAN2_RX                IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_17_SAI1_TX_BCLK               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_17_FLEXIO1_FLEXIO14           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_17_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_17_ENET_1588_EVENT2_IN        IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO1_17_KPP_ROW04                  IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO1_18_SEMC_CSX01                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_18_FLEXSPI_A_DATA00           IMX1020_PIN_MUX(PIN_MUX_ALT1 | PIN_MUX_SI_ON)
+#define  GPIO1_18_LPSPI4_SCK                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_18_SAI1_TX_SYNC               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_18_FLEXIO1_FLEXIO13           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_18_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_18_ENET_1588_EVENT3_OUT       IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO1_18_KPP_COL05                  IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO1_19_SEMC_CSX02                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_19_FLEXSPI_A_DATA02           IMX1020_PIN_MUX(PIN_MUX_ALT1 | PIN_MUX_SI_ON)
+#define  GPIO1_19_LPSPI4_PCS0                IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_19_SAI1_TX_DATA00             IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_19_FLEXIO1_FLEXIO12           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_19_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_19_ENET_1588_EVENT3_IN        IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO1_19_KPP_ROW05                  IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO1_20_SEMC_CSX03                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_20_FLEXSPI_A_DATA01           IMX1020_PIN_MUX(PIN_MUX_ALT1 | PIN_MUX_SI_ON)
+#define  GPIO1_20_LPSPI4_SDO                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_20_SAI1_RX_SYNC               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_20_FLEXIO1_FLEXIO11           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_20_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_20_LPSPI1_PCS1                IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO1_20_KPP_COL06                  IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO1_21_USDHC1_WP                  IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_21_FLEXSPI_A_SS0_B            IMX1020_PIN_MUX(PIN_MUX_ALT1 | PIN_MUX_SI_ON)
+#define  GPIO1_21_LPSPI4_SDI                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_21_SAI1_RX_DATA00             IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_21_FLEXIO1_FLEXIO10           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_21_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_21_LPSPI1_PCS2                IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO1_21_KPP_ROW06                  IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO1_22_USDHC1_RESET_B             IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_22_FLEXPWM1_PWMA00            IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_22_LPUART2_CTS_B              IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_22_SAI1_RX_BCLK               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_22_FLEXIO1_FLEXIO09           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_22_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_22_LPSPI1_PCS3                IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO1_22_KPP_COL07                  IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO1_23_USDHC1_VSELECT             IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_23_FLEXPWM1_PWMB00            IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_23_LPUART2_RTS_B              IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_23_SAI1_TX_DATA01             IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_23_FLEXIO1_FLEXIO08           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_23_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_23_LPSPI3_PCS3                IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO1_23_KPP_ROW07                  IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO1_24_LPI2C2_SCL                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_24_FLEXPWM1_PWMA01            IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_24_LPUART2_TX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_24_SAI1_TX_DATA02             IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_24_FLEXIO1_FLEXIO07           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_24_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_24_LPSPI3_PCS2                IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO1_24_XBAR1_INOUT12              IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO1_25_LPI2C2_SDA                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_25_FLEXPWM1_PWMB01            IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_25_LPUART2_RX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_25_SAI1_TX_DATA03             IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_25_FLEXIO1_FLEXIO06           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_25_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_25_LPSPI3_PCS1                IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO1_25_XBAR1_INOUT13              IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO1_26_USB_OTG1_PWR               IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_26_FLEXPWM1_PWMA02            IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_26_LPUART4_TX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_26_USDHC1_CD_B                IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_26_FLEXIO1_FLEXIO05           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_26_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_26_GPT2_CAPTURE1              IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO1_27_USB_OTG1_ID                IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_27_FLEXPWM1_PWMB02            IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_27_LPUART4_RX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_27_USDHC1_WP                  IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_27_FLEXIO1_FLEXIO04           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_27_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_27_GPT2_COMPARE1              IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO1_28_USB_OTG1_OC                IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_28_ACMP1_OUT                  IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_28_LPSPI3_SCK                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_28_USDHC2_CD_B                IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_28_FLEXIO1_FLEXIO03           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_28_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_28_FLEXPWM1_PWMA03            IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO1_29_LPI2C1_HREQ                IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO1_29_ACMP2_OUT                  IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_29_LPSPI3_PCS0                IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_29_USDHC2_WP                  IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_29_FLEXIO1_FLEXIO02           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_29_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO1_29_FLEXPWM1_PWMB03            IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO1_30_LPI2C1_SCL                 IMX1020_PIN_MUX(PIN_MUX_ALT0 | PIN_MUX_SI_ON)
+#define  GPIO1_30_ACMP3_OUT                  IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_30_LPSPI3_SDO                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_30_ENET_1588_EVENT0_OUT       IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_30_FLEXIO1_FLEXIO01           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_30_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+
+#define  GPIO1_31_LPI2C1_SDA                 IMX1020_PIN_MUX(PIN_MUX_ALT0 | PIN_MUX_SI_ON)
+#define  GPIO1_31_ACMP4_OUT                  IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO1_31_LPSPI3_SDI                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO1_31_ENET_1588_EVENT0_IN        IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO1_31_FLEXIO1_FLEXIO00           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO1_31_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+
+/* GPIO 2 */
+
+#define  GPIO2_0_SEMC_DATA00                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_0_QTIMER2_TIMER0              IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_0_LPUART4_CTS_B               IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_0_SPDIF_SR_CLK                IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_0_LPSPI2_SCK                  IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_0_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_0_FLEXCAN1_TX                 IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO2_0_PIT_TRIGGER02               IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO2_1_SEMC_DATA01                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_1_QTIMER2_TIMER1              IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_1_LPUART4_RTS_B               IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_1_SPDIF_OUT                   IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_1_LPSPI2_PCS0                 IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_1_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_1_FLEXCAN1_RX                 IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO2_1_PIT_TRIGGER03               IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO2_2_SEMC_DATA02                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_2_QTIMER2_TIMER2              IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_2_LPUART4_TX                  IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_2_SPDIF_LOCK                  IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_2_LPSPI2_SDO                  IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_2_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_2_LPI2C1_SCL                  IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO2_3_SEMC_DATA03                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_3_QTIMER2_TIMER3              IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_3_LPUART4_RX                  IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_3_SPDIF_EXT_CLK               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_3_LPSPI2_SDI                  IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_3_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_3_LPI2C1_SDA                  IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO2_4_SEMC_DATA04                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_4_XBAR1_INOUT04               IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_4_SPDIF_OUT                   IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_4_SAI2_TX_BCLK                IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_4_FLEXIO1_FLEXIO16            IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_4_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+
+#define  GPIO2_5_SEMC_DATA05                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_5_XBAR1_INOUT05               IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_5_SPDIF_IN                    IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_5_SAI2_TX_SYNC                IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_5_FLEXIO1_FLEXIO17            IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_5_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+
+#define  GPIO2_6_SEMC_DATA06                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_6_XBAR1_INOUT06               IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_6_LPUART3_TX                  IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_6_SAI2_TX_DATA                IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_6_FLEXIO1_FLEXIO18            IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_6_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+
+#define  GPIO2_7_SEMC_DATA07                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_7_XBAR1_INOUT07               IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_7_LPUART3_RX                  IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_7_SAI2_RX_SYNC                IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_7_FLEXIO1_FLEXIO19            IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_7_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+
+#define  GPIO2_8_SEMC_DM00                   IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_8_XBAR1_INOUT08               IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_8_FLEXCAN2_TX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_8_SAI2_RX_DATA                IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_8_FLEXIO1_FLEXIO20            IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_8_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+
+#define  GPIO2_9_SEMC_WE                     IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_9_XBAR1_INOUT09               IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_9_FLEXCAN2_RX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_9_SAI2_RX_BCLK                IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_9_FLEXIO1_FLEXIO21            IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_9_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+
+#define  GPIO2_10_SEMC_CAS                   IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_10_XBAR1_INOUT10              IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_10_LPI2C4_SDA                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_10_SAI1_TX_SYNC               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_10_LPSPI2_SCK                 IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_10_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_10_FLEXPWM2_PWMX00            IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO2_11_SEMC_RAS                   IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_11_XBAR1_INOUT11              IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_11_LPI2C4_SCL                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_11_SAI1_TX_BCLK               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_11_LPSPI2_PCS0                IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_11_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_11_FLEXPWM2_PWMX01            IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO2_12_SEMC_CS0                   IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_12_XBAR1_INOUT12              IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_12_LPUART6_TX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_12_SAI1_TX_DATA00             IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_12_LPSPI2_SDO                 IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_12_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_12_FLEXPWM2_PWMX02            IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO2_13_SEMC_BA0                   IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_13_XBAR1_INOUT13              IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_13_LPUART6_RX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_13_SAI1_RX_DATA00             IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_13_LPSPI2_SDI                 IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_13_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_13_FLEXPWM2_PWMX03            IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO2_13_CCM_PMIC_RDY               IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO2_14_SEMC_BA1                   IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_14_XBAR1_INOUT14              IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_14_LPUART6_CTS_B              IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_14_SAI1_RX_BCLK               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_14_LPSPI2_PCS1                IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_14_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_14_FLEXCAN1_TX                IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO2_15_SEMC_ADDR10                IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_15_XBAR1_INOUT15              IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_15_LPUART6_RTS_B              IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_15_SAI1_RX_SYNC               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_15_WDOG1_B                    IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_15_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_15_FLEXCAN1_RX                IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO2_16_SEMC_ADDR00                IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_16_MQS_RIGHT                  IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_16_SAI2_MCLK                  IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_16_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_16_SRC_BOOT_MODE00            IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO2_17_SEMC_ADDR01                IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_17_MQS_LEFT                   IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_17_SAI3_MCLK                  IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_17_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_17_SRC_BOOT_MODE01            IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO2_18_SEMC_ADDR02                IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_18_XBAR1_INOUT16              IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_18_LPI2C2_SDA                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_18_SAI1_RX_SYNC               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_18_FLEXIO1_FLEXIO22           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_18_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_18_SRC_BT_CFG00               IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO2_19_SEMC_ADDR03                IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_19_XBAR1_INOUT17              IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_19_LPI2C2_SCL                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_19_SAI1_RX_BCLK               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_19_FLEXIO1_FLEXIO23           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_19_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_19_SRC_BT_CFG01               IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO2_20_SEMC_ADDR04                IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_20_FLEXPWM1_PWMA03            IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_20_LPUART2_CTS_B              IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_20_SAI1_MCLK                  IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_20_FLEXIO1_FLEXIO24           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_20_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_20_SRC_BT_CFG02               IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO2_21_SEMC_ADDR05                IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_21_FLEXPWM1_PWMB03            IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_21_LPUART2_RTS_B              IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_21_SAI1_RX_DATA00             IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_21_FLEXIO1_FLEXIO25           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_21_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_21_SRC_BT_CFG03               IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO2_22_SEMC_ADDR06                IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_22_FLEXPWM1_PWMA02            IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_22_LPUART2_TX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_22_SAI1_TX_DATA03             IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_22_FLEXIO1_FLEXIO26           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_22_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_22_SRC_BT_CFG04               IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO2_23_SEMC_ADDR07                IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_23_FLEXPWM1_PWMB02            IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_23_LPUART2_RX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_23_SAI1_TX_DATA02             IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_23_FLEXIO1_FLEXIO27           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_23_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_23_SRC_BT_CFG05               IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO2_24_SEMC_ADDR08                IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_24_FLEXPWM1_PWMA01            IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_24_LPUART8_CTS_B              IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_24_SAI1_TX_DATA01             IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_24_FLEXIO1_FLEXIO28           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_24_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_24_SRC_BT_CFG06               IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO2_25_SEMC_ADDR09                IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_25_FLEXPWM1_PWMB01            IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_25_LPUART8_RTS_B              IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_25_SAI1_TX_DATA00             IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_25_FLEXIO1_FLEXIO29           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_25_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_25_SRC_BT_CFG07               IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO2_26_SEMC_ADDR11                IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_26_FLEXPWM1_PWMA00            IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_26_LPUART8_TX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_26_SAI1_TX_BCLK               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_26_FLEXIO1_FLEXIO30           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_26_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_26_SRC_BT_CFG08               IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO2_27_SEMC_ADDR12                IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_27_FLEXPWM1_PWMB00            IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_27_LPUART8_RX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_27_SAI1_TX_SYNC               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_27_FLEXIO1_FLEXIO31           IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_27_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_27_SRC_BT_CFG09               IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO2_28_SEMC_DQS                   IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_28_FLEXPWM2_PWMA03            IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_28_XBAR1_INOUT18              IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_28_SAI3_MCLK                  IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_28_EWM_OUT_B                  IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_28_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_28_GPT2_CAPTURE2              IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO2_28_FLEXPWM1_PWMX00            IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO2_29_SEMC_CKE                   IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_29_FLEXPWM2_PWMB03            IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_29_XBAR1_INOUT19              IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_29_SAI3_RX_BCLK               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_29_WDOG2_RST_B_DEB            IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_29_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_29_GPT2_COMPARE2              IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO2_29_FLEXPWM1_PWMX01            IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO2_30_SEMC_CLK                   IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_30_FLEXPWM2_PWMA02            IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_30_LPUART4_CTS_B              IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_30_SAI3_RX_SYNC               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_30_WDOG1_RST_B_DEB            IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_30_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_30_GPT2_COMPARE3              IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO2_30_FLEXPWM1_PWMX02            IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO2_31_SEMC_DM01                  IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO2_31_FLEXPWM2_PWMB02            IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO2_31_LPUART4_RTS_B              IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO2_31_SAI3_RX_DATA               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO2_31_WDOG2_B                    IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO2_31_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO2_31_GPT2_CLK                   IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO2_31_FLEXPWM1_PWMX03            IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+
+/* GPIO3 */
+
+#define  GPIO3_0_SEMC_DATA08                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_0_QTIMER1_TIMER0              IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO3_0_LPUART4_TX                  IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_0_SAI3_TX_DATA                IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_0_LPSPI4_SCK                  IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_0_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO3_0_REF_24M_OUT                 IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO3_1_SEMC_DATA09                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_1_QTIMER1_TIMER1              IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO3_1_LPUART4_RX                  IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_1_SAI3_TX_BCLK                IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_1_LPSPI4_PCS0                 IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_1_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+
+#define  GPIO3_2_SEMC_DATA10                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_2_QTIMER1_TIMER2              IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO3_2_LPUART7_TX                  IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_2_SAI3_TX_SYNC                IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_2_LPSPI4_SDO                  IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_2_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO3_2_ENET_CRS                    IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO3_3_SEMC_DATA11                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_3_QTIMER1_TIMER3              IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO3_3_LPUART7_RX                  IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_3_USDHC2_WP                   IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_3_LPSPI4_SDI                  IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_3_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO3_3_ENET_COL                    IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO3_4_SEMC_DATA12                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_4_FLEXPWM2_PWMA01             IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO3_4_LPUART5_CTS_B               IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_4_CCM_PMIC_RDY                IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_4_LPSPI4_PCS1                 IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_4_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO3_4_ENET_RX_CLK                 IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO3_4_USDHC1_WP                   IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO3_5_SEMC_DATA13                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_5_FLEXPWM2_PWMB01             IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO3_5_LPUART5_RTS_B               IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_5_MQS_RIGHT                   IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_5_LPSPI4_PCS2                 IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_5_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO3_5_ENET_RDATA03                IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO3_5_USDHC1_VSELECT              IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO3_6_SEMC_DATA14                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_6_FLEXPWM2_PWMA00             IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO3_6_LPUART5_TX                  IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_6_MQS_LEFT                    IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_6_LPSPI4_PCS3                 IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_6_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO3_6_ENET_RDATA02                IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO3_6_USDHC1_CD_B                 IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO3_7_SEMC_DATA15                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_7_FLEXPWM2_PWMB00             IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO3_7_LPUART5_RX                  IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_7_USB_OTG1_OC                 IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_7_WDOG1_B                     IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_7_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO3_7_ENET_TX_ER                  IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO3_7_GPT1_CLK                    IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO3_8_SEMC_CSX00                  IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_8_XBAR1_INOUT18               IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO3_8_SPDIF_OUT                   IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_8_USB_OTG1_ID                 IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_8_ENET_MDIO                   IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_8_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO3_8_ENET_TDATA03                IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO3_8_GPT1_COMPARE3               IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO3_9_SEMC_READY                  IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_9_XBAR1_INOUT19               IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO3_9_SPDIF_IN                    IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_9_USB_OTG1_PWR                IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_9_ENET_MDC                    IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_9_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO3_9_ENET_TDATA02                IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO3_9_GPT1_COMPARE2               IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO3_13_USDHC1_DATA2               IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_13_QTIMER1_TIMER0             IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO3_13_SAI1_MCLK                  IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_13_SAI2_MCLK                  IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_13_LPI2C3_SCL                 IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_13_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO3_13_FLEXSPI_A_SS1_B            IMX1020_PIN_MUX(PIN_MUX_ALT6 | PIN_MUX_SI_ON)
+#define  GPIO3_13_XBAR1_INOUT14              IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO3_14_USDHC1_DATA3               IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_14_QTIMER1_TIMER1             IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO3_14_REF_24M_OUT                IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_14_SAI2_RX_SYNC               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_14_LPI2C3_SDA                 IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_14_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO3_14_FLEXSPI_B_SS1_B            IMX1020_PIN_MUX(PIN_MUX_ALT6 | PIN_MUX_SI_ON)
+#define  GPIO3_14_XBAR1_INOUT15              IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO3_15_USDHC1_CMD                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_15_QTIMER1_TIMER2             IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO3_15_LPUART7_CTS_B              IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_15_SAI2_RX_BCLK               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_15_LPSPI1_SCK                 IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_15_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO3_15_ENET_MDIO                  IMX1020_PIN_MUX(PIN_MUX_ALT6)
+#define  GPIO3_15_XBAR1_INOUT16              IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO3_16_USDHC1_CLK                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_16_QTIMER1_TIMER3             IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO3_16_LPUART7_RTS_B              IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_16_SAI2_RX_DATA               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_16_LPSPI1_PCS0                IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_16_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO3_16_ENET_MDC                   IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO3_17_USDHC1_DATA0               IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_17_FLEXCAN2_TX                IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO3_17_LPUART7_TX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_17_SAI2_TX_DATA               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_17_LPSPI1_SDO                 IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_17_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO3_17_FLEXSPI_B_SS0_B            IMX1020_PIN_MUX(PIN_MUX_ALT6 | PIN_MUX_SI_ON)
+
+#define  GPIO3_18_USDHC1_DATA1               IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_18_FLEXCAN2_RX                IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO3_18_LPUART7_RX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_18_SAI2_TX_BCLK               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_18_LPSPI1_SDI                 IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_18_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO3_18_FLEXSPI_B_DQS              IMX1020_PIN_MUX(PIN_MUX_ALT6 | PIN_MUX_SI_ON)
+
+#define  GPIO3_19_USDHC1_CD_B                IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_19_USDHC1_RESET_B             IMX1020_PIN_MUX(PIN_MUX_ALT1)
+#define  GPIO3_19_REF_32K_OUT                IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_19_SAI2_TX_SYNC               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_19_WDOG1_B                    IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_19_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO3_19_XBAR1_INOUT17              IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO3_20_USDHC2_DATA2               IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_20_FLEXSPI_B_DATA03           IMX1020_PIN_MUX(PIN_MUX_ALT1 | PIN_MUX_SI_ON)
+#define  GPIO3_20_LPUART6_TX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_20_XBAR1_INOUT10              IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_20_FLEXCAN1_TX                IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_20_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+
+#define  GPIO3_21_USDHC2_DATA3               IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_21_FLEXSPI_B_SCLK             IMX1020_PIN_MUX(PIN_MUX_ALT1 | PIN_MUX_SI_ON)
+#define  GPIO3_21_LPUART6_RX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_21_FLEXSPI_A_SS1_B            IMX1020_PIN_MUX(PIN_MUX_ALT3 | PIN_MUX_SI_ON)
+#define  GPIO3_21_FLEXCAN1_RX                IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_21_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+
+#define  GPIO3_22_USDHC2_CMD                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_22_FLEXSPI_B_DATA00           IMX1020_PIN_MUX(PIN_MUX_ALT1 | PIN_MUX_SI_ON)
+#define  GPIO3_22_LPUART8_TX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_22_LPI2C4_SCL                 IMX1020_PIN_MUX(PIN_MUX_ALT3 | PIN_MUX_SI_ON)
+#define  GPIO3_22_ENET_1588_EVENT1_OUT       IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_22_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO3_22_CCM_CLKO1                  IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO3_23_USDHC2_CLK                 IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_23_FLEXSPI_B_DATA02           IMX1020_PIN_MUX(PIN_MUX_ALT1 | PIN_MUX_SI_ON)
+#define  GPIO3_23_LPUART8_RX                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_23_LPI2C4_SDA                 IMX1020_PIN_MUX(PIN_MUX_ALT3 | PIN_MUX_SI_ON)
+#define  GPIO3_23_ENET_1588_EVENT1_IN        IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_23_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO3_23_CCM_CLKO2                  IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO3_24_USDHC2_DATA0               IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_24_FLEXSPI_B_DATA01           IMX1020_PIN_MUX(PIN_MUX_ALT1 | PIN_MUX_SI_ON)
+#define  GPIO3_24_ENET_TX_CLK                IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_24_ENET_REF_CLK1              IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_24_EWM_OUT_B                  IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_24_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO3_24_CCM_WAIT                   IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO3_25_USDHC2_DATA1               IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_25_FLEXSPI_A_DQS              IMX1020_PIN_MUX(PIN_MUX_ALT1 | PIN_MUX_SI_ON)
+#define  GPIO3_25_ENET_RDATA01               IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_25_SAI3_MCLK                  IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_25_FLEXSPI_B_SS0_B            IMX1020_PIN_MUX(PIN_MUX_ALT4 | PIN_MUX_SI_ON)
+#define  GPIO3_25_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO3_25_CCM_PMIC_RDY               IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO3_26_USDHC2_CD_B                IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_26_FLEXSPI_A_DATA03           IMX1020_PIN_MUX(PIN_MUX_ALT1 | PIN_MUX_SI_ON)
+#define  GPIO3_26_ENET_RDATA00               IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_26_SAI3_TX_BCLK               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_26_LPSPI2_PCS0                IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_26_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO3_26_CCM_STOP                   IMX1020_PIN_MUX(PIN_MUX_ALT6)
+
+#define  GPIO3_27_USDHC2_RESET_B             IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_27_FLEXSPI_A_SCLK             IMX1020_PIN_MUX(PIN_MUX_ALT1 | PIN_MUX_SI_ON)
+#define  GPIO3_27_ENET_RX_EN                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_27_SAI3_TX_SYNC               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_27_LPSPI2_SCK                 IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_27_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+
+#define  GPIO3_28_USDHC2_DATA4               IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_28_FLEXSPI_A_DATA00           IMX1020_PIN_MUX(PIN_MUX_ALT1 | PIN_MUX_SI_ON)
+#define  GPIO3_28_ENET_RX_ER                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_28_SAI3_TX_DATA               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_28_LPSPI2_SDO                 IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_28_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+
+#define  GPIO3_29_USDHC2_DATA5               IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_29_FLEXSPI_A_DATA02           IMX1020_PIN_MUX(PIN_MUX_ALT1 | PIN_MUX_SI_ON)
+#define  GPIO3_29_ENET_TX_EN                 IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_29_SAI3_RX_BCLK               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_29_LPSPI2_SDI                 IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_29_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+
+#define  GPIO3_30_USDHC2_DATA6               IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_30_FLEXSPI_A_DATA01           IMX1020_PIN_MUX(PIN_MUX_ALT1 | PIN_MUX_SI_ON)
+#define  GPIO3_30_ENET_TDATA00               IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_30_SAI3_RX_SYNC               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_30_LPSPI2_PCS2                IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_30_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+
+#define  GPIO3_31_USDHC2_DATA7               IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO3_31_FLEXSPI_A_SS0_B            IMX1020_PIN_MUX(PIN_MUX_ALT1 | PIN_MUX_SI_ON)
+#define  GPIO3_31_ENET_TDATA01               IMX1020_PIN_MUX(PIN_MUX_ALT2)
+#define  GPIO3_31_SAI3_RX_DATA               IMX1020_PIN_MUX(PIN_MUX_ALT3)
+#define  GPIO3_31_LPSPI2_PCS3                IMX1020_PIN_MUX(PIN_MUX_ALT4)
+#define  GPIO3_31_GPIO                       IMX1020_PIN_MUX(PIN_MUX_ALT5)
+
+
+/* GPIO 5 */
+
+#define  GPIO5_0_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+#define  GPIO5_0_NMI_GLUE_NMI                IMX1020_PIN_MUX(PIN_MUX_ALT7)
+
+#define  GPIO5_1_SNVS_LP_PMIC_ON_REQ         IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO5_1_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+
+#define  GPIO5_2_CCM_PMIC_VSTBY_REQ          IMX1020_PIN_MUX(PIN_MUX_ALT0)
+#define  GPIO5_2_GPIO                        IMX1020_PIN_MUX(PIN_MUX_ALT5)
+
+
+#ifdef __cplusplus
+}
+#endif  /* __cplusplus  */
+
+#endif /* __AWBL_IMX1020_GPIO_PRIVATE_H */
+
+/* end of file */
+

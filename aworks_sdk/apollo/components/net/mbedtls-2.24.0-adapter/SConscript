@@ -1,0 +1,147 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from config_build_common import build_common_config
+from config_aw_base import aw_base_config
+from config_lwip import aw_lwip_config
+import config_lwip
+import os
+
+env = DefaultEnvironment()
+env['CFLAGS'] += r' -D MBEDTLS_CONFIG_FILE=\"mbedtls_config.h\"'
+
+cur_build_path = Dir('.', False)
+org_build_path = str(cur_build_path.srcnode())
+
+# 构建mbedtls路径
+# 得出mbedtls源码绝对路径
+mbedtls_src_path = os.path.join(
+    build_common_config.AWORKS_ROOT, '3rdparty', 'net', 'mbedtls-2.24.0')
+# 由LWIP源码路径推算出LWIP将要安装的路径
+mbedtls_src_rel_apollo_dir = cal_relative_dir(
+    build_common_config.AWORKS_ROOT, mbedtls_src_path)
+mbedtls_src_install_path = os.path.join(
+    build_common_config.AW_SDK_INSTALL_PATH, 'apollo', mbedtls_src_rel_apollo_dir)
+mbedtls_rel_dir = cal_relative_dir(org_build_path, mbedtls_src_path)
+
+# mbedtls
+SOURCE = []
+#SOURCE.append(mbedtls_rel_dir + 'library/*.c')
+SOURCE.append(mbedtls_rel_dir + 'library/aes.c')
+SOURCE.append(mbedtls_rel_dir + 'library/aesni.c')
+SOURCE.append(mbedtls_rel_dir + 'library/arc4.c')
+SOURCE.append(mbedtls_rel_dir + 'library/aria.c')
+SOURCE.append(mbedtls_rel_dir + 'library/asn1parse.c')
+SOURCE.append(mbedtls_rel_dir + 'library/asn1write.c')
+SOURCE.append(mbedtls_rel_dir + 'library/base64.c')
+SOURCE.append(mbedtls_rel_dir + 'library/bignum.c')
+SOURCE.append(mbedtls_rel_dir + 'library/blowfish.c')
+SOURCE.append(mbedtls_rel_dir + 'library/camellia.c')
+SOURCE.append(mbedtls_rel_dir + 'library/ccm.c')
+SOURCE.append(mbedtls_rel_dir + 'library/certs.c')
+SOURCE.append(mbedtls_rel_dir + 'library/chacha20.c')
+SOURCE.append(mbedtls_rel_dir + 'library/chachapoly.c')
+SOURCE.append(mbedtls_rel_dir + 'library/cipher.c')
+SOURCE.append(mbedtls_rel_dir + 'library/cipher_wrap.c')
+SOURCE.append(mbedtls_rel_dir + 'library/cmac.c')
+#SOURCE.append(mbedtls_rel_dir + 'library/ctr_drbg.c')
+SOURCE.append('./source/library/ctr_drbg.c')
+SOURCE.append(mbedtls_rel_dir + 'library/debug.c')
+SOURCE.append(mbedtls_rel_dir + 'library/des.c')
+#SOURCE.append(mbedtls_rel_dir + 'library/dhm.c')
+SOURCE.append('./source/library/dhm.c')
+SOURCE.append(mbedtls_rel_dir + 'library/ecdh.c')
+SOURCE.append(mbedtls_rel_dir + 'library/ecdsa.c')
+SOURCE.append(mbedtls_rel_dir + 'library/ecjpake.c')
+SOURCE.append(mbedtls_rel_dir + 'library/ecp.c')
+SOURCE.append(mbedtls_rel_dir + 'library/ecp_curves.c')
+#SOURCE.append(mbedtls_rel_dir + 'library/entropy.c')
+SOURCE.append('./source/library/entropy.c')
+#SOURCE.append(mbedtls_rel_dir + 'library/entropy_poll.c')
+SOURCE.append('./source/library/entropy_poll.c')
+SOURCE.append(mbedtls_rel_dir + 'library/error.c')
+SOURCE.append(mbedtls_rel_dir + 'library/gcm.c')
+SOURCE.append(mbedtls_rel_dir + 'library/havege.c')
+SOURCE.append(mbedtls_rel_dir + 'library/hkdf.c')
+#SOURCE.append(mbedtls_rel_dir + 'library/hmac_drbg.c')
+SOURCE.append('./source/library/hmac_drbg.c')
+#SOURCE.append(mbedtls_rel_dir + 'library/md.c')
+SOURCE.append('./source/library/md.c')
+SOURCE.append(mbedtls_rel_dir + 'library/md2.c')
+SOURCE.append(mbedtls_rel_dir + 'library/md4.c')
+SOURCE.append(mbedtls_rel_dir + 'library/md5.c')
+SOURCE.append(mbedtls_rel_dir + 'library/memory_buffer_alloc.c')
+#SOURCE.append(mbedtls_rel_dir + 'library/net_sockets.c')
+SOURCE.append('./source/library/net_sockets.c')
+SOURCE.append(mbedtls_rel_dir + 'library/nist_kw.c')
+SOURCE.append(mbedtls_rel_dir + 'library/oid.c')
+SOURCE.append(mbedtls_rel_dir + 'library/padlock.c')
+SOURCE.append(mbedtls_rel_dir + 'library/pem.c')
+SOURCE.append(mbedtls_rel_dir + 'library/pk.c')
+SOURCE.append(mbedtls_rel_dir + 'library/pk_wrap.c')
+SOURCE.append(mbedtls_rel_dir + 'library/pkcs5.c')
+SOURCE.append(mbedtls_rel_dir + 'library/pkcs11.c')
+SOURCE.append(mbedtls_rel_dir + 'library/pkcs12.c')
+#SOURCE.append(mbedtls_rel_dir + 'library/pkparse.c')
+SOURCE.append('./source/library/pkparse.c')
+SOURCE.append(mbedtls_rel_dir + 'library/pkwrite.c')
+#SOURCE.append(mbedtls_rel_dir + 'library/platform.c')
+SOURCE.append('./source/library/platform.c')
+SOURCE.append(mbedtls_rel_dir + 'library/platform_util.c')
+SOURCE.append(mbedtls_rel_dir + 'library/poly1305.c')
+SOURCE.append(mbedtls_rel_dir + 'library/psa_crypto.c')
+SOURCE.append(mbedtls_rel_dir + 'library/psa_crypto_se.c')
+SOURCE.append(mbedtls_rel_dir + 'library/psa_crypto_slot_management.c')
+SOURCE.append(mbedtls_rel_dir + 'library/psa_crypto_storage.c')
+#SOURCE.append(mbedtls_rel_dir + 'library/psa_its_file.c')
+SOURCE.append('./source/library/psa_its_file.c')
+SOURCE.append(mbedtls_rel_dir + 'library/ripemd160.c')
+SOURCE.append(mbedtls_rel_dir + 'library/rsa.c')
+SOURCE.append(mbedtls_rel_dir + 'library/rsa_internal.c')
+SOURCE.append(mbedtls_rel_dir + 'library/sha1.c')
+SOURCE.append(mbedtls_rel_dir + 'library/sha256.c')
+SOURCE.append(mbedtls_rel_dir + 'library/sha512.c')
+SOURCE.append(mbedtls_rel_dir + 'library/ssl_cache.c')
+SOURCE.append(mbedtls_rel_dir + 'library/ssl_ciphersuites.c')
+SOURCE.append(mbedtls_rel_dir + 'library/ssl_cli.c')
+SOURCE.append(mbedtls_rel_dir + 'library/ssl_cookie.c')
+SOURCE.append(mbedtls_rel_dir + 'library/ssl_msg.c')
+SOURCE.append(mbedtls_rel_dir + 'library/ssl_srv.c')
+SOURCE.append(mbedtls_rel_dir + 'library/ssl_ticket.c')
+SOURCE.append(mbedtls_rel_dir + 'library/ssl_tls.c')
+SOURCE.append(mbedtls_rel_dir + 'library/threading.c')
+#SOURCE.append(mbedtls_rel_dir + 'library/timing.c')
+SOURCE.append('./source/library/timing.c')
+SOURCE.append(mbedtls_rel_dir + 'library/version.c')
+SOURCE.append(mbedtls_rel_dir + 'library/version_features.c')
+#SOURCE.append(mbedtls_rel_dir + 'library/x509.c')
+SOURCE.append('./source/library/x509.c')
+SOURCE.append(mbedtls_rel_dir + 'library/x509_create.c')
+SOURCE.append(mbedtls_rel_dir + 'library/x509_crl.c')
+#SOURCE.append(mbedtls_rel_dir + 'library/x509_crt.c')
+SOURCE.append('./source/library/x509_crt.c')
+SOURCE.append(mbedtls_rel_dir + 'library/x509_csr.c')
+SOURCE.append(mbedtls_rel_dir + 'library/x509write_crt.c')
+SOURCE.append(mbedtls_rel_dir + 'library/x509write_csr.c')
+SOURCE.append(mbedtls_rel_dir + 'library/xtea.c')
+
+SOURCE.append('./source/mbedtls_io.c')
+SOURCE.append('./source/entropy_hardware.c')
+SOURCE.append('./source/mbedtls_util.c')
+
+# mbedtls.x include
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE += aw_lwip_config.LWIP_INCLUDE
+
+INCLUDE.append(os.path.join(build_common_config.AW_SDK_INSTALL_PATH, 'include'))
+INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/base/include')
+INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/net/core/include')
+INCLUDE.append(mbedtls_rel_dir + 'include')
+INCLUDE.append(mbedtls_rel_dir + 'library')
+INCLUDE.append(mbedtls_rel_dir + 'configs')
+INCLUDE.append('./include')
+
+
+lib_files = env.Library('mbedtls', SOURCE, CPPPATH=INCLUDE)
+
+Return('lib_files')

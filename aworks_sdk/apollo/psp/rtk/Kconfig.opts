@@ -1,0 +1,20 @@
+# Copyright (c) 2001-present Guangzhou ZHIYUAN Electronics Co., Ltd..
+# All rights reserved.
+
+
+config AW_CFG_MAIN_TASK_STACK_SIZE
+    int "main task stack size"
+    default 10240
+    libsafe
+
+config AW_CFG_MAIN_TASK_PRIO
+    int "main task priority"
+    default 1
+    libsafe
+
+config AW_CFG_TICKS_PER_SECOND
+    int "system tick frequency"
+    default 1000
+    libsafe
+    
+rsource "../../rtk/Kconfig"

@@ -1,0 +1,956 @@
+[
+  {
+    "params": [],
+    "annotation": {
+      "global": true
+    },
+    "desc": "注册控件。",
+    "name": "usb_camera_register",
+    "return": {
+      "type": "ret_t",
+      "desc": "返回RET_OK表示成功，否则表示失败。"
+    },
+    "type": "method",
+    "header": "src/usb_camera_register.h",
+    "level": 1
+  },
+  {
+    "params": [],
+    "annotation": {
+      "global": true
+    },
+    "desc": "获取支持的渲染模式。",
+    "name": "usb_camera_supported_render_mode",
+    "return": {
+      "type": "const char*",
+      "desc": "返回渲染模式。"
+    },
+    "type": "method",
+    "header": "src/usb_camera_register.h",
+    "level": 1
+  },
+  {
+    "type": "class",
+    "methods": [],
+    "events": [],
+    "properties": [
+      {
+        "name": "camera_id",
+        "desc": "USB摄像头id",
+        "type": "uint32_t",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "camera_name",
+        "desc": "USB摄像头的名字",
+        "type": "char*",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "w_camera_name",
+        "desc": "USB摄像头的名字（宽字节）",
+        "type": "wchar_t*",
+        "annotation": {
+          "readable": true
+        }
+      }
+    ],
+    "header": "devices/usb_camera_devices.h",
+    "desc": "USB 摄像头设备信息",
+    "name": "usb_camera_device_info_t",
+    "annotation": {
+      "scriptable": true
+    },
+    "level": 1
+  },
+  {
+    "type": "class",
+    "methods": [],
+    "events": [],
+    "properties": [
+      {
+        "name": "id",
+        "desc": "USB摄像头分辨率id",
+        "type": "uint32_t",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "bpp",
+        "desc": "USB摄像头分辨率颜色位字节数",
+        "type": "uint32_t",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "width",
+        "desc": "USB摄像头分辨率宽",
+        "type": "uint32_t",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "height",
+        "desc": "USB摄像头分辨率高",
+        "type": "uint32_t",
+        "annotation": {
+          "readable": true
+        }
+      }
+    ],
+    "header": "devices/usb_camera_devices.h",
+    "desc": "USB 摄像头分辨率信息",
+    "name": "usb_camera_ratio_t",
+    "annotation": {
+      "scriptable": true
+    },
+    "level": 1
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "slist_t*",
+            "name": "devices_list",
+            "desc": "slist列表头"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "获取USB摄像头设备信息列表",
+        "name": "usb_camera_get_all_devices_info",
+        "return": {
+          "type": "ret_t",
+          "desc": "成功返回RET_OK，返回其他表示失败"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "void*",
+            "name": "p_usb_camera_device",
+            "desc": "USB摄像头句柄"
+          },
+          {
+            "type": "slist_t*",
+            "name": "ratio_list",
+            "desc": "slist列表头"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "通过设备句柄获取 USB 摄像头分辨率列表",
+        "name": "usb_camera_get_devices_ratio_list",
+        "return": {
+          "type": "ret_t",
+          "desc": "成功返回RET_OK，返回其他表示失败"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "uint32_t",
+            "name": "device_id",
+            "desc": "USB摄像头设备Id"
+          },
+          {
+            "type": "slist_t*",
+            "name": "ratio_list",
+            "desc": "slist列表头"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "通过设备 ID 来获取 USB 摄像头分辨率列表",
+        "name": "usb_camera_get_devices_ratio_list_for_device_id",
+        "return": {
+          "type": "ret_t",
+          "desc": "成功返回RET_OK，返回其他表示失败"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "void*",
+            "name": "p_usb_camera_device",
+            "desc": "USB摄像头句柄"
+          },
+          {
+            "type": "uint32_t",
+            "name": "width",
+            "desc": "分辨率的宽"
+          },
+          {
+            "type": "uint32_t",
+            "name": "height",
+            "desc": "分辨率的高"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "检查USB摄像头是否支持该分辨率",
+        "name": "usb_camera_check_ratio",
+        "return": {
+          "type": "ret_t",
+          "desc": "成功返回RET_OK，返回其他表示失败"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "uint32_t",
+            "name": "device_id",
+            "desc": "USB摄像头设备Id"
+          },
+          {
+            "type": "bool_t",
+            "name": "is_mirror",
+            "desc": "是否是镜像"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "打开USB摄像头",
+        "name": "usb_camera_open_device",
+        "return": {
+          "type": "void*",
+          "desc": "成功返回USB摄像头句柄，失败返回NULL。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "uint32_t",
+            "name": "device_id",
+            "desc": "USB摄像头设备Id"
+          },
+          {
+            "type": "bool_t",
+            "name": "is_mirror",
+            "desc": "是否是镜像"
+          },
+          {
+            "type": "uint32_t",
+            "name": "width",
+            "desc": "设置分辨率的宽"
+          },
+          {
+            "type": "uint32_t",
+            "name": "height",
+            "desc": "设置分辨率的高"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "打开USB摄像头，并设置分辨率，如果摄像头不支持该分辨率，则使用默认分辨率",
+        "name": "usb_camera_open_device_with_width_and_height",
+        "return": {
+          "type": "void*",
+          "desc": "成功返回USB摄像头句柄，失败返回NULL。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "void*",
+            "name": "p_usb_camera_device",
+            "desc": "USB摄像头句柄"
+          },
+          {
+            "type": "uint32_t",
+            "name": "width",
+            "desc": "设置分辨率的宽"
+          },
+          {
+            "type": "uint32_t",
+            "name": "height",
+            "desc": "设置分辨率的高"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "设置USB摄像头分辨率，如果摄像头不支持该分辨率，就设置不成功，之前的USB摄像头句柄还是有效果\n\n成功返回新设置的USB摄像头句柄，之前的USB摄像头句柄会被释放，失败返回NULL。",
+        "name": "usb_camera_set_ratio",
+        "return": {
+          "type": "void*",
+          "desc": ""
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "void*",
+            "name": "p_usb_camera_device",
+            "desc": "USB摄像头句柄"
+          },
+          {
+            "type": "uint32_t*",
+            "name": "width",
+            "desc": "输出分辨率的宽"
+          },
+          {
+            "type": "uint32_t*",
+            "name": "height",
+            "desc": "输出分辨率的高"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "获取USB摄像头分辨率",
+        "name": "usb_camera_get_ratio",
+        "return": {
+          "type": "ret_t",
+          "desc": "成功返回RET_OK，返回其他表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "void*",
+            "name": "p_usb_camera_device",
+            "desc": "USB摄像头句柄"
+          },
+          {
+            "type": "bool_t",
+            "name": "is_mirror",
+            "desc": "是否是镜像"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "设置USB摄像头是否是镜像",
+        "name": "usb_camera_set_mirror",
+        "return": {
+          "type": "ret_t",
+          "desc": "成功返回RET_OK，返回其他表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "void*",
+            "name": "p_usb_camera_device",
+            "desc": "USB摄像头句柄"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "关闭USB摄像头",
+        "name": "usb_camera_close_device",
+        "return": {
+          "type": "ret_t",
+          "desc": "成功返回RET_OK，返回其他表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "void*",
+            "name": "p_usb_camera_device",
+            "desc": "USB摄像头句柄"
+          },
+          {
+            "type": "unsigned char*",
+            "name": "data",
+            "desc": "输出图像字节数组"
+          },
+          {
+            "type": "bitmap_format_t",
+            "name": "data",
+            "desc": "输出图像格式"
+          },
+          {
+            "type": "uint32_t",
+            "name": "data_len",
+            "desc": "data参数的字节的长度"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "获取USB摄像头图像数据",
+        "name": "usb_camera_get_video_image_data",
+        "return": {
+          "type": "ret_t",
+          "desc": "成功返回RET_OK，返回其他表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "void*",
+            "name": "ctx",
+            "desc": "USB摄像头句柄"
+          },
+          {
+            "type": "bitmap_t*",
+            "name": "image",
+            "desc": "输出图像"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "准备图片的回调函数",
+        "name": "usb_camera_prepare_image_fun",
+        "return": {
+          "type": "ret_t",
+          "desc": "成功返回RET_OK，返回其他表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "void*",
+            "name": "data",
+            "desc": "USB摄像头设备类型"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "USB摄像头设备类型释放函数，给slist对象使用的",
+        "name": "usb_camera_devices_info_list_destroy",
+        "return": {
+          "type": "ret_t",
+          "desc": "成功返回RET_OK，返回其他表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "void*",
+            "name": "a",
+            "desc": "USB摄像头设备类型"
+          },
+          {
+            "type": "void*",
+            "name": "b",
+            "desc": "USB摄像头设备类型"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "USB摄像头设备类型比较函数，给slist对象使用的",
+        "name": "usb_camera_devices_info_list_compare",
+        "return": {
+          "type": "ret_t",
+          "desc": "成功返回0，失败返回1。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "void*",
+            "name": "data",
+            "desc": "USB摄像头分辨率类型"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "USB摄像头分辨率类型释放函数，给slist对象使用的",
+        "name": "usb_camera_device_ratio_list_destroy",
+        "return": {
+          "type": "ret_t",
+          "desc": "成功返回RET_OK，返回其他表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "void*",
+            "name": "a",
+            "desc": "USB摄像头分辨率类型"
+          },
+          {
+            "type": "void*",
+            "name": "b",
+            "desc": "USB摄像头分辨率类型"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "USB摄像头分辨率类型比较函数，给slist对象使用的",
+        "name": "usb_camera_device_ratio_list_compare",
+        "return": {
+          "type": "ret_t",
+          "desc": "成功返回0，失败返回1。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "is_mirror",
+        "desc": "USB摄像头是否镜像",
+        "type": "bool_t",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "device_ratio",
+        "desc": "USB摄像头分辨率信息",
+        "type": "usb_camera_ratio_t",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "device_info",
+        "desc": "USB摄像头设备信息",
+        "type": "usb_camera_device_info_t",
+        "annotation": {
+          "readable": true
+        }
+      }
+    ],
+    "header": "devices/usb_camera_devices.h",
+    "desc": "USB 摄像头信息基类",
+    "name": "usb_camera_device_base_t",
+    "annotation": {
+      "scriptable": true
+    },
+    "level": 1
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "parent",
+            "desc": "父控件"
+          },
+          {
+            "type": "xy_t",
+            "name": "x",
+            "desc": "x坐标"
+          },
+          {
+            "type": "xy_t",
+            "name": "y",
+            "desc": "y坐标"
+          },
+          {
+            "type": "wh_t",
+            "name": "w",
+            "desc": "宽度"
+          },
+          {
+            "type": "wh_t",
+            "name": "h",
+            "desc": "高度"
+          }
+        ],
+        "annotation": {
+          "constructor": true,
+          "scriptable": true
+        },
+        "desc": "创建usb_camera对象",
+        "name": "usb_camera_create",
+        "return": {
+          "type": "widget_t*",
+          "desc": "usb_camera对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "usb_camera对象。"
+          }
+        ],
+        "annotation": {
+          "cast": true,
+          "scriptable": true
+        },
+        "desc": "转换为usb_camera对象(供脚本语言使用)。",
+        "name": "usb_camera_cast",
+        "return": {
+          "type": "widget_t*",
+          "desc": "usb_camera对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "camera_id",
+            "desc": "当前摄像头ID。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置当前摄像头ID。",
+        "name": "usb_camera_set_camera_id",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "width",
+            "desc": "当前摄像头数据流宽度。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置当前摄像头数据流宽度。",
+        "name": "usb_camera_set_camera_width",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "height",
+            "desc": "当前摄像头数据流高度。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置当前摄像头数据流高度。",
+        "name": "usb_camera_set_camera_height",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "bool_t",
+            "name": "mirror",
+            "desc": "当前摄像头数据是否镜像。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置当前摄像头数据是否镜像。",
+        "name": "usb_camera_set_camera_mirror",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "width",
+            "desc": "当前摄像头数据流宽度。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "height",
+            "desc": "当前摄像头数据流高度。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "修改当前已经打开的摄像头的分辨率。",
+        "name": "usb_camera_set_camera_width_and_height",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "按照当前分辨率打开当前摄像头。",
+        "name": "usb_cemera_open",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "显示当前摄像头的数据。",
+        "name": "usb_cemera_play",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "停止显示当前摄像头的数据。",
+        "name": "usb_cemera_stop",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "关闭当前摄像头。",
+        "name": "usb_camera_close",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "获取当前摄像头设备列表",
+        "name": "usb_camera_enum_all_devices",
+        "return": {
+          "type": "ret_t",
+          "desc": "成功返回列表，失败返回NULL。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "获取当前摄像头设备的支持的摄像头分辨率列表",
+        "name": "usb_camera_enum_device_all_ratio",
+        "return": {
+          "type": "ret_t",
+          "desc": "成功返回列表，失败返回NULL。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "获取当前摄像头是否已经播放",
+        "name": "usb_cemera_is_play",
+        "return": {
+          "type": "ret_t",
+          "desc": "成功返回列表，失败返回NULL。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "获取当前摄像头是否已经打开",
+        "name": "usb_cemera_is_open",
+        "return": {
+          "type": "ret_t",
+          "desc": "成功返回列表，失败返回NULL。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "camera_id",
+        "desc": "当前摄像头ID。",
+        "type": "uint32_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "camera_width",
+        "desc": "当前摄像头数据流宽度。",
+        "type": "uint32_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "camera_height",
+        "desc": "当前摄像头数据流高度。",
+        "type": "uint32_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "mirror",
+        "desc": "当前摄像头数据是否镜像。",
+        "type": "bool_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "devices_info_list",
+        "desc": "接入摄像头列表。",
+        "type": "slist_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "devices_ratio_list",
+        "desc": "当前摄像头分辨率列表。",
+        "type": "slist_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      }
+    ],
+    "header": "usb_camera/usb_camera.h",
+    "desc": "USB 摄像头控件\n\n该控件为 USB 摄像头控件，默认支持 window 和 linux 的摄像头驱动，如果需要支持其他的平台驱动的话，请重载 src/usb_camera/devices/usb_camera_devices.h 的函数。\n\n在xml中使用\"usb\\_camera\"标签创建usb\\_camera控件。如：\n\n```xml\n<!-- ui -->\n<usb_camera name=\"usb_camera\" x=\"0\" y=\"0\" w=\"200\" h=\"200\"/>\n```\n\n可用通过style来设置控件的显示风格，如字体的大小和颜色等等。如：\n\n```xml\n<!-- style -->\n<usb_camera>\n<style name=\"default\">\n<normal />\n</style>\n</usb_camera>\n```",
+    "name": "usb_camera_t",
+    "parent": "mutable_image_t",
+    "annotation": {
+      "scriptable": true,
+      "design": true,
+      "widget": true
+    },
+    "level": 2
+  }
+]

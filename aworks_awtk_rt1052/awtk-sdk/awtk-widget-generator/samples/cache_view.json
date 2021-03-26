@@ -1,0 +1,17 @@
+{
+  "name":"cache_view",
+  "date":"2020-06-04",
+  "team":"AWTK Develop Team",
+  "author":"Li XianJing <xianjimli@hotmail.com>",
+  "desc":"用于缓存子控件的控件。",
+  "copyright":"Guangzhou ZHIYUAN Electronics Co.,Ltd.",
+  "includes":[],
+  "props": [
+    {
+      "name":"update_interval",
+      "desc":"更新缓存的时间间隔。",
+      "init_value":200,
+      "type":"uint32_t"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+tickless模式
+
+1、简介
+    tickless模式是指更少的tick中断，其原理是去掉了不必要的systick中断，通常来说，每ms都会产生一次systick中断，systick主要用于驱动任务调度，和处理系统定时事件，如等待超时等。大部分情况下，systick中断处理实际上不做任何事情，因为在长时间运行的系统大部分时间处于空闲状态，这时大部分systick中断既不会发生任务切换，超时事件也不会出现，但是却总是将cpu从idle唤醒。
+    很明显，存在一种优化的可能，使得在空闲状态systick中断可以发生在期望它到来的时刻，从而减少CPU的唤醒次数，从而节省功耗。tickless模式就是为了满足这种需要。
+    
+2、rtk的tickless模式
+
+2.1 如何使能tickless模式
+    默认配置下tickless模式支持是不被编译到源码中的，要添加tickless模式支持，首先需要在rtk_config中将CONFIG_USE_TICKLESS_IDLE项目配置为1，这样就在代码中添加了tick模式支持。
+    但是，还不够，此时tickless模式默认是禁用的，需要在进入main函数之后的任意地方调用rtk_enable_tickless_idle(1)，这样系统空闲后会自动进入tickless模式。
+    当然，某些关键地段可能不需要tickless模式，也可以调用rtk_enable_tickless_idle(0)，这样就不会进入tickless模式了
+2.2 新平台需要实现的函数
+    要使用tickless模式，实际上是需要一些底层函数的支持，主要有以下两个：
+    void pm_cpu_idle(void); 主要用于使CPU进入idle状态，即CPU停止执行，但可以被任意中断唤醒
+    void pm_suppress_systick_and_sleep(unsigned int expect_idle_tick); 将systick中断设置为expect_idle_tick个tick后到来，然后进入idle状态，并在CPU被中断唤醒后处理其它中断，执行tick增加，systick恢复到周期运行等操作
+
+3、tickless存在的问题
+
+    略微提高了中断延迟时间，在进入tickless模式的工程中会重新配置systick，为了保证中断安全，这期间会禁用CPU处理中断，相对于不使用tickless来说，禁止中断处理的时间延长了一些，这就可能会提高中断延迟时间。但是一个大部分时间空闲的系统，中断次数应该是较少的
+    systick会和日历时间产生误差
+    重新配置systick，必须要禁用它，但是禁用到重新启用会流逝一段时间，这段时间会导致systick的计数值和绝对的日历时间之间有微小的误差，当然可以引入修正因子来减少误差，但是现代CPU的指令cache，数据cache，指令流水线等加速操作会使得这段时间的精确预测基本不可能。
+    
+    CONFIG_TICKLESS_MISSED_COUNT_FACTOR 可用于配置误差修正因子
+    在armv7m中，可以参考armv7m_systick.c中的代码来时间测量流逝的时间，以便找到合适的修正因子，参考test_task_tickless_armv7m.c来测试误差,但是因为依赖于DWT，所以这些代码需要有调试器调试才能正确执行
+    
+    一般来说，优化和不优化需要的修正因子是不同的，通常以最终发行的版本来决定修正因子
+    
+    如果中断频繁，tickless模式会频繁进入和退出，误差可能会加大
+    如果要求systick精度较高，则最好不要使用systick

@@ -1,0 +1,16 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+import sys
+
+from config_build_common import build_common_config 
+
+ARCH_SOURCE = Glob('*.c')
+ARCH_SOURCE.append(Glob('*/*.c'));
+ARCH_SOURCE.append(Glob('*/*.S'));
+
+ARCH_INCLUDE=[]
+ARCH_CDEFINES=[]
+ARCH_RETURN={'ARCH_SOURCE':ARCH_SOURCE,'ARCH_INCLUDE':ARCH_INCLUDE,'ARCH_CDEFINES':ARCH_CDEFINES};
+Return('ARCH_RETURN')

@@ -1,0 +1,72 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+from config_build_common    import build_common_config 
+from config_aw_base         import aw_base_config 
+from config_lwip            import aw_lwip_config
+from config_compoents       import compoents_config
+
+
+cur_build_path = Dir('.', False)
+org_build_path = str(cur_build_path.srcnode())
+
+SOURCE_ABS_DIR = os.path.join(build_common_config.AWORKS_ROOT, '3rdparty/net/goahead-2.5')
+SOURCE_DIR = cal_relative_dir(org_build_path, SOURCE_ABS_DIR)
+
+CPPDEFINES = build_common_config.AW_CPPDEFINES
+
+if not os.path.exists('sys/types.h'):
+    CPPDEFINES.append('NOT_HAVE_SYS_TYPES_H')
+
+# CPPDEFINES.append('AW_DEBUG')
+
+
+NAME = 'aw_goahead'
+
+
+# goahead
+SOURCE = [
+	'source/sock.c',
+	'source/sockGen.c',
+	SOURCE_DIR + '/asp.c',
+	SOURCE_DIR + '/balloc.c',
+	SOURCE_DIR + '/default.c',
+	SOURCE_DIR + '/ejlex.c',
+	SOURCE_DIR + '/ejparse.c',
+	SOURCE_DIR + '/emfdb.c',
+	SOURCE_DIR + '/form.c',
+	SOURCE_DIR + '/h.c',
+	SOURCE_DIR + '/handler.c',
+	SOURCE_DIR + '/matrixSSLSocket.c',
+	SOURCE_DIR + '/md5c.c',
+	SOURCE_DIR + '/mime.c',
+	SOURCE_DIR + '/mime64.c',
+	SOURCE_DIR + '/misc.c',
+	SOURCE_DIR + '/page.c',
+	SOURCE_DIR + '/ringq.c',
+	SOURCE_DIR + '/rom.c',
+	SOURCE_DIR + '/security.c',
+	SOURCE_DIR + '/sym.c',
+	SOURCE_DIR + '/uemf.c',
+	SOURCE_DIR + '/um.c',
+	SOURCE_DIR + '/umui.c',
+	SOURCE_DIR + '/url.c',
+	SOURCE_DIR + '/value.c',
+	SOURCE_DIR + '/webs.c',
+	SOURCE_DIR + '/websda.c',
+	SOURCE_DIR + '/websSSL.c',
+	SOURCE_DIR + '/websuemf.c'
+]
+
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE += aw_lwip_config.LWIP_INCLUDE
+INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/base/include')
+INCLUDE.append('include')
+INCLUDE.append(SOURCE_DIR)
+
+lib_file = Library(NAME, SOURCE, CPPPATH = INCLUDE, CPPDEFINES = CPPDEFINES)
+
+
+
+Return('lib_file')

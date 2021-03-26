@@ -1,0 +1,79 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+from config_build_common    import build_common_config 
+from config_aw_base         import aw_base_config 
+from config_fs_fat          import aw_fs_fat_config
+import config_fs_fat
+
+env = DefaultEnvironment();
+
+cur_build_path = Dir('.',False);
+org_build_path = str(cur_build_path.srcnode())
+
+output_ffconf_file = os.path.join(build_common_config.PROJECT_CONFIG_ROOT,'ffconf.h')
+
+# 首先尝试生成Fatfs的配置文件
+TARGET = output_ffconf_file;
+config_py_file = config_fs_fat.__file__;
+(file_name,ext_name) = os.path.splitext(config_py_file)
+if ext_name == '.pyc':
+    config_py_file = file_name + '.py'
+
+SOURCE = [os.path.join(org_build_path ,'ffconf.h.pyconfig') ]
+SOURCE.append(os.path.join(org_build_path ,'ffconf.defconf') )
+SOURCE.append(config_py_file)
+env.configure_file(TARGET,SOURCE)
+
+#代码
+SOURCE = []
+SOURCE.append('source/aw_fatfs_disk.c')
+SOURCE.append('source/aw_fatfs_io.c')
+SOURCE.append('source/aw_fatfs_os.c')
+SOURCE.append('source/aw_fatfs_time.c')
+
+fatfs_src_path = os.path.join(build_common_config.AWORKS_ROOT,'3rdparty','fs','fatfs')
+fatfs_rel_dir =  cal_relative_dir(org_build_path,fatfs_src_path);
+
+org_build_path = str(os.path.abspath(org_build_path));
+AWORKS_ROOT = os.path.abspath(build_common_config.AWORKS_ROOT);
+if not org_build_path.startswith(AWORKS_ROOT):
+    raise IOError('invalid path');
+REL_PATH = org_build_path[len(AWORKS_ROOT):];
+if REL_PATH[0] == os.path.sep:
+    REL_PATH = REL_PATH[1:];
+INC_INSTALL_DIR = os.path.join(
+                    build_common_config.AW_SDK_INSTALL_PATH,
+                    build_common_config.AWORKS_DIR_NAME,
+                    REL_PATH,
+                    'include');
+
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE.append(build_common_config.PROJECT_CONFIG_ROOT);
+INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/base/include');
+INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/shell/include');
+INCLUDE.append(build_common_config.AWORKS_ROOT + '3rdparty/fs/fatfs/src');
+INCLUDE.append('include');
+
+fat_adapter_lib_file = Library('aw_fatfs_adapter',SOURCE,CPPPATH = INCLUDE)
+
+Install(build_common_config.AW_SDK_INSTALL_PATH+'include/config',output_ffconf_file)
+
+
+# 编译 FATFS 源码
+fat_src_path = os.path.join(build_common_config.AWORKS_ROOT, '3rdparty','fs','fatfs');
+#由LWIP源码路径推算出LWIP将要安装的路径
+fat_src_rel_apollo_dir = cal_relative_dir(build_common_config.AWORKS_ROOT,fat_src_path);
+fat_src_install_path = os.path.join(build_common_config.AW_SDK_INSTALL_PATH,'apollo', fat_src_rel_apollo_dir);
+fat_rel_dir = cal_relative_dir(org_build_path,fat_src_path);
+
+SOURCE = []
+SOURCE += [fat_rel_dir + 'src/ff.c']
+SOURCE += [fat_rel_dir + 'src/ffunicode.c']
+
+fat_src_lib = Library('aw_fatfs',SOURCE,CPPPATH = INCLUDE)
+
+
+lib_files = fat_adapter_lib_file + fat_src_lib
+Return('lib_files')

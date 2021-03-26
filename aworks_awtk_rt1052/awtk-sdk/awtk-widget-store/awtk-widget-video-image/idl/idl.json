@@ -1,0 +1,522 @@
+[
+  {
+    "params": [],
+    "annotation": {
+      "global": true
+    },
+    "desc": "注册控件。",
+    "name": "video_image_register",
+    "return": {
+      "type": "ret_t",
+      "desc": "返回RET_OK表示成功，否则表示失败。"
+    },
+    "type": "method",
+    "header": "src/video_image_register.h",
+    "level": 1
+  },
+  {
+    "params": [],
+    "annotation": {
+      "global": true
+    },
+    "desc": "获取支持的渲染模式。",
+    "name": "video_image_supported_render_mode",
+    "return": {
+      "type": "const char*",
+      "desc": "返回渲染模式。"
+    },
+    "type": "method",
+    "header": "src/video_image_register.h",
+    "level": 1
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "parent",
+            "desc": "父控件"
+          },
+          {
+            "type": "xy_t",
+            "name": "x",
+            "desc": "x坐标"
+          },
+          {
+            "type": "xy_t",
+            "name": "y",
+            "desc": "y坐标"
+          },
+          {
+            "type": "wh_t",
+            "name": "w",
+            "desc": "宽度"
+          },
+          {
+            "type": "wh_t",
+            "name": "h",
+            "desc": "高度"
+          }
+        ],
+        "annotation": {
+          "constructor": true,
+          "scriptable": true
+        },
+        "desc": "创建video_image对象",
+        "name": "video_image_create",
+        "return": {
+          "type": "widget_t*",
+          "desc": "video_image对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "video_image对象。"
+          }
+        ],
+        "annotation": {
+          "cast": true,
+          "scriptable": true
+        },
+        "desc": "转换为video_image对象(供脚本语言使用)。",
+        "name": "video_image_cast",
+        "return": {
+          "type": "widget_t*",
+          "desc": "video_image对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "video_name",
+            "desc": "视频名字。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置视频名字。",
+        "name": "video_image_set_video_name",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "bool_t",
+            "name": "auto_play",
+            "desc": "是否自动播放。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置是否自动播放。",
+        "name": "video_image_set_auto_play",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "delay_paly",
+            "desc": "延迟播放。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置延迟播放。",
+        "name": "video_image_set_delay_paly",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "bool_t",
+            "name": "draw_video_image",
+            "desc": "是否自动绘制视频贴图数据。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置是否自动绘制视频贴图数据。（默认为TRUE，该成员变量是为了某一些特殊场景使用）",
+        "name": "video_image_set_draw_video_image",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "video_image_init_image_t",
+            "name": "init_image",
+            "desc": "初始化序列帧位图函数。"
+          },
+          {
+            "type": "void*",
+            "name": "init_image_ctx",
+            "desc": "上下文。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置自定义初始化序列帧位图函数（如果该参数为NULL，会使用默认的位图创建方法）\n如果返回失败的话，就会使用默认的方法创建位图。",
+        "name": "video_image_set_init_bitmap_func",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "video_image_dispose_image_t",
+            "name": "dispose_image",
+            "desc": "释放序列帧位图函数。"
+          },
+          {
+            "type": "void*",
+            "name": "dispose_image_ctx",
+            "desc": "上下文。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置自定义释放序列帧位图函数（如果该参数为NULL，会使用默认的位图释放方法）",
+        "name": "video_image_set_dispose_image_func",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "video_image_draw_image_t",
+            "name": "draw_image",
+            "desc": "绘制序列帧位图函数。"
+          },
+          {
+            "type": "void*",
+            "name": "draw_image_ctx",
+            "desc": "上下文。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置自定义绘制序列帧位图函数（如果该参数为NULL，会使用默认的位图绘制方法）",
+        "name": "video_image_set_draw_image_func",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "video_image_to_image_begin_t",
+            "name": "to_image_begin",
+            "desc": "解码序列帧前回调函数。"
+          },
+          {
+            "type": "void*",
+            "name": "to_image_begin_ctx",
+            "desc": "解码序列帧前回调函数上下文。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置解码序列帧前回调函数",
+        "name": "video_image_set_to_image_begin_func",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "video_image_to_image_end_t",
+            "name": "to_image_end",
+            "desc": "解码序列帧后回调函数。"
+          },
+          {
+            "type": "void*",
+            "name": "to_image_end_ctx",
+            "desc": "解码序列帧后回调函数上下文。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置解码序列帧后回调函数",
+        "name": "video_image_set_to_image_end_func",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "video_name",
+        "desc": "视频名字。",
+        "type": "char*",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "auto_play",
+        "desc": "是否自动播放。",
+        "type": "bool_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "delay_paly",
+        "desc": "延迟播放。",
+        "type": "uint32_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "draw_video_image",
+        "desc": "是否自动绘制视频贴图数据。（默认为TRUE，该成员变量是为了某一些特殊场景使用）",
+        "type": "bool_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "init_image_ctx",
+        "desc": "自定义初始化序列帧位图函数上下文",
+        "type": "void*",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "init_image",
+        "desc": "自定义初始化序列帧位图函数（如果该参数为NULL，会使用默认的位图创建方法）",
+        "type": "video_image_init_image_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "dispose_image_ctx",
+        "desc": "自定义释放序列帧位图函数上下文",
+        "type": "void*",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "dispose_image",
+        "desc": "自定义释放序列帧位图函数（如果该参数为NULL，会使用默认的位图释放方法）",
+        "type": "video_image_dispose_image_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "draw_image_ctx",
+        "desc": "自定义绘制序列帧位图函数上下文",
+        "type": "void*",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "draw_image",
+        "desc": "自定义绘制序列帧位图函数（如果该参数为NULL，会使用默认的位图绘制方法）",
+        "type": "video_image_draw_image_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "to_image_begin_ctx",
+        "desc": "解码序列帧前回调函数上下文",
+        "type": "void*",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "to_image_begin",
+        "desc": "解码序列帧前回调函数",
+        "type": "video_image_to_image_begin_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "to_image_end_ctx",
+        "desc": "解码序列帧后回调函数上下文",
+        "type": "void*",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "to_image_end",
+        "desc": "解码序列帧后回调函数",
+        "type": "video_image_to_image_end_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      }
+    ],
+    "header": "video_image/video_image.h",
+    "desc": "帧间差异视频播放控件\n\n由于该控件使用的视频是特别资源，需要 diff_image_to_video_gen.exe 工具生成的\n所以详细用法请看 awtk-widget-calendar-month/docs/video_image控件用法.md。\n\n在xml中使用\"video\\_image\"标签创建video\\_image控件。如：\n\n```xml\n<!-- ui -->\n<video_image x=\"0\" y=\"0\" w=\"200\" h=\"200\" />\n```\n\n可用通过style来设置控件的显示风格，如字体的大小和颜色等等。如：\n\n```xml\n<!-- style -->\n<video_image>\n<style name=\"default\">\n<normal />\n</style>\n</video_image>\n```",
+    "name": "video_image_t",
+    "parent": "widget_t",
+    "annotation": {
+      "scriptable": true,
+      "design": true,
+      "widget": true
+    },
+    "level": 2
+  }
+]

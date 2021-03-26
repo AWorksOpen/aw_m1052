@@ -1,0 +1,488 @@
+﻿#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+from config_build_common import build_common_config
+from config_lwip import aw_lwip_config
+from config_compoents import compoents_config
+import os
+
+env = DefaultEnvironment()
+
+#代码
+SOURCE_DRIVER = []
+SOURCE_DRIVER_PART2 = []
+SOURCE_DRIVER.append('source/driver/board/awbl_apl_d01.c')
+SOURCE_DRIVER.append('source/driver/board/awbl_panel_pm1000.c')
+SOURCE_DRIVER.append('source/driver/board/awbl_tiny_hmi.c')
+SOURCE_DRIVER.append('source/driver/busctlr/awbl_gpio_i2c.c')
+SOURCE_DRIVER.append('source/driver/busctlr/awbl_gpio_spi.c')
+SOURCE_DRIVER.append('source/driver/busctlr/awbl_sdio_spi.c')
+SOURCE_DRIVER.append('source/driver/buzzer/awbl_buzzer_dc.c')
+SOURCE_DRIVER.append('source/driver/buzzer/awbl_buzzer_pwm.c')
+SOURCE_DRIVER.append('source/driver/digitron/awbl_digitron_seg8_ascii.c')
+SOURCE_DRIVER.append('source/driver/digitron/awbl_hc595_digitron.c')
+SOURCE_DRIVER.append('source/driver/gps/awbl_cnt226.c')
+SOURCE_DRIVER.append('source/driver/gps/awbl_ublox.c')
+SOURCE_DRIVER.append('source/driver/gps/awbl_gnss_gprs.c')
+SOURCE_DRIVER.append('source/driver/gps/awbl_atgm332d.c')
+SOURCE_DRIVER.append('source/driver/input/touchscreen/awbl_ft5x06_ts.c')
+SOURCE_DRIVER.append('source/driver/input/touchscreen/awbl_bu21029muv.c')
+SOURCE_DRIVER.append('source/driver/input/touchscreen/awbl_ts2046.c')
+SOURCE_DRIVER.append('source/driver/input/touchscreen/awbl_gt911_ts.c')
+SOURCE_DRIVER.append('source/driver/input/key/awbl_gpio_key.c')
+SOURCE_DRIVER.append('source/driver/input/key/awbl_hc595_matrix_key.c')
+SOURCE_DRIVER.append('source/driver/input/key/awbl_matrix_keypad.c')
+SOURCE_DRIVER.append('source/driver/input/key/awbl_adc_key.c')
+SOURCE_DRIVER.append('source/driver/input/knob/awbl_gpio_knob.c')
+if compoents_config.AWORKS_PSP_NAME != 'sysbios6':
+    SOURCE_DRIVER.append('source/driver/intctlr/awbl_armcm_nvic.c')
+    SOURCE_DRIVER.append('source/driver/intctlr/awbl_armv8m_nvic.c')
+SOURCE_DRIVER.append('source/driver/led/awbl_gpio_led.c')
+SOURCE_DRIVER.append('source/driver/led/awbl_hc595_digi_led.c')
+SOURCE_DRIVER.append('source/driver/led/awbl_hc595_led.c')
+SOURCE_DRIVER.append('source/driver/mprinter/awbl_zytp.c')
+SOURCE_DRIVER.append('source/driver/norflash/awbl_nor_flash.c')
+SOURCE_DRIVER.append('source/driver/norflash/awbl_spi_flash.c')
+SOURCE_DRIVER.append('source/driver/norflash/awbl_spi_flash_mtd.c')
+SOURCE_DRIVER.append('source/driver/norflash/awbl_spi_flash_nvram.c')
+SOURCE_DRIVER.append('source/driver/nvram/awbl_ep24cxx.c')
+SOURCE_DRIVER.append('source/driver/phy/awbl_generic_phy.c')
+SOURCE_DRIVER.append('source/driver/phy/awbl_dp83848_phy.c')
+SOURCE_DRIVER.append('source/driver/phy/awbl_dp83848ep_phy.c')
+SOURCE_DRIVER.append('source/driver/relay/awbl_relay.c')
+SOURCE_DRIVER.append('source/driver/relay/awbl_relay_dc.c')
+SOURCE_DRIVER.append('source/driver/rfid/awbl_zlg600a.c')
+SOURCE_DRIVER.append('source/driver/rfid/awbl_zlg600a_i2c.c')
+SOURCE_DRIVER.append('source/driver/rfid/awbl_zlg600a_uart.c')
+SOURCE_DRIVER.append('source/driver/rfid/zsn603_platform.c')
+SOURCE_DRIVER.append('source/driver/rfid/awbl_zsn603_uart.c')
+SOURCE_DRIVER.append('source/driver/rfid/awbl_zsn603_i2c.c')
+SOURCE_DRIVER.append('source/driver/rfid/zsn603.c')
+SOURCE_DRIVER.append('source/driver/rtc/awbl_jyrtc1.c')
+SOURCE_DRIVER.append('source/driver/rtc/awbl_pcf8563.c')
+SOURCE_DRIVER.append('source/driver/rtc/awbl_pcf85063.c')
+SOURCE_DRIVER.append('source/driver/rtc/awbl_pcf85263.c')
+SOURCE_DRIVER.append('source/driver/rtc/awbl_rx8025sa.c')
+SOURCE_DRIVER.append('source/driver/rtc/awbl_rx8025t.c')
+SOURCE_DRIVER.append('source/driver/rtc/awbl_ds1302.c')
+SOURCE_DRIVER.append('source/driver/sdiocard/awbl_sdcard.c')
+SOURCE_DRIVER.append('source/driver/serial/awbl_ns16550.c')
+#SOURCE_DRIVER.append('source/driver/serial/awbl_ns16550_plb.c')
+#SOURCE_DRIVER.append('source/driver/serial/awbl_sc16is7xx_i2c.c')
+#SOURCE_DRIVER.append('source/driver/serial/awbl_sc16is7xx_spi.c')
+SOURCE_DRIVER.append('source/driver/thermistor/awbl_temp.c')
+SOURCE_DRIVER.append('source/driver/thermistor/awbl_therm_ntc.c')
+SOURCE_DRIVER.append('source/driver/upp/awbl_ti_upp.c')
+SOURCE_DRIVER.append('source/driver/wdt/awbl_gpio_wdt.c')
+SOURCE_DRIVER.append('source/driver/zigbee/awbl_zm516x.c')
+SOURCE_DRIVER.append('source/driver/digitron_key/awbl_zlg72128.c')
+SOURCE_DRIVER.append('source/driver/sata/aw_sata_dev_transfer.c')
+SOURCE_DRIVER.append('source/driver/sata/awbl_sata_ahci.c')
+SOURCE_DRIVER.append('source/driver/disk/aw_sata_disk_subclass.c')
+SOURCE_DRIVER.append('source/driver/disk/awbl_sata_disk.c')
+SOURCE_DRIVER.append('source/driver/cdrom/aw_sata_cdrom_subclass.c')
+SOURCE_DRIVER.append('source/driver/cdrom/awbl_sata_cdrom.c')
+SOURCE_DRIVER.append('source/driver/card_reader/awbl_fm175xx.c')
+SOURCE_DRIVER.append('source/driver/sensor/awbl_tps08u.c')
+SOURCE_DRIVER.append('source/driver/sensor/awbl_tps02r.c')
+SOURCE_DRIVER.append('source/driver/sensor/awbl_bh1730.c')
+SOURCE_DRIVER.append('source/driver/sensor/awbl_bma253.c')
+SOURCE_DRIVER.append('source/driver/sensor/awbl_bme280.c')
+SOURCE_DRIVER.append('source/driver/sensor/awbl_bmg160.c')
+SOURCE_DRIVER.append('source/driver/sensor/awbl_bmp280.c')
+SOURCE_DRIVER.append('source/driver/sensor/awbl_hts221.c')
+SOURCE_DRIVER.append('source/driver/sensor/awbl_lis3mdl.c')
+SOURCE_DRIVER.append('source/driver/sensor/awbl_lps22hb.c')
+SOURCE_DRIVER.append('source/driver/sensor/awbl_lsm6dsl.c')
+SOURCE_DRIVER.append('source/driver/sensor/awbl_ltr553.c')
+SOURCE_DRIVER.append('source/driver/sensor/awbl_mmc5883ma.c')
+SOURCE_DRIVER.append('source/driver/sensor/awbl_shtc1.c')
+SOURCE_DRIVER.append('source/driver/sensor/awbl_fxos8700.c')
+SOURCE_DRIVER.append('source/driver/can/awbl_sja1000_can.c')
+SOURCE_DRIVER.append('source/driver/can/awbl_csm300x.c')
+
+SOURCE_DRIVER.append('source/driver/camera/awbl_gc0308.c')
+SOURCE_DRIVER.append('source/driver/camera/awbl_ov7725.c')
+SOURCE_DRIVER.append('source/driver/camera/awbl_adv7280.c')
+
+
+# lora 构建
+if get_config_val(compoents_config, 'EN_LORANET', False) is True:
+    SOURCE_DRIVER_PART2.append('source/driver/lora/awbl_sx127x.c')
+
+#添加miniport小板与pack板相关驱动的源码
+SOURCE_DRIVER_PART2.append('source/driver/board/awbl_miniport_gpio_digitron.c')
+SOURCE_DRIVER_PART2.append('source/driver/board/awbl_miniport_hc595_digitron.c')
+SOURCE_DRIVER_PART2.append('source/driver/board/awbl_miniport_hc595_led.c')
+SOURCE_DRIVER_PART2.append('source/driver/board/awbl_miniport_key_digitron.c')
+SOURCE_DRIVER_PART2.append('source/driver/board/awbl_matrix_key_lite.c')
+SOURCE_DRIVER_PART2.append('source/driver/board/awbl_miniport_key_hc595_digitron.c')
+SOURCE_DRIVER_PART2.append('source/driver/digitron/awbl_gpio_digitron.c')
+SOURCE_DRIVER_PART2.append('source/driver/digitron/awbl_gpio_hc595_digitron.c')
+SOURCE_DRIVER_PART2.append('source/driver/thermistor/awbl_lm75.c')
+
+SOURCE_CORE = []
+SOURCE_CORE.append('source/core/awbl_adc.c')
+SOURCE_CORE.append('source/core/awbl_buzzer.c')
+SOURCE_CORE.append('source/core/awbl_can.c')
+SOURCE_CORE.append('source/core/awbl_cap.c')
+SOURCE_CORE.append('source/core/awbl_crc.c')
+SOURCE_CORE.append('source/core/awbl_crctable.c')
+SOURCE_CORE.append('source/core/awbl_dac.c')
+SOURCE_CORE.append('source/core/awbl_digitron.c')
+SOURCE_CORE.append('source/core/awbl_digitron_if.c')
+SOURCE_CORE.append('source/core/awbl_fb.c')
+SOURCE_CORE.append('source/core/awbl_gnss.c')
+SOURCE_CORE.append('source/core/awbl_gpio.c')
+SOURCE_CORE.append('source/core/awbl_gpio_hc595.c')
+SOURCE_CORE.append('source/core/awbl_i2cbus.c')
+SOURCE_CORE.append('source/core/awbl_intctlr.c')
+SOURCE_CORE.append('source/core/awbl_intensity.c')
+SOURCE_CORE.append('source/core/awbl_led.c')
+SOURCE_CORE.append('source/core/awbl_miibus.c')
+SOURCE_CORE.append('source/core/awbl_nand.c')
+SOURCE_CORE.append('source/core/awbl_nand_bus.c')
+SOURCE_CORE.append('source/core/awbl_nand_ecc.c')
+SOURCE_CORE.append('source/core/awbl_nand_pf_serv_default.c')
+SOURCE_CORE.append('source/core/awbl_nic_manage.c')
+SOURCE_CORE.append('source/core/awbl_nmea_0183_decode.c')
+SOURCE_CORE.append('source/core/awbl_nvram.c')
+SOURCE_CORE.append('source/core/awbl_pwm.c')
+SOURCE_CORE.append('source/core/awbl_rtc.c')
+SOURCE_CORE.append('source/core/awbl_scanner.c')
+SOURCE_CORE.append('source/core/awbl_sdiobus.c')
+SOURCE_CORE.append('source/core/awbl_sensor.c')
+SOURCE_CORE.append('source/core/awbl_serial.c')
+SOURCE_CORE.append('source/core/awbl_spibus.c')
+SOURCE_CORE.append('source/core/awbl_timer.c')
+SOURCE_CORE.append('source/core/awbl_timestamp.c')
+SOURCE_CORE.append('source/core/awbl_ts.c')
+SOURCE_CORE.append('source/core/awbl_upp.c')
+SOURCE_CORE.append('source/core/awbl_wdt.c')
+SOURCE_CORE.append('source/core/awbl_satabus.c')
+SOURCE_CORE.append('source/core/awbl_eim_bus.c')
+SOURCE_CORE.append('source/core/awbl_camera.c')
+SOURCE_CORE.append('source/core/awbl_temp.c')
+SOURCE_CORE.append('source/core/awbl_pwm_it.c')
+SOURCE_CORE.append('source/core/aw_ts_lib.c')
+
+SOURCE_METHODS = []
+SOURCE_METHODS.append('source/methods/awbl_adc_methods.c')
+SOURCE_METHODS.append('source/methods/awbl_capserv_get.c')
+SOURCE_METHODS.append('source/methods/awbl_crcserv_get.c')
+SOURCE_METHODS.append('source/methods/awbl_dac_methods.c')
+SOURCE_METHODS.append('source/methods/awbl_dmaserv_get.c')
+SOURCE_METHODS.append('source/methods/awbl_fb_method.c')
+SOURCE_METHODS.append('source/methods/awbl_gpioserv_get.c')
+SOURCE_METHODS.append('source/methods/awbl_icserv_get.c')
+SOURCE_METHODS.append('source/methods/awbl_ledserv_get.c')
+SOURCE_METHODS.append('source/methods/awbl_mii_phy_mode_setget.c')
+SOURCE_METHODS.append('source/methods/awbl_mii_phy_rw.c')
+SOURCE_METHODS.append('source/methods/awbl_mii_update_stat.c')
+SOURCE_METHODS.append('source/methods/awbl_nvram_get.c')
+SOURCE_METHODS.append('source/methods/awbl_nvram_set.c')
+SOURCE_METHODS.append('source/methods/awbl_pwmserv_get.c')
+SOURCE_METHODS.append('source/methods/awbl_remove_dev.c')
+SOURCE_METHODS.append('source/methods/awbl_rtcserv_get.c')
+SOURCE_METHODS.append('source/methods/awbl_sdio_methods.c')
+SOURCE_METHODS.append('source/methods/awbl_sensorserv_get.c')
+SOURCE_METHODS.append('source/methods/awbl_serial_methods.c')
+SOURCE_METHODS.append('source/methods/awbl_timer_methods.c')
+
+SOURCE_METHODS.append('source/methods/awbl_camera_controller_method.c')
+SOURCE_METHODS.append('source/methods/awbl_camera_method.c')
+
+# 分析各个构建库的头文件包含路径
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE += ['include']
+INCLUDE.append(build_common_config.AWORKS_ROOT+'components/base/include')
+
+# lora相关头文件
+if get_config_val(compoents_config, 'EN_LORANET', False) is True:
+    INCLUDE.append(build_common_config.AWORKS_ROOT+'components/lora/lora_softimer/include')
+    INCLUDE.append(build_common_config.AWORKS_ROOT+'components/lora/lora_sx1276/include')
+    INCLUDE.append(build_common_config.AWORKS_ROOT+'components/lora/lora_utilities/include')
+
+# IP network
+if get_config_val(compoents_config, 'EN_AW_IPNET', False) is True:
+    #INCLUDE.append(os.path.join(build_common_config.AW_SDK_INSTALL_PATH, 'include'))
+    INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/net/core/include')
+    INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/net/dhcp_server/include')
+    INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/net/tools/include')
+    if get_config_val(compoents_config, 'EN_AW_LWIP_1_4_X', False) is True:
+        INCLUDE.append(build_common_config.AWORKS_ROOT + '3rdparty/net/lwip_1.4.x/src/netif')
+    
+    if get_config_val(compoents_config, 'EN_AW_LWIP_2_X', False) is True:
+        INCLUDE.append(build_common_config.AWORKS_ROOT + '3rdparty/net/lwip_2.x/src/include/')
+        INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/net/lwip_2.x_adapter/extra_include/')
+
+    # Wi-Fi
+    if get_config_val(compoents_config, 'EN_AW_WIFI', False) is True:
+        SOURCE_CORE.append('source/core/awbl_wifi.c')
+    # GPRS
+    if get_config_val(compoents_config, 'EN_AW_GPRS', False) is True:
+        INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/usb/include')
+        if get_config_val(aw_lwip_config, 'LWIP_PPP_SUPPORT', 0) == 0:
+            raise EnvironmentError("EN_AW_GPRS can't live w/o LWIP_PPP_SUPPORT")
+        SOURCE_CORE.append('source/core/awbl_gprs.c')
+        SOURCE_DRIVER_PART2.append('source/driver/gprs/awbl_gprs_sim800.c')
+        SOURCE_DRIVER_PART2.append('source/driver/gprs/gb2312_unicode_table.c')
+        SOURCE_DRIVER_PART2.append('source/driver/gprs/awbl_gprs_me909s.c')
+        SOURCE_DRIVER_PART2.append('source/driver/gprs/awbl_gprs_u9300c.c')
+        SOURCE_DRIVER_PART2.append('source/driver/gprs/awbl_gprs_ec20.c')
+        SOURCE_DRIVER_PART2.append('source/driver/gprs/awbl_gprs_gm510.c')
+        SOURCE_DRIVER_PART2.append('source/driver/gprs/awbl_gprs_n58.c')
+
+    # Ethernet
+    SOURCE_DRIVER_PART2.append('source/driver/net/awbl_emac_ax88796.c')
+
+DRIVER_INCLUDE = INCLUDE
+DRIVER_INCLUDE.append(aw_lwip_config.LWIP_INCLUDE)
+
+
+lib_core = Library('awbl_common_core', SOURCE_CORE, CPPPATH = INCLUDE)
+lib_methods = Library('awbl_common_methods', SOURCE_METHODS, CPPPATH = INCLUDE)
+lib_driver = Library('awbl_common_driver', SOURCE_DRIVER, CPPPATH = DRIVER_INCLUDE)
+lib_driver_part2 = Library('awbl_common_driver_part2', SOURCE_DRIVER_PART2, CPPPATH = DRIVER_INCLUDE)
+
+lib_awbl_common_file_name = env['LIBPREFIX'] + 'awbl_common' + env['LIBSUFFIX']
+
+libraries_list = [lib_core, lib_methods, lib_driver, lib_driver_part2]
+
+# IP network
+if get_config_val(compoents_config, 'EN_AW_IPNET', False) is True:
+    print('CONF: EN_AW_IPNET')
+    # Wi-Fi
+    if get_config_val(compoents_config, 'EN_AW_WIFI', False) is True:
+        print('CONF: EN_AW_WIFI')
+
+        # cyw43362
+        if get_config_val(compoents_config, 'AWBL_DRIVER_WIFI_CYW43362', False) is True:
+            print('CONF: AWBL_DRIVER_WIFI_CYW43362')
+            DEFINE_DRIVER_WIFI_CYW43362 = build_common_config.AW_CPPDEFINES
+            DRIVER_INCLUDE_WIFI_CYW4336 = DRIVER_INCLUDE
+            SOURCE_DRIVER_WIFI_CYW43362 = []
+            print('CONF: DEFINE_DRIVER_WIFI_CYW43362')
+            print(DEFINE_DRIVER_WIFI_CYW43362)
+
+            DRIVER_INCLUDE_WIFI_CYW4336.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress')
+            DRIVER_INCLUDE_WIFI_CYW4336.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/include')
+            DRIVER_INCLUDE_WIFI_CYW4336.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/libraries/utilities/TLV')
+            DRIVER_INCLUDE_WIFI_CYW4336.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED')
+            DRIVER_INCLUDE_WIFI_CYW4336.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/internal')
+            DRIVER_INCLUDE_WIFI_CYW4336.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/network/LwIP/WWD')
+            DRIVER_INCLUDE_WIFI_CYW4336.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/platform')
+            DRIVER_INCLUDE_WIFI_CYW4336.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/platform/GCC')
+            DRIVER_INCLUDE_WIFI_CYW4336.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/platform/include')
+            DRIVER_INCLUDE_WIFI_CYW4336.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/RTOS/aworks')
+            DRIVER_INCLUDE_WIFI_CYW4336.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/RTOS/aworks/WWD')
+            DRIVER_INCLUDE_WIFI_CYW4336.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/WWD')
+            DRIVER_INCLUDE_WIFI_CYW4336.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/WWD/include')
+            DRIVER_INCLUDE_WIFI_CYW4336.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/WWD/include/RTOS')
+            DRIVER_INCLUDE_WIFI_CYW4336.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/WWD/internal/bus_protocols')
+            DRIVER_INCLUDE_WIFI_CYW4336.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/WWD/internal/chips/43362')
+
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/cyw43362/awbl_cyw43362_drv_common.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/cyw43362/awbl_cyw43362_platform_host.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/awbl_cyw_wiced_common.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/internal/wiced_lib.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/internal/wiced_low_power.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/internal/wifi.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/libraries/utilities/TLV/tlv.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/network/LwIP/WICED/wiced_network.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/network/LwIP/WWD/wwd_buffer.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/platform/MCU/platform_resource.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/platform/MCU/wwd_resources.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/RTOS/wiced_rtos_common.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/RTOS/aworks/WICED/wiced_rtos.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/RTOS/aworks/WWD/wwd_rtos.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/WWD/internal/bus_protocols/wwd_bus_common.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/WWD/internal/chips/43362/wwd_ap.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/WWD/internal/chips/43362/wwd_chip_specific_functions.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_ap_common.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_debug.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_eapol.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_internal.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_logging.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_management.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_sdpcm.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_thread.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_thread_internal.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_wifi.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_wifi_chip_common.c')
+            SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_wifi_sleep.c')
+
+            if get_config_val(compoents_config, 'AWBL_WIFI_CYW43362_IF_SDIO', False) is True:
+                print('CONF: AWBL_WIFI_CYW43362_IF_SDIO')
+                DEFINE_DRIVER_WIFI_CYW43362.append('AW_DRV_AWBL_CYW43362_WIFI_SDIO')
+                SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/cyw43362/awbl_cyw43362_sdio.c')
+                SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/WWD/internal/bus_protocols/SDIO/wwd_bus_protocol.c')
+            else:
+                print('CONF: AW_DRV_AWBL_CYW43362_WIFI_SPI')
+                DEFINE_DRIVER_WIFI_CYW43362.append('AW_DRV_AWBL_CYW43362_WIFI_SPI')
+                SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/cyw43362/awbl_cyw43362_spi.c')
+                SOURCE_DRIVER_WIFI_CYW43362.append('source/driver/wifi/cypress/WICED/WWD/internal/bus_protocols/SPI/wwd_bus_protocol.c')
+
+            if get_config_val(compoents_config, 'EN_AW_LWIP_2_X', False) is True:
+                if get_config_val(compoents_config, 'EN_AW_PCAP_LIB', False) is True:
+                    DEFINE_DRIVER_WIFI_CYW43362.append('AW_NETIF_EN_PCAP')
+
+            libraries_list.append(Library('awbl_common_driver_wifi_cyw43362', SOURCE_DRIVER_WIFI_CYW43362, CPPPATH = DRIVER_INCLUDE_WIFI_CYW4336, CPPDEFINES = DEFINE_DRIVER_WIFI_CYW43362))
+
+        # cyw43455
+        elif get_config_val(compoents_config, 'AWBL_DRIVER_WIFI_CYW43455', False) is True:
+            print('CONF: AWBL_DRIVER_WIFI_CYW43455')
+            DEFINE_DRIVER_WIFI_CYW43455 = build_common_config.AW_CPPDEFINES
+            DRIVER_INCLUDE_WIFI_CYW43455 = DRIVER_INCLUDE
+            SOURCE_DRIVER_WIFI_CYW43455 = []
+            print('CONF: DEFINE_DRIVER_WIFI_CYW43455')
+            print(DEFINE_DRIVER_WIFI_CYW43455)
+
+            DRIVER_INCLUDE_WIFI_CYW43455.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress')
+            DRIVER_INCLUDE_WIFI_CYW43455.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/include')
+            DRIVER_INCLUDE_WIFI_CYW43455.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/libraries/utilities/TLV')
+            DRIVER_INCLUDE_WIFI_CYW43455.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED')
+            DRIVER_INCLUDE_WIFI_CYW43455.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/internal')
+            DRIVER_INCLUDE_WIFI_CYW43455.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/network/LwIP/WWD')
+            DRIVER_INCLUDE_WIFI_CYW43455.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/platform')
+            DRIVER_INCLUDE_WIFI_CYW43455.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/platform/GCC')
+            DRIVER_INCLUDE_WIFI_CYW43455.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/platform/include')
+            DRIVER_INCLUDE_WIFI_CYW43455.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/RTOS/aworks')
+            DRIVER_INCLUDE_WIFI_CYW43455.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/RTOS/aworks/WWD')
+            DRIVER_INCLUDE_WIFI_CYW43455.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/WWD')
+            DRIVER_INCLUDE_WIFI_CYW43455.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/WWD/include')
+            DRIVER_INCLUDE_WIFI_CYW43455.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/WWD/include/RTOS')
+            DRIVER_INCLUDE_WIFI_CYW43455.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/WWD/internal/bus_protocols')
+            DRIVER_INCLUDE_WIFI_CYW43455.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/WWD/internal/chips/43455')
+
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/cyw43455/awbl_cyw43455_drv_common.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/cyw43455/awbl_cyw43455_platform_host.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/awbl_cyw_wiced_common.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/internal/wiced_lib.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/internal/wiced_low_power.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/internal/wifi.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/libraries/utilities/TLV/tlv.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/network/LwIP/WICED/wiced_network.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/network/LwIP/WWD/wwd_buffer.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/platform/MCU/platform_resource.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/platform/MCU/wwd_resources.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/RTOS/wiced_rtos_common.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/RTOS/aworks/WICED/wiced_rtos.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/RTOS/aworks/WWD/wwd_rtos.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/WWD/internal/bus_protocols/wwd_bus_common.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/WWD/internal/chips/43455/wwd_ap.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/WWD/internal/chips/43455/wwd_chip_specific_functions.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_ap_common.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_debug.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_eapol.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_internal.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_logging.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_management.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_sdpcm.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_thread.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_thread_internal.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_wifi.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_wifi_chip_common.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_wifi_sleep.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_clm.c')
+
+            # CYW43455 目前仅适配了 SDIO
+            print('CONF: AWBL_WIFI_CYW43455_IF_SDIO')
+            DEFINE_DRIVER_WIFI_CYW43455.append('AW_DRV_AWBL_CYW43455_WIFI_SDIO')
+            DEFINE_DRIVER_WIFI_CYW43455.append('WLAN_ARM_CR4')
+            DEFINE_DRIVER_WIFI_CYW43455.append('WWD_DOWNLOAD_CLM_BLOB')
+            DEFINE_DRIVER_WIFI_CYW43455.append('WICED_PLATFORM_MASKS_BUS_IRQ')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/cyw43455/awbl_cyw43455_sdio.c')
+            SOURCE_DRIVER_WIFI_CYW43455.append('source/driver/wifi/cypress/WICED/WWD/internal/bus_protocols/SDIO/wwd_bus_protocol.c')
+
+            libraries_list.append(Library('awbl_common_driver_wifi_cyw43455', SOURCE_DRIVER_WIFI_CYW43455, CPPPATH = DRIVER_INCLUDE_WIFI_CYW43455, CPPDEFINES = DEFINE_DRIVER_WIFI_CYW43455))
+
+        # cyw43438
+        elif get_config_val(compoents_config, 'AWBL_DRIVER_WIFI_CYW43438', False) is True:
+            print('CONF: AWBL_DRIVER_WIFI_CYW43438')
+            DEFINE_DRIVER_WIFI_CYW43438 = build_common_config.AW_CPPDEFINES
+            DRIVER_INCLUDE_WIFI_CYW43438 = DRIVER_INCLUDE
+            SOURCE_DRIVER_WIFI_CYW43438 = []
+            print('CONF: DEFINE_DRIVER_WIFI_CYW43438')
+            print(DEFINE_DRIVER_WIFI_CYW43438)
+
+            DRIVER_INCLUDE_WIFI_CYW43438.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress')
+            DRIVER_INCLUDE_WIFI_CYW43438.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/include')
+            DRIVER_INCLUDE_WIFI_CYW43438.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/libraries/utilities/TLV')
+            DRIVER_INCLUDE_WIFI_CYW43438.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED')
+            DRIVER_INCLUDE_WIFI_CYW43438.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/internal')
+            DRIVER_INCLUDE_WIFI_CYW43438.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/network/LwIP/WWD')
+            DRIVER_INCLUDE_WIFI_CYW43438.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/platform')
+            DRIVER_INCLUDE_WIFI_CYW43438.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/platform/GCC')
+            DRIVER_INCLUDE_WIFI_CYW43438.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/platform/include')
+            DRIVER_INCLUDE_WIFI_CYW43438.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/RTOS/aworks')
+            DRIVER_INCLUDE_WIFI_CYW43438.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/RTOS/aworks/WWD')
+            DRIVER_INCLUDE_WIFI_CYW43438.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/WWD')
+            DRIVER_INCLUDE_WIFI_CYW43438.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/WWD/include')
+            DRIVER_INCLUDE_WIFI_CYW43438.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/WWD/include/RTOS')
+            DRIVER_INCLUDE_WIFI_CYW43438.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/WWD/internal/bus_protocols')
+            DRIVER_INCLUDE_WIFI_CYW43438.append(build_common_config.AWORKS_ROOT + 'components/awbus_lite/include/driver/wifi/cypress/WICED/WWD/internal/chips/4343x')
+
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/cyw43438/awbl_cyw43438_drv_common.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/cyw43438/awbl_cyw43438_platform_host.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/awbl_cyw_wiced_common.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/internal/wiced_lib.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/internal/wiced_low_power.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/internal/wifi.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/libraries/utilities/TLV/tlv.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/network/LwIP/WICED/wiced_network.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/network/LwIP/WWD/wwd_buffer.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/platform/MCU/platform_resource.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/platform/MCU/wwd_resources.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/RTOS/wiced_rtos_common.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/RTOS/aworks/WICED/wiced_rtos.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/RTOS/aworks/WWD/wwd_rtos.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/WWD/internal/bus_protocols/wwd_bus_common.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/WWD/internal/chips/4343x/wwd_ap.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/WWD/internal/chips/4343x/wwd_chip_specific_functions.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_ap_common.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_debug.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_eapol.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_internal.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_logging.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_management.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_sdpcm.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_thread.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_thread_internal.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_wifi.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_wifi_chip_common.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_wifi_sleep.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/WWD/internal/wwd_clm.c')
+
+            # CYW43438 SDIO
+            print('CONF: AWBL_WIFI_CYW43438_IF_SDIO')
+            DEFINE_DRIVER_WIFI_CYW43438.append('AW_DRV_AWBL_CYW43438_WIFI_SDIO')
+            DEFINE_DRIVER_WIFI_CYW43438.append('WWD_DOWNLOAD_CLM_BLOB')
+            DEFINE_DRIVER_WIFI_CYW43438.append('WICED_PLATFORM_MASKS_BUS_IRQ')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/cyw43438/awbl_cyw43438_sdio.c')
+            SOURCE_DRIVER_WIFI_CYW43438.append('source/driver/wifi/cypress/WICED/WWD/internal/bus_protocols/SDIO/wwd_bus_protocol.c')
+
+            libraries_list.append(Library('awbl_common_driver_wifi_cyw43438', SOURCE_DRIVER_WIFI_CYW43438, CPPPATH = DRIVER_INCLUDE_WIFI_CYW43438, CPPDEFINES = DEFINE_DRIVER_WIFI_CYW43438))
+
+
+env.merge_lib(lib_awbl_common_file_name, libraries_list)
+lib_awbl_common_file = [File(lib_awbl_common_file_name)]
+
+
+cur_build_path = Dir('.', False)
+org_build_path = str(cur_build_path.srcnode())
+
+#安装awbl_core库
+awbus_lite_source_path = os.path.join(org_build_path, 'awbus-lite/source/core/awbus_lite.c')
+if os.path.isfile(awbus_lite_source_path) :
+    # 存在awbl_core源码则编译源码
+    print (u'rebuilt awbl_core...')
+    lib_awbl_core_file = SConscript('awbus-lite/Sconscript');
+else :
+    lib_core_file_name = env['LIBPREFIX'] + 'awbl_core' + env['LIBSUFFIX']
+    lib_core_file_path = os.path.join(build_common_config.BUILT_LIBS_SEARCH_PATH, lib_core_file_name)
+    lib_awbl_core_file = [File(lib_core_file_path)]
+
+
+lib_files = lib_awbl_common_file + lib_awbl_core_file
+Return('lib_files')

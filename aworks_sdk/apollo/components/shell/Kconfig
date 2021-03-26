@@ -1,0 +1,111 @@
+config AW_SHELL
+    bool "Shell Terminals"
+    select AW_STANDARD_IO
+    default y
+    libsafe
+    help
+      AWorks Simple Shell Component.
+    
+if AW_SHELL 
+
+choice AW_SHELL_OUTPUT_MODE
+    prompt "Shell Output Mode"
+    default AW_SHELL_SERIAL
+    libsafe
+
+    config AW_SHELL_SERIAL
+        bool "Use Serial Uart"
+        libsafe
+    
+    #  SEGGER RTT 未调试通过，暂不支持
+    #config AW_SHELL_RTT
+    #    bool "Use Segger RTT"
+    #    libsafe
+    #    select SEGGER_RTT
+
+endchoice
+
+if AW_SHELL_SERIAL
+    config SHELL_UART_COM
+        int  "Shell UART COM" 
+        libsafe
+        enum
+        $(serv_res, awbl_serial)
+
+    config SHELL_UART_BAUDRATE
+        int "Shell Baudrate"
+        default 115200
+        libsafe
+endif
+
+if AW_SHELL_RTT
+    config SHELL_RTT_COMID
+    int  "Shell RTT COMID" 
+    default 0
+endif
+
+menu "Task Opts"
+ 
+    visible if AW_SHELL
+
+    config SHELL_TASK_PRIO
+    int "Task Priority"
+    default 6
+    libsafe
+
+    config SHELL_TASK_SIZE
+    int "Task Stack Size(kb)"
+    default 12
+    libsafe
+
+    config SHELL_BUF_SIZE
+    int "Buffer Size"
+    default 1024
+    libsafe
+    
+endmenu
+
+# Beacuse AW_IMG_PRJ_BUILD will lead to telnet build err, use libsafe
+
+menu "Function Opts"   
+
+    visible if AW_SHELL
+
+    config SHELL_LINE_SIZE
+    int "Line Size"
+    default 79
+    libsafe
+ 
+    config SHELL_USE_CURSOR
+    bool "Use Cursor"
+    default y
+    libsafe
+
+    config SHELL_USE_COLOR
+    bool "Use Color"
+    default y
+    libsafe
+
+    config SHELL_USE_COMPLETE
+    bool "Use Complete"
+    default y
+    libsafe
+
+    config SHELL_USE_CHART
+    bool "Use Chart"
+    default y
+    libsafe
+
+    config SHELL_USE_CMDSET
+    bool "Use Cmdset"
+    default y
+    libsafe
+
+    config SHELL_USE_HISTORY
+    bool "Use History"
+    default y
+    libsafe
+
+endmenu
+
+endif #AW_SHELL 

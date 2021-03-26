@@ -1,0 +1,110 @@
+# axio build 即可编译得到PDF和HTML，通过配置 doc_targets 可以编译得到，
+# 如果 doc_targets = ["pdf"]，则axio build只会编译出pdf文件，axio build -thtml编译得到html,
+#
+# axio build -tdist可以将编译得到的文件进行打包
+# axio build -tclean清除编译出来的东西
+# winpty axio build编译输出信息有色彩
+# axio ci init 自动生成CI脚本
+axtoml_version="1.0.0"
+
+[axio.ci]
+
+#    disable_ci_check=true
+    stages = ["review", "staging", "production"]
+   
+
+[env.rstdoc.imxrt1050-quick]
+
+    doc_name = "AWorks MicroPython 参考文档"
+    doc_slug = "AWorks MicroPython 参考文档"
+    doc_src = "."
+    doc_targets = ["html", "pdf"]
+
+    # 公司
+    # 'zy'  - 广州致远电子有限公司
+    # 'zlg' - 广州立功科技股份有限公司
+    company = 'zy'
+
+    # 'SS' - 标准规范手册
+    # 'DS' - 产品数据手册
+    # 'AN' - 产品应用笔记
+    # 'UM' - 产品用户手册
+    # 'TN' - 工程技术笔记
+    # 'ND' - 新封面风格专有配置量
+    doc_type    = 'UM'
+    pdf_doctype = 'UM'
+
+    # 文档模板类型序列号：
+    # 
+    # 'SS01010101' - 标准规范手册
+    # 'DS01010101' - 产品数据手册
+    # 'AN01010101' - 产品应用笔记
+    # 'UM01010101' - 产品用户手册
+    # 'TN01010101' - 工程技术笔记
+    pdf_doc_tmpl_sn = 'UM01010101'
+
+    # subtitle
+    pdf_subtitle = "产品用户手册"
+    doc_subtitle = "产品用户手册"
+
+    # keywords
+    doc_keywords = "AWorks、MicroPython"
+    pdf_keywords = "AWorks、MicroPython"
+    
+    # abstract
+    doc_abstract = "本文详细描述了MicroPython标准库和AWorks特有MicryPython库，并介绍了基于AWorks MicroPython开发用户自己的CPython模块方法"
+    pdf_abstract = "本文详细描述了MicroPython标准库和AWorks特有MicryPython库，并介绍了基于AWorks MicroPython开发用户自己的CPython模块方法"
+    
+    # watermark
+    pdf_watermark = ""
+    
+    # font size setting
+    # 
+    pdf_maintitle_size = "LARGE" # maintitle font size
+    pdf_subtitle_size = "large" # subtitle font size
+    pdf_header_maintitle_size = "large" # Header Main title font size
+    pdf_header_subtitle_size = "small" # Header subtitle font size
+    pdf_watermark_size = "2cm" # Watermark font size
+    
+    # main font
+    # ("STXihei" or "SimSun" ...)
+    # 
+    pdf_main_font = "SimSun"
+    
+    # Is section break? (true or false)
+    pdf_is_sec_break = true
+   
+    # Is print? (true or false)
+    pdf_is_print=false
+    
+    # doc class
+    # (manual or howto)
+    pdf_doc_class = "howto"
+    
+    # page style
+    # (openright or openany)
+    pdf_page_style = "openright"
+    
+    # Data-sheet style configuration
+    #
+    # Data-sheet Abstract configuration in cover-page
+    #pdf_ds_abs=""
+    
+    # Data-sheet Product Feature configuration in cover-page
+    #pdf_ds_prod_ft=""
+    
+    # Data-sheet Product Application configuration in cover-page
+    #pdf_ds_prod_app=""
+
+    # Data-sheet Typical Application(Picture) configuration in cover-page
+    # eg: ./images/xxx.jpg
+    #pdf_ds_typical_app_pt="" 
+    
+    # Breathe configuration
+    #
+    # breathe project name
+    #breathe_prj_name="EXAMPLE_DEMO"
+    
+    # xml path, relation path
+    #breathe_xml_path="./xml"
+ 

@@ -1,0 +1,7 @@
+{
+    "frameworks": [
+        "awtk@>=1.4"
+    ], 
+    "version": "1.1.6+sha.dda06a7", 
+    "name": "awtk-linux-fb"
+}

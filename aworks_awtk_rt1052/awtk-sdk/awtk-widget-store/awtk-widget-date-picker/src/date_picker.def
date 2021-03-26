@@ -1,0 +1,14 @@
+LIBRARY   date_picker
+EXPORTS
+    date_picker_register
+    date_picker_supported_render_mode
+    date_edit_create
+    date_edit_cast
+    date_edit_set_year
+    date_edit_set_month
+    date_edit_set_day
+    date_picker_create
+    date_picker_cast
+    date_picker_set_year
+    date_picker_set_month
+    date_picker_set_day

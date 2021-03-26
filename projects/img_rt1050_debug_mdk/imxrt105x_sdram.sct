@@ -1,0 +1,132 @@
+#! armcc -E
+
+    
+#define     CODE_START              0x80002000  /* code start address */
+#define     CODE_SIZE               0x3FE000    /* code size: 4088K */
+
+#define     DATA_START              0x20000000  /* data start address */
+#define     DATA_SIZE               0x7F000     /* code size: 512k */
+
+#define     RELOAD_CODE_START       0x2007F000  /* reload code start address */
+#define     RELOAD_CODE_SIZE        0x1000      /* reload code size: 4k */
+
+#define     STACK_START             DATA_START  /* stack start address */
+#define     STACK_SIZE              0x2000      /* stack size: 8k */
+
+#define     DMA_HEAP_START          0x80400000  /* dma_heap start address */
+#define     DMA_HEAP_SIZE           0x100000    /* dma_heap size: 1M */
+
+#define     HEAP_START              0x80500000  /* heap start address */
+#define     HEAP_SIZE               0xA00000    /* heap size: 10M */
+
+#define     VRAM_START              0x80F00000  /* lcd vram start address */
+#define     VRAM_SIZE               0x100000    /* lcd vram size: 1M */
+
+#define     FLEXSPI_DRV_START       0x80000000  /* flexspi_drv start address */
+#define     FLEXSPI_DRV_SIZE        0x1000      /* flexspi_drv size: 4k */
+
+#define     FLASH_START             0x60000000  /* flash start address */
+#define     FLASH_SIZE              0x800000    /* flash size: 8M */             
+
+LR_m_code_section CODE_START ALIGN 8 CODE_SIZE {
+    ER_m_reset CODE_START FIXED {
+        * (RESET)
+    }
+
+    ER_RO +0 ALIGN 8 {
+        * (+RO)
+    }
+
+    ER_m_RELOCODE_ORIGIN +0 EMPTY 0 {
+    }
+
+    ER_m_RELOCODE_START RELOAD_CODE_START RELOAD_CODE_SIZE {
+        * (.ram.func)
+    }
+
+    ER_m_RELOCODE_END +0 EMPTY 0 {
+    }
+
+    ER_STACK DATA_START STACK_SIZE{
+        * (STACK, +FIRST)
+    }
+
+    ER_RW_DATA +0 ALIGN 8 DATA_SIZE-STACK_SIZE {
+        * (+RW, +ZI)
+    }
+}
+
+LR_m_code_section_start CODE_START OVERLAY 0 {
+    ER_CODE_SCT +0 EMPTY 0 {
+    }
+}
+
+LR_m_code_section_end CODE_START+CODE_SIZE OVERLAY 0 {
+    ER_CODE_END_SCT +0 EMPTY 0 {
+    }
+}
+
+LR_m_RELOCODE_END RELOAD_CODE_START+RELOAD_CODE_SIZE 0 {
+    ER_relocode_end +0 EMPTY 0 {
+    }
+}
+
+LR_m_ram_section_start DATA_START OVERLAY 0 {
+    ER_RAM_START_SCT +0 EMPTY 0 {
+    }
+}
+
+LR_m_ram_section_end DATA_START+DATA_SIZE OVERLAY 0 {
+    ER_RAM_END_SCT +0 EMPTY 0 {
+    }
+}
+
+LR_m_dma_heap_start DMA_HEAP_START OVERLAY 0 {
+    ER_DMA_HEAP_START +0 EMPTY 0 {
+    }
+}
+
+LR_m_dma_heap_end DMA_HEAP_START+DMA_HEAP_SIZE OVERLAY 0 {
+    ER_DMA_HEAP_END +0 EMPTY 0 {
+    }
+}
+
+LR_m_heap_start HEAP_START 0 {
+    ER_HEAP_START +0 EMPTY 0 {
+    }
+}
+
+LR_m_heap_end HEAP_START+HEAP_SIZE 0 {
+    ER_HEAP_END +0 EMPTY 0 {
+    }
+}
+
+LR_m_vram_start VRAM_START 0 {
+    ER_VRAM_START +0 EMPTY 0 {
+    }
+}
+
+LR_m_vram_end VRAM_START+VRAM_SIZE 0 {
+    ER_VRAM_END +0 EMPTY 0 {
+    }
+}
+
+LR_m_flash_start FLASH_START 0 {
+    ER_FLASH_START +0 EMPTY 0 {
+    }
+}
+
+LR_m_flash_end FLASH_START+FLASH_SIZE 0 {
+    ER_FLASH_END +0 EMPTY 0 {
+    }
+}
+
+LR_m_flexspi_drv_start FLEXSPI_DRV_START 0 {
+    ER_FLEXSPI_DRV_START +0 EMPTY 0 {
+    }
+}
+
+LR_m_flexspi_drv_end FLEXSPI_DRV_START+FLEXSPI_DRV_SIZE 0 {
+    ER_FLEXSPI_DRV_END+0 EMPTY 0 {
+    }
+}

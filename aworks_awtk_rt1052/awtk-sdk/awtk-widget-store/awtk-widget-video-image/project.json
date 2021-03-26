@@ -1,0 +1,45 @@
+{
+  "name": "video_image",
+  "version": "1.0.0",
+  "date": "2020-06-15",
+  "team": "AWTK Develop Team",
+  "author": "Luo ZhiMing <luozhiming@zlg.cn>",
+  "desc": "自定义视频播放控件，视频文件是采用帧间差异的图像算法压缩序列帧而成的，相比直接播放图片有更高的效率。",
+  "copyright": "Guangzhou ZHIYUAN Electronics Co.,Ltd.",
+  "type": "PROJECT_CUSTOM_WIDGET",
+  "appType": "APP_MOBILE",
+  "hardware": "RT1050",
+  "entry": "main",
+  "assets": {
+    "activedTheme": "default",
+    "outputDir": "res",
+    "loadFrom": "any",
+    "const": "resource_data",
+    "screenDPR": "x1",
+    "defaultLanguage": "zh",
+    "defaultCountry": "CN",
+    "themes": {
+      "default": {
+        "activedSystemBar": "system_bar",
+        "activedBottomSystemBar": "system_bar_b",
+        "packaged": true,
+        "fonts": {
+          "default": {
+            "text": " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~，。？！确定取消"
+          }
+        },
+        "lcd": {
+          "width": "800",
+          "height": "480",
+          "colorDepth": "16bit",
+          "colorFormat": "BGR(A)"
+        }
+      }
+    }
+  },
+  "creator": {
+    "name": "AWTK Designer",
+    "version": "1.0.0"
+  },
+  "awtkRoot": "${DesignerPath}/SDK/awtk"
+}

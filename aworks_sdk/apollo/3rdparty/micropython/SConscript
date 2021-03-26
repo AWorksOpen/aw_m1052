@@ -1,0 +1,9 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+#
+# 执行指定 micropython 版本的 SConscript
+#
+libs=SConscript(dirs='micropython_1.12', name='SConscript')
+
+Return('libs')

@@ -1,0 +1,12 @@
+<window >
+  <view x="0" y="0" w="100%" h="100%" children_layout="default(c=2,r=2)">
+    
+    <label_rotate orientation="orientation_0" text="旋转0度"/>
+    
+    <label_rotate orientation="orientation_90" text="旋转90度"/>
+
+    <label_rotate orientation="orientation_180" text="旋转180度"/>
+
+    <label_rotate orientation="orientation_270" text="旋转270度"/>
+  </view>
+</window>

@@ -1,0 +1,77 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from config_build_common import build_common_config
+from config_aw_base import aw_base_config
+import os
+
+env = DefaultEnvironment()
+
+cur_build_path = Dir('.', False)
+org_build_path = str(cur_build_path.srcnode())
+
+
+# 构建 jerryscrip 源码绝对路径
+js_src_path = os.path.join(
+    build_common_config.AWORKS_ROOT, '3rdparty', 'jerryscript_2.2.0')
+# 构建 jerryscrip 源码相对路径
+js_rel_dir = cal_relative_dir(org_build_path, js_src_path)
+
+# 添加头文件路径
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+
+INCLUDE.append("include")   
+
+INCLUDE.append(os.path.join(js_rel_dir, 'jerry-core'))
+INCLUDE.append(os.path.join(js_rel_dir, 'jerry-core', 'include'))
+INCLUDE.append(os.path.join(js_rel_dir, 'jerry-core', 'ecma', 'builtin-objects', 'typedarray'))
+INCLUDE.append(os.path.join(js_rel_dir, 'jerry-core', 'debugger'))
+INCLUDE.append(os.path.join(js_rel_dir, 'jerry-core', 'ecma', 'builtin-objects'))
+INCLUDE.append(os.path.join(js_rel_dir, 'jerry-core', 'jmem'))
+INCLUDE.append(os.path.join(js_rel_dir, 'jerry-core', 'ecma', 'operations'))
+INCLUDE.append(os.path.join(js_rel_dir, 'jerry-core', 'vm'))
+INCLUDE.append(os.path.join(js_rel_dir, 'jerry-core', 'jcontext'))
+INCLUDE.append(os.path.join(js_rel_dir, 'jerry-core', 'lit'))
+INCLUDE.append(os.path.join(js_rel_dir, 'jerry-core', 'parser', 'js'))
+INCLUDE.append(os.path.join(js_rel_dir, 'jerry-core', 'parser', 'regexp'))
+INCLUDE.append(os.path.join(js_rel_dir, 'jerry-core', 'jrt'))
+INCLUDE.append(os.path.join(js_rel_dir, 'jerry-core'))
+INCLUDE.append(os.path.join(js_rel_dir, 'jerry-core', 'ecma', 'base'))
+INCLUDE.append(os.path.join(js_rel_dir, 'jerry-ext', 'common'))
+INCLUDE.append(os.path.join(js_rel_dir, 'jerry-ext', 'include'))
+
+INCLUDE.append(os.path.join(build_common_config.AW_SDK_INSTALL_PATH, 'include'))
+
+
+def get_source_file(path,list):
+    files = os.listdir(path)
+    dir = cal_relative_dir(org_build_path, path)
+    for file in files:
+        f = os.path.join(dir,file)
+        if os.path.isfile(f):
+            if file.endswith('.c') or file.endswith('.cpp'):
+                list.append(f)
+        if os.path.isdir(f):
+            get_source_file(f,list) 
+
+# jerryscript_2.2.0 源码
+__js_src_file = []
+get_source_file(os.path.join(js_src_path, 'jerry-core'), __js_src_file)
+get_source_file(os.path.join(js_src_path, 'jerry-ext'), __js_src_file)
+
+js_libs =[]
+for i in range(0,len(__js_src_file),50):
+    js_libs += Library('aw_js_' + str(int(i/50)), __js_src_file[i:i+50], CPPPATH = INCLUDE)
+
+# jerryscript_2.2.0_adapter
+__js_adapter_file = []
+get_source_file('source', __js_adapter_file)
+
+all_libs = Library('aw_js_adapter', __js_adapter_file, CPPPATH=INCLUDE)
+
+all_libs.extend(js_libs)
+
+lib_file = env['LIBPREFIX'] + 'aw_js' + env['LIBSUFFIX'];
+lib_all = env.merge_lib(lib_file, all_libs);
+
+Return('lib_all')

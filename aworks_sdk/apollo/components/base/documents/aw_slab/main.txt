@@ -1,0 +1,38 @@
+
+
+#include "apollo.h"                     /* 此头文件必须被首先包含 */
+#include "aw_led.h"                     /* LED服务 */
+#include "aw_common.h"                    
+#include "aw_delay.h"    
+#include "aw_vdebug.h"    
+
+#include "main.h"                       /* 用户程序主头文件 */
+#include "test_aw_slab_singletask.h"
+#include "test_aw_slab_multitask.h"
+
+/* 用户程序入口 */
+int aw_main (void)
+{
+    AW_INFOF(("Application start up!\n"));
+
+    /* 单任务测试 */
+    test_aw_slab_simple();
+    test_aw_slab_sethook();
+    test_aw_slab_alloc_api();
+
+    /* 多任务测试 */
+    test_aw_slab_multitask1_void();
+    test_aw_slab_multitask2_void();
+    test_aw_slab_multitask3_void();
+
+
+    /* 主任务永久循环 */
+    AW_FOREVER {
+        aw_led_on(LED2);                 /* 点亮LED */
+        aw_mdelay(500);                  /* 延时50ms */
+        aw_led_off(LED2);                /* 熄灭LED */
+        aw_mdelay(500);                 /* 延时150ms */
+    }
+
+    return  AW_OK;
+}

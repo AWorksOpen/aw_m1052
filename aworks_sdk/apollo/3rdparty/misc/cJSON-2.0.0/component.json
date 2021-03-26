@@ -1,0 +1,22 @@
+{
+  "name": "cjson", 
+  "version": "2.0.1", 
+  "description": "cJSON", 
+  "category": "component", 
+  "distype": "sdist", 
+  "build_ref": "24687a8217e0f2083d1888ead867c78e3820b04a", 
+  "build_id": "54519", 
+  "repository": "http://192.168.23.62/aworks2/cjson", 
+  "engines": [
+    "axio-engine@1.1.0-a.70", 
+    "axbuilder.component@1.0.0", 
+    "package_manager.component@1.0.0"
+  ], 
+  "status": "stable", 
+  "topic": "System::Component::MISCS", 
+  "src_filter": [
+    "-<*>", 
+    "+<cJSON.c>", 
+    "+<cJSON_Utils.c>"
+  ]
+}

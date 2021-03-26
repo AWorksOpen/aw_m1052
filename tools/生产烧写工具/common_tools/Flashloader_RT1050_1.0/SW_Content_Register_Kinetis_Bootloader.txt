@@ -1,0 +1,136 @@
+Release Name: Flashloader K32H844P 1.0
+Version: 1.0.0
+
+Package - Kinetis         Filename: Flashloader_K32H844P_1.0.zip
+Bootloader
+
+KSDK Peripheral Drivers   Description: Peripheral drivers are designed for the
+                          most common use cases identified for the underlying 
+                          hardware block.                              
+                          Author: NXP                                 
+                          version: 2.x.x                                    
+                          License: Open Source - BSD-3-Clause               
+                          Format: binary code                                
+                          Location: Flashloader/flashloader.elf                  
+
+CMSIS Core header files   Description: Industry-standard header files distributes
+                          by ARM for cortex-M cores                   
+                          Author: ARM                                       
+                          version: 5.0.1 (CMSIS Download 5.0.1)                 
+                          License: Open Source - BSD-3-Clause               
+                          Format: binary code                               
+                          URL: http://silver.arm.com                        
+                          Location: Flashloader/flashloader.srec                        
+
+USB                       Description: NXP USB stack. This is a version of
+                          the USB stack that has been integrated with the Kinetis 
+                          SDK.                                   
+                          Author: NXP                                 
+                          version: 1.6.3                                    
+                          License: Open Source - BSD-3-Clause               
+                          Format: binary code                               
+                          Location: Flashloader/flashloader.elf                   
+
+SD MMC Card middleware     name: SD MMC Card middleware                                             
+                           License: Open Source - BSD-3-Clause               
+                           Description: A software component support SD card,
+                           eMMC card.                                        
+                           Author: NXP                                 
+                           version: 2.1.2                                    
+                           Format: binary code   
+                           Location: 
+                           Flashloader/flashloader.elf 
+                          
+                          
+Bootloader Source         Description: Software drivers for
+                          Bootloaders and Flashloaders
+                          Author: NXP
+                          License: Open Source - BSD-3-Clause
+                          Format: binary code
+                          Location: Flashloader/flashloader.elf 
+
+Host tools - Serial       Description: Windows Serial peripheral support
+support                   Author: Bus Pirate Project
+                          License: Open Source - CC0-1.0 (Creative Commons Zero)
+                          URL: http://code.google.com/p/the-bus-pirate/
+                          Format: binary code
+                          Location: 
+                          Tools/blhost/linux/blhost/amd64/blhost
+                          Tools/blhost/linux/blhost/i386/blhost
+                          Tools/blhost/win/blhost.exe
+                          Tools/blhost/mac/blhost
+
+Host tools - USB HID      Description: Windows USB HID support
+support                   Author: HIDAPI
+                          License: Open Source - BSD-3-Clause
+                          URL: http://github.com/signal11/hidapi
+                          Format: binary code
+                          Location: 
+                          Tools/blhost/linux/blhost/amd64/blhost
+                          Tools/blhost/linux/blhost/i386/blhost
+                          Tools/blhost/win/blhost.exe
+                          Tools/blhost/mac/blhost
+
+Host tools - JSON support Description: Windows JSON support
+                          Author: JSONCPP
+                          License: Open Source - MIT
+                          Format: binary code
+                          Location: 
+                          Tools/blhost/linux/blhost/amd64/blhost
+                          Tools/blhost/linux/blhost/i386/blhost
+                          Tools/blhost/win/blhost.exe
+                          Tools/blhost/mac/blhost
+
+Host tools - options      Description: Command line parsing utility
+support                   Author: bradapp@enteract.com
+                          License: Open Source - MIT
+                          URL: 
+                          http://www.bradapp.com
+                          Format: binary code
+                          Location: 
+                          Tools/blhost/linux/blhost/amd64/blhost
+                          Tools/blhost/linux/blhost/i386/blhost
+                          Tools/blhost/win/blhost.exe
+                          Tools/blhost/mac/blhost
+
+Bootloader Source,        Description: C++ interface to the Vincent Rijmen's Rijndael block cipher
+Host Source - blfwk.lib   Author: Szymon Stefanek (stefanek@tin.it)
+                          License: Public Domain
+                          URL:
+                          http://www.pragmaware.net/software/rijndael/index.php
+                          Format: binary code
+                          Location: 
+                          Tools/blhost/linux/blhost/amd64/blhost
+                          Tools/blhost/linux/blhost/i386/blhost
+                          Tools/blhost/win/blhost.exe
+                          Tools/blhost/mac/blhost
+
+MBED TLS stack             Author: ARM                                       
+                           Description: Cryptographic and SSL/TLS Library    
+                           License: Apache-2.0                                              
+                           name: MBED TLS stack                              
+                           URL: https://tls.mbed.org/                        
+                           version: 2.6.0                           
+                           Format: binary code
+                           Location: 
+                           Tools/elftosb/win/elftosb.exe
+
+
+elftosb                   Description: Command line parsing utility for 
+                          Boot image generation and programming image generation
+                          Author: NXP
+                          License: Open Source - BSD-3-Clause
+                          Format: binary code
+                          Location: 
+                          Tools/elftosb/win/elftosb.exe
+
+MfgTool                   Description: Manufacturing Tools
+                          Author: NXP
+                          License: Open Source - BSD-3-Clause
+                          URL:
+                          https://github.com/NXPmicro/mfgtools
+                          Format: binary code
+                          Location: 
+                          Tools/mfgtools-rel/MfgTool2.exe
+                          Tools/mfgtools-rel/MfgToolLib.dll
+                            

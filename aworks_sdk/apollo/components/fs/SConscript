@@ -1,0 +1,52 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import types
+from config_compoents import compoents_config
+
+fs_lib_files = []
+
+# 决定是否需要FATFS组件
+enable = get_config_val(compoents_config,'EN_FS_AW_FATFS',False);
+if enable :
+    SConscript_and_add_return_library('fatfs_adapter/SConscript', fs_lib_files)
+
+# 决定是否需要UFFS组件
+enable = get_config_val(compoents_config,'EN_FS_AW_UFFS',False);
+if enable :
+    SConscript_and_add_return_library('uffs_v1.3.x_adapter/SConscript', fs_lib_files)
+    
+# 决定是否需要LFFS组件
+enable = get_config_val(compoents_config,'EN_FS_AW_LFFS',False);
+if enable :
+    SConscript_and_add_return_library('lffs/SConscript', fs_lib_files)
+    
+# 决定是否需要LITTLEFS组件
+enable = get_config_val(compoents_config,'EN_FS_AW_LITTLEFS',False);
+if enable :
+    SConscript_and_add_return_library('littlefs_adapter/SConscript', fs_lib_files)
+
+# 决定是否需要TXFS组件
+enable = get_config_val(compoents_config,'EN_FS_AW_TXFS',False)
+if enable :
+    SConscript_and_add_return_library('txfs/SConscript', fs_lib_files)
+
+# 决定是否需要TXFS组件
+enable = get_config_val(compoents_config,'EN_FS_AW_ROFS',False)
+if enable :
+    SConscript_and_add_return_library('rofs/SConscript', fs_lib_files)
+    
+# 决定是否需要YAFFS组件
+enable = get_config_val(compoents_config,'EN_FS_AW_YAFFS',False)
+if enable :
+    SConscript_and_add_return_library('yaffs2_e57244d_adapter/SConscript', fs_lib_files)
+
+# 决定是否需要ROMFS组件
+enable = get_config_val(compoents_config,'EN_FS_AW_ROMFS',False)
+if enable :
+    SConscript_and_add_return_library('romfs/SConscript', fs_lib_files)
+    
+# 返回所有的lib文件
+if 0 == len(fs_lib_files):
+    fs_lib_files = None;
+Return('fs_lib_files');

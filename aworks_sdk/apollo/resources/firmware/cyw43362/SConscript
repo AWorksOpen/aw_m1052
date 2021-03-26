@@ -1,0 +1,40 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from config_build_common import build_common_config
+from config_aw_base import aw_base_config
+from config_lwip import aw_lwip_config
+import os
+import sys
+
+cur_build_path = Dir('.', False)
+org_build_path = str(cur_build_path.srcnode())
+
+sys.path.append(os.path.dirname(org_build_path))
+
+NAME = 'firmware_cyw43362'
+
+FIRMWARE_VERSION = '3.7.0'
+
+if build_common_config.AW_COMPILER_TOOLS == 'armcc':
+    ams_file = os.path.join(org_build_path, FIRMWARE_VERSION, 'firmware_cyw43362_apsta_armcc.S')
+
+else:
+    ams_file = os.path.join(org_build_path, FIRMWARE_VERSION, 'firmware_cyw43362_apsta_gcc.S')
+
+
+INSTALL_PATH = build_common_config.AW_SDK_INSTALL_PATH + 'resources/firmware/cyw43362'
+
+INSTALL_CONTENT = Glob(org_build_path + '/*.h')
+INSTALL_CONTENT.append(Glob(org_build_path + '/*.txt'))
+INSTALL_CONTENT.append(Glob(os.path.join(org_build_path, FIRMWARE_VERSION) + '/*.bin'))
+
+INCLUDE = list()
+INCLUDE.append(FIRMWARE_VERSION)
+SOURCE = []
+SOURCE.append(ams_file)
+
+lib_file = Library(NAME, SOURCE, CPPPATH = INCLUDE)
+
+Install(INSTALL_PATH, INSTALL_CONTENT)
+Return('lib_file')

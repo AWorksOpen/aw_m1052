@@ -1,0 +1,24 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+import sys
+
+sys.path.append(os.path.join(os.getcwd(),'build_config') );
+
+#首先引入通用配置模块，并生成通用配置
+import config_build_common
+from config_build_common import build_common_config 
+config_build_common.make_build_common_config(ARGUMENTS)
+
+# 引入其它配置，并生成其它配置
+import config_lwip
+config_lwip.make_aw_lwip_config()
+
+execfile('build_config/make_build_environment.Sconscript');
+
+AWORKS_BUILD_DIR = os.path.join(build_common_config.PROJECT_BUILD_ROOT,build_common_config.AWORKS_DIR_NAME);
+VariantDir(AWORKS_BUILD_DIR,build_common_config.AWORKS_DIR_NAME,duplicate=0);
+lib_lwip = SConscript(os.path.join(AWORKS_BUILD_DIR,'components','net','lwip_1.4.x_adapter','source','SConscript.sdk'))
+
+Install(build_common_config.AW_SDK_LIB_INSTALL_PATH,lib_lwip);

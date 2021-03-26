@@ -1,0 +1,57 @@
+<!--
+* Copyright (C) 2016, Freescale Semiconductor, Inc.
+* Copyright 2017 NXP
+* The CFG element contains a list of recognized usb devices.
+*  DEV elements provide a name, class, vid and pid for each device.
+*
+* Each LIST element contains a list of update instructions.
+*
+* Each CMD element contains one update instruction of attribute type.
+*  "boot" - Finds configured device, forces it to "body" device and downloads "file".
+*  "find" - Waits for "timeout" seconds for the "body" device to connect.
+*  "blhost" - Executes a blhost command.
+-->
+
+
+<UCL>
+
+<CFG>
+    <STATE name="BootStrap" dev="MXRT105X" vid="1FC9" pid="0130"/> <!-- I.MX SDP USB-HID -->
+    <STATE name="Blhost" dev="KBL-HID" vid="15A2" pid="0073"/>   <!--KIBBLE USB-HID-->
+</CFG>
+
+<LIST name="MXRT105x-DevBoot" desc="Boot Flashloader">
+<!-- Stage 1, load and execute Flashloader -->    
+    <CMD state="BootStrap" type="boot" body="BootStrap" file="ivt_flashloader.bin" > Loading Flashloader. </CMD>
+    <CMD state="BootStrap" type="jump"  onError = "ignore"> Jumping to Flashloader. </CMD>
+
+<!-- Stage 2, Program boot image into external memory using Flashloader -->   
+    <CMD state="Blhost" type="blhost" body="get-property 1" > Get Property 1. </CMD> <!--Used to test if flashloader runs successfully-->
+    <CMD state="Blhost" type="blhost" timeout="15000" body="receive-sb-file \"Profiles\\MXRT105X\\OS Firmware\\boot_image.sb\"" > Program Boot Image. </CMD> 
+    <CMD state="Blhost" type="blhost" body="Update Completed!">Done</CMD>
+
+</LIST>
+
+<LIST name="MXRT105x-develop" desc="develop test">
+<!-- Stage 1, load and execute Flashloader -->    
+    <CMD state="BootStrap" type="boot" body="BootStrap" file="develop_test.imx" > Loading MXRT105x-develop. </CMD>
+    <CMD state="BootStrap" type="jump"  onError = "ignore"> Jumping to MXRT105x-develop. </CMD>
+</LIST>
+
+<LIST name="MXRT105X-SecureBoot" desc="Boot Signed Flashloader">
+<!-- Stage 1, load and execute Flashloader -->
+    <CMD state="BootStrap" type="boot" body="BootStrap" file="ivt_flashloader_signed.bin" > Loading Flashloader. </CMD>
+    <CMD state="BootStrap" type="jump" onError="ignore"> Jumping to Flashloader. </CMD>
+
+<!-- Stage 2, Enable HAB closed mode using Flashloader -->  
+    <CMD state="Blhost" type="blhost" body="get-property 1" ifhab="Open" > Get Property 1. </CMD> <!--Used to test if flashloader runs successfully-->
+    <CMD state="Blhost" type="blhost" body="receive-sb-file \"Profiles\\MXRT105X\\OS Firmware\\enable_hab.sb\"" ifhab="Open" > Program Boot Image. </CMD>
+    <CMD state="Blhost" type="blhost" body="reset" ifhab="Open"> Reset. </CMD> <!--Reset device to enable HAB Close Mode-->
+
+<!-- Stage 3, Program signed image into external memory using Flashloader -->    
+    <CMD state="Blhost" type="blhost" body="get-property 1" ifhab="Close"> Get Property 1. </CMD> <!--Used to test if flashloader runs successfully-->
+    <CMD state="Blhost" type="blhost" timeout="15000" body="receive-sb-file \"Profiles\\MXRT105X\\OS Firmware\\boot_image.sb\"" ifhab="Close" > Program Boot Image. </CMD> 
+    <CMD state="Blhost" type="blhost" body="Update Completed!" ifhab="Close" >Done</CMD>
+</LIST>
+
+</UCL>

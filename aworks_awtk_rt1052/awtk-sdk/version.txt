@@ -1,0 +1,7 @@
+awtk-v1.5+rc.3
+====================
+awtk-examples.v2:2.0.2+sha.ebfa974
+awtk:1.5+sha.4163176
+awtk-widget-generator:1.0.1+sha.227b92d
+awtk-linux-fb:1.1.6+sha.dda06a7
+awtk-widget-store:1.0.1+sha.05cf6fa

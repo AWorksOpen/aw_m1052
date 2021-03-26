@@ -1,0 +1,364 @@
+[
+  {
+    "params": [],
+    "annotation": {
+      "global": true
+    },
+    "desc": "注册控件。",
+    "name": "mask_view_register",
+    "return": {
+      "type": "ret_t",
+      "desc": "返回RET_OK表示成功，否则表示失败。"
+    },
+    "type": "method",
+    "header": "src/mask_view_register.h",
+    "level": 1
+  },
+  {
+    "params": [],
+    "annotation": {
+      "global": true
+    },
+    "desc": "获取支持的渲染模式。",
+    "name": "mask_view_supported_render_mode",
+    "return": {
+      "type": "const char*",
+      "desc": "返回渲染模式。"
+    },
+    "type": "method",
+    "header": "src/mask_view_register.h",
+    "level": 1
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "parent",
+            "desc": "父控件"
+          },
+          {
+            "type": "xy_t",
+            "name": "x",
+            "desc": "x坐标"
+          },
+          {
+            "type": "xy_t",
+            "name": "y",
+            "desc": "y坐标"
+          },
+          {
+            "type": "wh_t",
+            "name": "w",
+            "desc": "宽度"
+          },
+          {
+            "type": "wh_t",
+            "name": "h",
+            "desc": "高度"
+          }
+        ],
+        "annotation": {
+          "constructor": true,
+          "scriptable": true
+        },
+        "desc": "创建mask_view_item对象",
+        "name": "mask_view_item_create",
+        "return": {
+          "type": "widget_t*",
+          "desc": "mask_view_item对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "mask_view_item对象。"
+          }
+        ],
+        "annotation": {
+          "cast": true,
+          "scriptable": true
+        },
+        "desc": "转换为mask_view_item对象(供脚本语言使用)。",
+        "name": "mask_view_item_cast",
+        "return": {
+          "type": "widget_t*",
+          "desc": "mask_view_item对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "bool_t",
+            "name": "mask_view",
+            "desc": "是否为蒙板采样区。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置是否为蒙板采样区域。\nTRUE 为蒙板采样区域，FALSE 为背景图采样区域",
+        "name": "mask_view_item_set_mask_view",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "获取是否为蒙板采样区域。",
+        "name": "mask_view_item_get_mask_view",
+        "return": {
+          "type": "bool_t",
+          "desc": "返回 mask_view_item 是否为蒙板采样区。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "mask_view",
+        "desc": "是否为蒙板区。",
+        "type": "bool_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      }
+    ],
+    "header": "mask_view/mask_view_item.h",
+    "desc": "mask_view 控件的采样区域\n\n该控件主要用于蒙板裁剪控件的采样区域，通过属性 mask_view 来表示蒙板采样区（mask_view=\"true\"）还是背景区（mask_view=\"false\"）。\n详细用法请看 awtk-widget-mask-view/docs/mask_view控件用法.md。\n\n在xml中使用\"mask\\_view\\_item\"标签创建mask\\_view\\_item控件。如：\n\n```xml\n<!-- ui -->\n<mask_view_item x=\"0\" y=\"0\" w=\"100%\" h=\"100%\" mask_view=\"true\" />\n```\n\n可用通过style来设置控件的显示风格，如字体的大小和颜色等等。如：\n\n```xml\n<!-- style -->\n<mask_view_item>\n<style name=\"default\">\n<normal />\n</style>\n</mask_view_item>\n```",
+    "name": "mask_view_item_t",
+    "parent": "widget_t",
+    "annotation": {
+      "scriptable": true,
+      "design": true,
+      "widget": true
+    },
+    "level": 2
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "parent",
+            "desc": "父控件"
+          },
+          {
+            "type": "xy_t",
+            "name": "x",
+            "desc": "x坐标"
+          },
+          {
+            "type": "xy_t",
+            "name": "y",
+            "desc": "y坐标"
+          },
+          {
+            "type": "wh_t",
+            "name": "w",
+            "desc": "宽度"
+          },
+          {
+            "type": "wh_t",
+            "name": "h",
+            "desc": "高度"
+          }
+        ],
+        "annotation": {
+          "constructor": true,
+          "scriptable": true
+        },
+        "desc": "创建mask_view对象",
+        "name": "mask_view_create",
+        "return": {
+          "type": "widget_t*",
+          "desc": "mask_view对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "mask_view对象。"
+          }
+        ],
+        "annotation": {
+          "cast": true,
+          "scriptable": true
+        },
+        "desc": "转换为mask_view对象(供脚本语言使用)。",
+        "name": "mask_view_cast",
+        "return": {
+          "type": "widget_t*",
+          "desc": "mask_view对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "int32_t",
+            "name": "fg_interval_time",
+            "desc": "前景蒙板刷新间隔。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置前景蒙板刷新间隔。",
+        "name": "mask_view_set_fg_interval_time",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "int32_t",
+            "name": "bg_interval_time",
+            "desc": "背景刷新间隔。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置背景刷新间隔。",
+        "name": "mask_view_set_bg_interval_time",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "刷新前景蒙板。",
+        "name": "mask_view_fg_interval",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "刷新背景。",
+        "name": "mask_view_bg_interval",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "更新子集的采样区的列表。",
+        "name": "mask_view_update_children_list",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "fg_interval_time",
+        "desc": "前景蒙板刷新间隔。",
+        "type": "int32_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "bg_interval_time",
+        "desc": "背景刷新间隔。",
+        "type": "int32_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      }
+    ],
+    "header": "mask_view/mask_view.h",
+    "desc": "蒙板裁剪控件\n\n该控件主要用于异形裁剪，通过子控件（mask\\_view）来设置蒙板采样区和背景采样区，背景采样区会根据蒙板采样区的灰度来设置其透明通道的值来实现裁剪效果。\n详细用法请看 awtk-widget-mask-view/docs/mask_view控件用法.md。\n\n在xml中使用\"mask\\_view\"标签创建mask\\_view控件。如：\n\n```xml\n<!-- ui -->\n<mask_view x=\"c\" y=\"m\" w=\"120\" h=\"96\" fg_interval_time=\"1000\" bg_interval_time=\"16\" >\n<mask_view_item x=\"0\" y=\"0\" w=\"100%\" h=\"100%\" mask_view=\"true\">\n</mask_view_item>\n<mask_view_item x=\"0\" y=\"0\" w=\"100%\" h=\"100%\" mask_view=\"false\">\n</mask_view_item>\n</mask_view>\n```\n\n可用通过style来设置控件的显示风格，如字体的大小和颜色等等。如：\n\n```xml\n<!-- style -->\n<mask_view>\n<style name=\"default\">\n<normal />\n</style>\n</mask_view>\n```",
+    "name": "mask_view_t",
+    "parent": "widget_t",
+    "annotation": {
+      "scriptable": true,
+      "design": true,
+      "widget": true
+    },
+    "level": 2
+  }
+]

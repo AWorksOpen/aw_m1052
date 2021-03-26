@@ -1,0 +1,29 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+
+from config_build_common import build_common_config
+
+ARCH_INCLUDE=[]
+ARCH_CDEFINES=[]
+EXCLUDE_SOURCE = [] #不进行编译的源文件
+COMPILER_DIR_STRING = build_common_config.AW_COMPILER_TOOLS + os.path.sep
+
+#不同编译工具链下, cache 汇编文件名 确定
+ARMV8M_CACHE_FILE = 'armv8m_cache_gcc.S'
+if build_common_config.AW_COMPILER_TOOLS == 'armcc':
+    ARMV8M_CACHE_FILE = 'armv8m_cache_armcc.S'
+
+if build_common_config.AW_CPU_CORE_NAME == 'cortex-m33':
+    EXCLUDE_SOURCE.append(COMPILER_DIR_STRING + ARMV8M_CACHE_FILE)
+    ARCH_CDEFINES.extend(['__ARMV8M_NO_CACHE'])
+
+ARCH_SOURCE = Glob('*.c', exclude=EXCLUDE_SOURCE)
+ARCH_SOURCE.append(Glob(COMPILER_DIR_STRING+'*.c', exclude=EXCLUDE_SOURCE))
+ARCH_SOURCE.append(Glob(COMPILER_DIR_STRING+'*.S', exclude=EXCLUDE_SOURCE))
+ARCH_SOURCE.append(Glob(COMPILER_DIR_STRING+'*.s', exclude=EXCLUDE_SOURCE))
+
+ARCH_RETURN={'ARCH_SOURCE':ARCH_SOURCE,'ARCH_INCLUDE':ARCH_INCLUDE,'ARCH_CDEFINES':ARCH_CDEFINES}
+
+Return('ARCH_RETURN')

@@ -1,0 +1,35 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+import sys
+
+from config_build_common import build_common_config 
+
+ARCH_SOURCE = Glob('*.c')
+COMPILER_DIR_STRING = build_common_config.AW_COMPILER_TOOLS + os.path.sep;
+ARCH_SOURCE.append(Glob(COMPILER_DIR_STRING+'*.c'));
+ARCH_SOURCE.append(Glob(COMPILER_DIR_STRING+'*.S'));
+ARCH_SOURCE.append(Glob(COMPILER_DIR_STRING+'*.s'));
+
+ARCH_INCLUDE=[]
+ARCH_CDEFINES=[]
+
+support_vfp_d16 = ('vfpv4-d16','vfpv3-d16')
+support_vfp_d32 = ('neon-vfpv4','vfpv4','vfpv3','neon')
+
+if build_common_config.ARM_FLOAT_ABI != 'soft':
+    if build_common_config.ARM_FPU_TYPE in support_vfp_d32:
+        ARCH_CDEFINES.extend(['_ARMV7_VFP_D32']);
+    elif build_common_config.ARM_FPU_TYPE in support_vfp_d16:
+        pass
+    else:
+        print('FPU not supported')
+        sys.exit(-1);
+
+# cortex-a8处理器没有Virtualization Extensions
+if build_common_config.AW_CPU_CORE_NAME == 'cortex-a8' or build_common_config.AW_CPU_CORE_NAME == 'cortex-a9':
+    ARCH_CDEFINES.append('_ARMV7_NO_VIRTUALIZATION')
+
+ARCH_RETURN={'ARCH_SOURCE':ARCH_SOURCE,'ARCH_INCLUDE':ARCH_INCLUDE,'ARCH_CDEFINES':ARCH_CDEFINES};
+Return('ARCH_RETURN')

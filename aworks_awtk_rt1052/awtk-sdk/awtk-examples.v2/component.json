@@ -1,0 +1,7 @@
+{
+    "frameworks": [
+        "awtk@>=1.5"
+    ], 
+    "version": "2.0.2+sha.ebfa974", 
+    "name": "awtk-examples.v2"
+}

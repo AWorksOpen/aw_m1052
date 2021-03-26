@@ -1,0 +1,104 @@
+{
+  "name": "aw_psp_rtk",
+  "version": "1.0.0",
+  "description": "RTK Platform support",
+  "frameworks" : ["aworks@^1"],
+  "dependencies":["rtk"],
+  "provided_interfaces": ["aw_psp"],
+
+  "insts" : {
+
+    "target_init.service": {
+      "wanted_by": "aw_early_init_pre.target",
+      "before": "aw_bsp_early_init.service",
+      "init_entry": "target_init"
+    },
+
+    "kernel.service": {
+      "after": "target_init.service",
+      "before": "aw_bsp_early_init.service",
+      "wanted_by": "aw_early_init_pre.target",
+      "init_declares": ["#include \"aw_task.h\"", "#include \"all/aworks_startup.c\""],
+      "init_entry": "kernel_init"
+    },
+
+    "aw_bsp_early_init.service": {
+      "wanted_by": "aw_early_init_pre.target",
+      "after": "kernel.service",
+      "before": "aw_psp_early_init.service",
+      "init_entry": "aw_bsp_early_init"
+    },
+
+    "aw_psp_early_init.service": {
+      "after": "aw_bsp_early_init.service",
+      "wanted_by": "aw_early_init_pre.target",
+      "init_entry": "aw_psp_early_init"
+    },
+
+
+    "aw_early_init_pre.target": {
+      "init_group": "aw_early_pre_init",
+      "after": "aw_psp_early_init.service",
+      "wanted_by": "aw_early_init.target",
+      "launch_type": "manual"
+    },
+
+
+    "aw_sys_early_init.target": {
+      "init_group": "aw_sys_early_init",
+      "after": "aw_early_init_pre.target",
+      "wanted_by": "aw_early_init.target"
+    },
+
+    "aw_early_init.service": {
+      "wanted_by": "aw_early_init.target",
+      "init_declares": ["#include \"all/aw_psp_startup.c\""]
+    },
+
+    "aw_early_init.target": {
+      "init_group": "aw_prj_early_init",
+      "launch_type": "manual",
+      "init_declares": ["#include \"all/aw_psp_startup.c\""]
+    },
+
+    "aw_task_level_init.service": {
+      "after": "aw_early_init.target",
+      "wanted_by": "aw_task_level_init.target",
+      "init_declares": ["#include \"all/aw_psp_usr_app_init.c\""]
+    },
+
+    "aw_task_level_init.target": {
+      "init_group": "aw_prj_task_level_init",
+      "launch_type": "manual",
+      "after": "aw_early_init.target"
+    },
+
+    "aworks_up.target": {
+      "requires": ["aw_early_init.target", "aw_task_level_init.target"],
+      "after": "aw_task_level_init.target"
+    },
+
+    "aw_app_init.target": {
+      "init_group": "aw_app_init",
+      "after": "aworks_up.target",
+      "requires": "aworks_up.target",
+      "required_by": "aw_main.target"
+    },
+
+    "systick_init.service": {
+      "after": "aw_early_init.target",
+      "wanted_by": "aw_task_level_init.target",
+      "init_declares": "void systick_init (unsigned long ticks_per_second);",
+      "init_invoke": "systick_init(CONFIG_AW_CFG_TICKS_PER_SECOND);"
+    },
+
+    "aw_main.target": {
+    },
+
+    "my.service": {
+      "wanted_by": "aw_main.target"
+    }
+
+  }
+
+}

@@ -1,0 +1,216 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from config_build_common import build_common_config
+from config_aw_base import aw_base_config
+from config_lwip import aw_lwip_config
+import config_lwip
+import os
+
+env = DefaultEnvironment()
+env['CFLAGS'] += ' -D HAVE_CONFIG_H'
+
+cur_build_path = Dir('.', False)
+org_build_path = str(cur_build_path.srcnode())
+
+# 构建LIBCURL路径
+# 得出LIBCURL源码绝对路径
+libcurl_src_path = os.path.join(
+    build_common_config.AWORKS_ROOT, '3rdparty', 'net', 'libcurl')
+# 由LWIP源码路径推算出LWIP将要安装的路径
+libcurl_src_rel_apollo_dir = cal_relative_dir(
+    build_common_config.AWORKS_ROOT, libcurl_src_path)
+libcurl_src_install_path = os.path.join(
+    build_common_config.AW_SDK_INSTALL_PATH, 'apollo', libcurl_src_rel_apollo_dir)
+libcurl_rel_dir = cal_relative_dir(org_build_path, libcurl_src_path)
+
+# libcurl
+
+SOURCE1 = []
+SOURCE2 = []
+SOURCE3 = []
+SOURCE4 = []
+
+#SOURCE = []
+SOURCE1 += Glob(libcurl_rel_dir + 'lib/vauth/*.c')
+SOURCE1 += Glob(libcurl_rel_dir + 'lib/vquic/*.c')
+SOURCE1 += Glob(libcurl_rel_dir + 'lib/vssh/*.c')
+
+#SOURCE += Glob(libcurl_rel_dir + 'lib/vtls/*.c')
+#SOURCE1.append(libcurl_rel_dir + 'lib/vtls/bearssl.c')
+SOURCE1.append(libcurl_rel_dir + 'lib/vtls/gskit.c')
+SOURCE1.append(libcurl_rel_dir + 'lib/vtls/gtls.c')
+#SOURCE1.append(libcurl_rel_dir + 'lib/vtls/keylog.c')
+SOURCE1.append(libcurl_rel_dir + 'lib/vtls/mbedtls.c')
+SOURCE1.append(libcurl_rel_dir + 'lib/vtls/mbedtls_threadlock.c')
+SOURCE1.append(libcurl_rel_dir + 'lib/vtls/mesalink.c')
+SOURCE1.append(libcurl_rel_dir + 'lib/vtls/nss.c')
+SOURCE1.append(libcurl_rel_dir + 'lib/vtls/openssl.c')
+SOURCE1.append(libcurl_rel_dir + 'lib/vtls/schannel.c')
+SOURCE1.append(libcurl_rel_dir + 'lib/vtls/schannel_verify.c')
+SOURCE1.append(libcurl_rel_dir + 'lib/vtls/sectransp.c')
+#SOURCE1.append(libcurl_rel_dir + 'lib/vtls/vtls.c')
+SOURCE1.append(libcurl_rel_dir + 'lib/vtls/wolfssl.c')
+SOURCE4.append('./source/lib/vtls/bearssl.c')
+SOURCE4.append('./source/lib/vtls/keylog.c')
+#SOURCE4.append('./source/lib/gtls.c')
+SOURCE4.append('./source/lib/vtls/vtls.c')
+
+#SOURCE2 += Glob(libcurl_rel_dir + 'lib/*.c')
+#SOURCE2.append(libcurl_rel_dir + 'lib/altsvc.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/amigaos.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/asyn-ares.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/asyn-thread.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/base64.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/conncache.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/connect.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/content_encoding.c')
+#SOURCE2.append(libcurl_rel_dir + 'lib/cookie.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/curl_addrinfo.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/curl_ctype.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/curl_des.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/curl_endian.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/curl_fnmatch.c')
+#SOURCE2.append(libcurl_rel_dir + 'lib/curl_get_line.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/curl_gethostname.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/curl_gssapi.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/curl_memrchr.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/curl_multibyte.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/curl_ntlm_core.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/curl_ntlm_wb.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/curl_path.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/curl_range.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/curl_rtmp.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/curl_sasl.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/curl_sspi.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/curl_threads.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/dict.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/doh.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/dotdot.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/dynbuf.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/easy.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/escape.c')
+#SOURCE2.append(libcurl_rel_dir + 'lib/file.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/fileinfo.c')
+#SOURCE2.append(libcurl_rel_dir + 'lib/formdata.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/ftp.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/ftplistparser.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/getenv.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/getinfo.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/gopher.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/hash.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/hmac.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/hostasyn.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/hostcheck.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/hostip.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/hostip4.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/hostip6.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/hostsyn.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/http.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/http_chunks.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/http_digest.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/http_negotiate.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/http_ntlm.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/http_proxy.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/http2.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/idn_win32.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/if2ip.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/imap.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/inet_ntop.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/inet_pton.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/krb5.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/ldap.c')
+SOURCE2.append(libcurl_rel_dir + 'lib/llist.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/md4.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/md5.c')
+#SOURCE3.append(libcurl_rel_dir + 'lib/memdebug.c')
+#SOURCE3.append(libcurl_rel_dir + 'lib/mime.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/mprintf.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/mqtt.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/multi.c')
+#SOURCE3.append(libcurl_rel_dir + 'lib/netrc.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/non-ascii.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/nonblock.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/nwlib.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/nwos.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/openldap.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/parsedate.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/pingpong.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/pop3.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/progress.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/psl.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/rand.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/rename.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/rtsp.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/security.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/select.c')
+#SOURCE3.append(libcurl_rel_dir + 'lib/sendf.c')
+#SOURCE3.append(libcurl_rel_dir + 'lib/setopt.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/sha256.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/share.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/slist.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/smb.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/smtp.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/socketpair.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/socks.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/socks_gssapi.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/socks_sspi.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/speedcheck.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/splay.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/strcase.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/strdup.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/strerror.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/strtok.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/strtoofft.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/system_win32.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/telnet.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/tftp.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/timeval.c')
+#SOURCE3.append(libcurl_rel_dir + 'lib/transfer.c')
+#SOURCE3.append(libcurl_rel_dir + 'lib/url.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/urlapi.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/version.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/version_win32.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/warnless.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/wildcard.c')
+SOURCE3.append(libcurl_rel_dir + 'lib/x509asn1.c')
+SOURCE4.append('./source/lib/transfer.c')
+SOURCE4.append('./source/lib/sendf.c')
+SOURCE4.append('./source/lib/memdebug.c')
+SOURCE4.append('./source/lib/formdata.c')
+SOURCE4.append('./source/lib/file.c')
+SOURCE4.append('./source/lib/curl_get_line.c')
+SOURCE4.append('./source/lib/altsvc.c')
+SOURCE4.append('./source/lib/cookie.c')
+SOURCE4.append('./source/lib/mime.c')
+SOURCE4.append('./source/lib/netrc.c')
+SOURCE4.append('./source/lib/url.c')
+SOURCE4.append('./source/lib/setopt.c')
+
+SOURCE4.append('./source/lib/curl_io.c')
+
+# libcurl.x include
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE += aw_lwip_config.LWIP_INCLUDE
+
+INCLUDE.append(os.path.join(build_common_config.AW_SDK_INSTALL_PATH, 'include'))
+INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/base/include')
+INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/net/mbedtls-2.24.0-adapter/include')
+INCLUDE.append(build_common_config.AWORKS_ROOT + '3rdparty/net/mbedtls-2.24.0/include')
+
+INCLUDE.append('./include')
+INCLUDE.append(libcurl_rel_dir + 'include')
+INCLUDE.append(libcurl_rel_dir + 'lib/vtls')
+INCLUDE.append(libcurl_rel_dir + 'lib')
+
+lib_files1 = env.Library('libcurl1', SOURCE1, CPPPATH=INCLUDE)
+lib_files2 = env.Library('libcurl2', SOURCE2, CPPPATH=INCLUDE)
+lib_files3 = env.Library('libcurl3', SOURCE3, CPPPATH=INCLUDE)
+lib_files4 = env.Library('libcurl4', SOURCE4, CPPPATH=INCLUDE)
+lib_files  = []
+lib_files += lib_files1
+lib_files += lib_files2
+lib_files += lib_files3
+lib_files += lib_files4
+
+Return('lib_files')

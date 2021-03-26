@@ -1,0 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+libs=SConscript(dirs='lua-5.3.4_adapter', name='SConscript')
+
+Return('libs')

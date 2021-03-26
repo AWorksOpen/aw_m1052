@@ -1,0 +1,29 @@
+{
+  "name": "aw_lwip_2x_adapter", 
+  "version": "1.0.40", 
+  "description": "LWIP2.x adapter ", 
+  "category": "component", 
+  "dependencies": {
+    "lwip_2x": {}, 
+    "aw_net_tools": {}, 
+    "aw_net_core": {}
+  }, 
+  "distype": "sdist", 
+  "build_ref": "c41928438036eae989554b35cc9344b311fddaef", 
+  "build_id": "65406", 
+  "repository": "http://192.168.23.62/aworks2/aw_lwip_2x_adapter", 
+  "engines": [
+    "axio-engine@1.1.0-a.75", 
+    "axbuilder.component@1.0.0", 
+    "package_manager.component@1.0.0"
+  ], 
+  "status": "stable", 
+  "topic": "System::Internet::TCPIP", 
+  "autoconf": "aw_lwip_2x_autoconf.h", 
+  "include_dirs": [
+    "include", 
+    "include/arch", 
+    "include/ppp", 
+    "extra_include"
+  ]
+}

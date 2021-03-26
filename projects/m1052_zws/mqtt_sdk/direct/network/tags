@@ -1,0 +1,479 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+CLIENT_STATE_CONNECTED_IDLE	include/zlg_iot_mqtt_client.h	/^	CLIENT_STATE_CONNECTED_IDLE = 3,$/;"	e	enum:_ClientState
+CLIENT_STATE_CONNECTED_PUBLISH_IN_PROGRESS	include/zlg_iot_mqtt_client.h	/^	CLIENT_STATE_CONNECTED_PUBLISH_IN_PROGRESS = 5,$/;"	e	enum:_ClientState
+CLIENT_STATE_CONNECTED_RESUBSCRIBE_IN_PROGRESS	include/zlg_iot_mqtt_client.h	/^	CLIENT_STATE_CONNECTED_RESUBSCRIBE_IN_PROGRESS = 8,$/;"	e	enum:_ClientState
+CLIENT_STATE_CONNECTED_SUBSCRIBE_IN_PROGRESS	include/zlg_iot_mqtt_client.h	/^	CLIENT_STATE_CONNECTED_SUBSCRIBE_IN_PROGRESS = 6,$/;"	e	enum:_ClientState
+CLIENT_STATE_CONNECTED_UNSUBSCRIBE_IN_PROGRESS	include/zlg_iot_mqtt_client.h	/^	CLIENT_STATE_CONNECTED_UNSUBSCRIBE_IN_PROGRESS = 7,$/;"	e	enum:_ClientState
+CLIENT_STATE_CONNECTED_WAIT_FOR_CB_RETURN	include/zlg_iot_mqtt_client.h	/^	CLIENT_STATE_CONNECTED_WAIT_FOR_CB_RETURN = 9,$/;"	e	enum:_ClientState
+CLIENT_STATE_CONNECTED_YIELD_IN_PROGRESS	include/zlg_iot_mqtt_client.h	/^	CLIENT_STATE_CONNECTED_YIELD_IN_PROGRESS = 4,$/;"	e	enum:_ClientState
+CLIENT_STATE_CONNECTING	include/zlg_iot_mqtt_client.h	/^	CLIENT_STATE_CONNECTING = 2,$/;"	e	enum:_ClientState
+CLIENT_STATE_DISCONNECTED_ERROR	include/zlg_iot_mqtt_client.h	/^	CLIENT_STATE_DISCONNECTED_ERROR = 11,$/;"	e	enum:_ClientState
+CLIENT_STATE_DISCONNECTED_MANUALLY	include/zlg_iot_mqtt_client.h	/^	CLIENT_STATE_DISCONNECTED_MANUALLY = 12,$/;"	e	enum:_ClientState
+CLIENT_STATE_DISCONNECTING	include/zlg_iot_mqtt_client.h	/^	CLIENT_STATE_DISCONNECTING = 10,$/;"	e	enum:_ClientState
+CLIENT_STATE_INITIALIZED	include/zlg_iot_mqtt_client.h	/^	CLIENT_STATE_INITIALIZED = 1,$/;"	e	enum:_ClientState
+CLIENT_STATE_INVALID	include/zlg_iot_mqtt_client.h	/^	CLIENT_STATE_INVALID = 0,$/;"	e	enum:_ClientState
+CLIENT_STATE_PENDING_RECONNECT	include/zlg_iot_mqtt_client.h	/^	CLIENT_STATE_PENDING_RECONNECT = 13$/;"	e	enum:_ClientState
+CONNACK	include/zlg_iot_mqtt_client_common_internal.h	/^	CONNACK = 2,$/;"	e	enum:msgTypes
+CONNACK_BAD_USERDATA_ERROR	src/zlg_iot_mqtt_client_connect.c	/^	CONNACK_BAD_USERDATA_ERROR = 4,$/;"	e	enum:__anon15	file:
+CONNACK_CONNECTION_ACCEPTED	src/zlg_iot_mqtt_client_connect.c	/^	CONNACK_CONNECTION_ACCEPTED = 0,$/;"	e	enum:__anon15	file:
+CONNACK_IDENTIFIER_REJECTED_ERROR	src/zlg_iot_mqtt_client_connect.c	/^	CONNACK_IDENTIFIER_REJECTED_ERROR = 2,$/;"	e	enum:__anon15	file:
+CONNACK_NOT_AUTHORIZED_ERROR	src/zlg_iot_mqtt_client_connect.c	/^	CONNACK_NOT_AUTHORIZED_ERROR = 5$/;"	e	enum:__anon15	file:
+CONNACK_SERVER_UNAVAILABLE_ERROR	src/zlg_iot_mqtt_client_connect.c	/^	CONNACK_SERVER_UNAVAILABLE_ERROR = 3,$/;"	e	enum:__anon15	file:
+CONNACK_UNACCEPTABLE_PROTOCOL_VERSION_ERROR	src/zlg_iot_mqtt_client_connect.c	/^	CONNACK_UNACCEPTABLE_PROTOCOL_VERSION_ERROR = 1,$/;"	e	enum:__anon15	file:
+CONNECT	include/zlg_iot_mqtt_client_common_internal.h	/^	CONNECT = 1,$/;"	e	enum:msgTypes
+ClientData	include/zlg_iot_mqtt_client.h	/^} ClientData;$/;"	t	typeref:struct:_ClientData
+ClientState	include/zlg_iot_mqtt_client.h	/^} ClientState;$/;"	t	typeref:enum:_ClientState
+ClientStatus	include/zlg_iot_mqtt_client.h	/^} ClientStatus;$/;"	t	typeref:struct:_ClientStatus
+DISCONNECT	include/zlg_iot_mqtt_client_common_internal.h	/^	DISCONNECT = 14$/;"	e	enum:msgTypes
+DestinationPort	include/network_interface.h	/^	uint16_t DestinationPort;            \/\/\/< Integer defining the connection port of the MQTT service.$/;"	m	struct:__anon1
+FAILURE	include/zlg_iot_error.h	/^			FAILURE = -1,$/;"	e	enum:__anon2
+FUNC_ENTRY	include/zlg_iot_log.h	/^#define FUNC_ENTRY /;"	d
+FUNC_ENTRY	include/zlg_iot_log.h	/^#define FUNC_ENTRY$/;"	d
+FUNC_EXIT	include/zlg_iot_log.h	/^#define FUNC_EXIT /;"	d
+FUNC_EXIT	include/zlg_iot_log.h	/^#define FUNC_EXIT$/;"	d
+FUNC_EXIT_RC	include/zlg_iot_log.h	/^#define FUNC_EXIT_RC(/;"	d
+HostAddress	tools/mqtt_demo.c	/^static char HostAddress[255] = ZLG_IOT_MQTT_HOST;$/;"	v	file:
+IOTSDKC_NETWORK_MBEDTLS_PLATFORM_H_H	platform/linux/mbedtls/network_platform.h	/^#define IOTSDKC_NETWORK_MBEDTLS_PLATFORM_H_H$/;"	d
+IOTSDKC_NETWORK_MBEDTLS_PLATFORM_H_H	platform/linux/socket/network_platform.h	/^#define IOTSDKC_NETWORK_MBEDTLS_PLATFORM_H_H$/;"	d
+IOTSDKC_THREADS_PLATFORM_H_H	platform/linux/pthread/threads_platform.h	/^#define IOTSDKC_THREADS_PLATFORM_H_H$/;"	d
+IOT_DEBUG	include/zlg_iot_log.h	/^#define IOT_DEBUG(/;"	d
+IOT_ERROR	include/zlg_iot_log.h	/^#define IOT_ERROR(/;"	d
+IOT_INFO	include/zlg_iot_log.h	/^#define IOT_INFO(/;"	d
+IOT_SSL_READ_TIMEOUT	platform/linux/mbedtls/network_mbedtls_wrapper.c	/^#define IOT_SSL_READ_TIMEOUT /;"	d	file:
+IOT_UNUSED	include/zlg_iot_error.h	/^#define IOT_UNUSED(/;"	d
+IOT_WARN	include/zlg_iot_log.h	/^#define IOT_WARN(/;"	d
+IoT_Client_Connect_Params	include/zlg_iot_mqtt_client.h	/^} IoT_Client_Connect_Params;$/;"	t	typeref:struct:__anon6
+IoT_Client_Connect_Params_initializer	include/zlg_iot_mqtt_client.h	/^#define IoT_Client_Connect_Params_initializer /;"	d
+IoT_Client_Init_Params	include/zlg_iot_mqtt_client.h	/^} IoT_Client_Init_Params;$/;"	t	typeref:struct:__anon7
+IoT_Client_Init_Params_initializer	include/zlg_iot_mqtt_client.h	/^#define IoT_Client_Init_Params_initializer /;"	d
+IoT_Error_t	include/zlg_iot_error.h	/^} IoT_Error_t;$/;"	t	typeref:enum:__anon2
+IoT_MQTT_Will_Options	include/zlg_iot_mqtt_client.h	/^} IoT_MQTT_Will_Options;$/;"	t	typeref:struct:__anon5
+IoT_MQTT_Will_Options_Initializer	include/zlg_iot_mqtt_client.h	/^#define IoT_MQTT_Will_Options_Initializer /;"	d
+IoT_Mutex_t	include/threads_interface.h	/^typedef struct _IoT_Mutex_t IoT_Mutex_t;$/;"	t	typeref:struct:_IoT_Mutex_t
+IoT_Publish_Message_Params	include/zlg_iot_mqtt_client.h	/^} IoT_Publish_Message_Params;$/;"	t	typeref:struct:__anon3
+JSON_PARSE_ERROR	include/zlg_iot_error.h	/^			JSON_PARSE_ERROR = -42,$/;"	e	enum:__anon2
+MAX_ACKS_TO_COMEIN_AT_ANY_GIVEN_TIME	include/zlg_iot_config.h	/^#define MAX_ACKS_TO_COMEIN_AT_ANY_GIVEN_TIME /;"	d
+MAX_JSON_TOKEN_EXPECTED	include/zlg_iot_config.h	/^#define MAX_JSON_TOKEN_EXPECTED /;"	d
+MAX_NO_OF_REMAINING_LENGTH_BYTES	src/zlg_iot_mqtt_client_common_internal.c	/^#define MAX_NO_OF_REMAINING_LENGTH_BYTES /;"	d	file:
+MAX_PACKET_ID	include/zlg_iot_mqtt_client.h	/^#define MAX_PACKET_ID /;"	d
+MAX_SHADOW_TOPIC_LENGTH_BYTES	include/zlg_iot_config.h	/^#define MAX_SHADOW_TOPIC_LENGTH_BYTES /;"	d
+MAX_SHADOW_TOPIC_LENGTH_WITHOUT_THINGNAME	include/zlg_iot_config.h	/^#define MAX_SHADOW_TOPIC_LENGTH_WITHOUT_THINGNAME /;"	d
+MAX_SIZE_CLIENT_ID_WITH_SEQUENCE	include/zlg_iot_config.h	/^#define MAX_SIZE_CLIENT_ID_WITH_SEQUENCE /;"	d
+MAX_SIZE_CLIENT_TOKEN_CLIENT_SEQUENCE	include/zlg_iot_config.h	/^#define MAX_SIZE_CLIENT_TOKEN_CLIENT_SEQUENCE /;"	d
+MAX_SIZE_OF_THING_NAME	include/zlg_iot_config.h	/^#define MAX_SIZE_OF_THING_NAME /;"	d
+MAX_SIZE_OF_UNIQUE_CLIENT_ID_BYTES	include/zlg_iot_config.h	/^#define MAX_SIZE_OF_UNIQUE_CLIENT_ID_BYTES /;"	d
+MAX_THINGNAME_HANDLED_AT_ANY_GIVEN_TIME	include/zlg_iot_config.h	/^#define MAX_THINGNAME_HANDLED_AT_ANY_GIVEN_TIME /;"	d
+MBEDTLS_DEBUG_BUFFER_SIZE	platform/linux/mbedtls/network_mbedtls_wrapper.c	/^#define MBEDTLS_DEBUG_BUFFER_SIZE /;"	d	file:
+MQTTHeader	include/zlg_iot_mqtt_client_common_internal.h	/^} MQTTHeader;$/;"	t	typeref:union:__anon8
+MQTTVersion	include/zlg_iot_mqtt_client.h	/^	MQTT_Ver_t MQTTVersion;			\/\/\/< Desired MQTT version used during connection$/;"	m	struct:__anon6
+MQTT_3_1_1	include/zlg_iot_mqtt_client.h	/^	MQTT_3_1_1 = 4    \/\/\/< MQTT 3.1.1 (protocol message byte = 4)$/;"	e	enum:__anon4
+MQTT_CLIENT_NOT_IDLE_ERROR	include/zlg_iot_error.h	/^			MQTT_CLIENT_NOT_IDLE_ERROR = -30,$/;"	e	enum:__anon2
+MQTT_CONNACK_BAD_USERDATA_ERROR	include/zlg_iot_error.h	/^			MQTT_CONNACK_BAD_USERDATA_ERROR = -40,$/;"	e	enum:__anon2
+MQTT_CONNACK_CONNECTION_ACCEPTED	include/zlg_iot_error.h	/^			MQTT_CONNACK_CONNECTION_ACCEPTED = 1,$/;"	e	enum:__anon2
+MQTT_CONNACK_IDENTIFIER_REJECTED_ERROR	include/zlg_iot_error.h	/^			MQTT_CONNACK_IDENTIFIER_REJECTED_ERROR = -38,$/;"	e	enum:__anon2
+MQTT_CONNACK_NOT_AUTHORIZED_ERROR	include/zlg_iot_error.h	/^			MQTT_CONNACK_NOT_AUTHORIZED_ERROR = -41,$/;"	e	enum:__anon2
+MQTT_CONNACK_SERVER_UNAVAILABLE_ERROR	include/zlg_iot_error.h	/^			MQTT_CONNACK_SERVER_UNAVAILABLE_ERROR = -39,$/;"	e	enum:__anon2
+MQTT_CONNACK_UNACCEPTABLE_PROTOCOL_VERSION_ERROR	include/zlg_iot_error.h	/^			MQTT_CONNACK_UNACCEPTABLE_PROTOCOL_VERSION_ERROR = -37,$/;"	e	enum:__anon2
+MQTT_CONNACK_UNKNOWN_ERROR	include/zlg_iot_error.h	/^			MQTT_CONNACK_UNKNOWN_ERROR = -36,$/;"	e	enum:__anon2
+MQTT_CONNECTION_ERROR	include/zlg_iot_error.h	/^			MQTT_CONNECTION_ERROR = -26,$/;"	e	enum:__anon2
+MQTT_CONNECT_TIMEOUT_ERROR	include/zlg_iot_error.h	/^			MQTT_CONNECT_TIMEOUT_ERROR = -27,$/;"	e	enum:__anon2
+MQTT_Connack_Header_Flags	src/zlg_iot_mqtt_client_connect.c	/^} MQTT_Connack_Header_Flags;$/;"	t	typeref:union:__anon12	file:
+MQTT_Connack_Return_Codes	src/zlg_iot_mqtt_client_connect.c	/^} MQTT_Connack_Return_Codes;    \/**< Connect request response codes from server *\/$/;"	t	typeref:enum:__anon15	file:
+MQTT_Connect_Header_Flags	src/zlg_iot_mqtt_client_connect.c	/^} MQTT_Connect_Header_Flags;$/;"	t	typeref:union:__anon9	file:
+MQTT_DECODE_REMAINING_LENGTH_ERROR	include/zlg_iot_error.h	/^			MQTT_DECODE_REMAINING_LENGTH_ERROR = -35,$/;"	e	enum:__anon2
+MQTT_HEADER_FIELD_DUP	include/zlg_iot_mqtt_client_common_internal.h	/^#define MQTT_HEADER_FIELD_DUP(/;"	d
+MQTT_HEADER_FIELD_QOS	include/zlg_iot_mqtt_client_common_internal.h	/^#define MQTT_HEADER_FIELD_QOS(/;"	d
+MQTT_HEADER_FIELD_RETAIN	include/zlg_iot_mqtt_client_common_internal.h	/^#define MQTT_HEADER_FIELD_RETAIN(/;"	d
+MQTT_HEADER_FIELD_TYPE	include/zlg_iot_mqtt_client_common_internal.h	/^#define MQTT_HEADER_FIELD_TYPE(/;"	d
+MQTT_MAX_SUBSCRIPTIONS_REACHED_ERROR	include/zlg_iot_error.h	/^			MQTT_MAX_SUBSCRIPTIONS_REACHED_ERROR = -34,$/;"	e	enum:__anon2
+MQTT_NOTHING_TO_READ	include/zlg_iot_error.h	/^			MQTT_NOTHING_TO_READ = 2,$/;"	e	enum:__anon2
+MQTT_REQUEST_TIMEOUT_ERROR	include/zlg_iot_error.h	/^			MQTT_REQUEST_TIMEOUT_ERROR = -28,$/;"	e	enum:__anon2
+MQTT_RX_BUFFER_TOO_SHORT_ERROR	include/zlg_iot_error.h	/^			MQTT_RX_BUFFER_TOO_SHORT_ERROR = -32,$/;"	e	enum:__anon2
+MQTT_RX_MESSAGE_PACKET_TYPE_INVALID_ERROR	include/zlg_iot_error.h	/^			MQTT_RX_MESSAGE_PACKET_TYPE_INVALID_ERROR = -31,$/;"	e	enum:__anon2
+MQTT_TX_BUFFER_TOO_SHORT_ERROR	include/zlg_iot_error.h	/^			MQTT_TX_BUFFER_TOO_SHORT_ERROR = -33,$/;"	e	enum:__anon2
+MQTT_UNEXPECTED_CLIENT_STATE_ERROR	include/zlg_iot_error.h	/^			MQTT_UNEXPECTED_CLIENT_STATE_ERROR = -29,$/;"	e	enum:__anon2
+MQTT_Ver_t	include/zlg_iot_mqtt_client.h	/^} MQTT_Ver_t;$/;"	t	typeref:enum:__anon4
+MUTEX_DESTROY_ERROR	include/zlg_iot_error.h	/^			MUTEX_DESTROY_ERROR = -49,$/;"	e	enum:__anon2
+MUTEX_INIT_ERROR	include/zlg_iot_error.h	/^			MUTEX_INIT_ERROR = -46,$/;"	e	enum:__anon2
+MUTEX_LOCK_ERROR	include/zlg_iot_error.h	/^			MUTEX_LOCK_ERROR = -47,$/;"	e	enum:__anon2
+MUTEX_UNLOCK_ERROR	include/zlg_iot_error.h	/^			MUTEX_UNLOCK_ERROR = -48,$/;"	e	enum:__anon2
+MessageHandlers	include/zlg_iot_mqtt_client.h	/^} MessageHandlers;   \/* Message handlers are indexed by subscription topic *\/$/;"	t	typeref:struct:_MessageHandlers
+MessageTypes	include/zlg_iot_mqtt_client_common_internal.h	/^} MessageTypes;$/;"	t	typeref:enum:msgTypes
+NETWORK_ALREADY_CONNECTED_ERROR	include/zlg_iot_error.h	/^			NETWORK_ALREADY_CONNECTED_ERROR = -15,$/;"	e	enum:__anon2
+NETWORK_ATTEMPTING_RECONNECT	include/zlg_iot_error.h	/^			NETWORK_ATTEMPTING_RECONNECT = 4,$/;"	e	enum:__anon2
+NETWORK_DISCONNECTED_ERROR	include/zlg_iot_error.h	/^			NETWORK_DISCONNECTED_ERROR = -13,$/;"	e	enum:__anon2
+NETWORK_ERR_NET_CONNECT_FAILED	include/zlg_iot_error.h	/^			NETWORK_ERR_NET_CONNECT_FAILED = -24,$/;"	e	enum:__anon2
+NETWORK_ERR_NET_SOCKET_FAILED	include/zlg_iot_error.h	/^			NETWORK_ERR_NET_SOCKET_FAILED = -22,$/;"	e	enum:__anon2
+NETWORK_ERR_NET_UNKNOWN_HOST	include/zlg_iot_error.h	/^			NETWORK_ERR_NET_UNKNOWN_HOST = -23,$/;"	e	enum:__anon2
+NETWORK_MANUALLY_DISCONNECTED	include/zlg_iot_error.h	/^			NETWORK_MANUALLY_DISCONNECTED = 5,$/;"	e	enum:__anon2
+NETWORK_MBEDTLS_ERR_CTR_DRBG_ENTROPY_SOURCE_FAILED	include/zlg_iot_error.h	/^			NETWORK_MBEDTLS_ERR_CTR_DRBG_ENTROPY_SOURCE_FAILED = -16,$/;"	e	enum:__anon2
+NETWORK_PHYSICAL_LAYER_CONNECTED	include/zlg_iot_error.h	/^			NETWORK_PHYSICAL_LAYER_CONNECTED = 6,$/;"	e	enum:__anon2
+NETWORK_PHYSICAL_LAYER_DISCONNECTED	include/zlg_iot_error.h	/^			NETWORK_PHYSICAL_LAYER_DISCONNECTED = -18,$/;"	e	enum:__anon2
+NETWORK_PK_PRIVATE_KEY_PARSE_ERROR	include/zlg_iot_error.h	/^			NETWORK_PK_PRIVATE_KEY_PARSE_ERROR = -21,$/;"	e	enum:__anon2
+NETWORK_RECONNECTED	include/zlg_iot_error.h	/^			NETWORK_RECONNECTED = 3,$/;"	e	enum:__anon2
+NETWORK_RECONNECT_TIMED_OUT_ERROR	include/zlg_iot_error.h	/^			NETWORK_RECONNECT_TIMED_OUT_ERROR = -14,$/;"	e	enum:__anon2
+NETWORK_SSL_CERT_ERROR	include/zlg_iot_error.h	/^			NETWORK_SSL_CERT_ERROR = -9,$/;"	e	enum:__anon2
+NETWORK_SSL_CONNECT_TIMEOUT_ERROR	include/zlg_iot_error.h	/^			NETWORK_SSL_CONNECT_TIMEOUT_ERROR = -6,$/;"	e	enum:__anon2
+NETWORK_SSL_INIT_ERROR	include/zlg_iot_error.h	/^			NETWORK_SSL_INIT_ERROR = -8,$/;"	e	enum:__anon2
+NETWORK_SSL_NOTHING_TO_READ	include/zlg_iot_error.h	/^			NETWORK_SSL_NOTHING_TO_READ = -25,$/;"	e	enum:__anon2
+NETWORK_SSL_READ_ERROR	include/zlg_iot_error.h	/^			NETWORK_SSL_READ_ERROR = -12,$/;"	e	enum:__anon2
+NETWORK_SSL_READ_TIMEOUT_ERROR	include/zlg_iot_error.h	/^			NETWORK_SSL_READ_TIMEOUT_ERROR = -11,$/;"	e	enum:__anon2
+NETWORK_SSL_UNKNOWN_ERROR	include/zlg_iot_error.h	/^			NETWORK_SSL_UNKNOWN_ERROR = -17,$/;"	e	enum:__anon2
+NETWORK_SSL_WRITE_ERROR	include/zlg_iot_error.h	/^			NETWORK_SSL_WRITE_ERROR = -7,$/;"	e	enum:__anon2
+NETWORK_SSL_WRITE_TIMEOUT_ERROR	include/zlg_iot_error.h	/^			NETWORK_SSL_WRITE_TIMEOUT_ERROR = -10,$/;"	e	enum:__anon2
+NETWORK_X509_DEVICE_CRT_PARSE_ERROR	include/zlg_iot_error.h	/^			NETWORK_X509_DEVICE_CRT_PARSE_ERROR = -20,$/;"	e	enum:__anon2
+NETWORK_X509_ROOT_CRT_PARSE_ERROR	include/zlg_iot_error.h	/^			NETWORK_X509_ROOT_CRT_PARSE_ERROR = -19,$/;"	e	enum:__anon2
+NULL_VALUE_ERROR	include/zlg_iot_error.h	/^			NULL_VALUE_ERROR = -2,$/;"	e	enum:__anon2
+Network	include/network_interface.h	/^struct Network {$/;"	s
+Network	include/network_interface.h	/^typedef struct Network Network;$/;"	t	typeref:struct:Network
+PINGREQ	include/zlg_iot_mqtt_client_common_internal.h	/^	PINGREQ = 12,$/;"	e	enum:msgTypes
+PINGRESP	include/zlg_iot_mqtt_client_common_internal.h	/^	PINGRESP = 13,$/;"	e	enum:msgTypes
+PUBACK	include/zlg_iot_mqtt_client_common_internal.h	/^	PUBACK = 4,$/;"	e	enum:msgTypes
+PUBCOMP	include/zlg_iot_mqtt_client_common_internal.h	/^	PUBCOMP = 7,$/;"	e	enum:msgTypes
+PUBLISH	include/zlg_iot_mqtt_client_common_internal.h	/^	PUBLISH = 3,$/;"	e	enum:msgTypes
+PUBREC	include/zlg_iot_mqtt_client_common_internal.h	/^	PUBREC = 5,$/;"	e	enum:msgTypes
+PUBREL	include/zlg_iot_mqtt_client_common_internal.h	/^	PUBREL = 6,$/;"	e	enum:msgTypes
+QOS0	include/zlg_iot_mqtt_client.h	/^	QOS0 = 0,$/;"	e	enum:QoS
+QOS1	include/zlg_iot_mqtt_client.h	/^	QOS1 = 1$/;"	e	enum:QoS
+QoS	include/zlg_iot_mqtt_client.h	/^typedef enum QoS {$/;"	g
+QoS	include/zlg_iot_mqtt_client.h	/^} QoS;$/;"	t	typeref:enum:QoS
+SHADOW_JSON_BUFFER_TRUNCATED	include/zlg_iot_error.h	/^			SHADOW_JSON_BUFFER_TRUNCATED = -44,$/;"	e	enum:__anon2
+SHADOW_JSON_ERROR	include/zlg_iot_error.h	/^			SHADOW_JSON_ERROR = -45,$/;"	e	enum:__anon2
+SHADOW_MAX_SIZE_OF_RX_BUFFER	include/zlg_iot_config.h	/^#define SHADOW_MAX_SIZE_OF_RX_BUFFER /;"	d
+SHADOW_WAIT_FOR_PUBLISH	include/zlg_iot_error.h	/^			SHADOW_WAIT_FOR_PUBLISH = -43,$/;"	e	enum:__anon2
+SRC_PROTOCOL_MQTT_AWS_IOT_EMBEDDED_CLIENT_WRAPPER_PLATFORM_LINUX_COMMON_TIMER_PLATFORM_H_	platform/linux/common/timer_platform.h	/^#define SRC_PROTOCOL_MQTT_AWS_IOT_EMBEDDED_CLIENT_WRAPPER_PLATFORM_LINUX_COMMON_TIMER_PLATFORM_H_$/;"	d
+SRC_SHADOW_IOT_SHADOW_CONFIG_H_	include/zlg_iot_config.h	/^#define SRC_SHADOW_IOT_SHADOW_CONFIG_H_$/;"	d
+SRC_UTILS_ZLG_IOT_VERSION_H_	include/zlg_iot_version.h	/^#define SRC_UTILS_ZLG_IOT_VERSION_H_$/;"	d
+SSL_CONNECTION_ERROR	include/zlg_iot_error.h	/^			SSL_CONNECTION_ERROR = -4,$/;"	e	enum:__anon2
+STR_KEY_CONTENT_LENGTH	src/zlg_iot_http_client.c	/^#define STR_KEY_CONTENT_LENGTH /;"	d	file:
+STR_KEY_CONTENT_TYPE	src/zlg_iot_http_client.c	/^#define STR_KEY_CONTENT_TYPE /;"	d	file:
+SUBACK	include/zlg_iot_mqtt_client_common_internal.h	/^	SUBACK = 9,$/;"	e	enum:msgTypes
+SUBSCRIBE	include/zlg_iot_mqtt_client_common_internal.h	/^	SUBSCRIBE = 8,$/;"	e	enum:msgTypes
+SUCCESS	include/zlg_iot_error.h	/^			SUCCESS = 0,$/;"	e	enum:__anon2
+ServerVerificationFlag	include/network_interface.h	/^	bool ServerVerificationFlag;        \/\/\/< Boolean.  True = perform server certificate hostname validation.  False = skip validation \\b NOT recommended.$/;"	m	struct:__anon1
+SocketDataParams	platform/linux/socket/network_platform.h	/^}SocketDataParams;$/;"	t	typeref:struct:_SocketDataParams
+TCP_CONNECTION_ERROR	include/zlg_iot_error.h	/^			TCP_CONNECTION_ERROR = -3,$/;"	e	enum:__anon2
+TCP_SETUP_ERROR	include/zlg_iot_error.h	/^			TCP_SETUP_ERROR = -5,$/;"	e	enum:__anon2
+TLSConnectParams	include/network_interface.h	/^} TLSConnectParams;$/;"	t	typeref:struct:__anon1
+TLSDataParams	platform/linux/mbedtls/network_platform.h	/^}TLSDataParams;$/;"	t	typeref:struct:_TLSDataParams
+Timer	include/timer_interface.h	/^typedef struct Timer Timer;$/;"	t	typeref:struct:Timer
+Timer	platform/linux/common/timer_platform.h	/^struct Timer {$/;"	s
+UNKNOWN	include/zlg_iot_mqtt_client_common_internal.h	/^	UNKNOWN = -1,$/;"	e	enum:msgTypes
+UNSUBACK	include/zlg_iot_mqtt_client_common_internal.h	/^	UNSUBACK = 11,$/;"	e	enum:msgTypes
+UNSUBSCRIBE	include/zlg_iot_mqtt_client_common_internal.h	/^	UNSUBSCRIBE = 10,$/;"	e	enum:msgTypes
+VERSION_MAJOR	include/zlg_iot_version.h	/^#define VERSION_MAJOR /;"	d
+VERSION_MINOR	include/zlg_iot_version.h	/^#define VERSION_MINOR /;"	d
+VERSION_PATCH	include/zlg_iot_version.h	/^#define VERSION_PATCH /;"	d
+VERSION_TAG	include/zlg_iot_version.h	/^#define VERSION_TAG /;"	d
+ZLG_IOT_AUTH_HOST	include/zlg_iot_config.h	/^#define ZLG_IOT_AUTH_HOST /;"	d
+ZLG_IOT_AUTH_PATH	include/zlg_iot_config.h	/^#define ZLG_IOT_AUTH_PATH /;"	d
+ZLG_IOT_AUTH_PORT	include/zlg_iot_config.h	/^#define ZLG_IOT_AUTH_PORT /;"	d
+ZLG_IOT_CERTIFICATE_FILENAME	include/zlg_iot_config.h	/^#define ZLG_IOT_CERTIFICATE_FILENAME /;"	d
+ZLG_IOT_HTTP_BUFF_SIZE	include/zlg_iot_config.h	/^#define ZLG_IOT_HTTP_BUFF_SIZE /;"	d
+ZLG_IOT_MQTT_CLIENT_ID	include/zlg_iot_config.h	/^#define ZLG_IOT_MQTT_CLIENT_ID /;"	d
+ZLG_IOT_MQTT_HOST	include/zlg_iot_config.h	/^#define ZLG_IOT_MQTT_HOST /;"	d
+ZLG_IOT_MQTT_MAX_RECONNECT_WAIT_INTERVAL	include/zlg_iot_config.h	/^#define ZLG_IOT_MQTT_MAX_RECONNECT_WAIT_INTERVAL /;"	d
+ZLG_IOT_MQTT_MIN_RECONNECT_WAIT_INTERVAL	include/zlg_iot_config.h	/^#define ZLG_IOT_MQTT_MIN_RECONNECT_WAIT_INTERVAL /;"	d
+ZLG_IOT_MQTT_NUM_SUBSCRIBE_HANDLERS	include/zlg_iot_config.h	/^#define ZLG_IOT_MQTT_NUM_SUBSCRIBE_HANDLERS /;"	d
+ZLG_IOT_MQTT_PORT	include/zlg_iot_config.h	/^#define ZLG_IOT_MQTT_PORT /;"	d
+ZLG_IOT_MQTT_RX_BUF_LEN	include/zlg_iot_config.h	/^#define ZLG_IOT_MQTT_RX_BUF_LEN /;"	d
+ZLG_IOT_MQTT_TX_BUF_LEN	include/zlg_iot_config.h	/^#define ZLG_IOT_MQTT_TX_BUF_LEN /;"	d
+ZLG_IOT_MY_THING_NAME	include/zlg_iot_config.h	/^#define ZLG_IOT_MY_THING_NAME /;"	d
+ZLG_IOT_PRIVATE_KEY_FILENAME	include/zlg_iot_config.h	/^#define ZLG_IOT_PRIVATE_KEY_FILENAME /;"	d
+ZLG_IOT_ROOT_CA_FILENAME	include/zlg_iot_config.h	/^#define ZLG_IOT_ROOT_CA_FILENAME /;"	d
+ZLG_IOT_SDK_SRC_IOT_COMMON_INTERNAL_H	include/zlg_iot_mqtt_client_common_internal.h	/^#define ZLG_IOT_SDK_SRC_IOT_COMMON_INTERNAL_H$/;"	d
+ZLG_IOT_SDK_SRC_IOT_ERROR_H_	include/zlg_iot_error.h	/^#define ZLG_IOT_SDK_SRC_IOT_ERROR_H_$/;"	d
+ZLG_IOT_SDK_SRC_IOT_HTTP_CLIENT_H	include/zlg_iot_http_client.h	/^#define ZLG_IOT_SDK_SRC_IOT_HTTP_CLIENT_H$/;"	d
+ZLG_IOT_SDK_SRC_IOT_MQTT_CLIENT_H	include/zlg_iot_mqtt_client.h	/^#define ZLG_IOT_SDK_SRC_IOT_MQTT_CLIENT_H$/;"	d
+ZLG_IOT_SDK_SRC_IOT_MQTT_INTERFACE_H	include/zlg_iot_mqtt_client_interface.h	/^#define ZLG_IOT_SDK_SRC_IOT_MQTT_INTERFACE_H$/;"	d
+ZLG_IoT_Client	include/zlg_iot_mqtt_client.h	/^typedef struct _Client ZLG_IoT_Client;$/;"	t	typeref:struct:_Client
+_Client	include/zlg_iot_mqtt_client.h	/^struct _Client {$/;"	s
+_ClientData	include/zlg_iot_mqtt_client.h	/^typedef struct _ClientData {$/;"	s
+_ClientState	include/zlg_iot_mqtt_client.h	/^typedef enum _ClientState {$/;"	g
+_ClientStatus	include/zlg_iot_mqtt_client.h	/^typedef struct _ClientStatus {$/;"	s
+_IOT_LOG_H	include/zlg_iot_log.h	/^#define _IOT_LOG_H$/;"	d
+_IoT_Mutex_t	platform/linux/pthread/threads_platform.h	/^struct _IoT_Mutex_t {$/;"	s
+_MessageHandlers	include/zlg_iot_mqtt_client.h	/^typedef struct _MessageHandlers {$/;"	s
+_SocketDataParams	platform/linux/socket/network_platform.h	/^typedef struct _SocketDataParams {$/;"	s
+_TLSDataParams	platform/linux/mbedtls/network_platform.h	/^typedef struct _TLSDataParams {$/;"	s
+__NETWORK_INTERFACE_H_	include/network_interface.h	/^#define __NETWORK_INTERFACE_H_$/;"	d
+__THREADS_INTERFACE_H_	include/threads_interface.h	/^#define __THREADS_INTERFACE_H_$/;"	d
+__TIMER_INTERFACE_H_	include/timer_interface.h	/^#define __TIMER_INTERFACE_H_$/;"	d
+_iot_tls_set_connect_params	platform/linux/mbedtls/network_mbedtls_wrapper.c	/^void _iot_tls_set_connect_params(Network *pNetwork, char *pRootCALocation, char *pDeviceCertLocation,$/;"	f
+_iot_tls_verify_cert	platform/linux/mbedtls/network_mbedtls_wrapper.c	/^static int _iot_tls_verify_cert(void *data, mbedtls_x509_crt *crt, int depth, uint32_t *flags) {$/;"	f	file:
+_zlg_iot_get_connect_packet_length	src/zlg_iot_mqtt_client_connect.c	/^static uint32_t _zlg_iot_get_connect_packet_length(IoT_Client_Connect_Params *pConnectParams) {$/;"	f	file:
+_zlg_iot_http_client_t	include/zlg_iot_http_client.h	/^struct _zlg_iot_http_client_t {$/;"	s
+_zlg_iot_mqtt_deserialize_connack	src/zlg_iot_mqtt_client_connect.c	/^static IoT_Error_t _zlg_iot_mqtt_deserialize_connack(unsigned char *pSessionPresent, IoT_Error_t *pConnackRc,$/;"	f	file:
+_zlg_iot_mqtt_deserialize_suback	src/zlg_iot_mqtt_client_subscribe.c	/^static IoT_Error_t _zlg_iot_mqtt_deserialize_suback(uint16_t *pPacketId, uint32_t maxExpectedQoSCount,$/;"	f	file:
+_zlg_iot_mqtt_deserialize_unsuback	src/zlg_iot_mqtt_client_unsubscribe.c	/^static IoT_Error_t _zlg_iot_mqtt_deserialize_unsuback(uint16_t *pPacketId, unsigned char *pRxBuf, size_t rxBufLen) {$/;"	f	file:
+_zlg_iot_mqtt_force_client_disconnect	src/zlg_iot_mqtt_client_yield.c	/^static void _zlg_iot_mqtt_force_client_disconnect(ZLG_IoT_Client *pClient) {$/;"	f	file:
+_zlg_iot_mqtt_get_free_message_handler_index	src/zlg_iot_mqtt_client_subscribe.c	/^static uint32_t _zlg_iot_mqtt_get_free_message_handler_index(ZLG_IoT_Client *pClient) {$/;"	f	file:
+_zlg_iot_mqtt_handle_disconnect	src/zlg_iot_mqtt_client_yield.c	/^static IoT_Error_t _zlg_iot_mqtt_handle_disconnect(ZLG_IoT_Client *pClient) {$/;"	f	file:
+_zlg_iot_mqtt_handle_reconnect	src/zlg_iot_mqtt_client_yield.c	/^static IoT_Error_t _zlg_iot_mqtt_handle_reconnect(ZLG_IoT_Client *pClient) {$/;"	f	file:
+_zlg_iot_mqtt_internal_connect	src/zlg_iot_mqtt_client_connect.c	/^static IoT_Error_t _zlg_iot_mqtt_internal_connect(ZLG_IoT_Client *pClient, IoT_Client_Connect_Params *pConnectParams) {$/;"	f	file:
+_zlg_iot_mqtt_internal_decode_packet_remaining_len	src/zlg_iot_mqtt_client_common_internal.c	/^static IoT_Error_t _zlg_iot_mqtt_internal_decode_packet_remaining_len(ZLG_IoT_Client *pClient,$/;"	f	file:
+_zlg_iot_mqtt_internal_deliver_message	src/zlg_iot_mqtt_client_common_internal.c	/^static IoT_Error_t _zlg_iot_mqtt_internal_deliver_message(ZLG_IoT_Client *pClient, char *pTopicName,$/;"	f	file:
+_zlg_iot_mqtt_internal_disconnect	src/zlg_iot_mqtt_client_connect.c	/^IoT_Error_t _zlg_iot_mqtt_internal_disconnect(ZLG_IoT_Client *pClient) {$/;"	f
+_zlg_iot_mqtt_internal_handle_publish	src/zlg_iot_mqtt_client_common_internal.c	/^static IoT_Error_t _zlg_iot_mqtt_internal_handle_publish(ZLG_IoT_Client *pClient, Timer *pTimer) {$/;"	f	file:
+_zlg_iot_mqtt_internal_is_topic_matched	src/zlg_iot_mqtt_client_common_internal.c	/^static bool _zlg_iot_mqtt_internal_is_topic_matched(char *pTopicFilter, char *pTopicName, uint16_t topicNameLen) {$/;"	f	file:
+_zlg_iot_mqtt_internal_publish	src/zlg_iot_mqtt_client_publish.c	/^static IoT_Error_t _zlg_iot_mqtt_internal_publish(ZLG_IoT_Client *pClient, const char *pTopicName,$/;"	f	file:
+_zlg_iot_mqtt_internal_read_packet	src/zlg_iot_mqtt_client_common_internal.c	/^static IoT_Error_t _zlg_iot_mqtt_internal_read_packet(ZLG_IoT_Client *pClient, Timer *pTimer, uint8_t *pPacketType) {$/;"	f	file:
+_zlg_iot_mqtt_internal_resubscribe	src/zlg_iot_mqtt_client_subscribe.c	/^static IoT_Error_t _zlg_iot_mqtt_internal_resubscribe(ZLG_IoT_Client *pClient) {$/;"	f	file:
+_zlg_iot_mqtt_internal_serialize_publish	src/zlg_iot_mqtt_client_publish.c	/^static IoT_Error_t _zlg_iot_mqtt_internal_serialize_publish(unsigned char *pTxBuf, size_t txBufLen, uint8_t dup,$/;"	f	file:
+_zlg_iot_mqtt_internal_subscribe	src/zlg_iot_mqtt_client_subscribe.c	/^static IoT_Error_t _zlg_iot_mqtt_internal_subscribe(ZLG_IoT_Client *pClient, const char *pTopicName,$/;"	f	file:
+_zlg_iot_mqtt_internal_unsubscribe	src/zlg_iot_mqtt_client_unsubscribe.c	/^static IoT_Error_t _zlg_iot_mqtt_internal_unsubscribe(ZLG_IoT_Client *pClient, const char *pTopicFilter,$/;"	f	file:
+_zlg_iot_mqtt_internal_yield	src/zlg_iot_mqtt_client_yield.c	/^static IoT_Error_t _zlg_iot_mqtt_internal_yield(ZLG_IoT_Client *pClient, uint32_t timeout_ms) {$/;"	f	file:
+_zlg_iot_mqtt_is_client_state_valid_for_connect	src/zlg_iot_mqtt_client_connect.c	/^static bool _zlg_iot_mqtt_is_client_state_valid_for_connect(ClientState clientState) {$/;"	f	file:
+_zlg_iot_mqtt_keep_alive	src/zlg_iot_mqtt_client_yield.c	/^static IoT_Error_t _zlg_iot_mqtt_keep_alive(ZLG_IoT_Client *pClient) {$/;"	f	file:
+_zlg_iot_mqtt_read_string_with_len	src/zlg_iot_mqtt_client_publish.c	/^static IoT_Error_t _zlg_iot_mqtt_read_string_with_len(char **stringVar, uint16_t *stringLen,$/;"	f	file:
+_zlg_iot_mqtt_serialize_connect	src/zlg_iot_mqtt_client_connect.c	/^static IoT_Error_t _zlg_iot_mqtt_serialize_connect(unsigned char *pTxBuf, size_t txBufLen,$/;"	f	file:
+_zlg_iot_mqtt_serialize_subscribe	src/zlg_iot_mqtt_client_subscribe.c	/^static IoT_Error_t _zlg_iot_mqtt_serialize_subscribe(unsigned char *pTxBuf, size_t txBufLen,$/;"	f	file:
+_zlg_iot_mqtt_serialize_unsubscribe	src/zlg_iot_mqtt_client_unsubscribe.c	/^static IoT_Error_t _zlg_iot_mqtt_serialize_unsubscribe(unsigned char *pTxBuf, size_t txBufLen,$/;"	f	file:
+_zlg_mqtt_info	include/zlg_iot_http_client.h	/^typedef struct _zlg_mqtt_info {$/;"	s
+all	src/zlg_iot_mqtt_client_connect.c	/^	uint8_t all;                            \/**< all connack flags *\/$/;"	m	union:__anon12	file:
+all	src/zlg_iot_mqtt_client_connect.c	/^	uint8_t all;    \/**< all connect flags *\/$/;"	m	union:__anon9	file:
+aws_iot_thread_mutex_destroy	platform/linux/pthread/threads_pthread_wrapper.c	/^IoT_Error_t aws_iot_thread_mutex_destroy(IoT_Mutex_t *pMutex) {$/;"	f
+aws_iot_thread_mutex_init	platform/linux/pthread/threads_pthread_wrapper.c	/^IoT_Error_t aws_iot_thread_mutex_init(IoT_Mutex_t *pMutex) {$/;"	f
+aws_iot_thread_mutex_lock	platform/linux/pthread/threads_pthread_wrapper.c	/^IoT_Error_t aws_iot_thread_mutex_lock(IoT_Mutex_t *pMutex) {$/;"	f
+aws_iot_thread_mutex_trylock	platform/linux/pthread/threads_pthread_wrapper.c	/^IoT_Error_t aws_iot_thread_mutex_trylock(IoT_Mutex_t *pMutex) {$/;"	f
+aws_iot_thread_mutex_unlock	platform/linux/pthread/threads_pthread_wrapper.c	/^IoT_Error_t aws_iot_thread_mutex_unlock(IoT_Mutex_t *pMutex) {$/;"	f
+bits	src/zlg_iot_mqtt_client_connect.c	/^	} bits;$/;"	m	union:__anon12	typeref:struct:__anon12::__anon13	file:
+bits	src/zlg_iot_mqtt_client_connect.c	/^	} bits;$/;"	m	union:__anon12	typeref:struct:__anon12::__anon14	file:
+bits	src/zlg_iot_mqtt_client_connect.c	/^	} bits;$/;"	m	union:__anon9	typeref:struct:__anon9::__anon10	file:
+bits	src/zlg_iot_mqtt_client_connect.c	/^	} bits;$/;"	m	union:__anon9	typeref:struct:__anon9::__anon11	file:
+body	include/zlg_iot_http_client.h	/^    unsigned char* body;$/;"	m	struct:_zlg_iot_http_client_t
+byte	include/zlg_iot_mqtt_client_common_internal.h	/^	unsigned char byte;				\/**< the whole byte *\/$/;"	m	union:__anon8
+cacert	platform/linux/mbedtls/network_platform.h	/^	mbedtls_x509_crt cacert;$/;"	m	struct:_TLSDataParams
+cleansession	src/zlg_iot_mqtt_client_connect.c	/^		unsigned int cleansession : 1;	\/**< clean session flag *\/$/;"	m	struct:__anon9::__anon10	file:
+cleansession	src/zlg_iot_mqtt_client_connect.c	/^		unsigned int cleansession : 1;$/;"	m	struct:__anon9::__anon11	file:
+clicert	platform/linux/mbedtls/network_platform.h	/^	mbedtls_x509_crt clicert;$/;"	m	struct:_TLSDataParams
+clientData	include/zlg_iot_mqtt_client.h	/^	ClientData clientData;$/;"	m	struct:_Client
+clientIDLen	include/zlg_iot_mqtt_client.h	/^	uint16_t clientIDLen;			\/\/\/< Client Id Length. 16 bit unsigned integer$/;"	m	struct:__anon6
+clientState	include/zlg_iot_mqtt_client.h	/^	ClientState clientState;$/;"	m	struct:_ClientStatus
+clientStatus	include/zlg_iot_mqtt_client.h	/^	ClientStatus clientStatus;$/;"	m	struct:_Client
+clientip	include/zlg_iot_http_client.h	/^    char clientip[32];$/;"	m	struct:_zlg_mqtt_info
+commandTimeoutMs	include/zlg_iot_mqtt_client.h	/^	uint32_t commandTimeoutMs;$/;"	m	struct:_ClientData
+conf	platform/linux/mbedtls/network_platform.h	/^	mbedtls_ssl_config conf;$/;"	m	struct:_TLSDataParams
+connect	include/network_interface.h	/^	IoT_Error_t (*connect)(Network *, TLSConnectParams *);$/;"	m	struct:Network
+content_length	include/zlg_iot_http_client.h	/^    size_t content_length;$/;"	m	struct:_zlg_iot_http_client_t
+content_type	include/zlg_iot_http_client.h	/^    char content_type[32];$/;"	m	struct:_zlg_iot_http_client_t
+countdown_ms	platform/linux/common/timer.c	/^void countdown_ms(Timer *timer, uint32_t timeout) {$/;"	f
+countdown_sec	platform/linux/common/timer.c	/^void countdown_sec(Timer *timer, uint32_t timeout) {$/;"	f
+counterNetworkDisconnected	include/zlg_iot_mqtt_client.h	/^	uint32_t counterNetworkDisconnected;$/;"	m	struct:_ClientData
+ctr_drbg	platform/linux/mbedtls/network_platform.h	/^	mbedtls_ctr_drbg_context ctr_drbg;$/;"	m	struct:_TLSDataParams
+ctx	include/zlg_iot_http_client.h	/^    void* ctx;$/;"	m	struct:_zlg_iot_http_client_t
+currentReconnectWaitInterval	include/zlg_iot_mqtt_client.h	/^	uint32_t currentReconnectWaitInterval;$/;"	m	struct:_ClientData
+destroy	include/network_interface.h	/^	IoT_Error_t (*destroy)(Network *);        \/\/\/< Function pointer pointing to the network function to destroy the network object$/;"	m	struct:Network
+device_ids	include/zlg_iot_http_client.h	/^    const char** device_ids;$/;"	m	struct:_zlg_mqtt_info
+device_types	include/zlg_iot_http_client.h	/^    const char** device_types;$/;"	m	struct:_zlg_mqtt_info
+devices_nr	include/zlg_iot_http_client.h	/^    size_t devices_nr;$/;"	m	struct:_zlg_mqtt_info
+disconnect	include/network_interface.h	/^	IoT_Error_t (*disconnect)(Network *);    \/\/\/< Function pointer pointing to the network function to disconnect from the network$/;"	m	struct:Network
+disconnectCallbackHandler	tools/mqtt_demo.c	/^void disconnectCallbackHandler(ZLG_IoT_Client *pClient, void *data) {$/;"	f
+disconnectHandler	include/zlg_iot_mqtt_client.h	/^	iot_disconnect_handler disconnectHandler;	\/\/\/< Callback to be invoked upon connection loss$/;"	m	struct:__anon7
+disconnectHandler	include/zlg_iot_mqtt_client.h	/^	iot_disconnect_handler disconnectHandler;$/;"	m	struct:_ClientData
+disconnectHandlerData	include/zlg_iot_mqtt_client.h	/^	void *disconnectHandlerData;			\/\/\/< Data to pass as argument when disconnect handler is called$/;"	m	struct:__anon7
+disconnectHandlerData	include/zlg_iot_mqtt_client.h	/^	void *disconnectHandlerData;$/;"	m	struct:_ClientData
+enableAutoReconnect	include/zlg_iot_mqtt_client.h	/^	bool enableAutoReconnect;			\/\/\/< Set to true to enable auto reconnect$/;"	m	struct:__anon7
+end_time	platform/linux/common/timer_platform.h	/^	struct timeval end_time;$/;"	m	struct:Timer	typeref:struct:Timer::timeval
+entropy	platform/linux/mbedtls/network_platform.h	/^	mbedtls_entropy_context entropy;$/;"	m	struct:_TLSDataParams
+flags	platform/linux/mbedtls/network_platform.h	/^	uint32_t flags;$/;"	m	struct:_TLSDataParams
+getSocket	include/network_interface.h	/^	int (*getSocket)(Network *);$/;"	m	struct:Network
+get_header	src/zlg_iot_http_client.c	/^static char* get_header(char* buff, char* body, const char* key) {$/;"	f	file:
+goto_exit_if_fail	src/zlg_iot_http_client.c	/^#define goto_exit_if_fail(/;"	d	file:
+h_addr	platform/linux/socket/network_socket_wrapper.c	/^#define h_addr /;"	d	file:
+has_timer_expired	platform/linux/common/timer.c	/^bool has_timer_expired(Timer *timer) {$/;"	f
+host	include/zlg_iot_http_client.h	/^    char host[32];$/;"	m	struct:_zlg_mqtt_info
+host	include/zlg_iot_http_client.h	/^    const char* host;$/;"	m	struct:_zlg_iot_http_client_t
+id	include/zlg_iot_mqtt_client.h	/^	uint16_t id;		\/\/\/< Message sequence identifier.  Handled automatically by the MQTT client.$/;"	m	struct:__anon3
+init_param	platform/linux/socket/network_socket_wrapper.c	/^static void init_param(Network *pNetwork, char *pDestinationURL, uint16_t destinationPort, $/;"	f	file:
+init_timer	platform/linux/common/timer.c	/^void init_timer(Timer *timer) {$/;"	f
+init_timer_delta	platform/linux/common/timer.c	/^void init_timer_delta(Timer *timer, size_t sec, size_t usec) {$/;"	f
+iotClientConnectParamsDefault	src/zlg_iot_mqtt_client.c	/^const IoT_Client_Connect_Params iotClientConnectParamsDefault = IoT_Client_Connect_Params_initializer;$/;"	v
+iotClientInitParamsDefault	src/zlg_iot_mqtt_client.c	/^const IoT_Client_Init_Params iotClientInitParamsDefault = IoT_Client_Init_Params_initializer;$/;"	v
+iotMqttWillOptionsDefault	src/zlg_iot_mqtt_client.c	/^const IoT_MQTT_Will_Options iotMqttWillOptionsDefault = IoT_MQTT_Will_Options_Initializer;$/;"	v
+iot_disconnect_handler	include/zlg_iot_mqtt_client.h	/^typedef void (*iot_disconnect_handler)(ZLG_IoT_Client *, void *);$/;"	t
+iot_socket_connect	platform/linux/socket/network_socket_wrapper.c	/^static IoT_Error_t iot_socket_connect(Network *pNetwork, TLSConnectParams *params)$/;"	f	file:
+iot_socket_destroy	platform/linux/socket/network_socket_wrapper.c	/^static IoT_Error_t iot_socket_destroy(Network *pNetwork)$/;"	f	file:
+iot_socket_disconnect	platform/linux/socket/network_socket_wrapper.c	/^static IoT_Error_t iot_socket_disconnect(Network *pNetwork)$/;"	f	file:
+iot_socket_get_fd	platform/linux/socket/network_socket_wrapper.c	/^static int iot_socket_get_fd(Network *pNetwork)$/;"	f	file:
+iot_socket_init	platform/linux/socket/network_socket_wrapper.c	/^IoT_Error_t iot_socket_init(Network *pNetwork, const char *host, uint16_t port, uint32_t timeout_ms) $/;"	f
+iot_socket_is_connected	platform/linux/socket/network_socket_wrapper.c	/^static IoT_Error_t iot_socket_is_connected(Network *pNetwork)$/;"	f	file:
+iot_socket_read	platform/linux/socket/network_socket_wrapper.c	/^static IoT_Error_t iot_socket_read(Network *pNetwork, unsigned char *pMsg, size_t len, Timer *timer, size_t *read_len)$/;"	f	file:
+iot_socket_read_any	platform/linux/socket/network_socket_wrapper.c	/^static IoT_Error_t iot_socket_read_any(Network *pNetwork, unsigned char *pMsg, size_t len, size_t *read_len)$/;"	f	file:
+iot_socket_write	platform/linux/socket/network_socket_wrapper.c	/^static IoT_Error_t iot_socket_write(Network *pNetwork, unsigned char *pMsg, size_t len, Timer *timer, size_t *written_len)$/;"	f	file:
+iot_subscribe_callback_handler	tools/mqtt_demo.c	/^void iot_subscribe_callback_handler(ZLG_IoT_Client *pClient, char *topicName, uint16_t topicNameLen,$/;"	f
+iot_tls_connect	platform/linux/mbedtls/network_mbedtls_wrapper.c	/^IoT_Error_t iot_tls_connect(Network *pNetwork, TLSConnectParams *params) {$/;"	f
+iot_tls_destroy	platform/linux/mbedtls/network_mbedtls_wrapper.c	/^IoT_Error_t iot_tls_destroy(Network *pNetwork) {$/;"	f
+iot_tls_disconnect	platform/linux/mbedtls/network_mbedtls_wrapper.c	/^IoT_Error_t iot_tls_disconnect(Network *pNetwork) {$/;"	f
+iot_tls_get_fd	platform/linux/mbedtls/network_mbedtls_wrapper.c	/^static int iot_tls_get_fd(Network *pNetwork)$/;"	f	file:
+iot_tls_init	platform/linux/mbedtls/network_mbedtls_wrapper.c	/^IoT_Error_t iot_tls_init(Network *pNetwork, const char *host, uint16_t port, uint32_t timeout_ms) {$/;"	f
+iot_tls_init_ex	platform/linux/mbedtls/network_mbedtls_wrapper.c	/^IoT_Error_t iot_tls_init_ex(Network *pNetwork, char *pRootCALocation, char *pDeviceCertLocation,$/;"	f
+iot_tls_is_connected	platform/linux/mbedtls/network_mbedtls_wrapper.c	/^IoT_Error_t iot_tls_is_connected(Network *pNetwork) {$/;"	f
+iot_tls_read	platform/linux/mbedtls/network_mbedtls_wrapper.c	/^IoT_Error_t iot_tls_read(Network *pNetwork, unsigned char *pMsg, size_t len, Timer *timer, size_t *read_len) {$/;"	f
+iot_tls_read_any	platform/linux/mbedtls/network_mbedtls_wrapper.c	/^IoT_Error_t iot_tls_read_any(Network *pNetwork, unsigned char *pMsg, size_t len, size_t *read_len) {$/;"	f
+iot_tls_write	platform/linux/mbedtls/network_mbedtls_wrapper.c	/^IoT_Error_t iot_tls_write(Network *pNetwork, unsigned char *pMsg, size_t len, Timer *timer, size_t *written_len) {$/;"	f
+isAutoReconnectEnabled	include/zlg_iot_mqtt_client.h	/^	bool isAutoReconnectEnabled;$/;"	m	struct:_ClientStatus
+isBlockOnThreadLockEnabled	include/zlg_iot_mqtt_client.h	/^	bool isBlockOnThreadLockEnabled;		\/\/\/< Timeout for Thread blocking calls. Set to 0 to block until lock is obtained. In milliseconds$/;"	m	struct:__anon7
+isBlockOnThreadLockEnabled	include/zlg_iot_mqtt_client.h	/^	bool isBlockOnThreadLockEnabled;$/;"	m	struct:_ClientData
+isCleanSession	include/zlg_iot_mqtt_client.h	/^	bool isCleanSession;			\/\/\/< MQTT clean session.  True = this session is to be treated as clean.  Previous server state is cleared and no stated is retained from this connection.$/;"	m	struct:__anon6
+isConnected	include/network_interface.h	/^	IoT_Error_t (*isConnected)(Network *);    \/\/\/< Function pointer pointing to the network function to check if TLS is connected$/;"	m	struct:Network
+isDup	include/zlg_iot_mqtt_client.h	/^	uint8_t isDup;		\/\/\/< Is this message a duplicate QoS > 0 message?  Handled automatically by the MQTT client.$/;"	m	struct:__anon3
+isPingOutstanding	include/zlg_iot_mqtt_client.h	/^	bool isPingOutstanding;$/;"	m	struct:_ClientStatus
+isRetained	include/zlg_iot_mqtt_client.h	/^	bool isRetained;		\/\/\/< NOT supported. The retained flag for the LWT message (see MQTTAsync_message.retained)$/;"	m	struct:__anon5
+isRetained	include/zlg_iot_mqtt_client.h	/^	uint8_t isRetained;	\/\/\/< Retained messages are \\b NOT supported by the AWS IoT Service at the time of this SDK release.$/;"	m	struct:__anon3
+isSSLHostnameVerify	include/zlg_iot_mqtt_client.h	/^	bool isSSLHostnameVerify;			\/\/\/< Client should perform server certificate hostname validation$/;"	m	struct:__anon7
+isWillMsgPresent	include/zlg_iot_mqtt_client.h	/^	bool isWillMsgPresent;			\/\/\/< Is there a LWT associated with this connection?$/;"	m	struct:__anon6
+jsoneq	src/zlg_iot_http_client.c	/^static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {$/;"	f	file:
+keepAliveInterval	include/zlg_iot_mqtt_client.h	/^	uint16_t keepAliveInterval;$/;"	m	struct:_ClientData
+keepAliveIntervalInSec	include/zlg_iot_mqtt_client.h	/^	uint16_t keepAliveIntervalInSec;	\/\/\/< MQTT keep alive interval in seconds.  Defines inactivity time allowed before determining the connection has been lost.$/;"	m	struct:__anon6
+left_ms	platform/linux/common/timer.c	/^uint32_t left_ms(Timer *timer) {$/;"	f
+lock	platform/linux/pthread/threads_platform.h	/^	pthread_mutex_t lock;$/;"	m	struct:_IoT_Mutex_t
+main	tools/echo_client.c	/^int main(int argc, char* argv[]) {$/;"	f
+main	tools/http_auth.c	/^int main(int argc, char* argv[]) {$/;"	f
+main	tools/http_download.c	/^int main(int argc, char* argv[]) {$/;"	f
+main	tools/mqtt_demo.c	/^int main(int argc, char **argv) {$/;"	f
+messageHandlers	include/zlg_iot_mqtt_client.h	/^	MessageHandlers messageHandlers[ZLG_IOT_MQTT_NUM_SUBSCRIBE_HANDLERS];$/;"	m	struct:_ClientData
+mqttCommandTimeout_ms	include/zlg_iot_mqtt_client.h	/^	uint32_t mqttCommandTimeout_ms;			\/\/\/< Timeout for MQTT blocking calls. In milliseconds$/;"	m	struct:__anon7
+mqttPacketTimeout_ms	include/zlg_iot_mqtt_client.h	/^	uint32_t mqttPacketTimeout_ms;			\/\/\/< Timeout for reading a complete MQTT packet. In milliseconds$/;"	m	struct:__anon7
+mqtt_info_on_body	src/zlg_iot_http_client.c	/^static void mqtt_info_on_body(zlg_iot_http_client_t* c) {$/;"	f	file:
+msgLen	include/zlg_iot_mqtt_client.h	/^	uint16_t msgLen;		\/\/\/< The length of the Message, 16 bit unsinged integer$/;"	m	struct:__anon5
+msgTypes	include/zlg_iot_mqtt_client_common_internal.h	/^typedef enum msgTypes {$/;"	g
+networkStack	include/zlg_iot_mqtt_client.h	/^	Network networkStack;$/;"	m	struct:_Client
+nextPacketId	include/zlg_iot_mqtt_client.h	/^	uint16_t nextPacketId;$/;"	m	struct:_ClientData
+offset	include/zlg_iot_http_client.h	/^    size_t offset;$/;"	m	struct:_zlg_iot_http_client_t
+on_body	include/zlg_iot_http_client.h	/^    zlg_iot_http_client_on_body on_body;$/;"	m	struct:_zlg_iot_http_client_t
+on_body	tools/http_download.c	/^static void on_body(zlg_iot_http_client_t* c) {$/;"	f	file:
+on_header	include/zlg_iot_http_client.h	/^    zlg_iot_http_client_on_header on_header;$/;"	m	struct:_zlg_iot_http_client_t
+on_header	tools/http_download.c	/^static void on_header(zlg_iot_http_client_t* c) {$/;"	f	file:
+options	include/zlg_iot_mqtt_client.h	/^	IoT_Client_Connect_Params options;$/;"	m	struct:_ClientData
+pApplicationHandler	include/zlg_iot_mqtt_client.h	/^	pApplicationHandler_t pApplicationHandler;$/;"	m	struct:_MessageHandlers
+pApplicationHandlerData	include/zlg_iot_mqtt_client.h	/^	void *pApplicationHandlerData;$/;"	m	struct:_MessageHandlers
+pApplicationHandler_t	include/zlg_iot_mqtt_client.h	/^typedef void (*pApplicationHandler_t)(ZLG_IoT_Client *pClient, char *pTopicName, uint16_t topicNameLen,$/;"	t
+pClientID	include/zlg_iot_mqtt_client.h	/^	char *pClientID;                	\/\/\/< Pointer to a string defining the MQTT client ID (this needs to be unique \\b per \\b device across your AWS account)$/;"	m	struct:__anon6
+pDestinationURL	include/network_interface.h	/^	char *pDestinationURL;                \/\/\/< Pointer to string containing the endpoint of the MQTT service.$/;"	m	struct:__anon1
+pDeviceCertLocation	include/network_interface.h	/^	char *pDeviceCertLocation;            \/\/\/< Pointer to string containing the filename (including path) of the device certificate.$/;"	m	struct:__anon1
+pDeviceCertLocation	include/zlg_iot_mqtt_client.h	/^	char *pDeviceCertLocation;			\/\/\/< Pointer to a string defining the device identity certificate file (full file, not path)$/;"	m	struct:__anon7
+pDevicePrivateKeyLocation	include/network_interface.h	/^	char *pDevicePrivateKeyLocation;    \/\/\/< Pointer to string containing the filename (including path) of the device private key file.$/;"	m	struct:__anon1
+pDevicePrivateKeyLocation	include/zlg_iot_mqtt_client.h	/^	char *pDevicePrivateKeyLocation;        	\/\/\/< Pointer to a string defining the device private key file (full file, not path)$/;"	m	struct:__anon7
+pHostURL	include/zlg_iot_mqtt_client.h	/^	char *pHostURL;					\/\/\/< Pointer to a string defining the endpoint for the MQTT service$/;"	m	struct:__anon7
+pMessage	include/zlg_iot_mqtt_client.h	/^	char *pMessage;			\/\/\/< Message to be delivered as LWT$/;"	m	struct:__anon5
+pPassword	include/zlg_iot_mqtt_client.h	/^	char *pPassword;			\/\/\/< Not used in the AWS IoT Service, will need to be cstring if used$/;"	m	struct:__anon6
+pRootCALocation	include/network_interface.h	/^	char *pRootCALocation;                \/\/\/< Pointer to string containing the filename (including path) of the root CA file.$/;"	m	struct:__anon1
+pRootCALocation	include/zlg_iot_mqtt_client.h	/^	char *pRootCALocation;				\/\/\/< Pointer to a string defining the Root CA file (full file, not path)$/;"	m	struct:__anon7
+pTopicName	include/zlg_iot_mqtt_client.h	/^	char *pTopicName;		\/\/\/< The LWT topic to which the LWT message will be published$/;"	m	struct:__anon5
+pUsername	include/zlg_iot_mqtt_client.h	/^	char *pUsername;			\/\/\/< Not used in the AWS IoT Service, will need to be cstring if used$/;"	m	struct:__anon6
+packetTimeoutMs	include/zlg_iot_mqtt_client.h	/^	uint32_t packetTimeoutMs;$/;"	m	struct:_ClientData
+parseInputArgsForConnectParams	tools/mqtt_demo.c	/^void parseInputArgsForConnectParams(int argc, char **argv) {$/;"	f
+parse_header	src/zlg_iot_http_client.c	/^static unsigned char* parse_header(zlg_iot_http_client_t* c, char* buff) {$/;"	f	file:
+password	include/zlg_iot_http_client.h	/^    const char* password;$/;"	m	struct:_zlg_mqtt_info
+password	src/zlg_iot_mqtt_client_connect.c	/^		unsigned int password : 1;		\/**< 3.1 password *\/$/;"	m	struct:__anon9::__anon10	file:
+password	src/zlg_iot_mqtt_client_connect.c	/^		unsigned int password : 1;$/;"	m	struct:__anon9::__anon11	file:
+passwordLen	include/zlg_iot_mqtt_client.h	/^	uint16_t passwordLen;			\/\/\/< Password Length. 16 bit unsigned integer$/;"	m	struct:__anon6
+path	include/zlg_iot_http_client.h	/^    const char* path;$/;"	m	struct:_zlg_iot_http_client_t
+payload	include/zlg_iot_mqtt_client.h	/^	void *payload;		\/\/\/< Pointer to MQTT message payload (bytes).$/;"	m	struct:__anon3
+payloadLen	include/zlg_iot_mqtt_client.h	/^	size_t payloadLen;	\/\/\/< Length of MQTT payload.$/;"	m	struct:__anon3
+pingTimer	include/zlg_iot_mqtt_client.h	/^	Timer pingTimer;$/;"	m	struct:_Client
+pkey	platform/linux/mbedtls/network_platform.h	/^	mbedtls_pk_context pkey;$/;"	m	struct:_TLSDataParams
+port	include/zlg_iot_http_client.h	/^    int port;$/;"	m	struct:_zlg_iot_http_client_t
+port	include/zlg_iot_http_client.h	/^    int port;$/;"	m	struct:_zlg_mqtt_info
+port	include/zlg_iot_mqtt_client.h	/^	uint16_t port;					\/\/\/< MQTT service listening port$/;"	m	struct:__anon7
+port	tools/mqtt_demo.c	/^static uint32_t port = ZLG_IOT_MQTT_PORT;$/;"	v	file:
+prepare_request	src/zlg_iot_http_client.c	/^static size_t prepare_request(zlg_mqtt_info* info, char* buff, size_t buff_size) {$/;"	f	file:
+publishCount	tools/mqtt_demo.c	/^static uint32_t publishCount = 0;$/;"	v	file:
+qos	include/zlg_iot_mqtt_client.h	/^	QoS qos;			\/\/\/< QoS of LWT message$/;"	m	struct:__anon5
+qos	include/zlg_iot_mqtt_client.h	/^	QoS qos;		\/\/\/< Message Quality of Service$/;"	m	struct:__anon3
+qos	include/zlg_iot_mqtt_client.h	/^	QoS qos;$/;"	m	struct:_MessageHandlers
+read	include/network_interface.h	/^	IoT_Error_t (*read)(Network *, unsigned char *, size_t, Timer *, size_t *);    \/\/\/< Function pointer pointing to the network function to read from the network$/;"	m	struct:Network
+readAny	include/network_interface.h	/^	IoT_Error_t (*readAny)(Network *, unsigned char *, size_t, size_t *);    \/\/\/< Function pointer pointing to the network function to read from the network$/;"	m	struct:Network
+readBuf	include/zlg_iot_mqtt_client.h	/^	unsigned char readBuf[ZLG_IOT_MQTT_RX_BUF_LEN];$/;"	m	struct:_ClientData
+readBufSize	include/zlg_iot_mqtt_client.h	/^	size_t readBufSize;$/;"	m	struct:_ClientData
+reconnectDelayTimer	include/zlg_iot_mqtt_client.h	/^	Timer reconnectDelayTimer;$/;"	m	struct:_Client
+server_fd	platform/linux/mbedtls/network_platform.h	/^	mbedtls_net_context server_fd;$/;"	m	struct:_TLSDataParams
+sessionpresent	src/zlg_iot_mqtt_client_connect.c	/^		unsigned int sessionpresent : 1;	\/**< session present flag *\/$/;"	m	struct:__anon12::__anon13	file:
+sessionpresent	src/zlg_iot_mqtt_client_connect.c	/^		unsigned int sessionpresent : 1;    \/**< session present flag *\/$/;"	m	struct:__anon12::__anon14	file:
+size	include/zlg_iot_http_client.h	/^    size_t size;$/;"	m	struct:_zlg_iot_http_client_t
+sock	platform/linux/socket/network_platform.h	/^    int sock;$/;"	m	struct:_SocketDataParams
+socket_connect	platform/linux/socket/network_socket_wrapper.c	/^static int socket_connect(const char *host, int port)$/;"	f	file:
+ssl	platform/linux/mbedtls/network_platform.h	/^	mbedtls_ssl_context ssl;$/;"	m	struct:_TLSDataParams
+sslport	include/zlg_iot_http_client.h	/^    int sslport;$/;"	m	struct:_zlg_mqtt_info
+state_change_mutex	include/zlg_iot_mqtt_client.h	/^	IoT_Mutex_t state_change_mutex;$/;"	m	struct:_ClientData
+status	include/zlg_iot_http_client.h	/^    int status;$/;"	m	struct:_zlg_iot_http_client_t
+struct_id	include/zlg_iot_mqtt_client.h	/^	char struct_id[4];			\/\/\/< The eyecatcher for this structure.  must be MQTC$/;"	m	struct:__anon6
+struct_id	include/zlg_iot_mqtt_client.h	/^	char struct_id[4];		\/\/\/< The eyecatcher for this structure.  must be MQTW$/;"	m	struct:__anon5
+timeout_ms	include/network_interface.h	/^	uint32_t timeout_ms;                \/\/\/< Unsigned integer defining the TLS handshake timeout value in milliseconds.$/;"	m	struct:__anon1
+tlsConnectParams	include/network_interface.h	/^	TLSConnectParams tlsConnectParams;        \/\/\/< TLSConnect params structure containing the common connection parameters$/;"	m	struct:Network
+tlsDataParams	include/network_interface.h	/^	void* tlsDataParams;            \/\/\/< TLSData params structure containing the connection data parameters that are specific to the library being used$/;"	m	struct:Network
+tlsHandshakeTimeout_ms	include/zlg_iot_mqtt_client.h	/^	uint32_t tlsHandshakeTimeout_ms;		\/\/\/< TLS handshake timeout.  In milliseconds$/;"	m	struct:__anon7
+tls_read_mutex	include/zlg_iot_mqtt_client.h	/^	IoT_Mutex_t tls_read_mutex;$/;"	m	struct:_ClientData
+tls_write_mutex	include/zlg_iot_mqtt_client.h	/^	IoT_Mutex_t tls_write_mutex;$/;"	m	struct:_ClientData
+token	include/zlg_iot_http_client.h	/^    char* token;$/;"	m	struct:_zlg_mqtt_info
+topicName	include/zlg_iot_mqtt_client.h	/^	const char *topicName;$/;"	m	struct:_MessageHandlers
+topicNameLen	include/zlg_iot_mqtt_client.h	/^	uint16_t topicNameLen;		\/\/\/< The length of the LWT topic, 16 bit unsinged integer$/;"	m	struct:__anon5
+topicNameLen	include/zlg_iot_mqtt_client.h	/^	uint16_t topicNameLen;$/;"	m	struct:_MessageHandlers
+username	include/zlg_iot_http_client.h	/^    const char* username;$/;"	m	struct:_zlg_mqtt_info
+username	src/zlg_iot_mqtt_client_connect.c	/^		unsigned int username : 1;		\/**< 3.1 user name *\/$/;"	m	struct:__anon9::__anon10	file:
+username	src/zlg_iot_mqtt_client_connect.c	/^		unsigned int username : 1;        \/**< 3.1 user name *\/$/;"	m	struct:__anon9::__anon11	file:
+usernameLen	include/zlg_iot_mqtt_client.h	/^	uint16_t usernameLen;			\/\/\/< Username Length. 16 bit unsigned integer$/;"	m	struct:__anon6
+uuid	include/zlg_iot_http_client.h	/^    char uuid[40];$/;"	m	struct:_zlg_mqtt_info
+will	include/zlg_iot_mqtt_client.h	/^	IoT_MQTT_Will_Options will;		\/\/\/< MQTT LWT parameters.$/;"	m	struct:__anon6
+will	src/zlg_iot_mqtt_client_connect.c	/^		unsigned int will : 1;			\/**< will flag *\/$/;"	m	struct:__anon9::__anon10	file:
+will	src/zlg_iot_mqtt_client_connect.c	/^		unsigned int will : 1;$/;"	m	struct:__anon9::__anon11	file:
+willQoS	src/zlg_iot_mqtt_client_connect.c	/^		unsigned int willQoS : 2;		\/**< will QoS value *\/$/;"	m	struct:__anon9::__anon10	file:
+willQoS	src/zlg_iot_mqtt_client_connect.c	/^		unsigned int willQoS : 2;$/;"	m	struct:__anon9::__anon11	file:
+willRetain	src/zlg_iot_mqtt_client_connect.c	/^		unsigned int willRetain : 1;	\/**< will retain setting *\/$/;"	m	struct:__anon9::__anon10	file:
+willRetain	src/zlg_iot_mqtt_client_connect.c	/^		unsigned int willRetain : 1;$/;"	m	struct:__anon9::__anon11	file:
+write	include/network_interface.h	/^	IoT_Error_t (*write)(Network *, unsigned char *, size_t, Timer *, size_t *);    \/\/\/< Function pointer pointing to the network function to write to the network$/;"	m	struct:Network
+writeBuf	include/zlg_iot_mqtt_client.h	/^	unsigned char writeBuf[ZLG_IOT_MQTT_TX_BUF_LEN];$/;"	m	struct:_ClientData
+writeBufSize	include/zlg_iot_mqtt_client.h	/^	size_t writeBufSize;$/;"	m	struct:_ClientData
+zlg_iot_http_client_on_body	include/zlg_iot_http_client.h	/^typedef void (*zlg_iot_http_client_on_body)(zlg_iot_http_client_t* c);$/;"	t
+zlg_iot_http_client_on_header	include/zlg_iot_http_client.h	/^typedef void (*zlg_iot_http_client_on_header)(zlg_iot_http_client_t* c);$/;"	t
+zlg_iot_http_client_t	include/zlg_iot_http_client.h	/^typedef  struct _zlg_iot_http_client_t zlg_iot_http_client_t;$/;"	t	typeref:struct:_zlg_iot_http_client_t
+zlg_iot_https_do	src/zlg_iot_http_client.c	/^IoT_Error_t zlg_iot_https_do(zlg_iot_http_client_t* c, unsigned char* data, size_t data_size, $/;"	f
+zlg_iot_https_get	src/zlg_iot_http_client.c	/^IoT_Error_t zlg_iot_https_get(zlg_iot_http_client_t* c) {$/;"	f
+zlg_iot_https_get_mqtt_info	src/zlg_iot_http_client.c	/^zlg_mqtt_info* zlg_iot_https_get_mqtt_info(zlg_mqtt_info* info) {$/;"	f
+zlg_iot_https_post	src/zlg_iot_http_client.c	/^IoT_Error_t zlg_iot_https_post(zlg_iot_http_client_t* c, unsigned char* body, size_t body_size,$/;"	f
+zlg_iot_is_autoreconnect_enabled	src/zlg_iot_mqtt_client.c	/^bool zlg_iot_is_autoreconnect_enabled(ZLG_IoT_Client *pClient) {$/;"	f
+zlg_iot_mqtt_attempt_reconnect	src/zlg_iot_mqtt_client_connect.c	/^IoT_Error_t zlg_iot_mqtt_attempt_reconnect(ZLG_IoT_Client *pClient) {$/;"	f
+zlg_iot_mqtt_autoreconnect_set_status	src/zlg_iot_mqtt_client.c	/^IoT_Error_t zlg_iot_mqtt_autoreconnect_set_status(ZLG_IoT_Client *pClient, bool newStatus) {$/;"	f
+zlg_iot_mqtt_client_lock_mutex	src/zlg_iot_mqtt_client.c	/^IoT_Error_t zlg_iot_mqtt_client_lock_mutex(ZLG_IoT_Client *pClient, IoT_Mutex_t *pMutex) {$/;"	f
+zlg_iot_mqtt_client_unlock_mutex	src/zlg_iot_mqtt_client.c	/^IoT_Error_t zlg_iot_mqtt_client_unlock_mutex(ZLG_IoT_Client *pClient, IoT_Mutex_t *pMutex) {$/;"	f
+zlg_iot_mqtt_connect	src/zlg_iot_mqtt_client_connect.c	/^IoT_Error_t zlg_iot_mqtt_connect(ZLG_IoT_Client *pClient, IoT_Client_Connect_Params *pConnectParams) {$/;"	f
+zlg_iot_mqtt_disconnect	src/zlg_iot_mqtt_client_connect.c	/^IoT_Error_t zlg_iot_mqtt_disconnect(ZLG_IoT_Client *pClient) {$/;"	f
+zlg_iot_mqtt_get_client_state	src/zlg_iot_mqtt_client.c	/^ClientState zlg_iot_mqtt_get_client_state(ZLG_IoT_Client *pClient) {$/;"	f
+zlg_iot_mqtt_get_network_disconnected_count	src/zlg_iot_mqtt_client.c	/^uint32_t zlg_iot_mqtt_get_network_disconnected_count(ZLG_IoT_Client *pClient) {$/;"	f
+zlg_iot_mqtt_get_next_packet_id	src/zlg_iot_mqtt_client.c	/^uint16_t zlg_iot_mqtt_get_next_packet_id(ZLG_IoT_Client *pClient) {$/;"	f
+zlg_iot_mqtt_init	src/zlg_iot_mqtt_client.c	/^IoT_Error_t zlg_iot_mqtt_init(ZLG_IoT_Client *pClient, IoT_Client_Init_Params *pInitParams) {$/;"	f
+zlg_iot_mqtt_internal_cycle_read	src/zlg_iot_mqtt_client_common_internal.c	/^IoT_Error_t zlg_iot_mqtt_internal_cycle_read(ZLG_IoT_Client *pClient, Timer *pTimer, uint8_t *pPacketType) {$/;"	f
+zlg_iot_mqtt_internal_decode_remaining_length_from_buffer	src/zlg_iot_mqtt_client_common_internal.c	/^IoT_Error_t zlg_iot_mqtt_internal_decode_remaining_length_from_buffer(unsigned char *buf, uint32_t *decodedLen,$/;"	f
+zlg_iot_mqtt_internal_deserialize_ack	src/zlg_iot_mqtt_client_publish.c	/^IoT_Error_t zlg_iot_mqtt_internal_deserialize_ack(unsigned char *pPacketType, unsigned char *dup,$/;"	f
+zlg_iot_mqtt_internal_deserialize_publish	src/zlg_iot_mqtt_client_publish.c	/^IoT_Error_t zlg_iot_mqtt_internal_deserialize_publish(uint8_t *dup, QoS *qos,$/;"	f
+zlg_iot_mqtt_internal_get_final_packet_length_from_remaining_length	src/zlg_iot_mqtt_client_common_internal.c	/^uint32_t zlg_iot_mqtt_internal_get_final_packet_length_from_remaining_length(uint32_t rem_len) {$/;"	f
+zlg_iot_mqtt_internal_init_header	src/zlg_iot_mqtt_client_common_internal.c	/^IoT_Error_t zlg_iot_mqtt_internal_init_header(MQTTHeader *pHeader, MessageTypes message_type,$/;"	f
+zlg_iot_mqtt_internal_read_char	src/zlg_iot_mqtt_client_common_internal.c	/^unsigned char zlg_iot_mqtt_internal_read_char(unsigned char **pptr) {$/;"	f
+zlg_iot_mqtt_internal_read_uint16_t	src/zlg_iot_mqtt_client_common_internal.c	/^uint16_t zlg_iot_mqtt_internal_read_uint16_t(unsigned char **pptr) {$/;"	f
+zlg_iot_mqtt_internal_send_packet	src/zlg_iot_mqtt_client_common_internal.c	/^IoT_Error_t zlg_iot_mqtt_internal_send_packet(ZLG_IoT_Client *pClient, size_t length, Timer *pTimer) {$/;"	f
+zlg_iot_mqtt_internal_serialize_ack	src/zlg_iot_mqtt_client_publish.c	/^IoT_Error_t zlg_iot_mqtt_internal_serialize_ack(unsigned char *pTxBuf, size_t txBufLen,$/;"	f
+zlg_iot_mqtt_internal_serialize_zero	src/zlg_iot_mqtt_client_common_internal.c	/^IoT_Error_t zlg_iot_mqtt_internal_serialize_zero(unsigned char *pTxBuf, size_t txBufLen, MessageTypes packetType,$/;"	f
+zlg_iot_mqtt_internal_wait_for_read	src/zlg_iot_mqtt_client_common_internal.c	/^IoT_Error_t zlg_iot_mqtt_internal_wait_for_read(ZLG_IoT_Client *pClient, uint8_t packetType, Timer *pTimer) {$/;"	f
+zlg_iot_mqtt_internal_write_char	src/zlg_iot_mqtt_client_common_internal.c	/^void zlg_iot_mqtt_internal_write_char(unsigned char **pptr, unsigned char c) {$/;"	f
+zlg_iot_mqtt_internal_write_len_to_buffer	src/zlg_iot_mqtt_client_common_internal.c	/^size_t zlg_iot_mqtt_internal_write_len_to_buffer(unsigned char *buf, uint32_t length) {$/;"	f
+zlg_iot_mqtt_internal_write_uint_16	src/zlg_iot_mqtt_client_common_internal.c	/^void zlg_iot_mqtt_internal_write_uint_16(unsigned char **pptr, uint16_t anInt) {$/;"	f
+zlg_iot_mqtt_internal_write_utf8_string	src/zlg_iot_mqtt_client_common_internal.c	/^void zlg_iot_mqtt_internal_write_utf8_string(unsigned char **pptr, const char *string, uint16_t stringLen) {$/;"	f
+zlg_iot_mqtt_is_client_connected	src/zlg_iot_mqtt_client.c	/^bool zlg_iot_mqtt_is_client_connected(ZLG_IoT_Client *pClient) {$/;"	f
+zlg_iot_mqtt_publish	src/zlg_iot_mqtt_client_publish.c	/^IoT_Error_t zlg_iot_mqtt_publish(ZLG_IoT_Client *pClient, const char *pTopicName, uint16_t topicNameLen,$/;"	f
+zlg_iot_mqtt_reset_network_disconnected_count	src/zlg_iot_mqtt_client.c	/^void zlg_iot_mqtt_reset_network_disconnected_count(ZLG_IoT_Client *pClient) {$/;"	f
+zlg_iot_mqtt_resubscribe	src/zlg_iot_mqtt_client_subscribe.c	/^IoT_Error_t zlg_iot_mqtt_resubscribe(ZLG_IoT_Client *pClient) {$/;"	f
+zlg_iot_mqtt_set_client_state	src/zlg_iot_mqtt_client.c	/^IoT_Error_t zlg_iot_mqtt_set_client_state(ZLG_IoT_Client *pClient, ClientState expectedCurrentState,$/;"	f
+zlg_iot_mqtt_set_connect_params	src/zlg_iot_mqtt_client.c	/^IoT_Error_t zlg_iot_mqtt_set_connect_params(ZLG_IoT_Client *pClient, IoT_Client_Connect_Params *pNewConnectParams) {$/;"	f
+zlg_iot_mqtt_set_disconnect_handler	src/zlg_iot_mqtt_client.c	/^IoT_Error_t zlg_iot_mqtt_set_disconnect_handler(ZLG_IoT_Client *pClient, iot_disconnect_handler pDisconnectHandler,$/;"	f
+zlg_iot_mqtt_subscribe	src/zlg_iot_mqtt_client_subscribe.c	/^IoT_Error_t zlg_iot_mqtt_subscribe(ZLG_IoT_Client *pClient, const char *pTopicName, uint16_t topicNameLen,$/;"	f
+zlg_iot_mqtt_unsubscribe	src/zlg_iot_mqtt_client_unsubscribe.c	/^IoT_Error_t zlg_iot_mqtt_unsubscribe(ZLG_IoT_Client *pClient, const char *pTopicFilter, uint16_t topicFilterLen) {$/;"	f
+zlg_iot_mqtt_yield	src/zlg_iot_mqtt_client_yield.c	/^IoT_Error_t zlg_iot_mqtt_yield(ZLG_IoT_Client *pClient, uint32_t timeout_ms) {$/;"	f
+zlg_mqtt_info	include/zlg_iot_http_client.h	/^} zlg_mqtt_info;$/;"	t	typeref:struct:_zlg_mqtt_info
+zlg_mqtt_info_deinit	src/zlg_iot_http_client.c	/^void zlg_mqtt_info_deinit(zlg_mqtt_info* info) {$/;"	f
+zlg_mqtt_info_init	src/zlg_iot_http_client.c	/^void zlg_mqtt_info_init(zlg_mqtt_info* info) {$/;"	f

@@ -1,0 +1,29 @@
+{
+  "name": "zlib", 
+  "version": "1.2.16", 
+  "description": "3rd zlib", 
+  "category": "component", 
+  "dependencies": {
+    "aw_zlib_adapter": {}
+  }, 
+  "distype": "sdist", 
+  "build_ref": "8f655e5e40afa8104a6e78323c9d124498cc9653", 
+  "build_id": "67227", 
+  "repository": "http://192.168.23.62/aworks2/zlib", 
+  "engines": [
+    "axio-engine@1.1.0-a.76", 
+    "axbuilder.component@1.0.0", 
+    "package_manager.component@1.0.0"
+  ], 
+  "status": "stable", 
+  "defines": [
+    "Z_PREFIX"
+  ], 
+  "src_dir": "zlib-1.2.11", 
+  "include_dirs": [
+    "zlib-1.2.11"
+  ], 
+  "src_filter": [
+    "+<*.c>, -<contrib>, -<examples>, -<test>"
+  ]
+}

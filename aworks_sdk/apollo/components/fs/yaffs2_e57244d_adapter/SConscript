@@ -1,0 +1,36 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+from config_build_common import build_common_config
+
+env = DefaultEnvironment();
+
+
+# 包含路径和定义
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/base/include')
+INCLUDE.append(build_common_config.AWORKS_ROOT + '3rdparty/fs/yaffs2_e57244d/direct')
+INCLUDE +=['include']
+YAFFS_DEFINES = env['CPPDEFINES']
+
+# 适配层
+SOURCE = []
+SOURCE.append('source/aw_yaffs_io.c')
+SOURCE.append('source/aw_yaffs_mtd.c')
+SOURCE.append('source/aw_yaffs_os.c')
+
+
+cur_build_path = Dir('.',False);
+org_build_path = str(cur_build_path.srcnode())
+
+# YAFFS 源码
+yaffs_src_path = os.path.join(build_common_config.AWORKS_ROOT, '3rdparty', 'fs', 'yaffs2_e57244d', 'direct');
+yaffs_rel_dir = cal_relative_dir(org_build_path, yaffs_src_path);
+
+SOURCE.append(Glob(yaffs_rel_dir + '/*.c')); 
+
+yaffs_lib_file = StaticLibrary('aw_yaffs', SOURCE, CPPPATH = INCLUDE, CPPDEFINES = YAFFS_DEFINES)
+
+
+Return('yaffs_lib_file')

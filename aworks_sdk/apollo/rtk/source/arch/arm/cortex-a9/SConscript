@@ -1,0 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+ARCH_RETURN = SConscript('../armv7/SConscript');
+ARCH_RETURN['ARCH_SOURCE'].append(File('gic_a9.c'));
+Return('ARCH_RETURN')

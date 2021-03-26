@@ -1,0 +1,157 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from config_build_common import build_common_config
+from config_lwip import aw_lwip_config
+import os
+
+
+env = DefaultEnvironment()
+
+cur_build_path = Dir('.', False)
+org_build_path = str(cur_build_path.srcnode())
+
+
+#构建LWIP路径
+lwip_src_path = os.path.join(build_common_config.AWORKS_ROOT,'3rdparty','net','lwip_2.x')
+lwip_rel_dir = cal_relative_dir(org_build_path, lwip_src_path)
+
+# lwip_2.x
+SOURCE = Split([
+    lwip_rel_dir + 'src/api/api_lib.c',
+    lwip_rel_dir + 'src/api/api_msg.c',
+    lwip_rel_dir + 'src/api/err.c',
+    # lwip_rel_dir + 'src/api/if_api.c',
+    lwip_rel_dir + 'src/api/netbuf.c',
+    lwip_rel_dir + 'src/api/netdb.c',
+    lwip_rel_dir + 'src/api/netifapi.c',
+    lwip_rel_dir + 'src/api/sockets.c',
+    lwip_rel_dir + 'src/api/tcpip.c',
+    # lwip_rel_dir + 'src/apps/altcp_tls/altcp_tls_mbedtls.c',
+    # lwip_rel_dir + 'src/apps/altcp_tls/altcp_tls_mbedtls_mem.c',
+    # lwip_rel_dir + 'src/apps/http/altcp_proxyconnect.c',
+    # lwip_rel_dir + 'src/apps/http/fs.c',
+    # lwip_rel_dir + 'src/apps/http/fsdata.c',
+    # lwip_rel_dir + 'src/apps/http/http_client.c',
+    # lwip_rel_dir + 'src/apps/http/httpd.c',
+    # lwip_rel_dir + 'src/apps/http/makefsdata/makefsdata.c',
+    # lwip_rel_dir + 'src/apps/lwiperf/lwiperf.c',
+    # lwip_rel_dir + 'src/apps/mdns/mdns.c',
+    # lwip_rel_dir + 'src/apps/mqtt/mqtt.c',
+    # lwip_rel_dir + 'src/apps/netbiosns/netbiosns.c',
+    # lwip_rel_dir + 'src/apps/smtp/smtp.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmp_asn1.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmp_core.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmp_mib2.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmp_mib2_icmp.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmp_mib2_interfaces.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmp_mib2_ip.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmp_mib2_snmp.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmp_mib2_system.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmp_mib2_tcp.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmp_mib2_udp.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmp_msg.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmp_netconn.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmp_pbuf_stream.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmp_raw.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmp_scalar.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmp_snmpv2_framework.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmp_snmpv2_usm.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmp_table.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmp_threadsync.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmp_traps.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmpv3.c',
+    # lwip_rel_dir + 'src/apps/snmp/snmpv3_mbedtls.c',
+    # lwip_rel_dir + 'src/apps/sntp/sntp.c',
+    # lwip_rel_dir + 'src/apps/tftp/tftp_server.c',
+    # lwip_rel_dir + 'src/core/altcp.c',
+    # lwip_rel_dir + 'src/core/altcp_alloc.c',
+    # lwip_rel_dir + 'src/core/altcp_tcp.c',
+    lwip_rel_dir + 'src/core/def.c',
+    lwip_rel_dir + 'src/core/dns.c',
+    lwip_rel_dir + 'src/core/inet_chksum.c',
+    lwip_rel_dir + 'src/core/init.c',
+    lwip_rel_dir + 'src/core/ip.c',
+    lwip_rel_dir + 'src/core/ipv4/autoip.c',
+    lwip_rel_dir + 'src/core/ipv4/dhcp.c',
+    lwip_rel_dir + 'src/core/ipv4/etharp.c',
+    lwip_rel_dir + 'src/core/ipv4/icmp.c',
+    lwip_rel_dir + 'src/core/ipv4/igmp.c',
+    lwip_rel_dir + 'src/core/ipv4/ip4.c',
+    lwip_rel_dir + 'src/core/ipv4/ip4_addr.c',
+    lwip_rel_dir + 'src/core/ipv4/ip4_frag.c',
+    lwip_rel_dir + 'src/core/ipv6/dhcp6.c',
+    lwip_rel_dir + 'src/core/ipv6/ethip6.c',
+    lwip_rel_dir + 'src/core/ipv6/icmp6.c',
+    lwip_rel_dir + 'src/core/ipv6/inet6.c',
+    lwip_rel_dir + 'src/core/ipv6/ip6.c',
+    lwip_rel_dir + 'src/core/ipv6/ip6_addr.c',
+    lwip_rel_dir + 'src/core/ipv6/ip6_frag.c',
+    lwip_rel_dir + 'src/core/ipv6/mld6.c',
+    lwip_rel_dir + 'src/core/ipv6/nd6.c',
+    lwip_rel_dir + 'src/core/mem.c',
+    lwip_rel_dir + 'src/core/memp.c',
+    lwip_rel_dir + 'src/core/netif.c',
+    lwip_rel_dir + 'src/core/pbuf.c',
+    lwip_rel_dir + 'src/core/raw.c',
+    lwip_rel_dir + 'src/core/stats.c',
+    lwip_rel_dir + 'src/core/sys.c',
+    lwip_rel_dir + 'src/core/tcp.c',
+    lwip_rel_dir + 'src/core/tcp_in.c',
+    lwip_rel_dir + 'src/core/tcp_out.c',
+    lwip_rel_dir + 'src/core/timeouts.c',
+    lwip_rel_dir + 'src/core/udp.c',
+    # lwip_rel_dir + 'src/netif/bridgeif.c',
+    # lwip_rel_dir + 'src/netif/bridgeif_fdb.c',
+    lwip_rel_dir + 'src/netif/ethernet.c',
+    # lwip_rel_dir + 'src/netif/lowpan6.c',
+    # lwip_rel_dir + 'src/netif/lowpan6_ble.c',
+    # lwip_rel_dir + 'src/netif/lowpan6_common.c',
+    lwip_rel_dir + 'src/netif/ppp/auth.c',
+    lwip_rel_dir + 'src/netif/ppp/ccp.c',
+    lwip_rel_dir + 'src/netif/ppp/chap-md5.c',
+    lwip_rel_dir + 'src/netif/ppp/chap-new.c',
+    lwip_rel_dir + 'src/netif/ppp/chap_ms.c',
+    lwip_rel_dir + 'src/netif/ppp/demand.c',
+    lwip_rel_dir + 'src/netif/ppp/eap.c',
+    lwip_rel_dir + 'src/netif/ppp/ecp.c',
+    lwip_rel_dir + 'src/netif/ppp/eui64.c',
+    lwip_rel_dir + 'src/netif/ppp/fsm.c',
+    lwip_rel_dir + 'src/netif/ppp/ipcp.c',
+    lwip_rel_dir + 'src/netif/ppp/ipv6cp.c',
+    lwip_rel_dir + 'src/netif/ppp/lcp.c',
+    lwip_rel_dir + 'src/netif/ppp/magic.c',
+    lwip_rel_dir + 'src/netif/ppp/mppe.c',
+    lwip_rel_dir + 'src/netif/ppp/multilink.c',
+    lwip_rel_dir + 'src/netif/ppp/polarssl/arc4.c',
+    lwip_rel_dir + 'src/netif/ppp/polarssl/des.c',
+    lwip_rel_dir + 'src/netif/ppp/polarssl/md4.c',
+    lwip_rel_dir + 'src/netif/ppp/polarssl/md5.c',
+    lwip_rel_dir + 'src/netif/ppp/polarssl/sha1.c',
+    lwip_rel_dir + 'src/netif/ppp/ppp.c',
+    lwip_rel_dir + 'src/netif/ppp/pppapi.c',
+    lwip_rel_dir + 'src/netif/ppp/pppcrypt.c',
+    lwip_rel_dir + 'src/netif/ppp/pppoe.c',
+    lwip_rel_dir + 'src/netif/ppp/pppol2tp.c',
+    lwip_rel_dir + 'src/netif/ppp/pppos.c',
+    lwip_rel_dir + 'src/netif/ppp/upap.c',
+    lwip_rel_dir + 'src/netif/ppp/utils.c',
+    lwip_rel_dir + 'src/netif/ppp/vj.c',
+    lwip_rel_dir + 'src/netif/slipif.c',
+    # lwip_rel_dir + 'src/netif/zepif.c',
+])
+
+# lwip_2.x_adapter
+SOURCE += Split("""
+    source/arch/sys_arch.c
+    source/ppp/sio_mgn.c
+    source/ppp/sio.c
+""")
+
+# aw_lwip_2.x include
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE += aw_lwip_config.LWIP_INCLUDE
+
+lib_files = Library('aw_lwip_2_x_adapter', SOURCE, CPPPATH=INCLUDE)
+
+Return('lib_files')

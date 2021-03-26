@@ -1,0 +1,20 @@
+<window theme="main" move_focus_prev_key="up" move_focus_next_key="down">
+  <view x="c" y="m" w="100%" h="100%" children_layout="default(h=40,c=2,s=10,m=10)">
+    <number_label name="num1" format="%d" value="100"/>
+    <number_label name="num2" format="%d" value="200"/>
+    <number_label name="num3" format="%.1lf" value="100.20"/>
+    <number_label name="num4" format="%.2lf" value="100.20"/>
+    <number_label name="num5" format="%.3lf" value="200.20"/>
+    <number_label name="num6" format="%.4lf" value="300.33" style="green"/>
+
+    <label text="Focusable:" />
+    <number_label name="num7" style="grab_focus" format="%d" 
+       focusable="true" value="100"/>
+    
+    <label text="Focusable:" />
+    <number_label name="num8" style="grab_focus" format="%.1lf" loop="true"
+       focusable="true" value="5" min="0" max="10" step="0.1"/>
+
+    <button name="close" text="Close" floating="true" x="c" y="b:10" w="128" h="30" />
+  </view>
+</window>

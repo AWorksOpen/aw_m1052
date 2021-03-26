@@ -1,0 +1,9 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+#
+# 执行指定 lua 版本的 SConscript
+#
+libs=SConscript(dirs='lua-5.3.4', name='SConscript')
+
+Return('libs')

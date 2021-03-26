@@ -1,0 +1,76 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import types
+from config_compoents import compoents_config
+
+
+net_libs = []
+
+# IP network
+if get_config_val(compoents_config, 'EN_AW_IPNET', False) is True:
+    # lwip stack ver 1.4.x
+    if get_config_val(compoents_config, 'EN_AW_LWIP_1_4_X', False) is True:
+        SConscript_and_add_return_library('lwip_1.4.x_adapter/SConscript', net_libs)
+
+    # lwip stack ver 2.x
+    if get_config_val(compoents_config, 'EN_AW_LWIP_2_X', False) is True:
+        SConscript_and_add_return_library('lwip_2.x_adapter/SConscript', net_libs)
+
+    SConscript_and_add_return_library('core/SConscript', net_libs)
+
+    # net-tools
+    if get_config_val(compoents_config, 'EN_AW_NET_TOOLS', False) is True:
+        SConscript_and_add_return_library('tools/SConscript', net_libs)
+
+    # dhcp server
+#    if get_config_val(compoents_config, 'EN_AW_DHCP_SERVER', False) is True:
+#        SConscript_and_add_return_library('dhcp_server/SConscript', net_libs)
+
+    # telnet
+ #   if get_config_val(compoents_config, 'EN_AW_TELNET', False) is True:
+ #       SConscript_and_add_return_library('telnet/SConscript', net_libs)
+
+    # ftp server
+    if get_config_val(compoents_config, 'EN_AW_FTPD', False) is True:
+        SConscript_and_add_return_library('ftpd/SConscript', net_libs)
+
+    # smtp
+    if get_config_val(compoents_config, 'EN_AW_SMTP', False) is True:
+        SConscript_and_add_return_library('smtp/SConscript', net_libs)
+
+    # ping
+#    if get_config_val(compoents_config, 'EN_AW_PING_LIB', False) is True or get_config_val(compoents_config, 'EN_AW_NET_TOOLS', False) is True:
+#        SConscript_and_add_return_library('ping/SConscript', net_libs)
+
+    # libpcap file format support
+#    if get_config_val(compoents_config, 'EN_AW_PCAP_LIB', False) is True:
+#        SConscript_and_add_return_library('pcap/SConscript', net_libs)
+
+    # netbios
+    if get_config_val(compoents_config, 'EN_AW_NETBIOS', False) is True:
+        SConscript_and_add_return_library('netbios/SConscript', net_libs)
+
+    # goahead adapter
+    if get_config_val(compoents_config, 'EN_AW_GOAHEAD', False) is True:
+        SConscript_and_add_return_library('goahead-2.5_adapter/SConscript', net_libs)
+
+    # HTTPSRV adapter
+    if get_config_val(compoents_config, 'EN_HTTPSRV', False) is True:
+        SConscript_and_add_return_library('httpsrv_adapter/SConscript', net_libs)
+        
+    # scpi
+    if get_config_val(compoents_config, 'EN_AW_SCPI', False) is True:
+        SConscript_and_add_return_library('scpi/SConscript', net_libs)
+        
+    # LIBCURL
+    if get_config_val(compoents_config, 'EN_AW_MBEDTLS', False) is True:
+        SConscript_and_add_return_library('libcrul_adapter/SConscript', net_libs)
+
+    # MBEDTLS
+    if get_config_val(compoents_config, 'EN_AW_MBEDTLS', False) is True:
+        SConscript_and_add_return_library('mbedtls-2.24.0-adapter/SConscript', net_libs)
+
+if 0 == len(net_libs):
+    net_libs = None
+Return('net_libs')

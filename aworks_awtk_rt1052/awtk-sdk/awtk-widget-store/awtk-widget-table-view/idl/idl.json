@@ -1,0 +1,708 @@
+[
+  {
+    "params": [],
+    "annotation": {
+      "global": true
+    },
+    "desc": "注册控件。",
+    "name": "table_view_register",
+    "return": {
+      "type": "ret_t",
+      "desc": "返回RET_OK表示成功，否则表示失败。"
+    },
+    "type": "method",
+    "header": "src/table_view_register.h",
+    "level": 1
+  },
+  {
+    "params": [],
+    "annotation": {
+      "global": true
+    },
+    "desc": "获取支持的渲染模式。",
+    "name": "table_view_supported_render_mode",
+    "return": {
+      "type": "const char*",
+      "desc": "返回渲染模式。"
+    },
+    "type": "method",
+    "header": "src/table_view_register.h",
+    "level": 1
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "parent",
+            "desc": "父控件"
+          },
+          {
+            "type": "xy_t",
+            "name": "x",
+            "desc": "x坐标"
+          },
+          {
+            "type": "xy_t",
+            "name": "y",
+            "desc": "y坐标"
+          },
+          {
+            "type": "wh_t",
+            "name": "w",
+            "desc": "宽度"
+          },
+          {
+            "type": "wh_t",
+            "name": "h",
+            "desc": "高度"
+          }
+        ],
+        "annotation": {
+          "constructor": true,
+          "scriptable": true
+        },
+        "desc": "创建table_client对象",
+        "name": "table_client_create",
+        "return": {
+          "type": "widget_t*",
+          "desc": "table_client对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "table_client对象。"
+          }
+        ],
+        "annotation": {
+          "cast": true,
+          "scriptable": true
+        },
+        "desc": "转换为table_client对象(供脚本语言使用)。",
+        "name": "table_client_cast",
+        "return": {
+          "type": "widget_t*",
+          "desc": "table_client对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "row_height",
+            "desc": "行高。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置 行高。",
+        "name": "table_client_set_row_height",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "rows",
+            "desc": "最大行数。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置 最大行数。",
+        "name": "table_client_set_rows",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "int32_t",
+            "name": "yoffset",
+            "desc": "偏移量。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置 偏移量。",
+        "name": "table_client_set_yoffset",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "bool_t",
+            "name": "yslidable",
+            "desc": "是否允许y方向滑动。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置 是否允许y方向滑动。",
+        "name": "table_client_set_yslidable",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "float_t",
+            "name": "yspeed_scale",
+            "desc": "y偏移速度比例。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置 y偏移速度比例。",
+        "name": "table_client_set_yspeed_scale",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "table_client_on_load_data_t",
+            "name": "on_load_data",
+            "desc": "回调函数。"
+          },
+          {
+            "type": "void*",
+            "name": "ctx",
+            "desc": "回调函数的上下文。"
+          }
+        ],
+        "annotation": {},
+        "desc": "设置 加载数据的回调函数。",
+        "name": "table_client_set_on_load_data",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "table_client_on_create_row_t",
+            "name": "on_create_row",
+            "desc": "回调函数，在回调函数加载数据。"
+          },
+          {
+            "type": "void*",
+            "name": "ctx",
+            "desc": "回调函数的上下文。"
+          }
+        ],
+        "annotation": {},
+        "desc": "设置 创建行时的回调函数，在回调函数中可以注册控件的事件。",
+        "name": "table_client_set_on_create_row",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "获取虚拟高度。",
+        "name": "table_client_get_virtual_h",
+        "return": {
+          "type": "int64_t",
+          "desc": "返回虚拟高度。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "int32_t",
+            "name": "row",
+            "desc": "行号。"
+          }
+        ],
+        "annotation": {},
+        "desc": "滚动到指定行。",
+        "name": "table_client_scroll_to_row",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "int32_t",
+            "name": "yoffset",
+            "desc": "偏移量。"
+          }
+        ],
+        "annotation": {},
+        "desc": "滚动到指定偏移位置。",
+        "name": "table_client_scroll_to_yoffset",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "确保子控件已经创建。",
+        "name": "table_client_ensure_children",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "数据变化时让table client重新加载数据。",
+        "name": "table_client_reload",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [
+      {
+        "name": "EVT_SCROLL_START",
+        "desc": "开始滚动事件。",
+        "type": "event_t"
+      },
+      {
+        "name": "EVT_SCROLL_END",
+        "desc": "结束滚动事件。",
+        "type": "event_t"
+      },
+      {
+        "name": "EVT_SCROLL",
+        "desc": "滚动事件。",
+        "type": "event_t"
+      }
+    ],
+    "properties": [
+      {
+        "name": "row_height",
+        "desc": "行高。",
+        "type": "uint32_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "rows",
+        "desc": "最大行数。",
+        "type": "uint32_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "yoffset",
+        "desc": "偏移量。",
+        "type": "int32_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "yslidable",
+        "desc": "是否允许y方向滑动。",
+        "type": "bool_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "yspeed_scale",
+        "desc": "y偏移速度比例。",
+        "type": "float_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      }
+    ],
+    "header": "table_client/table_client.h",
+    "desc": "table\\_client。表示表格的数据区。\n\ntable\\_client\\_t是[widget\\_t](widget_t.md)的子类控件，widget\\_t的函数均适用于table\\_client\\_t控件。\n\n在xml中使用\"table\\_client\"标签创建table\\_client。\n\n一般放在table\\_client对象中放一个table\\_row即可，table\\_client以此为模版，根据需要创建table\\_row对象。\n\n如：\n\n```xml\n<!-- ui -->\n<table_client x=\"0\" y=\"0\" w=\"200\" h=\"200\"/>\n```\n\n可用通过style来设置控件的显示风格，如背景颜色等。如：\n\n```xml\n<!-- style -->\n<table_client>\n<style name=\"default\">\n<normal />\n</style>\n</table_client>\n```",
+    "name": "table_client_t",
+    "parent": "widget_t",
+    "annotation": {
+      "scriptable": true,
+      "design": true,
+      "widget": true
+    },
+    "level": 2
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "parent",
+            "desc": "父控件"
+          },
+          {
+            "type": "xy_t",
+            "name": "x",
+            "desc": "x坐标"
+          },
+          {
+            "type": "xy_t",
+            "name": "y",
+            "desc": "y坐标"
+          },
+          {
+            "type": "wh_t",
+            "name": "w",
+            "desc": "宽度"
+          },
+          {
+            "type": "wh_t",
+            "name": "h",
+            "desc": "高度"
+          }
+        ],
+        "annotation": {
+          "constructor": true,
+          "scriptable": true
+        },
+        "desc": "创建table_header对象",
+        "name": "table_header_create",
+        "return": {
+          "type": "widget_t*",
+          "desc": "table_header对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "table_header对象。"
+          }
+        ],
+        "annotation": {
+          "cast": true,
+          "scriptable": true
+        },
+        "desc": "转换为table_header对象(供脚本语言使用)。",
+        "name": "table_header_cast",
+        "return": {
+          "type": "widget_t*",
+          "desc": "table_header对象。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [],
+    "header": "table_header/table_header.h",
+    "desc": "table\\_header。一个简单的容器控件，用来放置表头中的子控件。\n\n它本身不提供布局功能，仅提供具有语义的标签，让xml更具有可读性。\n子控件的布局可用layout\\_children属性指定。\n请参考[布局参数](https://github.com/zlgopen/awtk/blob/master/docs/layout.md)。\n\ntable\\_header\\_t是[widget\\_t](widget_t.md)的子类控件，widget\\_t的函数均适用于table\\_header\\_t控件。\n\n在xml中使用\"table\\_header\"标签创建table\\_header。如：\n\n```xml\n<!-- ui -->\n<table_header x=\"0\" y=\"0\" w=\"200\" h=\"30\"/>\n```\n\n可用通过style来设置控件的显示风格，如背景颜色等。如：\n\n```xml\n<!-- style -->\n<table_header>\n<style name=\"default\">\n<normal bg_color=\"#e0e0e0\"/>\n</style>\n</table_header>\n```",
+    "name": "table_header_t",
+    "parent": "widget_t",
+    "annotation": {
+      "scriptable": true,
+      "design": true,
+      "widget": true
+    },
+    "level": 2
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "parent",
+            "desc": "父控件"
+          },
+          {
+            "type": "xy_t",
+            "name": "x",
+            "desc": "x坐标"
+          },
+          {
+            "type": "xy_t",
+            "name": "y",
+            "desc": "y坐标"
+          },
+          {
+            "type": "wh_t",
+            "name": "w",
+            "desc": "宽度"
+          },
+          {
+            "type": "wh_t",
+            "name": "h",
+            "desc": "高度"
+          }
+        ],
+        "annotation": {
+          "constructor": true,
+          "scriptable": true
+        },
+        "desc": "创建table_row对象",
+        "name": "table_row_create",
+        "return": {
+          "type": "widget_t*",
+          "desc": "table_row对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "table_row对象。"
+          }
+        ],
+        "annotation": {
+          "cast": true,
+          "scriptable": true
+        },
+        "desc": "转换为table_row对象(供脚本语言使用)。",
+        "name": "table_row_cast",
+        "return": {
+          "type": "widget_t*",
+          "desc": "table_row对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "index",
+            "desc": "行的编号。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置 行的编号。",
+        "name": "table_row_set_index",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "index",
+        "desc": "行的编号。",
+        "type": "uint32_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      }
+    ],
+    "header": "table_row/table_row.h",
+    "desc": "table\\_row。表示表格的一行。\n\n它本身不提供布局功能，仅提供具有语义的标签，让xml更具有可读性。\n子控件的布局可用layout\\_children属性指定。\n请参考[布局参数](https://github.com/zlgopen/awtk/blob/master/docs/layout.md)。\n\ntable\\_row\\_t是[widget\\_t](widget_t.md)的子类控件，widget\\_t的函数均适用于table\\_row\\_t控件。\n\n在xml中使用\"table\\_row\"标签创建table\\_row。\n\ntable\\_row一般放在table\\_client对象中，创建一个对象即可，table\\_client以此为模版，根据需要创建table\\_row对象。\n\n如：\n\n```xml\n<!-- ui -->\n<table_row x=\"0\" y=\"0\" w=\"200\" h=\"30\"/>\n```\n\n可用通过style来设置控件的显示风格，如背景颜色等。如：\n\n```xml\n<!-- style -->\n<table_row>\n<style name=\"default\" border_color=\"#d8d8d8\" border=\"bottom\">\n<normal bg_color=\"#fcfcfc\"/>\n</style>\n</table_row>\n```",
+    "name": "table_row_t",
+    "parent": "widget_t",
+    "annotation": {
+      "scriptable": true,
+      "design": true,
+      "widget": true
+    },
+    "level": 2
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "parent",
+            "desc": "父控件"
+          },
+          {
+            "type": "xy_t",
+            "name": "x",
+            "desc": "x坐标"
+          },
+          {
+            "type": "xy_t",
+            "name": "y",
+            "desc": "y坐标"
+          },
+          {
+            "type": "wh_t",
+            "name": "w",
+            "desc": "宽度"
+          },
+          {
+            "type": "wh_t",
+            "name": "h",
+            "desc": "高度"
+          }
+        ],
+        "annotation": {
+          "constructor": true,
+          "scriptable": true
+        },
+        "desc": "创建table_view对象",
+        "name": "table_view_create",
+        "return": {
+          "type": "widget_t*",
+          "desc": "table_view对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "table_view对象。"
+          }
+        ],
+        "annotation": {
+          "cast": true,
+          "scriptable": true
+        },
+        "desc": "转换为table_view对象(供脚本语言使用)。",
+        "name": "table_view_cast",
+        "return": {
+          "type": "widget_t*",
+          "desc": "table_view对象。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [],
+    "header": "table_view/table_view.h",
+    "desc": "表格视图。\n\ntable\\_view\\_t是[widget\\_t](widget_t.md)的子类控件，widget\\_t的函数均适用于table\\_view\\_t控件。\n\n在xml中使用\"table\\_view\"标签创建table\\_view。\n\ntable\\_view中一般放table\\_header、table\\_client和滚动条控件。\n\ntable\\_header和滚动条为可选，table\\_client为必选。\n\n如：\n\n```xml\n<!-- ui -->\n<table_view x=\"10\" y=\"10\" w=\"200\" h=\"200\">\n<table_header x=\"0\" y=\"0\" w=\"-12\" h=\"30\" name=\"table_header\" children_layout=\"default(r=1,c=0,s=5,m=5)\">\n<label w=\"30%\" text=\"Name\"/>\n<label w=\"40%\" text=\"Value\"/>\n<label w=\"30%\" text=\"Action\"/>\n</table_header>\n\n<table_client name=\"table_client\" x=\"0\"  y=\"30\" w=\"-12\" h=\"-30\" row_height=\"40\" rows=\"1\">\n<table_row children_layout=\"default(r=1,c=0,s=5,m=5)\">\n<label name=\"name\"  w=\"30%\" h=\"100%\" text=\"name\"/>\n<edit name=\"value\" w=\"40%\" h=\"100%\"/>\n<button name=\"remove\" w=\"30%\" h=\"100%\" text=\"Remove\"/>\n</table_row>\n</table_client>\n<scroll_bar_d name=\"scroll_bar\" x=\"r\" y=\"0\" w=\"12\" h=\"100%\" value=\"0\"/>\n</table_view>\n```\n\n可用通过style来设置控件的显示风格，如背景颜色等。如：\n\n```xml\n<!-- style -->\n<table_header>\n<style name=\"default\">\n<normal bg_color=\"#e0e0e0\"/>\n</style>\n</table_header>\n<table_client>\n<style name=\"default\">\n<normal/>\n</style>\n</table_client>\n<table_row>\n<style name=\"default\" border_color=\"#d8d8d8\" border=\"bottom\">\n<normal bg_color=\"#fcfcfc\"/>\n</style>\n</table_row>\n<table_view>\n<style name=\"default\" border_color=\"#c2c2c2\">\n<normal bg_color=\"#f4f4f4\"/>\n</style>\n</table_view>\n```",
+    "name": "table_view_t",
+    "parent": "widget_t",
+    "annotation": {
+      "scriptable": true,
+      "design": true,
+      "widget": true
+    },
+    "level": 2
+  }
+]

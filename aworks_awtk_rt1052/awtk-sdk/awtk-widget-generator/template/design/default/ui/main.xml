@@ -1,0 +1,6 @@
+<window theme="main" >
+  <view x="c" y="m" w="240" h="240" children_layout="default(r=4,c=1,s=10,m=10)">
+    <template />
+    <button name="close" text="Close"/>
+  </view>
+</window>

@@ -1,0 +1,41 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+from config_build_common import build_common_config
+
+env = DefaultEnvironment();
+
+cur_build_path = Dir('.',False);
+org_build_path = str(cur_build_path.srcnode())
+
+# 包含路径和定义
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/base/include')
+INCLUDE.append(build_common_config.AWORKS_ROOT + '3rdparty/fs/littlefs-master')
+INCLUDE +=['include']
+LITTLEFS_DEFINES = env['CPPDEFINES']
+
+# 适配层
+SOURCE = []
+SOURCE.append('source/aw_littlefs_io.c')
+SOURCE.append('source/aw_littlefs_mtd.c')
+
+littlefs_adapter_lib_file = Library('aw_littlefs_adapter',SOURCE,CPPPATH = INCLUDE)
+
+# LITTLEFS 源码
+littlefs_src_path = os.path.join(build_common_config.AWORKS_ROOT, '3rdparty', 'fs', 'littlefs-master',);
+
+littlefs_src_rel_apollo_dir = cal_relative_dir(build_common_config.AWORKS_ROOT,littlefs_src_path);
+littlefs_src_install_path = os.path.join(build_common_config.AW_SDK_INSTALL_PATH,'apollo', littlefs_src_rel_apollo_dir);
+littlefs_rel_dir = cal_relative_dir(org_build_path, littlefs_src_path);
+
+SOURCE = []
+SOURCE += [littlefs_rel_dir + 'lfs.c']
+SOURCE += [littlefs_rel_dir + 'lfs_util.c']
+
+littlefs_lib_file = StaticLibrary('aw_littlefs', SOURCE, CPPPATH = INCLUDE, CPPDEFINES = LITTLEFS_DEFINES)
+
+lib_files = littlefs_adapter_lib_file + littlefs_lib_file
+
+Return('lib_files')

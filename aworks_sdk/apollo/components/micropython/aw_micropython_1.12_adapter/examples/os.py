@@ -1,0 +1,15 @@
+import os
+
+os.mount("/sd","/dev/sd0","vfat")
+os.mkfs("/dev/sd0","vfat")
+os.listdir("/sd")
+list(os.ilistdir("/sd"))
+os.mkdir("/sd/dir1")
+os.rmdir("/sd/dir1")
+os.chdir("/sd")
+os.getcwd()
+os.remove("/sd/file.txt")
+os.unlink("/sd/file.txt")
+os.stat("/sd")
+os.uname()
+os.rename("/sd/file1.txt","/sd/file2.txt")

@@ -1,0 +1,23 @@
+{
+  "name": "sqlite3", 
+  "version": "1.1.2", 
+  "description": "3rd component sqlite3", 
+  "category": "component", 
+  "distype": "sdist", 
+  "build_ref": "954ae76087ad2ebb2278ea396237419f328c51cd", 
+  "build_id": "54761", 
+  "repository": "http://192.168.23.62/aworks2/sqlite3", 
+  "engines": [
+    "axio-engine@1.1.0-a.70", 
+    "axbuilder.component@1.0.0", 
+    "package_manager.component@1.0.0"
+  ], 
+  "status": "stable", 
+  "src_dir": "./", 
+  "src_filter": [
+    "+<*>"
+  ], 
+  "include_dirs": [
+    "./"
+  ]
+}

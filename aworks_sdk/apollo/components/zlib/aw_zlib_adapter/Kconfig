@@ -1,0 +1,3 @@
+config ZLIB_ADAPTER
+    bool "ZLIB"
+    depends on ZLIB

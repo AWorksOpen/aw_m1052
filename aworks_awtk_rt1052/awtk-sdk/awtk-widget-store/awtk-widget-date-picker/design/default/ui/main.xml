@@ -1,0 +1,23 @@
+<window theme="main">
+  <date_edit name="d1" x="10" y="10" w="148" h="30" year="2020" month="12" day="31">
+    <edit name="date" x="0" y="m" w="100%" h="100%" input_type="date" />
+    <button name="pick" style="pick" x="r:2" y="m" w="26" h="26" text="..." />
+  </date_edit>
+  
+  <date_edit name="d2" x="r:10" y="10" w="148" h="30" year="2020" month="12" day="31">
+    <edit name="date" x="0" y="m" w="100%" h="100%" input_type="date" />
+    <button name="pick" style="pick" x="r:2" y="m" w="26" h="26" text="..." />
+  </date_edit>
+
+  <combo_box name="lang" x="c" y="m" w="148" h="30"  readonly="true" options="en_US;zh_CN" text="en_US"/>
+  
+  <date_edit name="d3" x="10" y="b:10" w="148" h="30" year="2020" month="12" day="31">
+    <edit name="date" x="0" y="m" w="100%" h="100%" input_type="date" />
+    <button name="pick" style="pick" x="r:2" y="m" w="26" h="26" text="..." />
+  </date_edit>
+  
+  <date_edit name="d4" x="r:10" y="b:10" w="148" h="30" year="2020" month="12" day="31">
+    <edit name="date" x="0" y="m" w="100%" h="100%" input_type="date" />
+    <button name="pick" style="pick" x="r:2" y="m" w="26" h="26" text="..." />
+  </date_edit>
+</window>

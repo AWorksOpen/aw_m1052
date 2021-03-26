@@ -1,0 +1,29 @@
+{
+  "name":"date_picker",
+  "date":"2020-07-08",
+  "team":"AWTK Develop Team",
+  "author":"Li XianJing <xianjimli@hotmail.com>",
+  "desc":"日期选择控件。",
+  "copyright":"Guangzhou ZHIYUAN Electronics Co.,Ltd.",
+  "includes":[],
+  "props": [
+    {
+      "name":"year",
+      "desc":"年",
+      "init_value":2020,
+      "type":"uint32_t"
+    },
+    {
+      "name":"month",
+      "desc":"月",
+      "init_value":1,
+      "type":"uint32_t"
+    },
+    {
+      "name":"day",
+      "desc":"日",
+      "init_value":1,
+      "type":"uint32_t"
+    }
+  ]
+}

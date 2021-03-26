@@ -1,0 +1,12 @@
+<window name="main">
+  <button name="open" x="10" y="66" w="100" h="36" text="open"/>
+  <button name="play" x="10" y="128" w="100" h="36" text="play"/>
+  <button name="stop" x="10" y="191" w="100" h="36" text="stop"/>
+  <button name="close" x="10" y="255" w="100" h="36" text="close"/>
+  <button name="refresh" x="315" y="18" w="69" h="32" tr_text="refresh"/>
+  <combo_box name="camera_list" x="145" y="19" w="160" h="28" readonly="true" item_height="30"/>
+  <label name="label" x="10" y="19" w="125" h="28" text="usb&nbsp;camera&nbsp;list:"/>
+  <combo_box name="ratio_list" x="610" y="19" w="160" h="28" readonly="true" item_height="30"/>
+  <label name="label1" x="461" y="19" w="125" h="28" text="camera&nbsp;ratio&nbsp;list:"/>
+  <usb_camera name="camera" x="135" y="66" w="640" h="480" style:normal:bg_color="#00000000" disg:custom="container"/>
+</window>

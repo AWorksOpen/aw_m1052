@@ -1,0 +1,61 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from config_build_common import build_common_config 
+from config_aw_base import aw_base_config 
+import os
+
+env = DefaultEnvironment()
+
+cur_build_path = Dir('.', False)
+org_build_path = str(cur_build_path.srcnode())
+
+config_file = []
+config_file += ['config/aw_canfestival_cfg.c']
+config_file += ['config/aw_canfestival_inst0.c']
+
+#构建CANfestival路径
+#得出CANfestival源码绝对路径
+canfestival_src_path = os.path.join(build_common_config.AWORKS_ROOT, '3rdparty', 'can_stack', 'CanFestival-3.8')
+#由CANfestival源码路径推算出CANfestival将要安装的路径
+canfestival_src_rel_apollo_dir = cal_relative_dir(build_common_config.AWORKS_ROOT, canfestival_src_path)
+canfestival_src_install_path = os.path.join(build_common_config.AW_SDK_INSTALL_PATH, 'apollo', canfestival_src_rel_apollo_dir)
+canfestival_rel_dir = cal_relative_dir(org_build_path, canfestival_src_path)
+
+#SDK canfestival adapter源码路径
+canfestival_adapter_rel_apollo_dir = cal_relative_dir(build_common_config.AWORKS_ROOT, org_build_path)
+canfestival_adapter_rel_apollo_dir = canfestival_adapter_rel_apollo_dir.replace('CanFestival-3.8_adapter', 'CanFestival_adapter') # 不想改名字则屏蔽
+canfestival_adapter_src_install_path = os.path.join(build_common_config.AW_SDK_INSTALL_PATH, canfestival_adapter_rel_apollo_dir, 'src')
+
+SOURCE = []
+
+# CanFestival-3.8
+SOURCE += [canfestival_rel_dir + 'src/dcf.c']
+SOURCE += [canfestival_rel_dir + 'src/emcy.c']
+SOURCE += [canfestival_rel_dir + 'src/lifegrd.c']
+SOURCE += [canfestival_rel_dir + 'src/lss.c']
+SOURCE += [canfestival_rel_dir + 'src/nmtMaster.c']
+SOURCE += [canfestival_rel_dir + 'src/nmtSlave.c']
+SOURCE += [canfestival_rel_dir + 'src/objacces.c']
+SOURCE += [canfestival_rel_dir + 'src/pdo.c']
+SOURCE += [canfestival_rel_dir + 'src/sdo.c']
+SOURCE += [canfestival_rel_dir + 'src/states.c']
+#SOURCE += [canfestival_rel_dir + 'src/symbols.c']
+SOURCE += [canfestival_rel_dir + 'src/sync.c']
+SOURCE += [canfestival_rel_dir + 'src/timer.c']
+
+# CanFestival-3.8_adapter
+SOURCE += ['src/aw_cop_mst.c']
+SOURCE += ['src/can_drv.c']
+SOURCE += ['src/timer_drv.c']
+
+# aw_canfestival_3.0 include
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE.append(canfestival_rel_dir + 'include')
+INCLUDE.append('inc')
+
+
+lib_files = Library('aw_canfestival_3_8_adapter', SOURCE, CPPPATH = INCLUDE)
+
+
+Return('lib_files')

@@ -1,0 +1,25 @@
+{
+  "name": "newlib", 
+  "version": "1.0.3", 
+  "description": "Newlib", 
+  "category": "component", 
+  "distype": "sdist", 
+  "build_ref": "16213398770ec8315892a761ed9bb39534c92847", 
+  "build_id": "65292", 
+  "repository": "http://192.168.23.62/aworks2/newlib", 
+  "engines": [
+    "axio-engine@1.1.0-a.70", 
+    "axbuilder.component@1.0.0", 
+    "package_manager.component@1.0.0"
+  ], 
+  "status": "stable", 
+  "compat_mode": "strict", 
+  "topic": "System :: Libs", 
+  "build": {
+    "lib_archive": false
+  }, 
+  "src_dir": "", 
+  "toolchains": [
+    "gcc-arm"
+  ]
+}

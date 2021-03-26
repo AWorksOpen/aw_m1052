@@ -1,0 +1,353 @@
+config AW_LWIP_2X_ADAPTER
+    bool "LWIP 2.x.x"
+    help
+      lwIP(2.x.x) is a small independent implementation of the TCP/IP protocol suite.
+
+if AW_LWIP_2X_ADAPTER
+
+    menu "Functions Options"
+
+    visible if AW_LWIP_2X_ADAPTER
+
+    config LWIP_IPV6_ENABLE 
+        bool  "IPV6 Enable"
+        default y
+        
+    config LWIP_IGMP_SUPPORT 
+        bool  "IGMP Support"
+        default y
+        libsafe
+        
+    config LWIP_TCPIP_CORE_LOCKING 
+        bool  "Core Locking"
+        default n
+        libsafe
+        
+    endmenu
+
+    if AW_IMG_PRJ_BUILD
+    
+    menu "Memory Options"
+
+        visible if AW_LWIP_2X_ADAPTER
+
+        config LWIP_2X_MEM_ALIGNMENT
+        int "Mem Alignment"
+        range 2 4
+        default 4
+        help
+          Help: should be set to the alignment of the CPU
+                4 byte alignment ->  4
+                2 byte alignment ->  2
+
+        config LWIP_2X_MEM_SIZE
+        int "Men Size(Unit: kb)"
+        default 32
+        help
+          Help: the size of the heap memory. If the application will send a lot of data
+                that needs to be copied, this should be set high.
+
+        config LWIP_2X_MEMP_NUM_PBUF
+        int "Pbufs Num"
+        default 24
+        help
+          Help: The number of memp struct pbufs (used for PBUF_ROM and PBUF_REF).
+                If the application sends a lot of data out of ROM (or other static memory),
+                this should be set high.
+
+        config LWIP_2X_MEMP_NUM_UDP_PCB
+        int "UDP Connections Num"
+        default 8
+        help
+          Help: the number of UDP protocol control blocks. One per active 
+                UDP "connection".
+
+        config LWIP_2X_MEMP_NUM_TCP_PCB
+        int "TCP Connections Num"
+        default 20
+        help
+          Help: the number of simulatenously active TCP connections.
+                (requires the LWIP_2X_TCP option).
+
+
+        config LWIP_2X_MEMP_NUM_TCP_PCB_LISTEN
+        int "TCP Listening Num"
+        default 10
+        help
+          Help: the number of listening TCP connections.
+                (requires the LWIP_2X_TCP option).
+
+        config LWIP_2X_MEMP_NUM_TCP_SEG
+        int "TCP Segments Num"
+        default 128
+        help
+          Help: the number of simultaneously queued TCP segments.
+                (requires the LWIP_2X_TCP option)
+
+
+        config LWIP_2X_MEMP_NUM_REASSDATA
+        int "Reassdata Num"
+        default 8
+        help
+          Help: the number of IP packets simultaneously queued for
+                reassembly (whole packets, not fragments!)
+        
+
+        config LWIP_2X_MEMP_NUM_FRAG_PBUF
+        int "Fragments Num"
+        default 8
+        help
+          Help: the number of IP fragments simultaneously sent
+                (fragments, not whole packets!).
+
+        config LWIP_2X_MEMP_NUM_ARP_QUEUE
+        int "ARP Queue Num"
+        default 30
+        help
+          Help: the number of simulateously queued outgoing
+                packets (pbufs) that are waiting for an ARP request (to resolve
+                their destination address) to finish.
+                (requires the ARP_QUEUEING option)            
+
+        config LWIP_2X_MEMP_NUM_TCPIP_MSG_INPKT
+        int "TCPIP MSG Num"
+        default 8    
+        help
+          Help: the number of struct tcpip_msg, which are used for incoming packets.
+                (only needed if you use tcpip.c)
+
+        config LWIP_2X_MEMP_NUM_SNMP_NODE
+        int "SNMP Node Num"
+        default 50
+        help
+          Help: the number of leafs in the SNMP tree.
+
+        config LWIP_2X_MEMP_NUM_SNMP_ROOTNODE
+        int "SNMP rootnode Num"
+        default 30    
+        help
+          Help: the number of branches in the SNMP tree.
+                Every branch has one leaf (MEMP_NUM_SNMP_NODE) at least!
+
+        config LWIP_2X_PBUF_POOL_SIZE
+        int "Pbuf Pool Size"
+        default 48
+        help
+          Help: the number of buffers in the pbuf pool.
+    endmenu
+
+    menu "ARP Options"
+        
+        visible if AW_LWIP_2X_ADAPTER
+
+        config LWIP_2X_ARP_TABLE_SIZE
+        int "ARP table Num"
+        default 10
+        help
+          Help: Number of active MAC-IP address pairs cached.
+
+        config LWIP_2X_ETH_PAD_SIZE
+        int "ETH PAD Size"
+        default 2
+        help
+          Help: number of bytes added before the ethernet header to ensure
+                alignment of payload after that header. Since the header is 14 bytes long,
+                without this padding e.g. addresses in the IP header will not be aligned
+                on a 32-bit boundary, so setting this to 2 can speed up 32-bit-platforms.
+    endmenu
+
+    menu "IP Options"
+
+        visible if AW_LWIP_2X_ADAPTER
+
+        config LWIP_2X_IP_REASS_MAXAGE
+        int "Reass Maxage"
+        default 1
+        help
+          Help: Maximum time (in multiples of IP_TMR_INTERVAL - so seconds, normally)
+                a fragmented IP packet waits for all fragments to arrive. If not all fragments arrived
+                in this time, the whole packet is discarded.
+
+        config LWIP_2X_IP_REASS_MAX_PBUFS
+        int "Reass Max Pbufs"
+        default 16  
+        help
+          Help: Total maximum amount of pbufs waiting to be reassembled.
+                Since the received pbufs are enqueued, be sure to configure
+                PBUF_POOL_SIZE > IP_REASS_MAX_PBUFS so that the stack is still able to receive
+                packets even if the maximum amount of fragments is enqueued for reassembly!
+    endmenu
+
+    menu "SNMP Options"
+
+        visible if AW_LWIP_2X_ADAPTER
+
+        config LWIP_2X_SNMP_MAX_OCTET_STRING_LEN
+        int "String Length Max"
+        default 127
+        help
+          Help: The maximum length of strings used. This affects the size of
+                MEMP_SNMP_VALUE elements.
+    endmenu
+
+    menu "TCP Options"
+
+        visible if AW_LWIP_2X_ADAPTER
+
+        config LWIP_2X_TCP_WND
+        int "TCP Window Size"
+        default 2
+        help
+          Help: The size of a TCP window.  This must be at least
+                (2 * TCP_MSS) for things to work well
+
+        config LWIP_2X_TCP_MAXRTX
+        int "TCP data Retransmisstions Max"
+        default 12
+        help
+          Help: Maximum number of retransmissions of data segments.
+
+        config LWIP_2X_TCP_SYNMAXRTX
+        int "TCP SYN Retransmissions Max"
+        default 6 
+        help
+          Help: Maximum number of retransmissions of SYN segments.
+
+        config LWIP_2X_TCP_SND_BUF
+        int "TCP Sender Buffer"
+        default 32
+        help 
+          Help: TCP sender buffer space (bytes).
+                To achieve good performance, this should be at least 2 * TCP_MSS.
+    endmenu
+
+    menu "Pbuf Options"
+
+        visible if AW_LWIP_2X_ADAPTER
+
+        config LWIP_2X_PBUF_POOL_BUFSIZE
+        int "Pool Each Pubf Size"
+        default 1546
+        help 
+          Help: the size of each pbuf in the pbuf pool. The default is
+                designed to accomodate single full size TCP frame in one pbuf, including
+                TCP_MSS, IP header, and link header.
+    endmenu
+
+    menu "Thread Options"
+
+        visible if AW_LWIP_2X_ADAPTER
+
+        config LWIP_2X_TCPIP_THREAD_STACKSIZE
+        int "TCPIP Thread Stacksize"
+        default 2400
+        help 
+          Help: The stack size used by the main tcpip thread.
+
+        config LWIP_2X_TCPIP_THREAD_PRIO
+        int "TCPIP Thread Priority"
+        default 2        
+        help 
+          Help: The priority assigned to the main tcpip thread.
+
+        config LWIP_2X_TCPIP_MBOX_SIZE
+        int "TCPIP MBOX Size"
+        default 10  
+        help 
+          Help: The mailbox size for the tcpip thread messages
+
+        config LWIP_2X_SLIPIF_THREAD_STACKSIZE
+        int "SLIPIF Thread Stacksize"
+        default 4096   
+        help 
+          Help: The stack size used by the slipif_loop thread.
+
+        config LWIP_2X_PPP_THREAD_STACKSIZE
+        int "PPP Thread Stacksize"
+        default 2048  
+        help 
+          Help: The stack size used by the pppInputThread.
+
+        config LWIP_2X_PPP_THREAD_PRIO
+        int "PPP Thread priority"
+        default 3   
+        help 
+          Help: The priority assigned to the pppInputThread.
+
+        config LWIP_2X_DEFAULT_THREAD_STACKSIZE
+        int "Default  Thread Stacksize"
+        default 4096   
+        help 
+          Help: The stack size used by any other lwIP thread.  
+
+        config LWIP_2X_DEFAULT_THREAD_PRIO
+        int "Default Thread priority"
+        default 4 
+        help 
+          Help: The priority assigned to any other lwIP thread.
+    endmenu
+
+    menu "PPP Options"
+
+        visible if AW_LWIP_2X_ADAPTER
+
+        config LWIP_2X_PPP_SUPPORT
+        bool "PPP Enable"
+        default y    
+        help 
+          Help:Enable PPP.                                                                                                 
+    endmenu
+    
+    
+    menu "Extension Options"
+
+        visible if AW_LWIP_2X_ADAPTER
+
+        config LWIP_ROUTE_TABLE
+        int "Route Table"
+        default 1    
+
+        config LWIP_IPV4_NAT
+        int "LPV4 Nat"
+        default 1    
+
+        config LWIP_IPV4_NAT_STATE_TABLES_ICMP
+        int "Nat Tables ICMP"
+        default 4
+        
+        config LWIP_IPV4_NAT_STATE_TABLES_TCP
+        int "Nat Tables TCP"
+        default 32
+        
+        config LWIP_IPV4_NAT_STATE_TABLES_UDP
+        int "Nat Tables UDP"
+        default 32
+        
+        config LWIP_VIRTUAL_NETIF
+        int "Virtual Nertif"
+        default 1    
+        
+        config LWIP_DNS_FILETER
+        int "DNS Fileter"
+        default 1            
+        
+        config LWIP_DNS_PROXY
+        int "DNS Proxy"
+        default 1            
+        
+        config LWIP_NUM_NETIF_CLIENT_DATA
+        int "Netif Client Data"
+        default 1          
+        
+        config MQTT_OUTPUT_RINGBUF_SIZE
+        int "MQTT Output Buffer Size"
+        default 1024           
+        
+        config MQTT_VAR_HEADER_BUFFER_LEN
+        int "MQTT Var Header Buffer Size"
+        default 1024       
+    endmenu 
+    
+    endif #AW_IMG_PRJ_BUILD
+    
+endif

@@ -1,0 +1,29 @@
+{
+  "name": "lwip_2x", 
+  "version": "2.1.13", 
+  "description": "LWIP TCP/IP Protocol Stack 2.1.2", 
+  "category": "component", 
+  "distype": "sdist", 
+  "build_ref": "e17ebc3cf615d013a0004ea8ccef1e4206dd5364", 
+  "build_id": "64647", 
+  "repository": "http://192.168.23.62/aworks-team/lwip_2x", 
+  "engines": [
+    "axio-engine@1.1.0-a.72", 
+    "axbuilder.component@1.0.0", 
+    "package_manager.component@1.0.0"
+  ], 
+  "status": "stable", 
+  "src_dir": "src", 
+  "src_filter": [
+    "+<*>", 
+    "-<apps>", 
+    "+<apps/lwiperf/lwiperf.c>", 
+    "+<apps/mqtt/mqtt.c>"
+  ], 
+  "include_dirs": [
+    "src/include", 
+    "src/include/ipv4", 
+    "src/netif", 
+    "src/netif/ppp"
+  ]
+}

@@ -1,0 +1,79 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os.path
+from config_build_common import build_common_config 
+from config_lwip import aw_lwip_config
+
+def make_sure_board():
+    if build_common_config.CONFIG_BOARD_NAME == "m1052":
+        obj = "#define CONFIG_IMX1052_BOARD 1\n\n"
+    elif build_common_config.CONFIG_BOARD_NAME == "m1062":
+        obj = "#define CONFIG_IMX1062_BOARD 1\n\n"
+    default_file = os.path.join(build_common_config.AWORKS_ROOT,
+                                r"components\micropython\aw_micropython_1.12_adapter",
+                                r"config\aw_mpy_cfg.h.default")
+    #print(default_file)
+    h_file = os.path.join(build_common_config.AWORKS_ROOT,
+                          r"components\micropython\aw_micropython_1.12_adapter",
+                          r"config\aw_mpy_cfg.h")
+    #print(h_file)
+    fd = open(default_file,'r')
+    content = fd.readlines()
+    index = 0
+    for line in content:
+        index = index + 1 
+        if "#define AWORKS" in line:
+            content.insert(index,obj)
+            #print(content)
+            break
+    fd.close()
+    fd = open(h_file,'w')
+    print(fd)
+    for line in content:
+        fd.write(line)
+    fd.close()
+
+make_sure_board()
+
+env = DefaultEnvironment();
+cur_build_path = Dir('.', False)
+org_build_path = str(cur_build_path.srcnode())
+
+# 构建 micropython 源码相对路径
+mpy_src_path = os.path.join(
+    build_common_config.AWORKS_ROOT, '3rdparty', 'micropython','micropython_1.12')
+
+aw_mpy_src_path = os.path.join(
+    build_common_config.AWORKS_ROOT, 'components', 'micropython','aw_micropython_1.12_adapter')
+
+# 添加头文件路径
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE.append("include")
+INCLUDE.append(os.path.join(mpy_src_path))
+INCLUDE.append(os.path.join(mpy_src_path, 'drivers'))
+INCLUDE.append(os.path.join(mpy_src_path, 'drivers', 'bus'))
+INCLUDE.append(os.path.join(mpy_src_path, 'extmod'))
+INCLUDE.append(os.path.join(mpy_src_path, 'py'))
+INCLUDE.append(os.path.join(mpy_src_path, 'lib'))
+INCLUDE.append(os.path.join(aw_mpy_src_path))
+INCLUDE.append(os.path.join(aw_mpy_src_path, 'port'))
+INCLUDE.append(os.path.join(aw_mpy_src_path, 'port', 'genhdr'))
+INCLUDE.append(os.path.join(aw_mpy_src_path, 'port', 'boards'))
+INCLUDE.append(os.path.join(aw_mpy_src_path, 'config'))
+INCLUDE.append(os.path.join(aw_mpy_src_path, 'usr_mod'))
+
+# aw_lwip_1.4.x include
+INCLUDE += aw_lwip_config.LWIP_INCLUDE
+
+INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/base/include')
+INCLUDE.append(os.path.join(build_common_config.AW_SDK_INSTALL_PATH, 'include'))
+
+# 生成库文件
+AW_MICROPYTHON_ADAPTER_O = Object(source=[Glob('port/*.c'),Glob('port/genhdr/*.c'),Glob('config/*.c'),Glob('usr_mod/*.c')], CPPPATH=INCLUDE)
+
+AW_MICROPYTHON_ADAPTER_A = Library('aw_micropython_1_12_adapter', source=AW_MICROPYTHON_ADAPTER_O)
+
+
+# 返回
+Return('AW_MICROPYTHON_ADAPTER_A')

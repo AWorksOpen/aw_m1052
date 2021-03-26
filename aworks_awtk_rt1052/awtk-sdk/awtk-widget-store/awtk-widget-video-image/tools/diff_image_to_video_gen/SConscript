@@ -1,0 +1,13 @@
+import os
+import sys
+
+env=DefaultEnvironment().Clone()
+BIN_DIR=os.environ['BIN_DIR'];
+LIB_DIR=os.environ['LIB_DIR'];
+
+env['LIBS'] = ['common'] + ['lz4'] + env['LIBS'] 
+env['LINKFLAGS'] = env['OS_SUBSYSTEM_CONSOLE'] + env['LINKFLAGS'];
+env.Program(os.path.join(BIN_DIR, 'diff_image_to_video_gen'), ["main.cpp", Glob("../3rd/diff_image_to_video/*.c"), Glob("../3rd/diff_image_to_video/*.cpp"), Glob("../3rd/lz4/*.c")])
+
+
+

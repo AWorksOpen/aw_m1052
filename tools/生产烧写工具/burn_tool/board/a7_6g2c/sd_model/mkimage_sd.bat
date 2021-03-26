@@ -1,0 +1,1 @@
+imx6ul_mkimage.exe imximage.cfg.cfgtmp img_imx6ul_debug.bin 2155872256 img_imx6ul_debug_sd.imx

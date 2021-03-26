@@ -1,0 +1,219 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+import os.path
+from config_build_common import build_common_config 
+
+env = DefaultEnvironment();
+cur_build_path = Dir('.', False)
+org_build_path = str(cur_build_path.srcnode())
+
+# 构建 micropython 源码相对路径
+mpy_src_path = os.path.join(
+    build_common_config.AWORKS_ROOT, '3rdparty', 'micropython','micropython_1.12')
+
+aw_mpy_src_path = os.path.join(
+    build_common_config.AWORKS_ROOT, 'components', 'micropython','aw_micropython_1.12_adapter')
+
+mpy_rel_dir = cal_relative_dir(org_build_path, mpy_src_path)
+# 添加头文件路径
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE.append("include")
+INCLUDE.append(os.path.join(mpy_src_path))
+INCLUDE.append(os.path.join(mpy_src_path, 'drivers'))
+INCLUDE.append(os.path.join(mpy_src_path, 'drivers', 'bus'))
+INCLUDE.append(os.path.join(mpy_src_path, 'extmod'))
+INCLUDE.append(os.path.join(mpy_src_path, 'py'))
+INCLUDE.append(os.path.join(mpy_src_path, 'lib'))
+INCLUDE.append(os.path.join(aw_mpy_src_path))
+INCLUDE.append(os.path.join(aw_mpy_src_path, 'port'))
+INCLUDE.append(os.path.join(aw_mpy_src_path, 'config'))
+INCLUDE.append(os.path.join(aw_mpy_src_path, 'usr_mod'))
+INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/base/include')
+INCLUDE.append(os.path.join(build_common_config.AW_SDK_INSTALL_PATH, 'include'))
+
+py1_source = ['py/mpstate.c',
+            'py/nlr.c',
+            'py/nlrx86.c',
+            'py/nlrx64.c',
+            'py/nlrthumb.c',
+            'py/nlrpowerpc.c',
+            'py/nlrxtensa.c',
+            'py/nlrsetjmp.c',
+            'py/malloc.c',
+            'py/gc.c',
+            'py/pystack.c',
+            'py/qstr.c',
+            'py/vstr.c',
+            'py/mpprint.c',
+            'py/unicode.c',
+            'py/mpz.c',
+            'py/reader.c',
+            'py/lexer.c',
+            'py/parse.c',
+            'py/scope.c',
+            'py/compile.c',
+            'py/emitcommon.c',
+            'py/emitbc.c',
+            'py/asmbase.c',
+            'py/asmx64.c',
+            'py/emitnx64.c',
+            'py/asmx86.c',
+            'py/emitnx86.c',
+            'py/asmthumb.c',
+            'py/emitnthumb.c',
+            'py/emitinlinethumb.c',
+            'py/asmarm.c']
+py2_source = ['py/emitnarm.c',
+            'py/asmxtensa.c',
+            'py/emitnxtensa.c',
+            'py/emitinlinextensa.c',
+            'py/emitnxtensawin.c',
+            'py/formatfloat.c',
+            'py/parsenumbase.c',
+            'py/parsenum.c',
+            'py/emitglue.c',
+            'py/persistentcode.c',
+            'py/runtime.c',
+            'py/runtime_utils.c',
+            'py/scheduler.c',
+            'py/nativeglue.c',
+            'py/pairheap.c',
+            'py/ringbuf.c',
+            'py/stackctrl.c',
+            'py/argcheck.c',
+            'py/warning.c',
+            'py/profile.c',
+            'py/map.c',
+            'py/obj.c',
+            'py/objarray.c',
+            'py/objattrtuple.c',
+            'py/objbool.c',
+            'py/objboundmeth.c',
+            'py/objcell.c',
+            'py/objclosure.c',
+            'py/objcomplex.c',
+            'py/objdeque.c',
+            'py/objdict.c',
+            'py/objenumerate.c',
+            'py/objexcept.c',
+            'py/objfilter.c',
+            'py/objfloat.c',
+            'py/objfun.c',
+            'py/objgenerator.c',
+            'py/objgetitemiter.c',
+            'py/objint.c',
+            'py/objint_longlong.c',
+            'py/objint_mpz.c',
+            'py/objlist.c',
+            'py/objmap.c',
+            'py/objmodule.c',
+            'py/objobject.c',
+            'py/objpolyiter.c',
+            'py/objproperty.c',
+            'py/objnone.c',
+            'py/objnamedtuple.c',
+            'py/objrange.c',
+            'py/objreversed.c']
+py3_source = ['py/objset.c',
+            'py/objsingleton.c',
+            'py/objslice.c',
+            'py/objstr.c',
+            'py/objstrunicode.c',
+            'py/objstringio.c',
+            'py/objtuple.c',
+            'py/objtype.c',
+            'py/objzip.c',
+            'py/opmethods.c',
+            'py/sequence.c',
+            'py/stream.c',
+            'py/binary.c',
+            'py/builtinimport.c',
+            'py/builtinevex.c',
+            'py/builtinhelp.c',
+            'py/modarray.c',
+            'py/modbuiltins.c',
+            'py/modcollections.c',
+            'py/modgc.c',
+            'py/modio.c',
+            'py/modmath.c',
+            'py/modcmath.c',
+            'py/modmicropython.c',
+            'py/modstruct.c',
+            'py/modsys.c',
+            'py/moduerrno.c',
+            'py/modthread.c',
+            'py/vm.c',
+            'py/bc.c',
+            'py/showbc.c',
+            'py/repl.c',
+            'py/smallint.c',
+            'py/frozenmod.c']
+
+drivers_source = [Glob('drivers/bus/*.c')]
+
+lib_source = ['lib/embed/abort_.c',
+              Glob('lib/mp-readline/*.c'),
+              Glob('lib/netutils/*.c'),
+              Glob('lib/timeutils/*c'),
+              Glob('lib/utils/*c')]
+
+extmod_source = ['extmod/moduasyncio.c',
+                 'extmod/moductypes.c',
+                 'extmod/modujson.c',
+                 'extmod/modure.c',
+                 'extmod/moduzlib.c',
+                 'extmod/moduheapq.c',
+                 'extmod/modutimeq.c',
+                 'extmod/moduhashlib.c',
+                 'extmod/moducryptolib.c',
+                 'extmod/modubinascii.c',
+                 'extmod/virtpin.c',
+                 'extmod/machine_mem.c',
+                 'extmod/machine_pinbase.c',
+                 'extmod/machine_signal.c',
+                 'extmod/machine_pulse.c',
+                 'extmod/machine_i2c.c',
+                 'extmod/machine_spi.c',
+                 'extmod/modbluetooth.c',
+                 'extmod/modussl_axtls.c',
+                 'extmod/modussl_mbedtls.c',
+                 'extmod/modurandom.c',
+                 'extmod/moduselect.c',
+                 'extmod/moduwebsocket.c',
+                 'extmod/modwebrepl.c',
+                 'extmod/modframebuf.c',
+                 'extmod/modbtree.c',
+                 'extmod/vfs.c',
+                 'extmod/vfs_blockdev.c',
+                 'extmod/vfs_reader.c',
+                 'extmod/vfs_posix.c',
+                 'extmod/vfs_posix_file.c',
+                 'extmod/vfs_fat.c',
+                 'extmod/vfs_fat_diskio.c',
+                 'extmod/vfs_fat_file.c',
+                 'extmod/utime_mphal.c',
+                 'extmod/uos_dupterm.c']
+
+PY1_O = Object(source=py1_source, CPPPATH=INCLUDE)
+PY2_O = Object(source=py2_source, CPPPATH=INCLUDE)
+PY3_O = Object(source=py3_source, CPPPATH=INCLUDE)
+DRIVERS_O = Object(source=drivers_source, CPPPATH=INCLUDE)
+LIB_O = Object(source=lib_source, CPPPATH=INCLUDE)
+EXTMOD_O = Object(source=extmod_source, CPPPATH=INCLUDE)
+
+#
+# 生成 libmicropython_1_12.a
+#
+MICROPYTHON_TEMP1_A = Library('micropython_1_12_temp1', source=DRIVERS_O+LIB_O+EXTMOD_O+PY1_O)
+MICROPYTHON_TEMP2_A = Library('micropython_1_12_temp2', source=PY2_O)
+MICROPYTHON_A = Library('micropython_1_12', source=PY3_O)
+
+#
+# 返回
+#
+mpy_lib = []
+mpy_lib.extend(MICROPYTHON_TEMP1_A)
+mpy_lib.extend(MICROPYTHON_TEMP2_A)
+mpy_lib.extend(MICROPYTHON_A)
+Return("mpy_lib")

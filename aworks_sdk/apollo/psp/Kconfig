@@ -1,0 +1,20 @@
+# Kconfig - general configuration options
+
+# Copyright (c) 2001-present Guangzhou ZHIYUAN Electronics Co., Ltd..
+# All rights reserved.
+
+config AW_PSP_DEPRECATED
+	string
+	help
+	  This hidden option is set in the PSP configuration and indicates
+	  the psp release that the psp configuration will be removed.
+	  When set, any build for that board will generate a clearly visible
+	  deprecation warning.
+
+choice
+	prompt "PSP Selection"
+	default AW_PSP_RTK
+	source "$(ax_imp_paths, aw_psp)"
+endchoice
+
+

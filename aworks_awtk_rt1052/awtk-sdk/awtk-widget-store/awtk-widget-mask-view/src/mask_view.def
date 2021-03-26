@@ -1,0 +1,15 @@
+LIBRARY   mask_view
+EXPORTS
+    mask_view_register
+    mask_view_supported_render_mode
+    mask_view_item_create
+    mask_view_item_cast
+    mask_view_item_set_mask_view
+    mask_view_item_get_mask_view
+    mask_view_create
+    mask_view_cast
+    mask_view_set_fg_interval_time
+    mask_view_set_bg_interval_time
+    mask_view_fg_interval
+    mask_view_bg_interval
+    mask_view_update_children_list

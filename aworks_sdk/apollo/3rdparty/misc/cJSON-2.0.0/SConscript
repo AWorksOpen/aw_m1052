@@ -1,0 +1,22 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+from config_build_common import build_common_config 
+
+env = DefaultEnvironment();
+
+#代码
+SOURCE = []
+SOURCE.append('cJSON.c')
+SOURCE.append('cJSON_Utils.c')
+
+
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE +=['./']
+
+lib_file=StaticLibrary('aw_cjson_2_0_0',SOURCE,CPPPATH = INCLUDE )
+
+
+
+# 返回所有的lib文件
+Return('lib_file');

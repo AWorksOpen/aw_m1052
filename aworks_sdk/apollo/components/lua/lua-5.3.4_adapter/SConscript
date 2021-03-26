@@ -1,0 +1,45 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os.path
+from config_build_common import build_common_config 
+
+# 
+# 加入源码头文件所在路径
+#
+COMMON_PATH= build_common_config.AW_COMMON_INCLUDE 
+
+LUA_PATH   = os.path.join(build_common_config.AWORKS_ROOT, 
+                        '3rdparty', 'lua', 'lua-5.3.4', 'src')
+SHELL_PATH = os.path.join(build_common_config.AWORKS_ROOT, 
+                        'components', 'shell', 'include')
+#
+# 构造头文件搜索路径
+#
+INCLUDE = list(COMMON_PATH);
+INCLUDE.append(LUA_PATH);
+INCLUDE.append(SHELL_PATH);
+# 生成库文件
+AW_LUA_O = Object(source='source/aw_lua.c',  CPPPATH=INCLUDE)
+AW_LUAC_O= Object(source='source/aw_luac.c', CPPPATH=INCLUDE)
+
+AW_LUA_SHELL_O = Object(source=['source/aw_lua_shell_init.c', 
+                                'source/dumpio.c'], 
+                        CPPPATH=INCLUDE)
+AW_LUAC_SHELL_O= Object(source='source/aw_luac_shell_init.c', 
+                        CPPPATH=INCLUDE)
+
+ADAPTER_O = AW_LUA_O+AW_LUAC_O+AW_LUA_SHELL_O+AW_LUAC_SHELL_O
+
+ADAPTER_A = Library('lua_5_3_4_adapter', source=ADAPTER_O)
+
+#
+# 安装头文件
+#
+EXPORT = """
+    include/aw_lua_shell_init.h include/aw_lua_shell_init.h
+"""
+
+
+# 返回
+Return('ADAPTER_A')

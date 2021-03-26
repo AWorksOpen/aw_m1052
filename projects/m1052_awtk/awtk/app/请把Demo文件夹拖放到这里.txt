@@ -1,0 +1,1 @@
+注意：只能有一个Demo或应用的文件夹参与编译，其他的Demo要设置从工程中屏蔽（Exclude from Build）

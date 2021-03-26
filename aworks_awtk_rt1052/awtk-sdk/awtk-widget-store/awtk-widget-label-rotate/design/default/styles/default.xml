@@ -1,0 +1,16 @@
+<window>
+  <style name="default">
+    <normal bg_color="#ffffff"/>
+  </style>
+</window>
+
+<label_rotate>
+  <style name="default" border_color="#a0a0a0" >
+    <normal text_color="black" />
+  </style>
+</label_rotate>
+
+
+
+
+

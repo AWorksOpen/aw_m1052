@@ -1,0 +1,40 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+import os.path
+from   config_build_common import build_common_config 
+
+# 
+# 加入源码头文件所在路径
+#
+COMMON_PATH= build_common_config.AW_COMMON_INCLUDE 
+
+ZLIB_PATH = os.path.join(build_common_config.AWORKS_ROOT, 
+                        '3rdparty', 'zlib', 'zlib-1.2.11')
+SHELL_PATH= os.path.join(build_common_config.AWORKS_ROOT, 
+                        'components', 'shell', 'include')
+
+#
+# 构造头文件搜索路径
+#
+INCLUDE = [COMMON_PATH, ZLIB_PATH, SHELL_PATH]
+
+# 生成库文件
+ADAPTER_A = Library('zlib_1_2_11_adapter', source=Glob('source/*.c'),
+                                           CPPPATH=INCLUDE)
+
+#
+# 安装头文件
+#
+EXPORT = """
+    include/aw_zlib_test_shell_init.h  
+"""
+
+# 构造安装路径
+#
+INSTALL=os.path.join(build_common_config.AW_SDK_INSTALL_PATH,'include')
+
+
+# 返回
+Return('ADAPTER_A')

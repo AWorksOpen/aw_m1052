@@ -1,0 +1,55 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+import config_shell
+from config_build_common import build_common_config
+from config_aw_base import aw_base_config
+from config_compoents import compoents_config
+
+env = DefaultEnvironment()
+env = env.Clone()
+
+cur_build_path = Dir('.', False)
+org_build_path = str(cur_build_path.srcnode())
+
+# 配置aw_shell_cfg.h
+output_config_file = os.path.join(
+    build_common_config.PROJECT_CONFIG_ROOT, 'aw_shell_cfg.h')
+
+# 首先尝试生成shell的配置文件
+config_py_file = config_shell.__file__
+(file_name, ext_name) = os.path.splitext(config_py_file)
+if ext_name == '.pyc':
+    config_py_file = file_name + '.py'
+
+SOURCE = [os.path.join(org_build_path, 'aw_shell_cfg.h.pyconfig')]
+SOURCE.append(os.path.join(org_build_path, 'aw_shell_cfg.h.defconf'))
+SOURCE.append(config_py_file)
+env.configure_file(output_config_file, SOURCE)
+
+# 代码
+SOURCE = [
+    'source/aw_shell.c',
+    'source/aw_shell_default_shell.c',
+    'source/aw_shell_serial.c'
+]
+
+# shell_segger_rtt
+if get_config_val(compoents_config, 'EN_SEGGER_RTT', False) is True:
+    SOURCE.append('source/aw_shell_segger_rtt.c')
+
+
+# 构建 shell 库
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE.append(build_common_config.PROJECT_CONFIG_ROOT)
+INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/base/include')
+INCLUDE.append(build_common_config.AWORKS_ROOT + 'components/shell/include')
+
+Install(build_common_config.AW_SDK_INSTALL_PATH +
+        'include/config', output_config_file)
+
+
+lib_file = Library('aw_shell', SOURCE, CPPPATH=INCLUDE)
+
+Return('lib_file')

@@ -1,0 +1,26 @@
+{
+  "name": "mbedtls", 
+  "version": "2.24.0", 
+  "description": "component mbedtls", 
+  "category": "component", 
+  "distype": "sdist", 
+  "build_ref": "f18b7e7584ae4ccdd3269a3270a69d4c189f6076", 
+  "build_id": "70045", 
+  "repository": "http://192.168.23.62/aworks-team/mbedtls", 
+  "engines": [
+    "axio-engine@1.1.0-a.78", 
+    "axbuilder.component@1.0.0", 
+    "package_manager.component@1.0.0"
+  ], 
+  "status": "stable", 
+  "src_dir": "./", 
+  "src_filter": [
+    "+<*>", 
+    "-<yotta/*>", 
+    "-<programs/*>", 
+    "-<library/net_sockets.c>"
+  ], 
+  "include_dirs": [
+    "./include"
+  ]
+}

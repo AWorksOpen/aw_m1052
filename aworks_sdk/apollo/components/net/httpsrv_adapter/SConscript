@@ -1,0 +1,62 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+from config_build_common    import build_common_config 
+from config_aw_base         import aw_base_config 
+from config_lwip            import aw_lwip_config
+
+
+env = DefaultEnvironment();
+
+cur_build_path = Dir('.',False);
+org_build_path = str(cur_build_path.srcnode())
+
+#构建LWIP路径
+#得出LWIP源码绝对路径
+httpsrv_src_path = os.path.join(build_common_config.AWORKS_ROOT, '3rdparty','net','httpsrv');
+#由LWIP源码路径推算出LWIP将要安装的路径
+httpsrv_src_rel_apollo_dir = cal_relative_dir(build_common_config.AWORKS_ROOT,httpsrv_src_path);
+httpsrv_src_install_path = os.path.join(build_common_config.AW_SDK_INSTALL_PATH,'apollo', httpsrv_src_rel_apollo_dir);
+httpsrv_rel_dir = cal_relative_dir(org_build_path,httpsrv_src_path);
+
+#SDK LWIP adapter源码路径
+httpsrv_adapter_rel_apollo_dir = cal_relative_dir(build_common_config.AWORKS_ROOT,org_build_path);
+httpsrv_adapter_src_install_path = os.path.join(build_common_config.AW_SDK_INSTALL_PATH,httpsrv_adapter_rel_apollo_dir,'source');
+
+#httpsrv源码
+SOURCE = [httpsrv_rel_dir + '/httpsrv.c']
+SOURCE += [httpsrv_rel_dir + '/httpsrv_base64.c']
+SOURCE += [httpsrv_rel_dir + '/httpsrv_fs.c']
+SOURCE += [httpsrv_rel_dir + '/httpsrv_script.c']
+SOURCE += [httpsrv_rel_dir + '/httpsrv_sha1.c']
+SOURCE += [httpsrv_rel_dir + '/httpsrv_supp.c']
+SOURCE += [httpsrv_rel_dir + '/httpsrv_task.c']
+SOURCE += [httpsrv_rel_dir + '/httpsrv_tls.c']
+SOURCE += [httpsrv_rel_dir + '/httpsrv_utf8.c']
+SOURCE += [httpsrv_rel_dir + '/httpsrv_ws.c']
+SOURCE += [httpsrv_rel_dir + '/httpsrv_ws_api.c']
+
+#httpsrv适配源码
+SOURCE += ['./source/httpsrv_arch.c']
+SOURCE += ['./source/httpsrv_cgi_helper.c']
+SOURCE += ['./source/httpsrv_string.c']
+SOURCE += ['./fs_adapter/httpsrv_fs_adapter.c']
+
+# aw_httpsrv include
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE += ['./include']
+INCLUDE += ['./fs_adapter']
+INCLUDE += aw_lwip_config.LWIP_INCLUDE
+INCLUDE.append(build_common_config.AWORKS_ROOT+'components/base/include')
+INCLUDE.append(build_common_config.AWORKS_ROOT+'3rdparty/net/httpsrv')
+
+lib_files = StaticLibrary('aw_httpsrv',SOURCE,CPPPATH = INCLUDE)
+
+
+
+
+Return('lib_files');
+
+
+

@@ -1,0 +1,114 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+import shutil
+from config_build_common import     build_common_config
+
+env = DefaultEnvironment();
+
+cur_build_path = Dir('.',False);
+org_build_path = str(cur_build_path.srcnode())
+
+# 包含头文件
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+
+#安装aw_usb库
+aw_usb_path = os.path.join(org_build_path,'aw_usb','source');
+if os.path.exists(aw_usb_path) and os.path.isdir(aw_usb_path) :
+    # 存在aw_usb源码则编译源码
+    print 'built aw_usb...'
+    SOURCE_AW_USB = [];
+    SOURCE_AW_USB.append('aw_usb/source/aw_usb_unicode.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/aw_usbh.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/awbl_usbh_bus.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/awbl_usbh_dev.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/awbl_usbh_host.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/awbl_usbh_hub.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/controller/awbl_usbh_ehci.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/controller/awbl_usbh_ehci_mem.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/controller/awbl_usbh_ehci_rh.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/controller/awbl_usbh_ohci.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/controller/awbl_usbh_ohci_mem.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/controller/awbl_usbh_ehci_iso_sched.c');
+	
+    SOURCE_AW_USB.append('aw_usb/source/host/class/ms/awbl_usbh_mass_storage.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/class/ms/awbl_usbh_mass_storage_scsi.c');
+    
+    SOURCE_AW_USB.append('aw_usb/source/host/class/cdc/serial/awbl_usbh_cdc_serial_driver.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/class/cdc/serial/chip/awbl_usbh_serial_ch34x.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/class/cdc/serial/chip/awbl_usbh_serial_cp210x.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/class/cdc/serial/chip/awbl_usbh_serial_ftdi.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/class/cdc/serial/chip/awbl_usbh_serial_other.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/class/cdc/serial/chip/awbl_usbh_serial_pl2303.c');
+	
+    SOURCE_AW_USB.append('aw_usb/source/host/class/uvc/uvc_driver/awbl_usbh_uvc_driver.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/class/uvc/uvc_driver/awbl_usbh_uvc_operation.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/class/uvc/uvc_shell/uvc_shell.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/class/uvc/uvc_video/uvc_ctrl.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/class/uvc/uvc_video/uvc_queue.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/class/uvc/uvc_video/uvc_status.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/class/uvc/uvc_video/uvc_video.c');	
+    SOURCE_AW_USB.append('aw_usb/shell/host/usb_shell.c');	
+	
+	
+    SOURCE_AW_USB.append('aw_usb/source/host/class/awbl_usbh_serial.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/class/awbl_usbh_serial_wireless.c');
+    SOURCE_AW_USB.append('aw_usb/source/host/class/awbl_usbh_wireless.c');
+    SOURCE_AW_USB.append('aw_usb/source/device/aw_usbd.c');
+    SOURCE_AW_USB.append('aw_usb/source/device/awbl_usbd.c');
+    SOURCE_AW_USB.append('aw_usb/source/device/class/ms/aw_usbd_ms.c');
+    SOURCE_AW_USB.append('aw_usb/source/device/class/hid/aw_usbd_hid.c');
+    SOURCE_AW_USB.append('aw_usb/source/device/class/hid/aw_usbd_hid_mouse.c');
+    SOURCE_AW_USB.append('aw_usb/source/device/class/hid/aw_usbd_hid_keyboard.c');
+    SOURCE_AW_USB.append('aw_usb/source/device/class/cdc/aw_usbd_cdc_virtual_serial.c');
+    SOURCE_AW_USB.append('aw_usb/source/device/class/vprinter/aw_usbd_vprinter.c');	
+	
+    #SOURCE_AW_USB.append('aw_usb/source/device/class/cdc/aw_usbd_cdc.c');
+    #SOURCE_AW_USB.append('aw_usb/source/device/class/cdc/aw_usbd_cdc_serial.c');
+    #SOURCE_AW_USB.append('aw_usb/source/device/class/tmc/aw_usbd_tmc.c');
+    SOURCE_AW_USB.append('aw_usb/source/device/class/vendor/aw_usbd_candtu.c');
+	
+    SOURCE_AW_USB.append('aw_usb/3rd/libmtp/source/libmtp.c');
+    SOURCE_AW_USB.append('aw_usb/3rd/libmtp/source/mtpz.c');
+    SOURCE_AW_USB.append('aw_usb/3rd/libmtp/source/playlist-spl.c');
+    SOURCE_AW_USB.append('aw_usb/3rd/libmtp/source/ptp.c');
+    SOURCE_AW_USB.append('aw_usb/3rd/libmtp/source/unicode.c');
+    SOURCE_AW_USB.append('aw_usb/3rd/libmtp/source/util.c');
+    SOURCE_AW_USB.append('aw_usb/3rd/libmtp/example/pathutils.c');
+    SOURCE_AW_USB.append('aw_usb/3rd/libmtp/adapter/libusb-aworks-glue.c');
+    SOURCE_AW_USB.append('aw_usb/3rd/libmtp/adapter/mtp_adapter.c');
+
+
+    dirs_copy = ['config', 'include', '3rd']
+    for dir in dirs_copy:
+        path  = os.path.join(org_build_path, dir)
+        try: 
+            os.system("rd/s/q " + path)
+        except Exception, e:
+            pass
+#            shutil.rmtree(path)
+        shutil.copytree(os.path.join(org_build_path, 'aw_usb', dir), path)
+
+    #添加头文件路径
+    INCLUDE += [os.path.join(org_build_path,'aw_usb/include')]
+    INCLUDE += [os.path.join(org_build_path,'aw_usb/shell')]
+    INCLUDE += [os.path.join(org_build_path,'aw_usb/3rd/libmtp/include')]
+    INCLUDE += [os.path.join(org_build_path,'aw_usb/3rd/libmtp/example')]
+    INCLUDE += [os.path.join(org_build_path,'aw_usb/3rd/libmtp/adapter')]
+    INCLUDE.append(build_common_config.AWORKS_ROOT+'components/base/include')
+
+    lib_aw_usb_file = Library('aw_usb',SOURCE_AW_USB,CPPPATH = INCLUDE)
+    Install(build_common_config.BUILT_LIBS_SEARCH_PATH,lib_aw_usb_file)
+else :
+    lib_usb_file_name = env['LIBPREFIX'] + 'aw_usb' + env['LIBSUFFIX']
+    lib_usb_file_path = os.path.join(build_common_config.BUILT_LIBS_SEARCH_PATH,lib_usb_file_name);
+    lib_aw_usb_file = [File(lib_usb_file_path)];
+
+
+
+Return('lib_aw_usb_file');
+
+
+
+

@@ -1,0 +1,133 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+from config_build_common import build_common_config 
+from config_compoents import compoents_config
+
+env = DefaultEnvironment()
+
+cur_build_path = Dir('.', False)
+org_build_path = str(cur_build_path.srcnode())
+
+#得出CANopen源码绝对路径
+canopen_src_path = os.path.join(build_common_config.AWORKS_ROOT, '3rdparty', 'can_stack', 'CANopen')
+#由CANopen源码路径推算出CANopen将要安装的路径
+canopen_src_rel_apollo_dir = cal_relative_dir(build_common_config.AWORKS_ROOT, canopen_src_path)
+canopen_src_install_path = os.path.join(build_common_config.AW_SDK_INSTALL_PATH, 'apollo', canopen_src_rel_apollo_dir)
+canopen_rel_dir = cal_relative_dir(org_build_path, canopen_src_path)
+
+canopen_ccm_src_path = os.path.join(canopen_src_path, 'ccm')
+
+
+# 判断是否存在源码目录
+if os.path.exists(canopen_ccm_src_path):
+
+    # 由于SDK工程配置使用相同头文件路径，故协议栈中需要定义宏来确定连接的是哪个头文件
+    if compoents_config.EN_AW_CANOPEN_MST:
+        env['CPPDEFINES'].append('AW_COM_CANOPEN_MST')
+        
+    elif compoents_config.EN_AW_CANOPEN_SLV:
+        env['CPPDEFINES'].append('AW_COM_CANOPEN_SLV')
+
+    else:
+        print('must enable canopen mst or slv')
+
+    env['CPPDEFINES'].append('AW_CANOPEN_CRP_ENABLE=1')
+
+    # 代码
+    SOURCE = []
+    SOURCE_MST = []
+    SOURCE_SLV = []
+
+    SOURCE.append(canopen_rel_dir + 'ccm/ccm303.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccm402st.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccm402tp.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmboot.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmcfgma.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmdfpdo.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmdyn.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmemcc.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmemcce.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmemcp.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmhbc.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmhbp.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmlgs.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmlss.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmmain.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmmpdo.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmnmtm.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmnmtme.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmnmts.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmobj.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmsdoc.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmsdom.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmsnpdo.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmsrd.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmsrdo.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmstore.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmsync.c')
+    SOURCE.append(canopen_rel_dir + 'ccm/ccmtsp.c')
+
+    SOURCE.append(canopen_rel_dir + 'copstack/ami/amiarm7.c')
+    SOURCE.append(canopen_rel_dir + 'copstack/cob.c')
+    SOURCE.append(canopen_rel_dir + 'copstack/emcc.c')
+    SOURCE.append(canopen_rel_dir + 'copstack/emcp.c')
+    SOURCE.append(canopen_rel_dir + 'copstack/hbc.c')
+    SOURCE.append(canopen_rel_dir + 'copstack/hbp.c')
+    SOURCE.append(canopen_rel_dir + 'copstack/lssmst.c')
+    SOURCE.append(canopen_rel_dir + 'copstack/lssslv.c')
+    #SOURCE.append(canopen_rel_dir + 'copstack/mpdo.c')
+    SOURCE.append(canopen_rel_dir + 'copstack/nmt.c')
+    SOURCE.append(canopen_rel_dir + 'copstack/nmtm.c')
+    SOURCE.append(canopen_rel_dir + 'copstack/nmts.c')
+    SOURCE.append(canopen_rel_dir + 'copstack/obd.c')
+    SOURCE.append(canopen_rel_dir + 'copstack/pdo.c')
+    #SOURCE.append(canopen_rel_dir + 'copstack/pdosync.c')
+    SOURCE.append(canopen_rel_dir + 'copstack/sdoc.c')
+    SOURCE.append(canopen_rel_dir + 'copstack/sdoscomm.c')
+
+    SOURCE.append(canopen_rel_dir + 'targetdrv/cdrv_user.c')
+    SOURCE.append(canopen_rel_dir + 'targetdrv/target_cop.c')
+    SOURCE.append(canopen_rel_dir + 'targetdrv/Target_led.c')
+    SOURCE.append(canopen_rel_dir + 'targetdrv/tgtcavtp.c')
+
+    if compoents_config.EN_AW_CANOPEN_MST:
+        SOURCE_MST = SOURCE
+        SOURCE_MST.append(canopen_rel_dir + 'objdicts_mst/objdict.c')
+        
+        SOURCE_MST.append('mst/src/aw_cop_mst.c')
+
+    else:
+        SOURCE_SLV = SOURCE
+        SOURCE_SLV.append(canopen_rel_dir + 'objdicts_slv/objdict.c')
+        
+        SOURCE_SLV.append('slv/src/aw_cop_slv.c')
+
+    # 头文件
+    INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+
+    INCLUDE += [canopen_rel_dir]
+    INCLUDE += [canopen_rel_dir + 'include']
+    INCLUDE += [org_build_path]
+
+    if compoents_config.EN_AW_CANOPEN_MST:
+        lib_file = Library('aw_canopen_mst', SOURCE_MST, CPPPATH = INCLUDE)
+
+    else:
+        lib_file = Library('aw_canopen_slv', SOURCE_SLV, CPPPATH = INCLUDE)
+
+    Install(build_common_config.BUILT_LIBS_SEARCH_PATH, lib_file)
+
+if compoents_config.EN_AW_CANOPEN_MST:
+    lib_file_name = env['LIBPREFIX'] + 'aw_canopen_mst' + env['LIBSUFFIX']
+    lib_file_name = os.path.join(build_common_config.BUILT_LIBS_SEARCH_PATH, lib_file_name)
+    Install(build_common_config.AW_SDK_LIB_INSTALL_PATH, lib_file_name)
+
+if compoents_config.EN_AW_CANOPEN_SLV:
+    lib_file_name = env['LIBPREFIX'] + 'aw_canopen_slv' + env['LIBSUFFIX']
+    lib_file_name = os.path.join(build_common_config.BUILT_LIBS_SEARCH_PATH, lib_file_name)
+    Install(build_common_config.AW_SDK_LIB_INSTALL_PATH, lib_file_name)
+    
+canopen_lib_file = None
+Return('canopen_lib_file')

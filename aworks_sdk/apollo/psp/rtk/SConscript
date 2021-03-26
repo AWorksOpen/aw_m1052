@@ -1,0 +1,30 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+from config_build_common import build_common_config 
+
+env = DefaultEnvironment();
+
+#ДњТы
+SOURCE = []
+SOURCE.append('src/aw_psp_errno.c')
+SOURCE.append('src/aw_psp_task.c')
+SOURCE.append('src/aw_psp_int.c')
+SOURCE.append('src/aw_psp_mem.c')
+
+
+SOURCE.append('src/aw_psp_shell_stack.c')
+SOURCE.append('src/aw_psp_shell_cpuload.c')
+
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE.append(build_common_config.AWORKS_ROOT+'components/shell/include')
+INCLUDE.append(build_common_config.AWORKS_ROOT+'components/base/include')
+
+lib_file=StaticLibrary('aw_psp',SOURCE,CPPPATH = INCLUDE )
+
+cur_build_path = Dir('.',False);
+cur_build_path = str(cur_build_path.srcnode())
+
+
+Return('lib_file');

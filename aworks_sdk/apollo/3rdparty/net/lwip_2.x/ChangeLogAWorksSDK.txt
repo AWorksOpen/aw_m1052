@@ -1,0 +1,10 @@
+/*!
+@page middleware_log Middleware Change Log
+
+@section lwip lwIP for AWorks SDK.
+  The current version of lwIP is based on lwIP 2.1.2.
+
+  - STABLE-2.1.2
+    - New features:
+      - Ported lwIP STABLE-2_1_2_RELEASE (2018-11-23, SHA-1: 159e31b689577dbf69cf0683bbaffbd71fa5ee10) to AWorks SDK.
+*/

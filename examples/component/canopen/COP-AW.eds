@@ -1,0 +1,1358 @@
+[FileInfo]
+FileName=COP-AW.eds
+FileVersion=0x1
+FileRevision=0x0
+EDSVersion=4.0
+Description=EDS for COP-AW
+CreationTime=10:00AM
+CreationDate=03-06-2020
+CreatedBy=
+ModificationTime=05:24 PM
+ModificationDate=03-06-2020
+ModifiedBy=GUANGZHOU ZHIYUAN electronic co.,ltd
+
+[DeviceInfo]
+VendorName=GUANGZHOU ZHIYUAN electronic co.,ltd
+VendorNumber=0x2B6
+ProductName=CANopen Comm_moudle
+ProductNumber=0xB
+RevisionNumber=0xA
+OrderCode=COP-AW
+Baudrate_10=1
+Baudrate_20=1
+Baudrate_50=1
+Baudrate_125=1
+Baudrate_250=1
+Baudrate_500=1
+Baudrate_800=1
+Baudrate_1000=1
+SimpleBootUpMaster=0
+SimpleBootUpSlave=1
+Granularity=0x8
+DynamicChannelsSupported=0
+GroupMessaging=0
+NrOfRXPDO=2
+NrOfTXPDO=2
+LSS_Supported=0
+CompactPDO=0x0
+
+[DummyUsage]
+Dummy0001=0
+Dummy0002=0
+Dummy0003=0
+Dummy0004=0
+Dummy0005=1
+Dummy0006=1
+Dummy0007=1
+
+[Comments]
+Lines=1
+Line1=COP-AW Template
+
+[MandatoryObjects]
+SupportedObjects=0x3
+1=0x1000
+2=0x1001
+3=0x1018
+
+[1000]
+ParameterName=Device Type
+ObjectType=0x7
+DataType=0x7
+AccessType=ro
+DefaultValue=0x66
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFF
+
+[1001]
+ParameterName=Error Register
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFF
+
+[1018]
+SubNumber=0x5
+ParameterName=Identity Object
+ObjectType=0x9
+
+[1018sub0]
+ParameterName=number of Entries
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=0x4
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1018sub1]
+ParameterName=Vendor ID
+ObjectType=0x7
+DataType=0x7
+AccessType=ro
+DefaultValue=0x2B6
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1018sub2]
+ParameterName=Product code
+ObjectType=0x7
+DataType=0x7
+AccessType=ro
+DefaultValue=0xA
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1018sub3]
+ParameterName=Revision number
+ObjectType=0x7
+DataType=0x7
+AccessType=ro
+DefaultValue=0xA
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1018sub4]
+ParameterName=Serial number
+ObjectType=0x7
+DataType=0x7
+AccessType=ro
+DefaultValue=0x66666666
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[ManufacturerObjects]
+SupportedObjects=0x8
+1=0x2000
+2=0x2010
+3=0x2020
+4=0x2100
+5=0x2110
+6=0x2120
+7=0xA000
+8=0xA480
+
+[2000]
+SubNumber=0x9
+ParameterName=Application data Input 8bit
+ObjectType=0x8
+
+[2000sub0]
+ParameterName=Number Of Entries
+ObjectType=0x7
+DataType=0x5
+AccessType=const
+DefaultValue=0x08
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[2000sub1]
+ParameterName=Application data Input 8bit #0
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[2000sub2]
+ParameterName=Application data Input 8bit #1
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[2000sub3]
+ParameterName=Application data Input 8bit #2
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[2000sub4]
+ParameterName=Application data Input 8bit #3
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[2000sub5]
+ParameterName=Application data Input 8bit #4
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[2000sub6]
+ParameterName=Application data Input 8bit #5
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[2000sub7]
+ParameterName=Application data Input 8bit #6
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[2000sub8]
+ParameterName=Application data Input 8bit #7
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[2010]
+SubNumber=0x5
+ParameterName=Application data Input 16bit
+ObjectType=0x8
+
+[2010sub0]
+ParameterName=Number Of Entries
+ObjectType=0x7
+DataType=0x5
+AccessType=const
+DefaultValue=0x4
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[2010sub1]
+ParameterName=Application data Input 16bit #0
+ObjectType=0x7
+DataType=0x6
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFFFF
+
+[2010sub2]
+ParameterName=Application data Input 16bit #1
+ObjectType=0x7
+DataType=0x6
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFFFF
+
+[2010sub3]
+ParameterName=Application data Input 16bit #2
+ObjectType=0x7
+DataType=0x6
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFFFF
+
+[2010sub4]
+ParameterName=Application data Input 16bit #3
+ObjectType=0x7
+DataType=0x6
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFFFF
+
+[2020]
+SubNumber=0x3
+ParameterName=Application data Input 32bit
+ObjectType=0x8
+
+[2020sub0]
+ParameterName=Number of entries
+ObjectType=0x7
+DataType=0x5
+AccessType=const
+DefaultValue=0x2
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[2020sub1]
+ParameterName=Application data Input 32bit #0
+ObjectType=0x7
+DataType=0x7
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[2020sub2]
+ParameterName=Application data Input 32bit #1
+ObjectType=0x7
+DataType=0x7
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[2100]
+SubNumber=0x9
+ParameterName=Application data Output 8bit
+ObjectType=0x8
+
+[2100sub0]
+ParameterName=Number of enties
+ObjectType=0x7
+DataType=0x5
+AccessType=const
+DefaultValue=0x8
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[2100sub1]
+ParameterName=Application data Output 8bit #0
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[2100sub2]
+ParameterName=Application data Output 8bit #1
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[2100sub3]
+ParameterName=Application data Output 8bit #2
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[2100sub4]
+ParameterName=Application data Output 8bit #3
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[2100sub5]
+ParameterName=Application data Output 8bit #4
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[2100sub6]
+ParameterName=Application data Output 8bit #5
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[2100sub7]
+ParameterName=Application data Output 8bit #6
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[2100sub8]
+ParameterName=Application data Output 8bit #7
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[2110]
+SubNumber=0x5
+ParameterName=Application data output 16bit
+ObjectType=0x8
+
+[2110sub0]
+ParameterName=Number of enties
+ObjectType=0x7
+DataType=0x5
+AccessType=const
+DefaultValue=0x04
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[2110sub1]
+ParameterName=Application data Output 16bit #0
+ObjectType=0x7
+DataType=0x6
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFFFF
+
+[2110sub2]
+ParameterName=Application data Output 16bit #1
+ObjectType=0x7
+DataType=0x6
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFFFF
+
+[2110sub3]
+ParameterName=Application data Output 16bit #2
+ObjectType=0x7
+DataType=0x6
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFFFF
+
+[2110sub4]
+ParameterName=Application data Output 16bit #3
+ObjectType=0x7
+DataType=0x6
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFFFF
+
+[2120]
+SubNumber=0x3
+ParameterName=Apllication data output 32bit
+ObjectType=0x8
+
+[2120sub0]
+ParameterName=Number of enties
+ObjectType=0x7
+DataType=0x5
+AccessType=const
+DefaultValue=0x02
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[2120sub1]
+ParameterName=Application data Output 32bit #0
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[2120sub2]
+ParameterName=Application data Output 32bit #1
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[A000]
+SubNumber=0x5
+ParameterName=Application data Input 8bit
+ObjectType=0x8
+
+[A000sub0]
+ParameterName=Number Of Entries
+ObjectType=0x7
+DataType=0x5
+AccessType=const
+DefaultValue=0x04
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[A000sub1]
+ParameterName=Application data Input 8bit #0
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[A000sub2]
+ParameterName=Application data Input 8bit #1
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[A000sub3]
+ParameterName=Application data Input 8bit #2
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[A000sub4]
+ParameterName=Application data Input 8bit #3
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[A480]
+SubNumber=0x5
+ParameterName=Application data Output 8bit
+ObjectType=0x8
+
+[A480sub0]
+ParameterName=Number of enties
+ObjectType=0x7
+DataType=0x5
+AccessType=const
+DefaultValue=0x4
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[A480sub1]
+ParameterName=Application data Output 8bit #0
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[A480sub2]
+ParameterName=Application data Output 8bit #1
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[A480sub3]
+ParameterName=Application data Output 8bit #2
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[A480sub4]
+ParameterName=Application data Output 8bit #3
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=1
+LowLimit=0x0
+HighLimit=0xFF
+
+[OptionalObjects]
+SupportedObjects=0x16
+1=0x1003
+2=0x1005
+3=0x1006
+4=0x1007
+5=0x1008
+6=0x1009
+7=0x100A
+8=0x100C
+9=0x100D
+10=0x1010
+11=0x1011
+12=0x1014
+13=0x1016
+14=0x1017
+15=0x1400
+16=0x1401
+17=0x1600
+18=0x1601
+19=0x1800
+20=0x1801
+21=0x1A00
+22=0x1A01
+
+[1003]
+SubNumber=0x5
+ParameterName=Pre-defined Error Field
+ObjectType=0x8
+
+[1003sub0]
+ParameterName=number of errors
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0x4
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1003sub1]
+ParameterName=standard error field
+ObjectType=0x7
+DataType=0x7
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1003sub2]
+ParameterName=standard error field
+ObjectType=0x7
+DataType=0x7
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1003sub3]
+ParameterName=standard error field
+ObjectType=0x7
+DataType=0x7
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1003sub4]
+ParameterName=standard error field
+ObjectType=0x7
+DataType=0x7
+AccessType=ro
+DefaultValue=0x0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1005]
+ParameterName=COB-ID SYNC
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x80
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1006]
+ParameterName=Communication cycle period
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x3E8
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1007]
+ParameterName=Sync Windows Length
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x3E8
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1008]
+ParameterName=Product Name
+ObjectType=0x7
+DataType=0x9
+AccessType=const
+DefaultValue=COP-AW
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1009]
+ParameterName=Hardware Version
+ObjectType=0x7
+DataType=0x9
+AccessType=const
+DefaultValue=V1.00
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[100A]
+ParameterName=Software Version
+ObjectType=0x7
+DataType=0x9
+AccessType=const
+DefaultValue=V0.8
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[100C]
+ParameterName=Guard Time
+ObjectType=0x7
+DataType=0x6
+AccessType=rw
+DefaultValue=0x3E8
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFF
+
+[100D]
+ParameterName=Life Time Factor
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0x64
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFF
+
+[1010]
+SubNumber=0x2
+ParameterName=Store Parameters
+ObjectType=0x9
+
+[1010sub0]
+ParameterName=largest supported Sub-Index
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=0x1
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1010sub1]
+ParameterName=save all parameters
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1011]
+SubNumber=0x2
+ParameterName=restore default parameters
+ObjectType=0x8
+
+[1011sub0]
+ParameterName=largest supported Sub-Index
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=0x1
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1011sub1]
+ParameterName=restore all default para.
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1014]
+ParameterName=COB-ID Emergency message
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x81
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1016]
+SubNumber=0x2
+ParameterName=Consumer heartbeat time
+ObjectType=0x8
+
+[1016sub0]
+ParameterName=Number Of Entries
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=0x1
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1016sub1]
+ParameterName=Consumer Heartbeat Time #1
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x64
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1017]
+ParameterName=Producer Heartbeat Time
+ObjectType=0x7
+DataType=0x6
+AccessType=rw
+DefaultValue=0x64
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1400]
+SubNumber=0x5
+ParameterName=RxPDO1 communication parameter
+ObjectType=0x9
+
+[1400sub0]
+ParameterName=largest subindex supported
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=0x5
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1400sub1]
+ParameterName=COB-ID used
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x201
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1400sub2]
+ParameterName=transmission type
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0xFE
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFF
+
+[1400sub3]
+ParameterName=inhibit time
+ObjectType=0x7
+DataType=0x6
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFF
+
+[1400sub5]
+ParameterName=Eventtimer
+ObjectType=0x7
+DataType=0x6
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFF
+
+[1401]
+SubNumber=0x5
+ParameterName=RxPDO2 communication parameter
+ObjectType=0x9
+
+[1401sub0]
+ParameterName=largest subindex supported
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=0x5
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1401sub1]
+ParameterName=COB-ID used
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x301
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1401sub2]
+ParameterName=transmission type
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0xFE
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFF
+
+[1401sub3]
+ParameterName=inhibit time
+ObjectType=0x7
+DataType=0x6
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFF
+
+[1401sub5]
+ParameterName=Eventtimer
+ObjectType=0x7
+DataType=0x6
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFF
+
+[1600]
+SubNumber=0x9
+ParameterName=RxPDO1 mapping parameter
+ObjectType=0x9
+
+[1600sub0]
+ParameterName=number of mapped objects
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0x8
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1600sub1]
+ParameterName=PDO mapping 1. app. object
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0xA4800108
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1600sub2]
+ParameterName=PDO mapping 2. app. object
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0xA4800208
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1600sub3]
+ParameterName=PDO mapping 3. app. object
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0xA4800308
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1600sub4]
+ParameterName=PDO mapping 4. app. object
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0xA4800408
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1600sub5]
+ParameterName=PDO mapping 5. app. object
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x21000508
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1600sub6]
+ParameterName=PDO mapping 6. app. object
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x21000608
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1600sub7]
+ParameterName=PDO mapping 7. app. object
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x21000708
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1600sub8]
+ParameterName=PDO mapping 8. app. object
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x21000808
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1601]
+SubNumber=0x3
+ParameterName=RxPDO2 mapping parameter
+ObjectType=0x9
+
+[1601sub0]
+ParameterName=number of mapped objects
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0x2
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1601sub1]
+ParameterName=PDO mapping 1. app. object
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x21100110
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1601sub2]
+ParameterName=PDO mapping 2. app. object
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x21100210
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1800]
+SubNumber=0x5
+ParameterName=TxPDO1 communication parameter
+ObjectType=0x9
+
+[1800sub0]
+ParameterName=largest subindex supported
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=0x5
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1800sub1]
+ParameterName=COB-ID used
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x181
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1800sub2]
+ParameterName=transmission type
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0xFE
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFF
+
+[1800sub3]
+ParameterName=inhibit time
+ObjectType=0x7
+DataType=0x6
+AccessType=rw
+DefaultValue=0x64
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFF
+
+[1800sub5]
+ParameterName=event timer
+ObjectType=0x7
+DataType=0x6
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFF
+
+[1801]
+SubNumber=0x5
+ParameterName=TxPDO2 communication parameter
+ObjectType=0x9
+
+[1801sub0]
+ParameterName=largest subindex supported
+ObjectType=0x7
+DataType=0x5
+AccessType=ro
+DefaultValue=0x5
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1801sub1]
+ParameterName=COB-ID used
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x281
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1801sub2]
+ParameterName=transmission type
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0xFE
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFF
+
+[1801sub3]
+ParameterName=inhibit time
+ObjectType=0x7
+DataType=0x6
+AccessType=rw
+DefaultValue=0x64
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFF
+
+[1801sub5]
+ParameterName=event timer
+ObjectType=0x7
+DataType=0x6
+AccessType=rw
+DefaultValue=0x0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFF
+
+[1A00]
+SubNumber=0x9
+ParameterName=TxPDO1 mapping parameter
+ObjectType=0x9
+
+[1A00sub0]
+ParameterName=number of mapped objects
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0x8
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1A00sub1]
+ParameterName=PDO mapping 1. app. object
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0xA0000108
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1A00sub2]
+ParameterName=PDO mapping 2. app. object
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0xA0000208
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1A00sub3]
+ParameterName=PDO mapping 3. app. object
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0xA0000308
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1A00sub4]
+ParameterName=PDO mapping 4. app. object
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0xA0000408
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1A00sub5]
+ParameterName=PDO mapping 5. app. object
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x20000508
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1A00sub6]
+ParameterName=PDO mapping 6. app. object
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x20000608
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1A00sub7]
+ParameterName=PDO mapping 7. app. object
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x20000708
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1A00sub8]
+ParameterName=PDO mapping 8. app. object
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x20000808
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1A01]
+SubNumber=0x3
+ParameterName=TxPDO2 mapping parameter
+ObjectType=0x9
+
+[1A01sub0]
+ParameterName=number of mapped objects
+ObjectType=0x7
+DataType=0x5
+AccessType=rw
+DefaultValue=0x2
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x0
+
+[1A01sub1]
+ParameterName=PDO mapping 1. app. object
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x20100110
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+
+[1A01sub2]
+ParameterName=PDO mapping 2. app. object
+ObjectType=0x7
+DataType=0x7
+AccessType=rw
+DefaultValue=0x20100210
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0xFFFFFFFF
+

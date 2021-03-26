@@ -1,0 +1,37 @@
+{
+  "name": "goahead", 
+  "version": "2.5.2", 
+  "description": "goahead 2.5", 
+  "category": "component", 
+  "distype": "sdist", 
+  "build_ref": "5c497182b2b87f4c15df05949ae6a9cab5b10fe8", 
+  "build_id": "54751", 
+  "repository": "http://192.168.23.62/aworks2/goahead", 
+  "engines": [
+    "axio-engine@1.1.0-a.70", 
+    "axbuilder.component@1.0.0", 
+    "package_manager.component@1.0.0"
+  ], 
+  "status": "stable", 
+  "src_filter": [
+    "+<*>", 
+    "-<cgi.c>", 
+    "-<sockGen.c>", 
+    "-<webrom.c>", 
+    "-<CE>", 
+    "-<ECOS>", 
+    "-<LINUX>", 
+    "-<LYNX>", 
+    "-<MACOSX>", 
+    "-<NW>", 
+    "-<QNX4>", 
+    "-<utils>", 
+    "-<VXWORKS>", 
+    "-<WIN>", 
+    "-<www>", 
+    "-<wwwdemo>"
+  ], 
+  "include_dirs": [
+    "./"
+  ]
+}

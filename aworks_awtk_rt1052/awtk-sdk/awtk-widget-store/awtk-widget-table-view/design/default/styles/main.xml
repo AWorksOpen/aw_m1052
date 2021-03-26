@@ -1,0 +1,10 @@
+<table_header>
+  <style name="default">
+    <normal bg_color="#dddddd" />
+  </style>
+</table_header>
+<table_view>
+  <style name="default">
+    <normal border_color="#dddddd" />
+  </style>
+</table_view>

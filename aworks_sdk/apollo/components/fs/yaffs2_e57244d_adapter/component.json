@@ -1,0 +1,41 @@
+{
+  "name": "aw_yaffs_adapter", 
+  "version": "1.0.2", 
+  "description": "yaffs2", 
+  "category": "component", 
+  "dependencies": {
+    "aw_mtd": {}, 
+    "yaffs": {
+      "version": "^2.0.0"
+    }, 
+    "aw_shell": {
+      "version": "^1.0.0"
+    }
+  }, 
+  "distype": "sdist", 
+  "build_ref": "102f4ac65a6b8e30c7da4fef2c55e0edd50aab75", 
+  "build_id": "57013", 
+  "repository": "http://192.168.23.62/aworks2/aw_yaffs_adapter", 
+  "engines": [
+    "axio-engine@1.1.0-a.70", 
+    "axbuilder.component@1.0.0", 
+    "package_manager.component@1.0.0"
+  ], 
+  "status": "stable", 
+  "insts": {
+    "aw_fat.service": {
+      "init_entry": "aw_yaffs_lib_init", 
+      "after": "aw_root_fs.service", 
+      "init_declares": "#include \"aw_yaffs_cfg.c\"", 
+      "wanted_by": "aw_task_level_init.target", 
+      "before": "aw_mount.service"
+    }
+  }, 
+  "topic": "System :: Filesystems", 
+  "src_dir": "source", 
+  "autoconf": "aw_lffs_autoconf.h", 
+  "include_dirs": [
+    "include", 
+    "config"
+  ]
+}

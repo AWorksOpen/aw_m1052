@@ -1,0 +1,14 @@
+﻿<number_label>
+  <style name="default" font_size="32">
+    <normal text_color="black" />
+  </style>
+
+  <style name="green" font_name="led" font_size="32">
+    <normal text_color="green" />
+  </style>
+  
+  <style name="grab_focus" font_size="32">
+    <normal text_color="black" /> 
+    <focused text_color="black" border_color="green"/>
+  </style>
+</number_label>

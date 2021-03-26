@@ -1,0 +1,10 @@
+<button>
+  <style name="pick">
+    <normal text_color="#222222"/>
+    <pressed text_color="#ffffff" bg_color="#1971dd" border_color="#1971dd"/>
+    <over text_color="#ffffff" bg_color="#338fff" border_color="#338fff"/>
+    <focused text_color="#444444" bg_color="#f4f4f4" border_color="#338fff" />
+    <disable text_color="gray"/>
+  </style>
+</button>
+

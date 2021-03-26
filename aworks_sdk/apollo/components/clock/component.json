@@ -1,0 +1,13 @@
+{
+  "name": "aw_clock", 
+  "version": "1.0.0", 
+  "description": "Clock Manager", 
+  "category": "component", 
+  "distype": "sdist", 
+  "engines": [
+    "axio-engine@1.1.0-a.75", 
+    "axbuilder.component@1.0.0", 
+    "package_manager.component@1.0.0"
+  ], 
+  "status": "stable"
+}

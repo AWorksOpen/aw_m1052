@@ -1,0 +1,64 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+from config_build_common import build_common_config
+from config_compoents import compoents_config
+
+NAME = 'aw_bsp'
+
+COMPILE_DEFINES = build_common_config.AW_CPPDEFINES
+
+# 代码
+SOURCE = [
+    'aw_bsp_assert.c',
+    'aw_bsp_startup.c',
+    'aw_bsp_ostimer.c',
+    'aw_bsp_system.c',
+    'aw_bsp_mem.c',
+    'aw_bsp_clock.c',
+    'xip/evkmimxrt1020_flexspi_nor_config.c',
+    #'xip/evkmimxrt1020_sdram_ini_dcd.c',
+    #'xip/fsl_flexspi_nor_boot.c',
+]
+
+# 添加针对不同编译器所写的代码
+COMPILER_DIR_STRING = build_common_config.AW_COMPILER_TOOLS + '/'
+SOURCE.append(Glob(COMPILER_DIR_STRING + '*.c'))
+SOURCE.append(Glob(COMPILER_DIR_STRING + '*.S'))
+SOURCE.append(Glob(COMPILER_DIR_STRING + '*.s'))
+
+COMPILER_DIR_STRING = 'xip/' + build_common_config.AW_COMPILER_TOOLS + '/'
+SOURCE.append(Glob(COMPILER_DIR_STRING + '*.c'))
+SOURCE.append(Glob(COMPILER_DIR_STRING + '*.S'))
+SOURCE.append(Glob(COMPILER_DIR_STRING + '*.s'))
+
+if build_common_config.AW_COMPILER_TOOLS == 'arm-none-eabi-gcc':
+    MEMCPY_OBJ = Object('arm-none-eabi-gcc/memcpy/memcpy-armv7m.S')
+    Install(build_common_config.AW_SDK_LIB_INSTALL_PATH, MEMCPY_OBJ)
+
+cur_build_path = Dir('.', False)
+org_build_path = str(cur_build_path.srcnode())
+
+crp_inc_path = os.path.join(org_build_path, '../cpu/include_notinsdk')
+crp_inc_path = os.path.realpath(crp_inc_path)
+
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE.append(os.path.join(build_common_config.AWORKS_ROOT, 'components/clock/include'))
+INCLUDE.append(crp_inc_path)
+INCLUDE.append('include')
+INCLUDE.append('xip')
+
+if build_common_config.CRP_ENABLE:
+    COMPILE_DEFINES.append('CRP_ENABLE=1')
+    INCLUDE.append(os.path.join(build_common_config.CRP_LIB_DIRS, 'include'))
+    print('CRP_ENABLE=1')
+
+if compoents_config.AWORKS_SLAB_EN:
+    COMPILE_DEFINES.append('AW_SYS_HEAP_USE_SLAB')
+    print('AW_SYS_HEAP_USE_SLAB')
+
+lib_file = Library(NAME, SOURCE, CPPPATH = INCLUDE, CPPDEFINES = COMPILE_DEFINES)
+
+Install(build_common_config.AW_SDK_INSTALL_PATH + '/include/bsp', Glob('*.h'))
+
+Return('lib_file')

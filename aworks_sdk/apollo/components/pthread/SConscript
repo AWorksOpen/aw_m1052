@@ -1,0 +1,25 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+from config_build_common import build_common_config
+
+env = DefaultEnvironment();
+
+#代码
+SOURCE = []
+SOURCE.append('source/pthread.c')
+SOURCE.append('source/pthread_cond.c')
+
+# 构建 pthread 库
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE += ['include']
+
+lib_file = StaticLibrary('pthread',SOURCE,CPPPATH = INCLUDE)
+
+cur_build_path = Dir('.',False);
+org_build_path = str(cur_build_path.srcnode())
+
+
+
+Return('lib_file')

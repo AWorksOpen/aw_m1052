@@ -1,0 +1,8 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+
+libs=SConscript(dirs='aw_zlib_adapter', name='SConscript')
+
+Return('libs')

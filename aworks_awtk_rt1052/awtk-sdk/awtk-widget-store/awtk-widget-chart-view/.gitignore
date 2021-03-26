@@ -1,0 +1,14 @@
+*.o
+*.a
+*.so
+*.swp
+*.pdb 
+*.ilk 
+*.idb
+*.obj
+*.exp
+.sconsign.dblite
+design/default/fonts/origin/*
+.vscode
+.vs
+*.os

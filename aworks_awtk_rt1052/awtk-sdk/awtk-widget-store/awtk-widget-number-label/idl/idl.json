@@ -1,0 +1,360 @@
+[
+  {
+    "params": [],
+    "annotation": {
+      "global": true
+    },
+    "desc": "注册数值文本控件。",
+    "name": "number_label_register",
+    "return": {
+      "type": "ret_t",
+      "desc": "返回RET_OK表示成功，否则表示失败。"
+    },
+    "type": "method",
+    "header": "src/number_label_register.h",
+    "level": 1
+  },
+  {
+    "params": [],
+    "annotation": {
+      "global": true
+    },
+    "desc": "获取支持的渲染模式。",
+    "name": "number_label_supported_render_mode",
+    "return": {
+      "type": "const char*",
+      "desc": "返回渲染模式。"
+    },
+    "type": "method",
+    "header": "src/number_label_register.h",
+    "level": 1
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "parent",
+            "desc": "父控件"
+          },
+          {
+            "type": "xy_t",
+            "name": "x",
+            "desc": "x坐标"
+          },
+          {
+            "type": "xy_t",
+            "name": "y",
+            "desc": "y坐标"
+          },
+          {
+            "type": "wh_t",
+            "name": "w",
+            "desc": "宽度"
+          },
+          {
+            "type": "wh_t",
+            "name": "h",
+            "desc": "高度"
+          }
+        ],
+        "annotation": {
+          "constructor": true,
+          "scriptable": true
+        },
+        "desc": "创建number_label对象",
+        "name": "number_label_create",
+        "return": {
+          "type": "widget_t*",
+          "desc": "对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "number_label对象。"
+          }
+        ],
+        "annotation": {
+          "cast": true,
+          "scriptable": true
+        },
+        "desc": "转换为number_label对象(供脚本语言使用)。",
+        "name": "number_label_cast",
+        "return": {
+          "type": "widget_t*",
+          "desc": "number_label对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "控件对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "format",
+            "desc": "格式字符串。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置格式字符串(用于将浮点数转换为字符串)。",
+        "name": "number_label_set_format",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "控件对象。"
+          },
+          {
+            "type": "double",
+            "name": "decimal_font_size_scale",
+            "desc": "小数部分字体大小与整数部分字体大小之比。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置小数部分字体大小与整数部分字体大小之比。",
+        "name": "number_label_set_decimal_font_size_scale",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "bool_t",
+            "name": "readonly",
+            "desc": "只读。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置控件是否为只读。",
+        "name": "number_label_set_readonly",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "bool_t",
+            "name": "loop",
+            "desc": "值是否循环。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置 值是否循环",
+        "name": "number_label_set_loop",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "double",
+            "name": "min",
+            "desc": "最小值。"
+          },
+          {
+            "type": "double",
+            "name": "max",
+            "desc": "最大值。"
+          },
+          {
+            "type": "double",
+            "name": "step",
+            "desc": "步长。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置取值范围和步长。",
+        "name": "number_label_set_limit",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "控件对象。"
+          },
+          {
+            "type": "double",
+            "name": "value",
+            "desc": "数值。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置数值。",
+        "name": "number_label_set_value",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "format",
+        "desc": "格式字符串。",
+        "type": "char*",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "decimal_font_size_scale",
+        "desc": "小数部分字体大小与整数部分字体大小之比。\n通常设置为0.5到1之间，让小数部分字体变小，用于强调整数部分。",
+        "type": "double",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "value",
+        "desc": "数值。",
+        "type": "double",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "readonly",
+        "desc": "编辑器是否为只读。",
+        "type": "bool_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "loop",
+        "desc": "值是否循环。用上下键修改时，到达最小值时是否跳到最大值，到达最大值时是否跳到最小值。",
+        "type": "bool_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "min",
+        "desc": "最小值。",
+        "type": "double",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "max",
+        "desc": "最大值。",
+        "type": "double",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "step",
+        "desc": "步长。\n用上下键修改时，一次增加和减少时的数值。",
+        "type": "double",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      }
+    ],
+    "header": "number_label/number_label.h",
+    "desc": "数值文本控件。\n\n用于显示数值的文本控件。\n\n可以通过指定属性 format 来改变小数的有效位数。\n可以通过指定属性 decimal\\_font\\_size\\_scale 来减小小数部分的字体大小，以强调整数部分的重要性。\n\nnumber\\_label\\_t是[widget\\_t](widget_t.md)的子类控件，widget\\_t的函数均适用于number\\_label\\_t控件。\n\n在xml中使用\"number\\_label\"标签创建数值文本控件。如：\n\n```xml\n<!-- ui -->\n<number_label x=\"c\" y=\"50\" w=\"100\" h=\"40\" value=\"-128\" format=\"%.4lf\" decimal_font_size_scale=\"0.5\"/>\n```\n\n在c代码中使用函数number\\_label\\_create创建数值文本控件。如：\n\n```c\nwidget_t* number_label = number_label_create(win, 10, 10, 128, 30);\n```\n\n可用通过style来设置控件的显示风格，如字体的大小和颜色等等。如：\n\n```xml\n<!-- style -->\n<number_label>\n<style name=\"default\" font_size=\"32\">\n<normal text_color=\"black\" />\n</style>\n</number_label>\n```",
+    "name": "number_label_t",
+    "parent": "widget_t",
+    "annotation": {
+      "scriptable": true,
+      "design": true,
+      "widget": true
+    },
+    "level": 2
+  }
+]

@@ -1,0 +1,29 @@
+{
+  "name": "lwip_14x", 
+  "version": "1.10401.4", 
+  "description": "LWIP TCP/IP Protocol Stack 1.4.x", 
+  "category": "component", 
+  "distype": "sdist", 
+  "build_ref": "a4eea63c532081280bad1e835369070365703dfe", 
+  "build_id": "56796", 
+  "repository": "http://192.168.23.62/aworks2/lwip", 
+  "engines": [
+    "axio-engine@1.1.0-a.70", 
+    "axbuilder.component@1.0.0", 
+    "package_manager.component@1.0.0"
+  ], 
+  "status": "stable", 
+  "src_dir": "src", 
+  "src_filter": [
+    "+<*>", 
+    "-<core/ipv6>", 
+    "-<apps>", 
+    "+<apps/lwiperf/lwiperf.c>"
+  ], 
+  "include_dirs": [
+    "src/include", 
+    "src/include/ipv4", 
+    "src/netif", 
+    "src/netif/ppp"
+  ]
+}

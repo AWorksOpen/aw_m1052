@@ -1,0 +1,16 @@
+{
+  "name": "fatfs", 
+  "version": "0.0.15", 
+  "description": "FATFS", 
+  "category": "component", 
+  "distype": "sdist", 
+  "build_ref": "3085823f19c74aa26e8a53fbee26c8a6cdae6c1d", 
+  "build_id": "54805", 
+  "repository": "http://192.168.23.62/aworks2/fatfs", 
+  "engines": [
+    "axio-engine@1.1.0-a.70", 
+    "axbuilder.component@1.0.0", 
+    "package_manager.component@1.0.0"
+  ], 
+  "status": "pre-alpha"
+}

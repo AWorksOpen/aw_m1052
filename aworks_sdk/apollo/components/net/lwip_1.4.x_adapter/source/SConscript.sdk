@@ -1,0 +1,94 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+from config_build_common import build_common_config 
+from config_lwip    import aw_lwip_config
+
+env = DefaultEnvironment();
+
+cur_build_path = Dir('.',False);
+org_build_path = str(cur_build_path.srcnode())
+
+
+#构建LWIP路径
+lwip_src_path = os.path.join(build_common_config.AWORKS_ROOT,'3rdparty','net','lwip_1.4.x')
+lwip_rel_dir =  cal_relative_dir(org_build_path,lwip_src_path);
+
+#lwip_1.4.x源码
+SOURCE =  [lwip_rel_dir + 'src/api/api_lib.c']
+SOURCE += [lwip_rel_dir + 'src/api/api_msg.c']
+SOURCE += [lwip_rel_dir + 'src/api/err.c']
+SOURCE += [lwip_rel_dir + 'src/api/netbuf.c']
+SOURCE += [lwip_rel_dir + 'src/api/netdb.c']
+SOURCE += [lwip_rel_dir + 'src/api/netifapi.c']
+SOURCE += [lwip_rel_dir + 'src/api/sockets.c']
+SOURCE += [lwip_rel_dir + 'src/api/tcpip.c']
+
+SOURCE += [lwip_rel_dir + 'src/core/def.c']
+SOURCE += [lwip_rel_dir + 'src/core/dhcp.c']
+SOURCE += [lwip_rel_dir + 'src/core/dns.c']
+SOURCE += [lwip_rel_dir + 'src/core/init.c']
+SOURCE += [lwip_rel_dir + 'src/core/mem.c']
+SOURCE += [lwip_rel_dir + 'src/core/memp.c']
+SOURCE += [lwip_rel_dir + 'src/core/netif.c']
+SOURCE += [lwip_rel_dir + 'src/core/pbuf.c']
+SOURCE += [lwip_rel_dir + 'src/core/raw.c']
+SOURCE += [lwip_rel_dir + 'src/core/stats.c']
+SOURCE += [lwip_rel_dir + 'src/core/sys.c']
+SOURCE += [lwip_rel_dir + 'src/core/tcp.c']
+SOURCE += [lwip_rel_dir + 'src/core/tcp_in.c']
+SOURCE += [lwip_rel_dir + 'src/core/tcp_out.c']
+SOURCE += [lwip_rel_dir + 'src/core/timers.c']
+SOURCE += [lwip_rel_dir + 'src/core/udp.c']
+
+SOURCE += [lwip_rel_dir + 'src/core/ipv4/autoip.c']
+SOURCE += [lwip_rel_dir + 'src/core/ipv4/icmp.c']
+SOURCE += [lwip_rel_dir + 'src/core/ipv4/igmp.c']
+SOURCE += [lwip_rel_dir + 'src/core/ipv4/inet.c']
+SOURCE += [lwip_rel_dir + 'src/core/ipv4/inet_chksum.c']
+SOURCE += [lwip_rel_dir + 'src/core/ipv4/ip.c']
+SOURCE += [lwip_rel_dir + 'src/core/ipv4/ip_addr.c']
+SOURCE += [lwip_rel_dir + 'src/core/ipv4/ip_frag.c']
+
+SOURCE += [lwip_rel_dir + 'src/core/snmp/asn1_dec.c']
+SOURCE += [lwip_rel_dir + 'src/core/snmp/asn1_enc.c']
+SOURCE += [lwip_rel_dir + 'src/core/snmp/mib_structs.c']
+SOURCE += [lwip_rel_dir + 'src/core/snmp/mib2.c']
+SOURCE += [lwip_rel_dir + 'src/core/snmp/mib2_trans_rs232.c']
+SOURCE += [lwip_rel_dir + 'src/core/snmp/msg_in.c']
+SOURCE += [lwip_rel_dir + 'src/core/snmp/msg_out.c']
+
+SOURCE += [lwip_rel_dir + 'src/netif/etharp.c']
+SOURCE += [lwip_rel_dir + 'src/netif/ethernetif.c']
+SOURCE += [lwip_rel_dir + 'src/netif/slipif.c']
+SOURCE += [lwip_rel_dir + 'src/netif/ppp/auth.c']
+SOURCE += [lwip_rel_dir + 'src/netif/ppp/chap.c']
+SOURCE += [lwip_rel_dir + 'src/netif/ppp/chpms.c']
+SOURCE += [lwip_rel_dir + 'src/netif/ppp/fsm.c']
+SOURCE += [lwip_rel_dir + 'src/netif/ppp/ipcp.c']
+SOURCE += [lwip_rel_dir + 'src/netif/ppp/lcp.c']
+SOURCE += [lwip_rel_dir + 'src/netif/ppp/magic.c']
+SOURCE += [lwip_rel_dir + 'src/netif/ppp/md5.c']
+SOURCE += [lwip_rel_dir + 'src/netif/ppp/pap.c']
+SOURCE += [lwip_rel_dir + 'src/netif/ppp/ppp.c']
+SOURCE += [lwip_rel_dir + 'src/netif/ppp/ppp_oe.c']
+SOURCE += [lwip_rel_dir + 'src/netif/ppp/randm.c']
+SOURCE += [lwip_rel_dir + 'src/netif/ppp/vj.c']
+
+#lwip_1.4.x适配源码
+SOURCE += ['./net_init.c']
+SOURCE += ['./arch/sys_arch.c']
+SOURCE += ['./ppp/sio_mgn.c']
+SOURCE += ['./ppp/sio.c']
+
+# aw_lwip_1.4.x include
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE += aw_lwip_config.LWIP_INCLUDE
+
+lib_file = Library('aw_lwip_1_4_x_adapter',SOURCE,CPPPATH = INCLUDE)
+
+Return('lib_file');
+
+
+

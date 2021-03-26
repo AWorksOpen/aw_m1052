@@ -1,0 +1,46 @@
+{
+  "name": "aw_shell", 
+  "version": "1.0.0", 
+  "description": "AWorks Simple Shell Component", 
+  "category": "component", 
+  "dependencies": {
+    "aw_standard_io": {}
+  }, 
+  "distype": "sdist", 
+  "engines": [
+    "axio-engine@1.1.0-a.75", 
+    "axbuilder.component@1.0.0", 
+    "package_manager.component@1.0.0"
+  ], 
+  "status": "stable", 
+  "insts": {
+    "aw_shell_serial.service": {
+      "init_entry": "aw_serial_shell_cfg", 
+      "after": "awbl_dev_init2.service", 
+      "init_declares": [
+        "#include \"aw_shell_serial_cfg.c\""
+      ], 
+      "wanted_by": "aw_task_level_init.target", 
+      "before": "awbl_dev_connect.service"
+    }, 
+    "aw_shell_rtt.service": {
+      "init_entry": "aw_shell_segger_rtt_cfg", 
+      "kconf_expr": "AW_SHELL_RTT", 
+      "after": "awbl_dev_init2.service", 
+      "init_declares": [
+        "#include \"aw_shell_segger_rtt_cfg.h\""
+      ], 
+      "wanted_by": "aw_task_level_init.target", 
+      "before": "awbl_dev_connect.service"
+    }
+  }, 
+  "autoconf": "aw_shell_autoconf.h", 
+  "src_filter": [
+    "+<*>"
+  ], 
+  "include_dirs": [
+    "./config", 
+    "./include", 
+    "./config/include"
+  ]
+}

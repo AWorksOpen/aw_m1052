@@ -1,0 +1,25 @@
+LIBRARY   table_view
+EXPORTS
+    table_view_register
+    table_view_supported_render_mode
+    table_client_create
+    table_client_cast
+    table_client_set_row_height
+    table_client_set_rows
+    table_client_set_yoffset
+    table_client_set_yslidable
+    table_client_set_yspeed_scale
+    table_client_set_on_load_data
+    table_client_set_on_create_row
+    table_client_get_virtual_h
+    table_client_scroll_to_row
+    table_client_scroll_to_yoffset
+    table_client_ensure_children
+    table_client_reload
+    table_header_create
+    table_header_cast
+    table_row_create
+    table_row_cast
+    table_row_set_index
+    table_view_create
+    table_view_cast

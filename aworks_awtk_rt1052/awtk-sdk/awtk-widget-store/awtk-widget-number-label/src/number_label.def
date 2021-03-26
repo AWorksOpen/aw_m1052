@@ -1,0 +1,12 @@
+LIBRARY   number_label
+EXPORTS
+    number_label_register
+    number_label_supported_render_mode
+    number_label_create
+    number_label_cast
+    number_label_set_format
+    number_label_set_decimal_font_size_scale
+    number_label_set_readonly
+    number_label_set_loop
+    number_label_set_limit
+    number_label_set_value

@@ -1,0 +1,6 @@
+<qr>
+  <style name="default" >
+    <normal fg_color="black" bg_color="white"/>
+    <disable fg_color="gray" bg_color="#f0f0f0"/>
+  </style>
+</qr>

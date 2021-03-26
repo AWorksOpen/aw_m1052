@@ -1,0 +1,20 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import types
+from config_compoents import compoents_config
+
+
+libs = []
+
+if get_config_val(compoents_config, 'AWBL_DRIVER_WIFI_CYW43362', False) is True:
+    SConscript_and_add_return_library('cyw43362/SConscript', libs)
+elif get_config_val(compoents_config, 'AWBL_DRIVER_WIFI_CYW43455', False) is True:
+    SConscript_and_add_return_library('cyw43455/SConscript', libs)
+elif get_config_val(compoents_config, 'AWBL_DRIVER_WIFI_CYW43438', False) is True:
+    SConscript_and_add_return_library('cyw43438/SConscript', libs)
+
+
+if 0 == len(libs):
+    libs = None
+Return('libs')

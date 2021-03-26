@@ -1,0 +1,36 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+from config_build_common import     build_common_config 
+
+all_lib_files = []
+
+lib_files = SConscript('imxrt10xx_common/board/imxrt105x/bsp/SConscript')
+if None != lib_files:
+    all_lib_files += lib_files
+
+lib_files = SConscript('imxrt10xx_common/board/imxrt105x/cpu/SConscript')
+if None != lib_files:
+    all_lib_files += lib_files
+
+cur_build_path = Dir('.',False)
+org_build_path = str(cur_build_path.srcnode())
+env = DefaultEnvironment();
+env = env.Clone();
+# 如果存在libstackoverflowcheck的源码，则执行其编译脚本
+overflow_check_source_path = os.path.join(org_build_path,'libstackoverflowcheck/awbl_stack_overflow.c');
+if os.path.isfile(overflow_check_source_path) :
+    SConscript_file_path = 'libstackoverflowcheck/SConscript';
+    overflow_lib_file = SConscript(SConscript_file_path);
+else :
+    overflow_lib_file_name = env['LIBPREFIX'] + 'awbl_stack_overflow' + env['LIBSUFFIX']
+    overflow_lib_file_path = os.path.join(build_common_config.BUILT_LIBS_SEARCH_PATH,overflow_lib_file_name);
+    overflow_lib_file = [File(overflow_lib_file_path)];
+
+all_lib_files.extend(overflow_lib_file);
+
+# 返回所有的lib文件
+if 0 == len(all_lib_files):
+    all_lib_files = None
+Return('all_lib_files')

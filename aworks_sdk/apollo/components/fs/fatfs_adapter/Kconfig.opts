@@ -1,0 +1,132 @@
+
+config AW_CFG_FATFS_FILES
+    int "Files"
+    default 1
+
+config AW_CFG_FATFS_VOLUMES
+    int "Volumes"
+    default 1
+
+config AW_CFG_FATFS_BLOCK_SIZE
+    int "Block Size"
+    default 512
+
+config FF_FS_READONLY
+    bool "FS Readonly"
+    default n
+    help
+      This option switches read-only configuration. (0:Read/Write or 1:Read-only)
+      Read-only configuration removes writing API functions, f_write(), f_sync(),
+      f_unlink(), f_mkdir(), f_chmod(), f_rename(), f_truncate(), f_getfree()
+      and optional writing functions as well.
+
+config FF_LFN_UNICODE
+    bool "LFN Unicode"
+    default n
+    help
+     This option switches character encoding on the API, 0:ANSI/OEM or 1:UTF-16,
+     when LFN is enabled. Also behavior of string I/O functions will be affected by
+     this option. When LFN is not enabled, this option has no effect.
+
+config FF_MULTI_PARTITION
+    bool "Muiti Partition"
+    default n
+    help
+      This option switches support for multiple volumes on the physical drive.
+      By default (0), each logical drive number is bound to the same physical drive
+      number and only an FAT volume found on the physical drive will be mounted.
+      When this function is enabled (1), each logical drive number can be bound to
+      arbitrary physical drive and partition listed in the VolToPart[]. Also f_fdisk()
+      funciton will be available.
+
+config FF_FS_EXFAT
+    bool "FS exFAT"
+    default y
+    help
+      This option switches support for exFAT filesystem. (0:Disable or 1:Enable)
+      When enable exFAT, also LFN needs to be enabled.
+      Note that enabling exFAT discards ANSI C (C89) compatibility.
+
+config FF_CODE_PAGE
+    int "Code Page"
+    range 0 950
+    default 936 
+    help
+      This option specifies the OEM code page to be used on the target system.
+      Incorrect code page setting can cause a file open failure.
+      437 - U.S.
+      720 - Arabic
+      737 - Greek
+      771 - KBL
+      775 - Baltic
+      850 - Latin 1
+      852 - Latin 2
+      855 - Cyrillic
+      857 - Turkish
+      860 - Portuguese
+      861 - Icelandic
+      862 - Hebrew
+      863 - Canadian French
+      864 - Arabic
+      865 - Nordic
+      866 - Russian
+      869 - Greek 2
+      932 - Japanese (DBCS)
+      936 - Simplified Chinese (DBCS)
+      949 - Korean (DBCS)
+      950 - Traditional Chinese (DBCS)
+        0 - Include all code pages above and configured by f_setcp()
+
+
+config FF_USE_LFN
+    int "Use LFN"
+    range 0 3
+    default 3
+    help
+      The "Use LFN" switches the support for LFN (long file name).
+       0: Disable LFN. FF_MAX_LFN has no effect.
+       1: Enable LFN with static working buffer on the BSS. Always NOT thread-safe.
+       2: Enable LFN with dynamic working buffer on the STACK.
+       3: Enable LFN with dynamic working buffer on the HEAP.
+
+      To enable the LFN, Unicode handling functions (option/unicode.c) must be added
+      to the project. The working buffer occupies (FF_MAX_LFN + 1) * 2 bytes and
+      additional 608 bytes at exFAT enabled. FF_MAX_LFN can be in range from 12 to 255.
+      It should be set 255 to support full featured LFN operations.
+      When use stack for the working buffer, take care on stack overflow. When use heap
+      memory for the working buffer, memory management functions, ff_memalloc() and
+      ff_memfree(), must be added to the project.
+
+config FF_VOLUMES
+    int "Volumes Number"
+    range 1 10
+    default 10
+    help
+      Number of volumes (logical drives) to be used. (1-10)
+
+config FF_MAX_SS
+    int "SS Max"
+    range 512 4096
+    default 4096
+    help   
+      Only  512,1024,2048,4096 can be writed.
+      This set of options configures the range of sector size to be supported. (512,
+      1024, 2048 or 4096) Always set both 512 for most systems, generic memory card and
+      harddisk. But a larger value may be required for on-board flash memory and some
+      type of optical media. When "SS Max" is larger than FF_MIN_SS, FatFs is configured
+      for variable sector size mode and disk_ioctl() function needs to implement
+      GET_SECTOR_SIZE command..
+
+config FF_FS_LOCK
+    int "FS Lock"
+    default 10
+    help
+      The option "FS Lock" switches file lock function to control duplicated file open
+      and illegal operation to open objects. This option must be 0 when FF_FS_READONLY
+      is 1.
+      0:  Disable file lock function. To avoid volume corruption, application program
+          should avoid illegal open, remove and rename to the open objects.
+      >0: Enable file lock function. The value defines how many files/sub-directories
+          can be opened simultaneously under file lock control. Note that the file
+          lock control is independent of re-entrancy.  
+

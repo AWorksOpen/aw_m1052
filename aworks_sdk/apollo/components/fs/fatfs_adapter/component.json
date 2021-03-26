@@ -1,0 +1,37 @@
+{
+  "name": "aw_fatfs_adapter", 
+  "version": "1.0.6", 
+  "description": "fatfs", 
+  "category": "component", 
+  "dependencies": {
+    "fatfs": {}, 
+    "aw_shell": {}
+  }, 
+  "distype": "sdist", 
+  "build_ref": "ca41030363908bde4e92de5d1694f8c5a4727168", 
+  "build_id": "66447", 
+  "repository": "http://192.168.23.62/aworks2/aw_fatfs_adapter", 
+  "engines": [
+    "axio-engine@1.1.0-a.70", 
+    "axbuilder.component@1.0.0", 
+    "package_manager.component@1.0.0"
+  ], 
+  "status": "stable", 
+  "insts": {
+    "aw_fat.service": {
+      "init_entry": "aw_fatfs_lib_init", 
+      "after": "aw_root_fs.service", 
+      "init_declares": "#include \"aw_fatfs_cfg.c\"", 
+      "wanted_by": "aw_task_level_init.target", 
+      "before": "aw_mount.service"
+    }
+  }, 
+  "topic": "System :: Filesystems", 
+  "src_dir": "source", 
+  "autoconf": "aw_fatfs_autoconf.h", 
+  "provided_interfaces": "fatfs_adapter_port", 
+  "include_dirs": [
+    "include", 
+    "config"
+  ]
+}

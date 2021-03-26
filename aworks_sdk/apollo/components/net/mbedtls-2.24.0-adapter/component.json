@@ -1,0 +1,25 @@
+{
+  "name": "aw_mbedtls_adapter", 
+  "version": "1.0.3", 
+  "description": "mbedtls", 
+  "category": "component", 
+  "dependencies": {
+    "mbedtls": {}
+  }, 
+  "distype": "sdist", 
+  "build_ref": "d5dc408a02d300651cdfe747da710362b3ed7876", 
+  "build_id": "70062", 
+  "repository": "http://192.168.23.62/aworks-team/aw_mbedtls_adapter", 
+  "engines": [
+    "axio-engine@1.1.0-a.78", 
+    "axbuilder.component@1.0.0", 
+    "package_manager.component@1.0.0"
+  ], 
+  "status": "stable", 
+  "src_filter": [
+    "+<*>"
+  ], 
+  "include_dirs": [
+    "./include"
+  ]
+}

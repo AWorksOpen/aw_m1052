@@ -1,0 +1,10 @@
+<window >
+  <mask_view x="c" y="m" w="120" h="96" fg_interval_time="1000" bg_interval_time="16" >
+    <mask_view_item x="0" y="0" w="100%" h="100%" mask_view="true">
+      <image_value x="0" y="0"  w="100%" h="100%" value="10" min="0" max="99" format="%02d" image="num_" animation="value(from=10, to=99, yoyo_times=0, duration=300000, easing=linear)"/>
+    </mask_view_item>
+    <mask_view_item x="0" y="0" w="100%" h="100%" mask_view="false">
+      <canvas x="0" y="0" w="100%" h="100%" style:bg_color="black" />
+    </mask_view_item>
+  </mask_view>
+</window>

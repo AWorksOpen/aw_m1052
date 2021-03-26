@@ -1,0 +1,20 @@
+{
+  "name": "aw_lua_adapter", 
+  "version": "1.0.2", 
+  "description": "LUA", 
+  "category": "component", 
+  "dependencies": {
+    "lua": {}
+  }, 
+  "distype": "sdist", 
+  "build_ref": "c56c3393e182164db065211359ba24c9e7a590f1", 
+  "build_id": "65362", 
+  "repository": "http://192.168.23.62/aworks2/aw_lua_adapter", 
+  "engines": [
+    "axio-engine@1.1.0-a.70", 
+    "axbuilder.component@1.0.0", 
+    "package_manager.component@1.0.0"
+  ], 
+  "status": "stable", 
+  "topic": "System::Component::MISC::ScriptLanguages"
+}

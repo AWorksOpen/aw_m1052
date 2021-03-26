@@ -1,0 +1,24 @@
+{
+  "name": "aw_zlib_adapter", 
+  "version": "1.0.2", 
+  "description": "Zlib", 
+  "category": "component", 
+  "dependencies": {
+    "zlib": {}
+  }, 
+  "distype": "sdist", 
+  "build_ref": "0517020da7a05ba6f23fd0467bea12b64dd11296", 
+  "build_id": "59287", 
+  "repository": "http://192.168.23.62/aworks2/aw_zlib_adapter", 
+  "engines": [
+    "axio-engine@1.1.0-a.76", 
+    "axbuilder.component@1.0.0", 
+    "package_manager.component@1.0.0"
+  ], 
+  "status": "stable", 
+  "topic": "System::Algorithms", 
+  "src_dir": "source", 
+  "include_dirs": [
+    "include"
+  ]
+}

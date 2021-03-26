@@ -1,0 +1,171 @@
+# Copyright (c) 2001-present Guangzhou ZHIYUAN Electronics Co., Ltd..
+# All rights reserved.
+
+menuconfig RTK
+    bool "RTK real-time kernel support"
+    select AW_VDEBUG
+    default n
+
+if RTK && AW_IMG_PRJ_BUILD
+menu "Feature Opts"
+    config RTK_SEMC_EN
+        bool "SEMC"
+        default n
+
+    config RTK_SEMB_EN
+        bool "SEMB"
+        default n
+
+    config MUTEX_EN
+        bool "MUTEX"
+        default n
+
+    config MSGQ_EN
+        bool "MSGQ"
+        default n
+
+#    config SYSTICK_TASK_EN 
+#        bool "Systick Task"
+#        default 0
+
+    config OBJECT_CREATE_EN
+        bool "Dynamic Object Create"
+        default n
+endmenu
+
+menu "Task Opts"
+    config SYSTICK_TASK_STACK_SIZE 
+        int "Systick Task Stack Size"
+        range 64 4086
+        default 2048
+    
+    config IDLE_TASK_STACK_SIZE
+        int "Idle Task Stack Size"
+        range 64 4086
+        default 2048
+
+    config RESERVED_PRIORITY
+        int "reserved priorities counts"
+        default 8
+        range 0 128
+        libsafe
+
+    config TASK_PRIORITY_SET_ENABLE
+        bool "Task Priority Set"
+        default n
+
+    config TASK_TERMINATE_ENABLE
+        bool "Task Terminate Set"
+        default n
+
+    config TASK_JOIN_ENABLE 
+        bool "Task Join"
+        default n	
+    
+    config TICK_DOWN_COUNTER_ENABLE
+        bool "Task Down Counter"
+        default n
+endmenu
+	
+
+menu  "Priority Count Opts"
+    config REALTIME_PRIORITY_COUNT
+        int "Realtime Priority Count"
+        default 2
+        
+    config SYS_PRIORITY_COUNT 
+        int "System Priority Count"
+        default 8
+        
+    config USR_PRIORITY_COUNT 
+        int "User Priority Count"
+        default 20
+
+    config SYS_LOW_PRIORITY_COUNT 
+        int "System Low Priority Count"
+        default 2
+endmenu
+
+menu "Other Opts"
+
+    config DEAD_LOCK_DETECT_ENABLE
+        bool "Dead Lock Check"
+        default n
+
+#    config DEAD_LOCK_SHOW_EN
+#        bool "Dead Lock Show"
+#        default n
+
+    config KERNEL_ARG_CHECK_EN
+        bool "Kernel Arguments Check"
+        default n
+
+    config WAIT_QUEUE_PEND_CONST_TIME
+        int "Wait Queue Pend Const Time"
+        default 0
+
+#    config NEWLIB_REENT_ENABLE
+#        bool "Newlib Reent"
+#        default n
+
+#    config PERFORMANCE_STATISTIC_EN
+#        bool "Performance Statistic"
+#        default n	
+
+#    config USER_MODE_EN
+#        bool "User Mode"
+#        default n		
+
+#    config CRITICAL_HOOK
+#        bool "Critical Hook"
+#        default n		
+
+#    config SCHEDULE_HOOK
+#        bool "Schedule Hook"
+#        default n	
+
+#    config ISR_HOOK
+#        bool "ISR Hook"
+#        default n	
+        
+#    config CPU_IDLE_STATISTIC
+#        bool "CPU IDLE Statistic"
+#        default n
+
+#    config CFG_TRACE_EN
+#        bool "Trace"
+#        default n	
+        
+#    config CFG_TRACE_CONTROL_EN
+#        bool "Trace Control"
+#        default n
+
+    config GDB_JLINK_RTOS_PLUGIN_EN
+        bool "GBD JLink RTOS Plugin"
+        default n
+        
+    config ARMV7M_NVIC_PRIO_BITS
+        int "ARMv7-m NVIC Priority Bits"
+        default 4
+
+    config ARMV7M_CRITICAL_USE_BASEPRI
+        bool "ARMv7-m Critical Use Base Priority"
+        default y
+
+    config ARMV7M_CRITICAL_BASEPRI_PRIO
+        int "ARMv7-m Critical Base Priority"
+        default 4	
+
+    config ARMV8M_NVIC_PRIO_BITS
+        int "ARMv8-m NVIC Priority Bits"
+        default 3
+
+    config ARMV8M_CRITICAL_USE_BASEPRI
+        bool "ARMv8-m Critical Use Base Priority"
+        default n
+
+    config ARMV8M_CRITICAL_BASEPRI_PRIO
+        int "ARMv8-m Critical Base Priority"
+        default 3	
+endmenu
+endif # RTK && AW_IMG_PRJ_BUILD

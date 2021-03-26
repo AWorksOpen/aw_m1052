@@ -1,0 +1,7 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+libs=SConscript(dirs='aw_micropython_1.12_adapter', name='SConscript')
+
+Return('libs')
+

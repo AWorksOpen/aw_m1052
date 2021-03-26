@@ -1,0 +1,28 @@
+<window theme="main" >
+  <table_view x="10" y="10" w="-20" h="-80">
+    <table_header x="0"  y="0" w="-12" h="30" name="title" children_layout="default(r=1,c=0,s=5,m=5)">
+      <label w="20%" text="Name" />
+      <label w="20%" text="Color"/>
+      <label w="40%" text="Value" />
+      <label w="20%" text="Action" />
+    </table_header>
+
+    <table_client name="table_client" x="0"  y="30" w="-12" h="-30" row_height="40">
+      <table_row children_layout="default(r=1,c=0,s=5,m=5)">
+        <label name="name"  w="20%" h="100%" text="name" />
+        <combo_box name="color" readonly="true" w="20%" h="80%" options="red;green;blue"/>
+        <slider name="value" w="40%" h="80%" />
+        <button name="remove" w="20%" h="80%" text="Remove" />
+      </table_row>
+    </table_client>
+    <scroll_bar_d name="vbar" x="right" y="0" w="12" h="100%" value="0"/>
+  </table_view>
+  <view x="10" y="b:10" w="-20" h="40" children_layout="default(r=1,c=6,s=5,m=5)">
+    <button name="0" text="0" />
+    <button name="10" text="10" />
+    <button name="100" text="100" />
+    <button name="10000000" text="10000000" />
+    <button name="50000000" text="50000000" />
+    <button name="quit" text="Quit" />
+  </view>
+</window>

@@ -1,0 +1,9 @@
+JLinkGDBServerCL.exe -device Cortex-M7 -if SWD  -endian little -speed 0 -rtos rtk_jlink_gdb_rtosplugin_armv7m.dll
+
+arm-none-eabi-gdb --command=rt1050_sdram.gdb Debug\img_rt1050_debug.elf
+
+gcc -O3 -shared RTOSPlugin_rtk_armv7m.c -o rtk_jlink_gdb_rtosplugin_armv7m.dll
+
+set path=C:\Program Files (x86)\SEGGER\JLink_V614a;%path%
+
+JLinkGDBServerCL.exe -device MCIMX6G2 -if JTAG  -endian little -speed 1000 -rtos rtk_jlink_gdb_rtosplugin_armv7.dll

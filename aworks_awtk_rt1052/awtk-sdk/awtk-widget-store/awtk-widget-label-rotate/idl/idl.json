@@ -1,0 +1,179 @@
+[
+  {
+    "params": [],
+    "annotation": {
+      "global": true
+    },
+    "desc": "注册控件。",
+    "name": "label_rotate_register",
+    "return": {
+      "type": "ret_t",
+      "desc": "返回RET_OK表示成功，否则表示失败。"
+    },
+    "type": "method",
+    "header": "src/label_rotate_register.h",
+    "level": 1
+  },
+  {
+    "params": [],
+    "annotation": {
+      "global": true
+    },
+    "desc": "获取支持的渲染模式。",
+    "name": "label_rotate_supported_render_mode",
+    "return": {
+      "type": "const char*",
+      "desc": "返回渲染模式。"
+    },
+    "type": "method",
+    "header": "src/label_rotate_register.h",
+    "level": 1
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "parent",
+            "desc": "父控件"
+          },
+          {
+            "type": "xy_t",
+            "name": "x",
+            "desc": "x坐标"
+          },
+          {
+            "type": "xy_t",
+            "name": "y",
+            "desc": "y坐标"
+          },
+          {
+            "type": "wh_t",
+            "name": "w",
+            "desc": "宽度"
+          },
+          {
+            "type": "wh_t",
+            "name": "h",
+            "desc": "高度"
+          }
+        ],
+        "annotation": {
+          "constructor": true,
+          "scriptable": true
+        },
+        "desc": "创建label_rotate对象",
+        "name": "label_rotate_create",
+        "return": {
+          "type": "widget_t*",
+          "desc": "对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "控件对象。"
+          },
+          {
+            "type": "int32_t",
+            "name": "length",
+            "desc": "最大可显示字符个数。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置显示字符的个数(小余0时全部显示)。。（该功能暂时没有效果）",
+        "name": "label_rotate_set_length",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "控件对象。"
+          },
+          {
+            "type": "label_rotate_orientation_t",
+            "name": "orientation",
+            "desc": "旋转方向。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置文本选择方向。",
+        "name": "label_rotate_set_orientation",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "label_rotate对象。"
+          }
+        ],
+        "annotation": {
+          "cast": true,
+          "scriptable": true
+        },
+        "desc": "转换为label_rotate对象(供脚本语言使用)。",
+        "name": "label_rotate_cast",
+        "return": {
+          "type": "widget_t*",
+          "desc": "label_rotate对象。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "length",
+        "desc": "该功能暂时没有效果\n显示字符的个数(小余0时全部显示)。\n主要用于动态改变显示字符的个数，来实现类似[拨号中...]的动画效果。",
+        "type": "int32_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "orientation",
+        "desc": "用于文本选择方向，可选方向有 0、90、180、270。",
+        "type": "label_rotate_orientation_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      }
+    ],
+    "header": "label_rotate/label_rotate.h",
+    "desc": "可旋转的文本控件，仅可显示一行文本。\n\n在xml中使用\"label_\\rotate\"标签创建文本控件。如：\n\n```xml\n<!-- ui -->\n<label_rotate text=\"label_rotate\"/>\n```\n\n在c代码中使用函数label_\\rotate\\_create创建文本控件。如：\n\n```c\nwidget_t* label_rotate = label_rotate_create(win, 10, 10, 128, 30);\nwidget_set_text(label_rotate, L\"hello awtk!\");\n```\n\n> 创建之后，需要用widget\\_set\\_text或widget\\_set\\_text\\_utf8设置文本内容。\n\n可用通过style来设置控件的显示风格，如字体的大小和颜色等等。如：\n\n```xml\n<!-- style -->\n<label_rotate>\n<style name=\"default\">\n<normal text_color=\"#444444\"/>\n<disable text_color=\"#44444466\"/>\n</style>\n</label_rotate>\n```",
+    "name": "label_rotate_t",
+    "parent": "widget_t",
+    "annotation": {
+      "scriptable": true,
+      "design": true,
+      "widget": true
+    },
+    "level": 2
+  }
+]

@@ -1,0 +1,49 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+from config_build_common import     build_common_config 
+
+env = DefaultEnvironment();
+
+cur_build_path = Dir('.',False);
+org_build_path = str(cur_build_path.srcnode())
+
+# 包含头文件
+INCLUDE = list(build_common_config.AW_COMMON_INCLUDE)
+INCLUDE += ['include']
+INCLUDE.append(build_common_config.AWORKS_ROOT+'components/base/include')
+
+#安装aw_mp3库
+aw_mp3_path = os.path.join(org_build_path,'source');
+if os.path.exists(aw_mp3_path) and os.path.isdir(aw_mp3_path) :
+    # 存在aw_mp3源码则编译源码
+    print 'built aw_mp3...'
+    SOURCE_AW_MP3 = [];
+    
+    SOURCE_AW_MP3.append('source/aw_mp3.c');
+    SOURCE_AW_MP3.append('source/aw_mp3_buf.c');
+    SOURCE_AW_MP3.append('source/aw_mp3_dec_bit.c');
+    SOURCE_AW_MP3.append('source/aw_mp3_dec_frame.c');
+    SOURCE_AW_MP3.append('source/aw_mp3_dec_layer.c');
+    SOURCE_AW_MP3.append('source/aw_mp3_dec_stream.c');
+    SOURCE_AW_MP3.append('source/aw_mp3_dec_synth.c');
+    SOURCE_AW_MP3.append('source/aw_mp3_huffman.c');
+    SOURCE_AW_MP3.append('source/aw_mp3_rngbuf.c');
+    SOURCE_AW_MP3.append('source/aw_mp3_time.c');
+    
+    lib_aw_mp3_file = Library('aw_mp3',SOURCE_AW_MP3,CPPPATH = INCLUDE)
+else :
+    lib_aw_mp3_file_name = env['LIBPREFIX'] + 'aw_mp3' + env['LIBSUFFIX']
+    lib_aw_mp3_file_path = os.path.join(build_common_config.BUILT_LIBS_SEARCH_PATH,lib_aw_mp3_file_name);
+    lib_aw_mp3_file      = [File(lib_aw_mp3_file_path)];
+
+print 'install aw_mp3'
+InstallDir(build_common_config.AW_SDK_INSTALL_PATH+'components/aw_mp3/include',os.path.join(org_build_path,'include'));
+InstallDir(build_common_config.AW_SDK_INSTALL_PATH+'components/aw_mp3/include_internal',os.path.join(org_build_path,'include_internal'))
+
+Return('lib_aw_mp3_file');
+
+
+
+

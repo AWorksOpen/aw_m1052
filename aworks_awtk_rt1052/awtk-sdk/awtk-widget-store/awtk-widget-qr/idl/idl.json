@@ -1,0 +1,144 @@
+[
+  {
+    "params": [],
+    "annotation": {
+      "global": true
+    },
+    "desc": "注册控件。",
+    "name": "qr_register",
+    "return": {
+      "type": "ret_t",
+      "desc": "返回RET_OK表示成功，否则表示失败。"
+    },
+    "type": "method",
+    "header": "src/qr_register.h",
+    "level": 1
+  },
+  {
+    "params": [],
+    "annotation": {
+      "global": true
+    },
+    "desc": "获取支持的渲染模式。",
+    "name": "qr_supported_render_mode",
+    "return": {
+      "type": "const char*",
+      "desc": "返回渲染模式。"
+    },
+    "type": "method",
+    "header": "src/qr_register.h",
+    "level": 1
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "parent",
+            "desc": "父控件"
+          },
+          {
+            "type": "xy_t",
+            "name": "x",
+            "desc": "x坐标"
+          },
+          {
+            "type": "xy_t",
+            "name": "y",
+            "desc": "y坐标"
+          },
+          {
+            "type": "wh_t",
+            "name": "w",
+            "desc": "宽度"
+          },
+          {
+            "type": "wh_t",
+            "name": "h",
+            "desc": "高度"
+          }
+        ],
+        "annotation": {
+          "constructor": true,
+          "scriptable": true
+        },
+        "desc": "创建qr对象",
+        "name": "qr_create",
+        "return": {
+          "type": "widget_t*",
+          "desc": "qr对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "qr对象。"
+          }
+        ],
+        "annotation": {
+          "cast": true,
+          "scriptable": true
+        },
+        "desc": "转换为qr对象(供脚本语言使用)。",
+        "name": "qr_cast",
+        "return": {
+          "type": "widget_t*",
+          "desc": "qr对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "value",
+            "desc": "格式字符串。。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置要转成二维码的字符串。",
+        "name": "qr_set_value",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "value",
+        "desc": "要转成二维码的字符串。值。",
+        "type": "char*",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      }
+    ],
+    "header": "qr/qr.h",
+    "desc": "显示二维码的控件\nqr\\_t是[widget\\_t](widget_t.md)的子类控件，widget\\_t的函数均适用于qr\\_t控件。\n\n在xml中使用\"qr\"标签创建数值文本控件。如：\n\n```xml\n<!-- ui -->\n<qr x=\"c\" y=\"m\" w=\"240\" h=\"240\" value=\"https://github.com/zlgopen/awtk\" />\n```\n在c代码中使用函数qr\\_create创建数值文本控件。如：\n\n```c\nwidget_t* qr = qr_create(win, 10, 10, 128, 128);\n```\n可用通过style来设置控件的显示风格，如字体的大小和颜色等等。如：\n\n```xml\n<!-- style -->\n<qr>\n<style name=\"default\" >\n<normal fg_color=\"black\" bg_color=\"white\"/>\n<disable fg_color=\"gray\" bg_color=\"#f0f0f0\"/>\n</style>\n</qr>\n```",
+    "name": "qr_t",
+    "parent": "widget_t",
+    "annotation": {
+      "scriptable": true,
+      "design": true,
+      "widget": true
+    },
+    "level": 2
+  }
+]

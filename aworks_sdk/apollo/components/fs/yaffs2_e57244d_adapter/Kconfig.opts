@@ -1,0 +1,26 @@
+
+config AW_YAFFS_DEBUG_MSG
+    bool "Debug Msg Enable"
+    default n
+    help
+      Open yaffs debug info.
+
+CONFIG_YAFFS_YAFFS2 = y
+
+config CONFIG_YAFFS_DEFINES_TYPES
+    bool "Defines Types"
+    default y
+    help
+      Use yaffs define data type.
+
+config CONFIG_YAFFS_PROVIDE_DEFS
+    bool "Provide Defs"
+    default y
+    help
+      Use yaffs provide file type and attribute defines.
+
+config CONFIG_YAFFS_DIRECT
+    bool "Direct Interface Enable"
+    default y
+    help
+      Use yaffs direct interface.

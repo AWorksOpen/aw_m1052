@@ -1,0 +1,18 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import os
+
+from config_build_common import build_common_config 
+
+ARCH_SOURCE = Glob('*.c')
+COMPILER_DIR_STRING = build_common_config.AW_COMPILER_TOOLS + os.path.sep;
+ARCH_SOURCE.append(Glob(COMPILER_DIR_STRING+'*.c'));
+ARCH_SOURCE.append(Glob(COMPILER_DIR_STRING+'*.S'));
+ARCH_SOURCE.append(Glob(COMPILER_DIR_STRING+'*.s'));
+
+ARCH_INCLUDE=[]
+ARCH_CDEFINES=[]
+
+ARCH_RETURN={'ARCH_SOURCE':ARCH_SOURCE,'ARCH_INCLUDE':ARCH_INCLUDE,'ARCH_CDEFINES':ARCH_CDEFINES};
+Return('ARCH_RETURN')
