@@ -57,6 +57,7 @@ ret_t axis_on_destroy(widget_t* widget) {
   }
 
   wstr_reset(&(axis->title.text));
+  wstr_reset(&(axis->time.format));
 
   return RET_OK;
 }
@@ -76,7 +77,7 @@ float_t axis_get_range(widget_t* widget, bool_t is_series_axis) {
   axis_t* axis = AXIS(widget);
   return_value_if_fail(axis != NULL, 0.0);
 
-  if (axis->axis_type == AXIS_TYPE_VALUE && axis->max != axis->min) {
+  if (axis->axis_type != AXIS_TYPE_CATEGORY && axis->max != axis->min) {
     return tk_abs(axis->max - axis->min) + (is_series_axis ? 1 : 0);
   } else {
     return (float_t)(axis->data->size);
@@ -178,7 +179,7 @@ static widget_t* axis_lookup_indicated_series(widget_t* widget) {
 
   WIDGET_FOR_EACH_CHILD_BEGIN(widget->parent, iter, i)
   if (widget_is_series(iter)) {
-    if (widget_get_prop_pointer(iter, SERIES_PROP_SERIES_AXIS) == widget) {
+    if (widget_get_prop_pointer(iter, SERIES_PROP_SERIES_AXIS_OBJ) == widget) {
       return iter;
     }
   }
@@ -191,21 +192,30 @@ ret_t axis_update_data_from_series(widget_t* widget) {
   uint32_t b = 0;
   uint32_t e = 0;
   uint32_t m = 0;
+  uint32_t size = 0;
+  uint32_t recent_index = 0;
   float_t interval;
   widget_t* series;
+  object_t* fifo;
   axis_t* axis = AXIS(widget);
   return_value_if_fail(axis != NULL && axis->data != NULL, RET_BAD_PARAMS);
 
   series = axis_lookup_indicated_series(widget);
   return_value_if_fail(series != NULL, RET_BAD_PARAMS);
 
-  if (SERIES(series)->fifo && SERIES(series)->fifo->size > 0) {
+  fifo = SERIES(series)->fifo;
+  return_value_if_fail(fifo != NULL, RET_BAD_PARAMS);
+
+  size = SERIES_FIFO_GET_SIZE(fifo);
+  if (size > 0) {
     return_value_if_fail(series_get_current(series, &b, &e, &m) == RET_OK, RET_FAIL);
 
     darray_clear(axis->data);
 
     interval = axis_measure_series_interval(widget);
-    axis->data_from_series(axis->data_from_series_ctx, b, e, m, interval, axis->data);
+    recent_index = tk_max(series_count(series) - 1, 0);
+    axis->data_from_series(widget, recent_index, b, e, m, interval, axis->data,
+                           axis->data_from_series_ctx);
   }
 
   return RET_OK;
@@ -247,7 +257,7 @@ float_t axis_measure_series_interval(widget_t* widget) {
   return ret;
 }
 
-ret_t axis_measure_series(widget_t* widget, void* sample_params, fifo_t* src, fifo_t* dst) {
+ret_t axis_measure_series(widget_t* widget, void* sample_params, object_t* src, object_t* dst) {
   ret_t ret = RET_NOT_IMPL;
   axis_t* axis = AXIS(widget);
   return_value_if_fail(axis != NULL && axis->vt != NULL, 0);
@@ -267,6 +277,7 @@ widget_t* axis_create(widget_t* parent, const widget_vtable_t* vt, xy_t x, xy_t 
   return_value_if_fail(axis != NULL, NULL);
 
   wstr_init(&(axis->title.text), 0);
+  wstr_init(&(axis->time.format), 0);
   axis->label.show = TRUE;
   axis->tick.show = TRUE;
   axis->line.show = TRUE;

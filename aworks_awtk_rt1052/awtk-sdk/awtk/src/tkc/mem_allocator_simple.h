@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  mem_allocator_simple
  *
- * Copyright (c) 2020 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2020 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -37,6 +37,8 @@ typedef struct _mem_info_t {
   uint32_t size;
   uint32_t used_bytes;
   uint32_t used_block_nr;
+  uint32_t used_max_bytes;
+  uint32_t used_max_block_nr;
   free_node_t* free_list;
 } mem_info_t;
 
@@ -53,29 +55,28 @@ typedef struct _mem_allocator_simple_t {
 } mem_allocator_simple_t;
 
 #define MEM_ALLOCATOR_SIMPLE(allocator) ((mem_allocator_simple_t*)(allocator))
+#define MIN_SIZE TK_ROUND_TO_MACH(sizeof(free_node_t))
 
-#define MIN_SIZE TK_ROUND_TO8(sizeof(free_node_t))
-#define REAL_SIZE(size) \
-  TK_ROUND_TO8((size > sizeof(free_node_t) ? size : MIN_SIZE) + sizeof(uint32_t));
+static inline uint32_t real_size(uint32_t size) {
+  return size > MIN_SIZE ? size : MIN_SIZE;
+}
 
 static void* tk_alloc_impl(mem_allocator_t* allocator, uint32_t s) {
   mem_info_t* info = &(MEM_ALLOCATOR_SIMPLE(allocator)->info);
 
   free_node_t* iter = NULL;
-  uint32_t size = REAL_SIZE(s);
+  uint32_t size = TK_ROUND_TO_MACH(real_size(s + sizeof(uint32_t)));
 
   /*查找第一个满足条件的空闲块*/
   for (iter = info->free_list; iter != NULL; iter = iter->next) {
-    if (iter->size > size) {
+    if (iter->size >= size) {
       break;
     }
   }
 
   if (iter == NULL) {
-    log_debug("%s: Out of memory(%d):\n", __FUNCTION__, (int)size);
+    return NULL;
   }
-
-  return_value_if_fail(iter != NULL, NULL);
 
   /*如果找到的空闲块刚好满足需求，就从空闲块链表中移出它*/
   if (iter->size < (size + MIN_SIZE)) {
@@ -112,6 +113,13 @@ static void* tk_alloc_impl(mem_allocator_t* allocator, uint32_t s) {
   /*返回可用的内存*/
   info->used_block_nr++;
   info->used_bytes += iter->size;
+
+  if (info->used_block_nr > info->used_max_block_nr) {
+    info->used_max_block_nr = info->used_block_nr;
+  }
+  if (info->used_bytes > info->used_max_bytes) {
+    info->used_max_bytes = info->used_bytes;
+  }
 
   return (char*)iter + sizeof(uint32_t);
 }
@@ -163,36 +171,35 @@ static void tk_free_impl(mem_allocator_t* allocator, void* ptr) {
 
   if (info->free_list == NULL) {
     info->free_list = free_iter;
+  } else {
+    /*根据内存块地址的大小，把它插入到适当的位置。*/
+    for (iter = info->free_list; iter != NULL; iter = iter->next) {
+      if ((char*)iter > (char*)free_iter) {
+        free_iter->next = iter;
+        free_iter->prev = iter->prev;
+        if (iter->prev != NULL) {
+          iter->prev->next = free_iter;
+        }
+        iter->prev = free_iter;
 
-    return;
-  }
-  /*根据内存块地址的大小，把它插入到适当的位置。*/
-  for (iter = info->free_list; iter != NULL; iter = iter->next) {
-    if ((char*)iter > (char*)free_iter) {
-      free_iter->next = iter;
-      free_iter->prev = iter->prev;
-      if (iter->prev != NULL) {
-        iter->prev->next = free_iter;
+        if (info->free_list == iter) {
+          info->free_list = free_iter;
+        }
+
+        break;
       }
-      iter->prev = free_iter;
 
-      if (info->free_list == iter) {
-        info->free_list = free_iter;
+      if (iter->next == NULL) {
+        iter->next = free_iter;
+        free_iter->prev = iter;
+
+        break;
       }
-
-      break;
     }
 
-    if (iter->next == NULL) {
-      iter->next = free_iter;
-      free_iter->prev = iter;
-
-      break;
-    }
+    /*对相邻居的内存进行合并*/
+    node_merge(info, free_iter);
   }
-
-  /*对相邻居的内存进行合并*/
-  node_merge(info, free_iter);
   info->used_block_nr--;
   info->used_bytes -= size;
 
@@ -202,8 +209,9 @@ static void tk_free_impl(mem_allocator_t* allocator, void* ptr) {
 static void* tk_realloc_impl(mem_allocator_t* allocator, void* ptr, uint32_t size) {
   void* new_ptr = NULL;
   if (ptr != NULL) {
+    uint32_t up_size = size + MIN_SIZE;
     uint32_t old_size = *(uint32_t*)((char*)ptr - sizeof(uint32_t)) - sizeof(uint32_t);
-    if (old_size >= size && old_size <= (size + MIN_SIZE)) {
+    if ((old_size >= size) && (old_size <= up_size)) {
       return ptr;
     }
 
@@ -253,12 +261,35 @@ static inline void mem_allocator_simple_free(mem_allocator_t* allocator, void* p
   tk_free_impl(allocator, ptr);
 }
 
+static inline bool_t mem_allocator_simple_is_valid(mem_allocator_t* allocator) {
+  mem_info_t* info = &(MEM_ALLOCATOR_SIMPLE(allocator)->info);
+
+  return info->buffer != NULL && info->size > 0;
+}
+
+static inline bool_t mem_allocator_simple_contains(mem_allocator_t* allocator, void* ptr) {
+  char* p = (char*)ptr;
+  mem_info_t* info = &(MEM_ALLOCATOR_SIMPLE(allocator)->info);
+
+  return (p >= info->buffer && (p - info->buffer) < info->size);
+}
+
 static inline ret_t mem_allocator_simple_dump(mem_allocator_t* allocator) {
   mem_info_t* info = &(MEM_ALLOCATOR_SIMPLE(allocator)->info);
-  log_debug("used: %d bytes %d blocks\n", info->used_bytes, info->used_block_nr);
+  log_debug("used: %u(max=%u) bytes %u(max=%u) blocks\n", info->used_bytes, info->used_max_bytes,
+            info->used_block_nr, info->used_max_block_nr);
   (void)info;
 
   return RET_OK;
+}
+
+static uint32_t mem_allocator_simple_get_mem_size(mem_allocator_t* allocator, void* ptr) {
+  free_node_t* free_iter = NULL;
+  return_value_if_fail(ptr != NULL, 0);
+
+  free_iter = (free_node_t*)((char*)ptr - sizeof(uint32_t));
+
+  return free_iter->size;
 }
 
 static inline ret_t mem_allocator_simple_destroy(mem_allocator_t* allocator) {

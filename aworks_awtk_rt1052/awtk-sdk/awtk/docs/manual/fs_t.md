@@ -7,13 +7,19 @@
 
 | 函数名称 | 说明 | 
 | -------- | ------------ | 
+| <a href="#fs_t_dir_exist">dir\_exist</a> | 判断目录是否存在。 |
 | <a href="#fs_t_file_exist">file\_exist</a> | 判断文件是否存在。 |
 | <a href="#fs_t_file_get_size">file\_get\_size</a> | 获取文件大小。 |
 | <a href="#fs_t_file_read">file\_read</a> | 读取文件的全部内容。 |
 | <a href="#fs_t_file_read_part">file\_read\_part</a> | 从某个位置读取文件。 |
 | <a href="#fs_t_file_remove">file\_remove</a> | 刪除文件。 |
 | <a href="#fs_t_file_write">file\_write</a> | 写入文件。 |
+| <a href="#fs_t_fs_build_user_storage_file_name">fs\_build\_user\_storage\_file\_name</a> | 生成一个保存数据文件的完整路径的文件名。 |
+| <a href="#fs_t_fs_change_dir">fs\_change\_dir</a> | 修改当前目录。 |
+| <a href="#fs_t_fs_copy_dir">fs\_copy\_dir</a> | 拷贝目录。 |
+| <a href="#fs_t_fs_copy_file">fs\_copy\_file</a> | 拷贝文件。 |
 | <a href="#fs_t_fs_create_dir">fs\_create\_dir</a> | 创建目录。 |
+| <a href="#fs_t_fs_create_dir_r">fs\_create\_dir\_r</a> | 递归创建目录。 |
 | <a href="#fs_t_fs_dir_exist">fs\_dir\_exist</a> | 判断目录是否存在。 |
 | <a href="#fs_t_fs_dir_rename">fs\_dir\_rename</a> | 目录重命名。 |
 | <a href="#fs_t_fs_file_exist">fs\_file\_exist</a> | 判断文件是否存在。 |
@@ -22,13 +28,34 @@
 | <a href="#fs_t_fs_get_disk_info">fs\_get\_disk\_info</a> | 获取文件系统信息。 |
 | <a href="#fs_t_fs_get_exe">fs\_get\_exe</a> | 获取可执行文件所在目录。 |
 | <a href="#fs_t_fs_get_file_size">fs\_get\_file\_size</a> | 获取文件大小。 |
+| <a href="#fs_t_fs_get_temp_path">fs\_get\_temp\_path</a> | 获取临时目录。 |
 | <a href="#fs_t_fs_get_user_storage_path">fs\_get\_user\_storage\_path</a> | 获取home目录或者应用程序可以写入数据的目录。 |
 | <a href="#fs_t_fs_open_dir">fs\_open\_dir</a> | 打开目录。 |
 | <a href="#fs_t_fs_open_file">fs\_open\_file</a> | 打开文件。 |
 | <a href="#fs_t_fs_remove_dir">fs\_remove\_dir</a> | 刪除目录。 |
+| <a href="#fs_t_fs_remove_dir_r">fs\_remove\_dir\_r</a> | 递归刪除目录。 |
 | <a href="#fs_t_fs_remove_file">fs\_remove\_file</a> | 刪除文件。 |
 | <a href="#fs_t_fs_stat">fs\_stat</a> | 获取文件信息。 |
 | <a href="#fs_t_os_fs">os\_fs</a> | 获取缺省的文件系统对象。 |
+#### dir\_exist 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="fs_t_dir_exist">判断目录是否存在。
+
+* 函数原型：
+
+```
+bool_t dir_exist (const char* name);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | bool\_t | 返回TRUE表示成功，否则表示失败。 |
+| name | const char* | 目录名。 |
 #### file\_exist 函数
 -----------------------
 
@@ -149,6 +176,89 @@ ret_t file_write (const char* name, const void* buffer, uint32_t size);
 | name | const char* | 文件名。 |
 | buffer | const void* | 数据缓冲区。 |
 | size | uint32\_t | 数据长度。 |
+#### fs\_build\_user\_storage\_file\_name 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="fs_t_fs_build_user_storage_file_name">生成一个保存数据文件的完整路径的文件名。
+
+* 函数原型：
+
+```
+ret_t fs_build_user_storage_file_name (char* filename, const char* appname, const char* name);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
+| filename | char* | 用于返回完整路径的文件名。 |
+| appname | const char* | 应用程序的名称。 |
+| name | const char* | 文件名(不包括路径)。 |
+#### fs\_change\_dir 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="fs_t_fs_change_dir">修改当前目录。
+
+* 函数原型：
+
+```
+ret_t fs_change_dir (fs_t* fs, const char* name);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
+| fs | fs\_t* | 文件系统对象，一般赋值为os\_fs()。 |
+| name | const char* | 目录名称。 |
+#### fs\_copy\_dir 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="fs_t_fs_copy_dir">拷贝目录。
+
+* 函数原型：
+
+```
+ret_t fs_copy_dir (fs_t* fs, const char* src, const char* dst);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
+| fs | fs\_t* | 文件系统对象，一般赋值为os\_fs()。 |
+| src | const char* | 源目录。 |
+| dst | const char* | 目标目录。 |
+#### fs\_copy\_file 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="fs_t_fs_copy_file">拷贝文件。
+
+* 函数原型：
+
+```
+ret_t fs_copy_file (fs_t* fs, const char* src, const char* dst);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
+| fs | fs\_t* | 文件系统对象，一般赋值为os\_fs()。 |
+| src | const char* | 源文件名。 |
+| dst | const char* | 目标文件名。 |
 #### fs\_create\_dir 函数
 -----------------------
 
@@ -160,6 +270,26 @@ ret_t file_write (const char* name, const void* buffer, uint32_t size);
 
 ```
 ret_t fs_create_dir (fs_t* fs, const char* name);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
+| fs | fs\_t* | 文件系统对象，一般赋值为os\_fs()。 |
+| name | const char* | 目录名称。 |
+#### fs\_create\_dir\_r 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="fs_t_fs_create_dir_r">递归创建目录。
+
+* 函数原型：
+
+```
+ret_t fs_create_dir_r (fs_t* fs, const char* name);
 ```
 
 * 参数说明：
@@ -333,6 +463,26 @@ ret_t fs_get_file_size (fs_t* fs, const char* name);
 | 返回值 | ret\_t | 返回不是-1表示成功，否则表示失败。 |
 | fs | fs\_t* | 文件系统对象，一般赋值为os\_fs()。 |
 | name | const char* | 文件名。 |
+#### fs\_get\_temp\_path 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="fs_t_fs_get_temp_path">获取临时目录。
+
+* 函数原型：
+
+```
+ret_t fs_get_temp_path (fs_t* fs, char* path);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
+| fs | fs\_t* | 文件系统对象，一般赋值为os\_fs()。 |
+| path | char* | 保存路径。 |
 #### fs\_get\_user\_storage\_path 函数
 -----------------------
 
@@ -405,6 +555,26 @@ ret_t fs_open_file (fs_t* fs, const char* name, const char* mode);
 
 ```
 ret_t fs_remove_dir (fs_t* fs, const char* name);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
+| fs | fs\_t* | 文件系统对象，一般赋值为os\_fs()。 |
+| name | const char* | 目录名称。 |
+#### fs\_remove\_dir\_r 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="fs_t_fs_remove_dir_r">递归刪除目录。
+
+* 函数原型：
+
+```
+ret_t fs_remove_dir_r (fs_t* fs, const char* name);
 ```
 
 * 参数说明：

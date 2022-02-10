@@ -145,7 +145,7 @@
           },
           {
             "type": "uint32_t",
-            "name": "delay_paly",
+            "name": "delay_play",
             "desc": "延迟播放。"
           }
         ],
@@ -153,10 +153,92 @@
           "scriptable": true
         },
         "desc": "设置延迟播放。",
-        "name": "video_image_set_delay_paly",
+        "name": "video_image_set_delay_play",
         "return": {
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "loop",
+            "desc": "循环播放。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置循环播放。",
+        "name": "video_image_set_loop",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "马上重新播放序列帧。",
+        "name": "video_image_replay",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          },
+          {
+            "type": "float_t",
+            "name": "playback_rate",
+            "desc": "播放速度（1 为正常播放速度，小于 1 播放速度会变慢，大于 1 播放速度会变快）。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置当前播放速度。\n备注：序列帧没有跳帧功能，所以播放速度会受限解码和渲染速度，无法突破解码和渲染速度的限制。",
+        "name": "video_image_set_playback_rate",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget对象。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "获取当前播放速度",
+        "name": "video_image_get_playback_rate",
+        "return": {
+          "type": "float_t",
+          "desc": "返回播放速度。"
         }
       },
       {
@@ -352,9 +434,9 @@
         }
       },
       {
-        "name": "delay_paly",
-        "desc": "延迟播放。",
-        "type": "uint32_t",
+        "name": "loop",
+        "desc": "是否循环播放。",
+        "type": "bool_t",
         "annotation": {
           "set_prop": true,
           "get_prop": true,
@@ -368,6 +450,19 @@
         "name": "draw_video_image",
         "desc": "是否自动绘制视频贴图数据。（默认为TRUE，该成员变量是为了某一些特殊场景使用）",
         "type": "bool_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "delay_play",
+        "desc": "延迟播放。",
+        "type": "uint32_t",
         "annotation": {
           "set_prop": true,
           "get_prop": true,
@@ -498,6 +593,19 @@
         "name": "to_image_end",
         "desc": "解码序列帧后回调函数",
         "type": "video_image_to_image_end_t",
+        "annotation": {
+          "set_prop": true,
+          "get_prop": true,
+          "readable": true,
+          "persitent": true,
+          "design": true,
+          "scriptable": true
+        }
+      },
+      {
+        "name": "playback_rate",
+        "desc": "播放速度（默认为1）",
+        "type": "float_t",
         "annotation": {
           "set_prop": true,
           "get_prop": true,

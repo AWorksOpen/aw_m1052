@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  self layouter menu
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -88,7 +88,7 @@ ret_t self_layouter_menu_set_param(self_layouter_t* layouter, const char* name, 
       } else if (x[0] == 'r') {
         layout->x_attr = X_ATTR_RIGHT;
       } else {
-        if (isdigit(*x)) {
+        if (tk_isdigit(*x)) {
           layout->x_attr = tk_atoi(x);
         } else {
           layout->x_attr = X_ATTR_DEFAULT;
@@ -103,7 +103,7 @@ ret_t self_layouter_menu_set_param(self_layouter_t* layouter, const char* name, 
       } else if (y[0] == 'b') {
         layout->y_attr = Y_ATTR_BOTTOM;
       } else {
-        if (isdigit(*y)) {
+        if (tk_isdigit(*y)) {
           layout->y_attr = tk_atoi(y);
         } else {
           layout->y_attr = X_ATTR_DEFAULT;
@@ -298,7 +298,7 @@ ret_t widget_layout_self_menu_with_rect(self_layouter_t* layouter, widget_t* wid
 
   if (self_layouter_menu_is_valid(layouter)) {
     widget_layout_calc(l, &r, area->w, area->h);
-    widget_move_resize(widget, r.x + area->x, r.y + area->y, r.w, r.h);
+    widget_move_resize_ex(widget, r.x + area->x, r.y + area->y, r.w, r.h, FALSE);
 
     return RET_OK;
   }
@@ -337,7 +337,10 @@ ret_t self_layouter_menu_layout(self_layouter_t* layouter, widget_t* widget, rec
   return_value_if_fail(widget != NULL && widget->parent != NULL, RET_BAD_PARAMS);
   return_value_if_fail(widget_is_window(widget), RET_BAD_PARAMS);
 
-  widget_layout_self_get_trigger(layouter, &(l->pressed), &(l->trigger_widget_rect));
+  if (!l->inited) {
+    widget_layout_self_get_trigger(layouter, &(l->pressed), &(l->trigger_widget_rect));
+    l->inited = TRUE;
+  }
 
   return widget_layout_self_menu_with_rect(layouter, widget, area);
 }
@@ -352,7 +355,7 @@ static ret_t self_layouter_menu_destroy(self_layouter_t* layouter) {
 
 static self_layouter_t* self_layouter_menu_clone(self_layouter_t* layouter) {
   self_layouter_menu_t* l = TKMEM_ZALLOC(self_layouter_menu_t);
-
+  return_value_if_fail(l != NULL, NULL);
   memcpy(l, layouter, sizeof(*l));
   str_init(&(l->layouter.params), 0);
   str_set(&(l->layouter.params), layouter->params.str);

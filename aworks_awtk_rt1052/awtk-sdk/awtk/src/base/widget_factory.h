@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  widget factory
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -22,9 +22,9 @@
 #ifndef TK_WIDGET_FACTORY_H
 #define TK_WIDGET_FACTORY_H
 
-#include "tkc/darray.h"
-#include "tkc/emitter.h"
 #include "base/widget.h"
+#include "tkc/emitter.h"
+#include "tkc/general_factory.h"
 
 BEGIN_C_DECLS
 
@@ -37,11 +37,7 @@ BEGIN_C_DECLS
  * 用户注册自定义控件，可以获得内置控件同等待遇。
  *
  */
-typedef struct _widget_factory_t {
-  emitter_t emitter;
-  /*private*/
-  darray_t creators;
-} widget_factory_t;
+typedef general_factory_t widget_factory_t;
 
 /**
  * @method widget_factory
@@ -80,6 +76,17 @@ widget_factory_t* widget_factory_create(void);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t widget_factory_register(widget_factory_t* factory, const char* type, widget_create_t create);
+
+/**
+ * @method widget_factory_register_multi
+ * 注册控件创建函数。
+ * @param {widget_factory_t*} factory 控件工厂对象。
+ * @param {const general_factory_table_t*} table 表。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t widget_factory_register_multi(widget_factory_t* factory,
+                                    const general_factory_table_t* table);
 
 /**
  * @method widget_factory_create_widget

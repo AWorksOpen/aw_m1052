@@ -38,9 +38,24 @@ diff_image_to_video_save_image_data::diff_image_to_video_save_image_data() {
   file_format_list.push_back("jpg");
   file_format_list.push_back("png");
   file_format_list.push_back("bmp");
+  this->ctx = NULL;
+  this->get_image_line_length = NULL;
 }
 
 diff_image_to_video_save_image_data::~diff_image_to_video_save_image_data() {}
+
+void diff_image_to_video_save_image_data::set_get_image_line_length_func(diff_image_video_get_image_line_length_t get_image_line_length, void* ctx) {
+  this->ctx = ctx;
+  this->get_image_line_length = get_image_line_length;
+}
+
+unsigned int diff_image_to_video_save_image_data::get_line_length(unsigned int w, unsigned int bpp) {
+  if (get_image_line_length != NULL) {
+    return get_image_line_length(w, bpp, ctx);
+  } else {
+    return w * bpp;
+  }
+}
 
 unsigned int
 diff_image_to_video_save_image_data::get_channels(image_format_t format) {
@@ -156,7 +171,6 @@ void diff_image_to_video_save_image_data::get_diff_rect_list(
     unsigned int rect_size, list<Rect> &rect_list) {
   unsigned int x = 0;
   unsigned int y = 0;
-  unsigned int width_length = 0;
 
   Rect tmp;
   Rect diff_rect;
@@ -167,7 +181,6 @@ void diff_image_to_video_save_image_data::get_diff_rect_list(
 
   if (image1.data != NULL && image2.data != NULL) {
     if (image1.width == image2.width && image1.height == image2.height) {
-      width_length = image2.width * image2.channels;
       for (y = 0; y < image2.height;) {
         for (x = 0; x < image2.width;) {
           tmp.x = x;
@@ -178,7 +191,7 @@ void diff_image_to_video_save_image_data::get_diff_rect_list(
               rect_size + y > image2.height ? image2.height - y : rect_size;
 
           if (get_diff_rect(image1.data, image2.data, tmp, image2.channels,
-                            width_length, diff_rect)) {
+                            image2.line_length, diff_rect)) {
             tmp_rect_list.push_back(diff_rect);
           }
           x = min(rect_size + x, image2.width);
@@ -245,7 +258,7 @@ void diff_image_to_video_save_image_data::get_diff_image_data_list(
 
       unsigned int line_length = ROUND_TO(rect->width * image.channels, 4);
       unsigned int size = line_length * rect->height;
-      unsigned int width_length = image.channels * image.width;
+      unsigned int width_length = image.line_length;
       unsigned int data_width_length = image.channels * rect->width;
 
       if (width_length >= data_width_length &&
@@ -461,20 +474,31 @@ void diff_image_to_video_save_image_data::load_image(
     require_bgra = frame_image_type == IMAGE_FMT_BGRA8888;
     if (stb_load_image(0, buff, buff_length, &image, require_bgra,
                        enable_bgr565, enable_rgb565) == RET_OK) {
+      unsigned char* dst_data = NULL;
+      unsigned int src_line_length = bitmap_get_line_length(&image);
       frame.width = image.w;
       frame.height = image.h;
+      frame.line_length = get_line_length(frame.width, frame.channels);
       frame.dispose();
+      if (frame.channels != bitmap_get_bpp(&image)) {
+        printf(" image not support change target color type ! \r\n");
+        assert(" image not support change target color type !");
+        return;
+      }
       frame.data =
-          new unsigned char[frame.width * frame.height * frame.channels];
-
+          new unsigned char[frame.height * frame.line_length];
+      memset(frame.data, 0x0, frame.height * frame.line_length);
 #ifdef TK_GRAPHIC_BUFFER_H
       image_data = bitmap_lock_buffer_for_read(&image);
 #else
       image_data = (unsigned char *)(image.data);
 #endif
-
-      memcpy(frame.data, image_data,
-             frame.width * frame.height * frame.channels);
+      dst_data = frame.data;
+      for (int h = 0; h < frame.height; h++) {
+        memcpy(dst_data, image_data, src_line_length);
+        dst_data += frame.line_length;
+        image_data += src_line_length;
+      }
 
 #ifdef TK_GRAPHIC_BUFFER_H
       bitmap_unlock_buffer(&image);
@@ -566,6 +590,9 @@ void diff_image_to_video_save_image_data::save_all_frame(
     image_data_length = 0;
 
     load_image(file_path, frame_image_type, image);
+    if (image.data == NULL) {
+      break;
+    }
 
     get_diff_rect_list(last_image, image, RECT_SIZE, rect_list);
 
@@ -579,6 +606,9 @@ void diff_image_to_video_save_image_data::save_all_frame(
       lz4_image_data = get_lz4_date_to_image_date(
           image.data, image.width * image.height * image.channels,
           image_data_lz4_length);
+    } else {
+      image_data_lz4_length = 0;
+      image_diff_lz4_length = 0;
     }
 
     head.frame_info_list[frame_curr].start_point = file_point;
@@ -655,16 +685,20 @@ bool diff_image_to_video_save_image_data::save_image_data_list(
 
   if (file_list.size() > 0) {
     load_image(*file_list.begin(), frame_image_type, last_image);
-
+    if (last_image.data == NULL) {
+      goto error;
+    }
+    head.video_info.delays = delays;
     head.video_info.width = last_image.width;
     head.video_info.height = last_image.height;
     head.video_info.channels = last_image.channels;
-    head.video_info.time_length = delays * (unsigned int)file_list.size();
-    head.video_info.delays = delays;
-    head.video_info.frame_number = (unsigned int)file_list.size();
     head.video_info.frame_image_type = frame_image_type;
+    head.video_info.line_length = last_image.line_length;
+    head.video_info.frame_number = (unsigned int)file_list.size();
+    head.video_info.time_length = delays * (unsigned int)file_list.size();
     head.frame_info_list = new frame_info_t[head.video_info.frame_number];
-
+    printf("image.width:%d, image.height:%d, image.channels:%d, image.line_length:%d, files_count:%d \r\n", 
+            last_image.width, last_image.height, last_image.channels, last_image.line_length, (unsigned int)file_list.size());
     memset(head.frame_info_list, 0,
            sizeof(frame_info_t) * head.video_info.frame_number);
 
@@ -688,7 +722,7 @@ bool diff_image_to_video_save_image_data::save_image_data_list(
     head.frame_info_list = NULL;
     is_su = true;
   }
-
+error:
   fclose(save_file);
 
   return is_su;

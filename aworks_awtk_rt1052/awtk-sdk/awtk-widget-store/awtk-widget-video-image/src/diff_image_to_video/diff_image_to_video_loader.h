@@ -11,6 +11,7 @@ ret_t diff_to_image_video_image_init(unsigned char *file_data,
                                      unsigned int file_data_length,
                                      unsigned int *w, unsigned int *h, 
                                      unsigned int *channels,
+                                     unsigned int *line_length,
                                      unsigned int *frame_number_max,
                                      unsigned int *delays,
                                      bitmap_format_t *format);

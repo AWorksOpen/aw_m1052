@@ -10,7 +10,7 @@
         </image>
     </view>
     <chart_view name="chartview" x="6%" y="13%" w="80%" h="80%" disg:custom="container">
-        <y_axis name="yfrom_series" axis_type="value" min="0" max="30" disg:custom="container"/>
+        <y_axis name="yfrom_series" axis_type="time" min="0" max="30" disg:custom="container"/>
         <x_axis name="x" axis_type="value" min="0" max="140" data="[0,20,40,60,80,100,120,140]" disg:custom="container"/>
         <line_series style="s1" name="s1" capacity="90" line="{smooth:true}" area="{show:true}" symbol="{show:true}" series_axis="yfrom_series" value_axis="x" disg:custom="container"/>
         <line_series style="s2" name="s2" capacity="90" line="{smooth:true}" area="{show:true}" symbol="{show:true}" series_axis="yfrom_series" value_axis="x" disg:custom="container"/>

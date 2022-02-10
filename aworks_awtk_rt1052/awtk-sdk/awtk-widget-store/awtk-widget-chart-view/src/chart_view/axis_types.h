@@ -23,30 +23,33 @@
 #define TK_AXIS_TYPES_H
 
 #include "base/widget.h"
-#include "../base/fifo.h"
+#include "../base/series_fifo_default.h"
 #include "chart_utils.h"
 
 BEGIN_C_DECLS
 
 /**
  * 根据series的显示数据生成轴的刻度数据
- * @param {void*} ctx 上下文。
+ * @param {widget_t*} widget 轴控件。
+ * @param {uint32_t} recent_index series最新数据点的索引。
  * @param {uint32_t} begin series当前显示数据的起始点。
  * @param {uint32_t} end series当前显示数据的结束点。
  * @param {uint32_t} middle series当前显示数据的中间点（cover时有效）。
  * @param {float_t} interval series显示数据的间隔。
  * @param {darray_t*} data 刻度数据的缓存。
+ * @param {void*} ctx 上下文。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-typedef ret_t (*axis_data_from_series_t)(void* ctx, uint32_t begin, uint32_t end, uint32_t middle,
-                                         float_t interval, darray_t* data);
+typedef ret_t (*axis_data_from_series_t)(widget_t* widget, uint32_t recent_index, uint32_t begin,
+                                         uint32_t end, uint32_t middle, float_t interval,
+                                         darray_t* data, void* ctx);
 
 /**
  * 设置series的绘图数据。
  * @param {void*} dst 绘图数据。
  * @param {float_t} series 序列点的位置。
- * @param {fifo_t*} value 序列点的值fifo。
+ * @param {object_t*} value 序列点的值fifo。
  * @param {uint32_t} value_index 序列点的值在fifo中的位置。
  * @param {float_t} value_min 序列点的最小值。
  * @param {float_t} value_range 序列点的值范围。
@@ -55,7 +58,7 @@ typedef ret_t (*axis_data_from_series_t)(void* ctx, uint32_t begin, uint32_t end
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-typedef ret_t (*axis_measure_series_draw_data_set_t)(void* dst, float_t series, fifo_t* value,
+typedef ret_t (*axis_measure_series_draw_data_set_t)(void* dst, float_t series, object_t* value,
                                                      uint32_t value_index, float_t value_min,
                                                      float_t value_range, float_t pixel_range,
                                                      bool_t inverse);
@@ -119,12 +122,13 @@ typedef float_t (*axis_measure_series_interval_t)(widget_t* widget);
  * 测量坐标轴上序列点的坐标。
  * @param {widget_t*} widget 轴对象。
  * @param {void*} params 测量时需要的参数。
- * @param {fifo_t*} src 原始序列。
- * @param {fifo_t*} dst 坐标序列。
+ * @param {object_t*} src 原始序列。
+ * @param {object_t*} dst 坐标序列。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-typedef ret_t (*axis_measure_series_t)(widget_t* widget, void* params, fifo_t* src, fifo_t* dst);
+typedef ret_t (*axis_measure_series_t)(widget_t* widget, void* params, object_t* src,
+                                       object_t* dst);
 
 /**
  * 调整坐标轴自身的布局
@@ -168,7 +172,13 @@ typedef enum _axis_type_t {
    * 值坐标轴, 用于表示坐标点的值, 坐标点默认在interval的边缘。
    * @alias value
    */
-  AXIS_TYPE_VALUE
+  AXIS_TYPE_VALUE,
+  /**
+   * @const AXIS_TYPE_TIME
+   * 时间坐标轴, 用于表示坐标点的时间, 坐标点默认在interval的边缘。
+   * @alias value
+   */
+  AXIS_TYPE_TIME
 } axis_type_t;
 
 /**
@@ -287,6 +297,33 @@ typedef struct _axis_split_line_params_t {
   /* private */
   int32_t line_len;
 } axis_split_line_params_t;
+
+/**
+ * @class axis_time_params_t
+ * 时间坐标轴参数。
+ */
+typedef struct _axis_time_params_t {
+  /**
+   * 最近时间（以1970-1-1零点零分为起始的秒数）。
+   */
+  uint64_t recent_time;
+  /**
+   * 刻度值之间的间隔时间（单位：毫秒）。
+   */
+  uint32_t div;
+  /**
+   * 采样率（单位：毫秒）。
+   */
+  uint32_t sampling_rate;
+  /**
+   * 显示格式。
+   *
+   * > 格式规则请参考：
+   * [awtk/src/base/date_time_format.h](https://github.com/zlgopen/awtk/blob/master/src/base/date_time_format.h)
+   *
+   */
+  wstr_t format;
+} axis_time_params_t;
 
 /**
  * @class axis_data_t
@@ -426,6 +463,36 @@ ret_t axis_data_destroy(axis_data_t* data);
  * 坐标轴的标题是否显示
  */
 #define AXIS_PROP_TITLE_SHOW "title:show"
+
+/**
+ * @const AXIS_PROP_TIME
+ * 坐标轴的时间
+ */
+#define AXIS_PROP_TIME "time"
+
+/**
+ * @const AXIS_PROP_TIME_RECENT_TIME
+ * 坐标轴的最近时间
+ */
+#define AXIS_PROP_TIME_RECENT_TIME "time:recent_time"
+
+/**
+ * @const AXIS_PROP_TIME_DIV
+ * 坐标轴的间隔时间
+ */
+#define AXIS_PROP_TIME_DIV "time:div"
+
+/**
+ * @const AXIS_PROP_TIME_SAMPLING_RATE
+ *  坐标轴的采样率
+ */
+#define AXIS_PROP_TIME_SAMPLING_RATE "time:sampling_rate"
+
+/**
+ * @const AXIS_PROP_TIME_FORMAT
+ * 坐标轴的时间显示格式
+ */
+#define AXIS_PROP_TIME_FORMAT "time:format"
 
 /**
  * @enum widget_type_t

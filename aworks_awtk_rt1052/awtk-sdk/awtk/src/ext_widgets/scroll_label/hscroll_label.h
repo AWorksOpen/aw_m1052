@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  hscroll_label
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -36,13 +36,8 @@ BEGIN_C_DECLS
  *
  hscroll\_label\_t是[widget\_t](widget_t.md)的子类控件，widget\_t的函数均适用于hscroll\_label\_t控件。
  *
- * 在xml中使用"hscroll\_label"标签创建行号控件，一般配合mledit使用。如：
- *
- * ```xml
- * ```
- *
- * > 更多用法请参考：[mledit.xml](
- *https://github.com/zlgopen/awtk/blob/master/design/default/ui/mledit.xml)
+ * > 更多用法请参考：[hscroll_label.xml](
+ *https://github.com/zlgopen/awtk/blob/master/design/default/ui/hscroll_label.xml)
  *
  * 可用通过style来设置控件的显示风格，如字体的大小和颜色等等。如：
  *
@@ -111,6 +106,13 @@ typedef struct _hscroll_label_t {
   int32_t duration;
 
   /**
+   * @property {float_t} speed
+   * @annotation ["set_prop","get_prop","readable","scriptable"]
+   * 滚动速度(px/ms)（设置后 duration 不生效）。
+   */
+  float_t speed;
+
+  /**
    * @property {int32_t} xoffset
    * @annotation ["set_prop","get_prop","readable","scriptable"]
    * 偏移量。
@@ -125,6 +127,7 @@ typedef struct _hscroll_label_t {
   int32_t text_w;
 
   /*private*/
+  int32_t old_text_w;
   uint32_t timer_id;
   uint32_t elapsed;
   bool_t paused;
@@ -167,6 +170,17 @@ ret_t hscroll_label_set_lull(widget_t* widget, int32_t lull);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t hscroll_label_set_duration(widget_t* widget, int32_t duration);
+
+/**
+ * @method hscroll_label_set_speed
+ * 设置speed（设置后 duration 不生效）。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget 控件对象。
+ * @param {float_t}  speed 滚动速度(px/ms)。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t hscroll_label_set_speed(widget_t* widget, float_t speed);
 
 /**
  * @method hscroll_label_set_only_focus
@@ -269,6 +283,7 @@ widget_t* hscroll_label_cast(widget_t* widget);
 #define HSCROLL_LABEL_PROP_LULL "lull"
 #define HSCROLL_LABEL_PROP_XOFFSET "xoffset"
 #define HSCROLL_LABEL_PROP_DURATION "duration"
+#define HSCROLL_LABEL_PROP_SPEED "speed"
 #define HSCROLL_LABEL_PROP_ELLIPSES "ellipses"
 #define HSCROLL_LABEL_PROP_ONLY_FOCUS "only_focus"
 #define HSCROLL_LABEL_PROP_ONLY_PARENT_FOCUS "only_parent_focus"

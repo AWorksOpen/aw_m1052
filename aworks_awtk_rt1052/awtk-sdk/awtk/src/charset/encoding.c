@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  encoding conversion
  *
- * Copyright (c) 2020 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2020 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; withto even the implied warranty of
@@ -31,6 +31,10 @@
 #define WITH_ICONV 1
 #endif
 
+#if defined(ANDROID)
+#undef WITH_ICONV
+#endif /*ANDROID*/
+
 #ifdef WITH_ICONV
 static const char* get_native_encoding_name(encoding_name_t name) {
   switch (name) {
@@ -55,7 +59,9 @@ static const char* get_native_encoding_name(encoding_name_t name) {
     case ENCODING_GB18030: {
       return "GB18030";
     }
-    default: { return NULL; }
+    default: {
+      return NULL;
+    }
   }
 }
 

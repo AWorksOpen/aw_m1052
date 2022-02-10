@@ -26,6 +26,49 @@
 
 static ret_t video_image_on_open(void *ctx, event_t *e);
 
+static ret_t video_image_reset_first_bitmap(video_image_t *video_image) {
+  bitmap_t* bitmap = NULL;
+  uint32_t bitmap_line_length = 0;
+  return_value_if_fail(video_image != NULL && video_image->bitmap.buffer != NULL, RET_BAD_PARAMS);
+  bitmap = &(video_image->bitmap);
+  bitmap_line_length = bitmap_get_line_length(bitmap);
+  if (video_image->first_bitmap_data != NULL && bitmap_line_length == video_image->old_bitmap_line_length && bitmap->h == video_image->old_bitmap_h) {
+    uint8_t* s = bitmap_lock_buffer_for_write(bitmap);
+    if (s != NULL) {
+      memcpy(s, video_image->first_bitmap_data, bitmap->h * bitmap_line_length);
+    }
+    bitmap_unlock_buffer(bitmap);
+  }
+  return RET_OK;
+}
+
+static ret_t video_image_first_bitmap_data_clone(video_image_t *video_image) {
+  bitmap_t* bitmap = NULL;
+  uint32_t bitmap_line_length = 0;
+  return_value_if_fail(video_image != NULL && video_image->bitmap.buffer != NULL, RET_BAD_PARAMS);
+  bitmap = &(video_image->bitmap);
+  bitmap_line_length = bitmap_get_line_length(bitmap);
+
+  if (video_image->first_bitmap_data == NULL || bitmap_line_length != video_image->old_bitmap_line_length || bitmap->h != video_image->old_bitmap_h) {
+    if (video_image->first_bitmap_data != NULL) {
+      TKMEM_FREE(video_image->first_bitmap_data);
+    }
+    video_image->first_bitmap_data = TKMEM_ALLOC(bitmap->h * bitmap_line_length);
+  }
+
+  if (video_image->first_bitmap_data != NULL) {
+    uint8_t* s = bitmap_lock_buffer_for_read(bitmap);
+    if (s != NULL) {
+      memcpy(video_image->first_bitmap_data, s, bitmap->h * bitmap_line_length);
+    }
+    bitmap_unlock_buffer(bitmap);
+  }
+  video_image->old_bitmap_h = bitmap->h;
+  video_image->old_bitmap_line_length = bitmap_line_length;
+
+  return RET_OK;
+}
+
 static ret_t video_image_bitmap_dispose(video_image_t *video_image, bitmap_t *bitmap) {
   if (bitmap != NULL) {
     if (bitmap->w != 0 || bitmap->h != 0) {
@@ -36,7 +79,9 @@ static ret_t video_image_bitmap_dispose(video_image_t *video_image, bitmap_t *bi
 
         bitmap->w = 0;
         bitmap->h = 0;
-
+        if (video_image->bitmap_data != NULL) {
+          TKMEM_FREE(video_image->bitmap_data);
+        }
         diff_to_image_video_image_dispose();
       }
     }
@@ -50,37 +95,44 @@ static asset_info_t *video_image_load_video_asset(const char *video_name) {
                                             video_name);
 }
 
-static ret_t video_image_bitmap_init(video_image_t *video_image) {
+static ret_t video_image_bitmap_init(video_image_t *video_image, bool_t update_video_asset) {
   asset_info_t *video_asset_info = NULL;
   return_value_if_fail(video_image != NULL && video_image->video_name != NULL,
                        RET_BAD_PARAMS);
+  if (update_video_asset) {
+    video_image_bitmap_dispose(video_image, &video_image->bitmap);
 
-  video_image_bitmap_dispose(video_image, &video_image->bitmap);
+    if (video_image->video_asset_info != NULL) {
+      assets_manager_unref(assets_manager(), video_image->video_asset_info);
+    }
 
-  if (video_image->video_asset_info != NULL) {
-    assets_manager_unref(assets_manager(), video_image->video_asset_info);
+    video_asset_info = video_image_load_video_asset(video_image->video_name);
+  } else {
+    video_asset_info = video_image->video_asset_info;
   }
 
-  video_asset_info = video_image_load_video_asset(video_image->video_name);
   if (video_asset_info != NULL) {
     uint32_t w = 0;
     uint32_t h = 0;
     ret_t ret = RET_FAIL;
     ret_t ret1 = RET_FAIL;
     uint32_t channels = 0;
+    uint32_t line_length = 0;
     bitmap_format_t format = BITMAP_FMT_NONE;
     video_image->video_asset_info = video_asset_info;
 
     ret1 = diff_to_image_video_image_init(
-        video_asset_info->data, video_asset_info->size, &w, &h, &channels, 
+        video_asset_info->data, video_asset_info->size, &w, &h, &channels, &line_length, 
         &video_image->frame_number_max, &video_image->frame_interval, &format);
     
     if (ret1 == RET_OK) {
       if (video_image->init_image != NULL) {
-        ret = video_image->init_image(video_image->init_image_ctx, &(video_image->bitmap), w, h, channels, format);
+        ret = video_image->init_image(video_image->init_image_ctx, &(video_image->bitmap), w, h, channels, line_length, format);
       }
       if (ret != RET_OK) {
-        ret = bitmap_init(&(video_image->bitmap), w, h, format, NULL);
+        video_image->bitmap_data = TKMEM_CALLOC(1, h * line_length);
+        ret = bitmap_init(&(video_image->bitmap), w, h, format, video_image->bitmap_data);
+        bitmap_set_line_length(&(video_image->bitmap), line_length);
       }
     }
 #ifdef WITH_NANOVG_GPU
@@ -93,8 +145,12 @@ static ret_t video_image_bitmap_init(video_image_t *video_image) {
     if (ret == RET_OK) {
       video_image->frame_number_curr = 0;
 
+      video_image->is_done = FALSE;
       video_image->is_ready = TRUE;
       video_image->is_playing = FALSE;
+      if (video_image->loop) {
+        video_image_first_bitmap_data_clone(video_image);
+      }
     } else {
       video_image->is_ready = FALSE;
     }
@@ -110,7 +166,7 @@ ret_t video_image_set_video_name(widget_t *widget, const char *video_name) {
 
   video_image->video_name = tk_str_copy(video_image->video_name, video_name);
 
-  return video_image_bitmap_init(video_image);
+  return video_image_bitmap_init(video_image, TRUE);
 }
 
 ret_t video_image_set_auto_play(widget_t *widget, bool_t auto_play) {
@@ -134,11 +190,11 @@ ret_t video_image_set_draw_video_image(widget_t* widget, bool_t draw_video_image
   return RET_OK;
 }
 
-ret_t video_image_set_delay_paly(widget_t *widget, uint32_t delay_paly) {
+ret_t video_image_set_delay_play(widget_t *widget, uint32_t delay_play) {
   video_image_t *video_image = VIDEO_IMAGE(widget);
   return_value_if_fail(video_image != NULL, RET_BAD_PARAMS);
 
-  video_image->delay_paly = delay_paly;
+  video_image->delay_play = delay_play;
 
   return RET_OK;
 }
@@ -155,13 +211,20 @@ static ret_t video_image_get_prop(widget_t *widget, const char *name,
   } else if (tk_str_eq(VIDEO_IMAGE_PROP_AUTO_PLAY, name)) {
     value_set_bool(v, video_image->auto_play);
     return RET_OK;
-  } else if (tk_str_eq(VIDEO_IMAGE_PROP_DELAY_PALY, name)) {
-    value_set_uint32(v, video_image->delay_paly);
+  } else if (tk_str_eq(VIDEO_IMAGE_PROP_DELAY_PLAY, name)) {
+    value_set_uint32(v, video_image->delay_play);
     return RET_OK;
   } else if (tk_str_eq(VIDEO_IMAGE_PROP_DRAW_VIDEO_IMAGE, name)) {
     value_set_bool(v, video_image->draw_video_image);
     return RET_OK;
-  } 
+  } else if (tk_str_eq(VIDEO_IMAGE_PROP_LOOP, name)) {
+    value_set_bool(v, video_image->loop);
+    return RET_OK;
+  } else if (tk_str_eq(VIDEO_IMAGE_PROP_PLAYBACK_RETE, name)) {
+    value_set_float(v, video_image_get_playback_rate(widget));
+    return RET_OK;
+  }
+  
 
   return RET_NOT_FOUND;
 }
@@ -176,10 +239,14 @@ static ret_t video_image_set_prop(widget_t *widget, const char *name,
     return video_image_set_video_name(widget, value_str(v));
   } else if (tk_str_eq(VIDEO_IMAGE_PROP_AUTO_PLAY, name)) {
     return video_image_set_auto_play(widget, value_bool(v));
-  } else if (tk_str_eq(VIDEO_IMAGE_PROP_DELAY_PALY, name)) {
-    return video_image_set_delay_paly(widget, value_uint32(v));
+  } else if (tk_str_eq(VIDEO_IMAGE_PROP_DELAY_PLAY, name)) {
+    return video_image_set_delay_play(widget, value_uint32(v));
   } else if (tk_str_eq(VIDEO_IMAGE_PROP_DRAW_VIDEO_IMAGE, name)) {
     return video_image_set_draw_video_image(widget, value_bool(v));
+  } else if (tk_str_eq(VIDEO_IMAGE_PROP_LOOP, name)) {
+    return video_image_set_loop(widget, value_bool(v));
+  } else if (tk_str_eq(VIDEO_IMAGE_PROP_PLAYBACK_RETE, name)) {
+    return video_image_set_playback_rate(widget, value_float(v));
   }
 
   return RET_NOT_FOUND;
@@ -190,12 +257,20 @@ static ret_t video_image_on_destroy(widget_t *widget) {
   return_value_if_fail(widget != NULL && video_image != NULL, RET_BAD_PARAMS);
 
   video_image->frame_number_curr = 0;
+  if (video_image->timer_id != TK_INVALID_ID) {
+    timer_remove(video_image->timer_id);
+  }
 
   if (video_image->video_name != NULL) {
     TKMEM_FREE(video_image->video_name);
   }
   video_image_bitmap_dispose(video_image, &video_image->bitmap);
   memset(&video_image->bitmap, 0x0, sizeof(bitmap_t));
+
+  if (video_image->first_bitmap_data != NULL) {
+    TKMEM_FREE(video_image->first_bitmap_data);
+    video_image->first_bitmap_data = NULL;
+  }
 
   if (video_image->video_asset_info != NULL) {
     assets_manager_unref(assets_manager(), video_image->video_asset_info);
@@ -212,7 +287,7 @@ static ret_t video_image_on_paint_self(widget_t *widget, canvas_t *c) {
   return_value_if_fail(video_image != NULL && video_image->video_name != NULL,
                        RET_BAD_PARAMS);
 
-  if (video_image->is_ready && video_image->is_playing) {
+  if (video_image->is_ready && (video_image->is_playing || video_image->is_done)) {
     if (video_image->frame_number_curr < video_image->frame_number_max) {
       if (video_image->video_asset_info != NULL && !video_image->is_get_frame) {
 
@@ -246,7 +321,7 @@ static ret_t video_image_on_paint_self(widget_t *widget, canvas_t *c) {
 }
 
 static ret_t video_image_on_timer_update(const timer_info_t *info) {
-  ret_t ret = RET_REMOVE;
+  ret_t ret = RET_REPEAT;
   widget_t *widget = WIDGET(info->ctx);
   video_image_t *video_image = VIDEO_IMAGE(widget);
 
@@ -256,28 +331,64 @@ static ret_t video_image_on_timer_update(const timer_info_t *info) {
     }
     video_image->is_playing = TRUE;
     video_image->is_get_frame = FALSE;
-    ret = RET_REPEAT;
   } else {
-    event_t e = event_init(EVT_ANIM_END, widget);
-
-    widget_dispatch(widget, &e);
-    video_image->is_playing = FALSE;
+    if (video_image->loop) {
+      event_t e = event_init(EVT_ANIM_ONCE, widget);
+      widget_dispatch(widget, &e);
+      video_image->frame_number_curr = 0;
+      video_image->is_ready = TRUE;
+      video_image->is_playing = TRUE;
+      video_image_reset_first_bitmap(video_image);
+    } else {
+      event_t e = event_init(EVT_ANIM_END, widget);
+      widget_dispatch(widget, &e);
+      video_image->is_done = TRUE;
+      video_image->is_playing = FALSE;
+      ret = RET_REMOVE;
+    }
   }
   widget_invalidate(widget, NULL);
 
+  if (ret == RET_REMOVE) {
+    video_image->timer_id = TK_INVALID_ID;
+  }
   return ret;
 }
 
-ret_t video_image_play(widget_t *widget) {
+static ret_t video_image_play(widget_t *widget) {
   video_image_t *video_image = VIDEO_IMAGE(widget);
   return_value_if_fail(video_image != NULL, RET_BAD_PARAMS);
 
   if (video_image->timer_id == TK_INVALID_ID) {
     video_image->timer_id = timer_add(video_image_on_timer_update, widget,
-                                      video_image->frame_interval);
+                                       tk_roundi(video_image->frame_interval / video_image->playback_rate));
   }
 
   return RET_OK;
+}
+
+ret_t video_image_replay(widget_t *widget) {
+  video_image_t *video_image = VIDEO_IMAGE(widget);
+  return_value_if_fail(video_image != NULL, RET_BAD_PARAMS);
+  video_image_bitmap_init(video_image, FALSE);
+  return video_image_play(widget);
+}
+
+ret_t video_image_set_playback_rate(widget_t *widget, float_t playback_rate) {
+  video_image_t *video_image = VIDEO_IMAGE(widget);
+  return_value_if_fail(video_image != NULL, RET_BAD_PARAMS);
+  video_image->playback_rate = playback_rate;
+  if (video_image->timer_id != TK_INVALID_ID) {
+    timer_modify(video_image->timer_id, tk_roundi(video_image->frame_interval / video_image->playback_rate));
+  }
+  return RET_OK;
+}
+
+float_t video_image_get_playback_rate(widget_t *widget) {
+  video_image_t *video_image = VIDEO_IMAGE(widget);
+  return_value_if_fail(video_image != NULL, 0.0f);
+
+  return video_image->playback_rate;
 }
 
 static ret_t video_image_delay_play(const timer_info_t *info) {
@@ -295,9 +406,9 @@ static ret_t video_image_on_open(void *ctx, event_t *e) {
   video_image_t *video_image = VIDEO_IMAGE(widget);
 
   if (video_image->auto_play) {
-    if (video_image->delay_paly > 0) {
+    if (video_image->delay_play > 0) {
       video_image->timer_id =
-          timer_add(video_image_delay_play, widget, video_image->delay_paly);
+          timer_add(video_image_delay_play, widget, video_image->delay_play);
     } else {
       video_image_play(widget);
     }
@@ -307,9 +418,11 @@ static ret_t video_image_on_open(void *ctx, event_t *e) {
 }
 
 const char *s_video_image_properties[] = {VIDEO_IMAGE_PROP_VIDEO_NAME,
+                                          VIDEO_IMAGE_PROP_LOOP,
                                           VIDEO_IMAGE_PROP_AUTO_PLAY,
                                           VIDEO_IMAGE_PROP_DRAW_VIDEO_IMAGE,
-                                          VIDEO_IMAGE_PROP_DELAY_PALY, NULL};
+                                          VIDEO_IMAGE_PROP_PLAYBACK_RETE,
+                                          VIDEO_IMAGE_PROP_DELAY_PLAY, NULL};
 
 TK_DECL_VTABLE(video_image) = {
     .size = sizeof(video_image_t),
@@ -329,20 +442,24 @@ widget_t *video_image_create(widget_t *parent, xy_t x, xy_t y, wh_t w, wh_t h) {
   video_image_t *video_image = VIDEO_IMAGE(widget);
   return_value_if_fail(video_image != NULL, NULL);
 
-  video_image->delay_paly = 0;
+  video_image->delay_play = 0;
   video_image->auto_play = TRUE;
   video_image->video_name = NULL;
 
+  video_image->loop = FALSE;
   video_image->is_done = FALSE;
   video_image->is_ready = FALSE;
   video_image->is_playing = FALSE;
+  video_image->playback_rate = 1.0f;
   video_image->draw_video_image = TRUE;
   video_image->video_asset_info = NULL;
   video_image->timer_id = TK_INVALID_ID;
 
+  video_image->first_bitmap_data = NULL;
+
   memset(&video_image->bitmap, 0x0, sizeof(bitmap_t));
 
-  widget_on(parent, EVT_WINDOW_WILL_OPEN, video_image_on_open, widget);
+  widget_on(widget, EVT_WIDGET_LOAD, video_image_on_open, widget);
 
   return widget;
 }
@@ -351,6 +468,15 @@ widget_t *video_image_cast(widget_t *widget) {
   return_value_if_fail(WIDGET_IS_INSTANCE_OF(widget, video_image), NULL);
 
   return widget;
+}
+
+ret_t video_image_set_loop(widget_t* widget, bool_t loop) {
+  video_image_t *video_image = VIDEO_IMAGE(widget);
+  return_value_if_fail(widget != NULL, RET_BAD_PARAMS);
+
+  video_image->loop = loop;
+
+  return RET_OK;
 }
 
 ret_t video_image_set_init_bitmap_func(widget_t* widget, video_image_init_image_t init_image, void* init_image_ctx) {

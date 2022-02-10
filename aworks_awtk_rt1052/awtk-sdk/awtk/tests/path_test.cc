@@ -13,6 +13,14 @@ TEST(Path, basename) {
   ASSERT_EQ(string(result), string("test.bin"));
 }
 
+TEST(Path, extname_is) {
+  ASSERT_EQ(path_extname_is("test.bin", ".bin"), TRUE);
+  ASSERT_EQ(path_extname_is("test.Bin", ".bin"), TRUE);
+  ASSERT_EQ(path_extname_is("test.jpg", ".JPG"), TRUE);
+  ASSERT_EQ(path_extname_is("test.jpg", ".JPG"), TRUE);
+  ASSERT_EQ(path_extname_is("test.jpg", NULL), FALSE);
+}
+
 TEST(Path, extname) {
   char result[MAX_PATH + 1];
   ASSERT_EQ(path_extname("/a/test.bin", result, sizeof(result)), RET_OK);
@@ -160,4 +168,33 @@ TEST(Path, replace_extname) {
   char result[MAX_PATH + 1];
   ASSERT_EQ(path_replace_extname(result, sizeof(result), filename, "abc"), RET_OK);
   ASSERT_STREQ(normalize_path_str(result), "a/b/test.abc");
+}
+
+TEST(Path, path_remove_last_slash) {
+  char result[MAX_PATH + 1];
+  strcpy(result, "./a/");
+  ASSERT_EQ(path_remove_last_slash(result), RET_OK);
+  ASSERT_STREQ(result, "./a");
+
+  strcpy(result, "./a\\");
+  ASSERT_EQ(path_remove_last_slash(result), RET_OK);
+  ASSERT_STREQ(result, "./a");
+
+  strcpy(result, "./");
+  ASSERT_EQ(path_remove_last_slash(result), RET_OK);
+  ASSERT_STREQ(result, ".");
+
+  strcpy(result, "/");
+  ASSERT_EQ(path_remove_last_slash(result), RET_OK);
+  ASSERT_STREQ(result, "/");
+
+  strcpy(result, "////");
+  ASSERT_EQ(path_remove_last_slash(result), RET_OK);
+  ASSERT_STREQ(result, "/");
+
+  strcpy(result, "/a/b//");
+  ASSERT_EQ(path_remove_last_slash(result), RET_OK);
+  ASSERT_STREQ(result, "/a/b");
+
+  ASSERT_NE(path_remove_last_slash(NULL), RET_OK);
 }

@@ -20,8 +20,8 @@
  */
 
 #include "awtk.h"
-#include "chart_view/chart_view.h"
-#include "chart_view/line_series.h"
+#include "../src/chart_view/chart_view.h"
+#include "../src/chart_view/line_series.h"
 #include "tkc/date_time.h"
 
 #define SERIES_TIMER_UPDATE 1
@@ -42,6 +42,7 @@ extern ret_t on_series_typeie_bring_to_top(void* ctx, event_t* e);
 extern ret_t on_series_dayas_bring_to_top(void* ctx, event_t* e);
 extern ret_t on_series_bring_to_top(widget_t* win, uint32_t index, const char* icon_name,
                                     const char* unfocus, const char* focus);
+extern ret_t axis_time_init(widget_t* widget);
 
 static ret_t on_close(void* ctx, event_t* e) {
   widget_t* win = (widget_t*)ctx;

@@ -1,7 +1,7 @@
 {
+    "version": "1.0.6+sha.eecfe9a",
     "frameworks": [
         "awtk@>=1.5"
-    ], 
-    "version": "1.0.1+sha.05cf6fa", 
+    ],
     "name": "awtk-widget-store"
 }

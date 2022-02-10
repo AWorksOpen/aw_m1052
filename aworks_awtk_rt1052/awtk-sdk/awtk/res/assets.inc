@@ -1,6 +1,7 @@
 #include "awtk.h"
 #include "base/assets_manager.h"
 #include "assets/__assets_default.inc"
+#include "assets/__assets_dark.inc"
 
 #ifndef APP_THEME
 #define APP_THEME "default"
@@ -10,6 +11,8 @@ bool_t assets_has_theme(const char* name) {
   return_value_if_fail(name != NULL, FALSE);
 
   if (tk_str_eq(name, "default")) {
+    return TRUE;
+  } else if (tk_str_eq(name, "dark")) {
     return TRUE;
   } else {
     return FALSE;
@@ -24,14 +27,12 @@ static ret_t assets_init_internal(const char* theme) {
 
   if (tk_str_eq(theme, "default")) {
     return assets_init_default();
+  } else if (tk_str_eq(theme, "dark")) {
+    return assets_init_dark();
   } else {
     log_debug("%s not support.\n", theme);
     return RET_NOT_IMPL;
   }
-}
-
-ret_t assets_init(void) {
-  return assets_init_internal(APP_THEME);
 }
 
 #ifndef WITH_FS_RES
@@ -56,7 +57,7 @@ static ret_t widget_set_theme_without_file_system(widget_t* widget, const char* 
   locale_info_reload(locale_info);
 
   info = assets_manager_ref(am, ASSET_TYPE_STYLE, "default");
-  theme_init(theme(), info->data);
+  theme_set_theme_data(theme(), info->data);
   assets_manager_unref(assets_manager(), info);
 
   widget_dispatch(wm, &e);
@@ -66,12 +67,21 @@ static ret_t widget_set_theme_without_file_system(widget_t* widget, const char* 
 
   return RET_OK;
 }
+
+static ret_t on_set_theme_without_file_system(void* ctx, event_t* e) {
+  theme_change_event_t* evt = theme_change_event_cast(e);
+  widget_set_theme_without_file_system(window_manager(), evt->name);
+  return RET_OK;
+}
 #endif /*WITH_FS_RES*/
 
-ret_t assets_set_global_theme(const char* name) {
-#ifdef WITH_FS_RES
-  return widget_set_theme(window_manager(), name);
-#else  /*WITH_FS_RES*/
-  return widget_set_theme_without_file_system(window_manager(), name);
+ret_t assets_init(void) {
+#ifndef WITH_FS_RES
+  widget_on(window_manager(), EVT_THEME_WILL_CHANGE, on_set_theme_without_file_system, NULL);
 #endif /*WITH_FS_RES*/
+  return assets_init_internal(APP_THEME);
+}
+
+ret_t assets_set_global_theme(const char* name) {
+  return widget_set_theme(window_manager(), name);
 }

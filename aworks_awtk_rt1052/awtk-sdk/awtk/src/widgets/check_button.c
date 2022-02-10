@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  check_button
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,6 +24,8 @@
 #include "widgets/check_button.h"
 #include "base/image_manager.h"
 #include "base/widget_vtable.h"
+
+static ret_t check_button_set_radio(widget_t* widget, bool_t radio);
 
 static ret_t check_button_on_event(widget_t* widget, event_t* e) {
   uint16_t type = e->type;
@@ -106,8 +108,6 @@ ret_t check_button_set_value(widget_t* widget, bool_t value) {
   check_button_t* check_button = CHECK_BUTTON(widget);
   return_value_if_fail(check_button != NULL, RET_BAD_PARAMS);
 
-  check_button_set_value_only(widget, value);
-
   if (check_button->radio && widget->parent != NULL && value) {
     widget_t* parent = widget->parent;
 
@@ -117,6 +117,7 @@ ret_t check_button_set_value(widget_t* widget, bool_t value) {
     }
     WIDGET_FOR_EACH_CHILD_END();
   }
+  check_button_set_value_only(widget, value);
 
   return RET_OK;
 }
@@ -131,6 +132,9 @@ static ret_t check_button_get_prop(widget_t* widget, const char* name, value_t* 
   } else if (tk_str_eq(name, WIDGET_PROP_STATE_FOR_STYLE)) {
     value_set_str(v, widget_get_state_for_style(widget, FALSE, check_button->value));
     return RET_OK;
+  } else if (tk_str_eq(name, WIDGET_PROP_RADIO)) {
+    value_set_bool(v, check_button->radio);
+    return RET_OK;
   }
 
   return RET_NOT_FOUND;
@@ -141,6 +145,9 @@ static ret_t check_button_set_prop(widget_t* widget, const char* name, const val
 
   if (tk_str_eq(name, WIDGET_PROP_VALUE)) {
     return check_button_set_value(widget, value_bool(v));
+  } else if (tk_str_eq(name, WIDGET_PROP_RADIO)) {
+    check_button_set_radio(widget, value_bool(v));
+    return RET_OK;
   }
 
   return RET_NOT_FOUND;
@@ -198,6 +205,21 @@ widget_t* check_button_create_radio(widget_t* parent, xy_t x, xy_t y, wh_t w, wh
   check_button_set_value_only(widget, FALSE);
 
   return widget;
+}
+
+static ret_t check_button_set_radio(widget_t* widget, bool_t radio) {
+  check_button_t* check_button = CHECK_BUTTON(widget);
+  return_value_if_fail(check_button != NULL, RET_BAD_PARAMS);
+  check_button->radio = radio;
+  if (radio) {
+    widget->vt = TK_REF_VTABLE(radio_button);
+  } else {
+    widget->vt = TK_REF_VTABLE(check_button);
+  }
+  widget_set_need_update_style(widget);
+  widget_invalidate_force(widget, NULL);
+
+  return RET_OK;
 }
 
 widget_t* check_button_cast(widget_t* widget) {

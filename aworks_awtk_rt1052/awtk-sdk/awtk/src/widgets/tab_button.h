@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  tab_button
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -119,16 +119,22 @@ typedef struct _tab_button_t {
 
   /*private*/
   widget_t* ui;
+  bool_t pressed;
 } tab_button_t;
 
 /**
- * @event {event_t} EVT_VALUE_WILL_CHANGE
+ * @event {value_change_event_t} EVT_VALUE_WILL_CHANGE
  * 值(激活状态)即将改变事件。
  */
 
 /**
- * @event {event_t} EVT_VALUE_CHANGED
+ * @event {value_change_event_t} EVT_VALUE_CHANGED
  * 值(激活状态)改变事件。
+ */
+
+/**
+ * @event {pointer_event_t} EVT_CLICK
+ * 点击事件。
  */
 
 /**
@@ -160,7 +166,7 @@ widget_t* tab_button_cast(widget_t* widget);
  * 设置为当前标签。
  * @annotation ["scriptable"]
  * @param {widget_t*} widget tab_button对象。
- * @param {uint32_t}  value 是否为当前标签。
+ * @param {bool_t}  value 是否为当前标签。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */

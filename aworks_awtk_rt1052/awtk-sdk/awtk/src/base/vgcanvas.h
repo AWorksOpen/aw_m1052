@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  vector graphics canvas interface.
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,8 +23,9 @@
 #define TK_VG_CANVAS_H
 
 #include "tkc/rect.h"
-#include "base/types_def.h"
 #include "base/bitmap.h"
+#include "base/dirty_rects.h"
+#include "base/vg_gradient.h"
 
 BEGIN_C_DECLS
 
@@ -38,6 +39,8 @@ typedef struct _framebuffer_object_t {
   bool_t init;
   int online_fbo;
   int offline_fbo;
+  /* 脱离默认的 OpenGL 绘图方法，使用用户自定义的绘图方法，例如用户自定义的着色器等等 */
+  bool_t custom_draw_model;
   rect_t online_dirty_rect;
 } framebuffer_object_t;
 
@@ -46,9 +49,10 @@ typedef struct _vgcanvas_t vgcanvas_t;
 
 typedef ret_t (*vgcanvas_reinit_t)(vgcanvas_t* vg, uint32_t w, uint32_t h, uint32_t stride,
                                    bitmap_format_t format, void* data);
-typedef ret_t (*vgcanvas_begin_frame_t)(vgcanvas_t* vg, const rect_t* dirty_rect);
+typedef ret_t (*vgcanvas_begin_frame_t)(vgcanvas_t* vg, const dirty_rects_t* dirty_rects);
 typedef ret_t (*vgcanvas_end_frame_t)(vgcanvas_t* vg);
 
+typedef ret_t (*vgcanvas_set_assets_manager_t)(vgcanvas_t* vg, assets_manager_t* assets_manager);
 typedef ret_t (*vgcanvas_reset_t)(vgcanvas_t* vg);
 typedef ret_t (*vgcanvas_flush_t)(vgcanvas_t* vg);
 typedef ret_t (*vgcanvas_reset_curr_state_t)(vgcanvas_t* vg);
@@ -80,6 +84,10 @@ typedef ret_t (*vgcanvas_transform_t)(vgcanvas_t* vg, float_t a, float_t b, floa
 typedef ret_t (*vgcanvas_set_transform_t)(vgcanvas_t* vg, float_t a, float_t b, float_t c,
                                           float_t d, float_t e, float_t f);
 
+typedef ret_t (*vgcanvas_clip_path_t)(vgcanvas_t* vg);
+typedef const rectf_t* (*vgcanvas_get_clip_rect_t)(vgcanvas_t* vg);
+typedef bool_t (*vgcanvas_is_rectf_in_clip_rect_t)(vgcanvas_t* vg, float_t left, float_t top,
+                                                   float_t right, float_t bottom);
 typedef ret_t (*vgcanvas_clip_rect_t)(vgcanvas_t* vg, float_t x, float_t y, float_t w, float_t h);
 typedef ret_t (*vgcanvas_nanovg_intersect_clip_rect_t)(vgcanvas_t* vg, float_t* x, float_t* y,
                                                        float_t* w, float_t* h);
@@ -100,10 +108,18 @@ typedef ret_t (*vgcanvas_draw_image_t)(vgcanvas_t* vg, bitmap_t* img, float_t sx
                                        float_t sw, float_t sh, float_t dx, float_t dy, float_t dw,
                                        float_t dh);
 
+typedef ret_t (*vgcanvas_draw_image_repeat_t)(vgcanvas_t* vg, bitmap_t* img, float_t sx, float_t sy,
+                                              float_t sw, float_t sh, float_t dx, float_t dy,
+                                              float_t dw, float_t dh, float_t dst_w, float_t dst_h);
+
 typedef ret_t (*vgcanvas_set_antialias_t)(vgcanvas_t* vg, bool_t value);
 typedef ret_t (*vgcanvas_set_global_alpha_t)(vgcanvas_t* vg, float_t alpha);
 typedef ret_t (*vgcanvas_set_line_width_t)(vgcanvas_t* vg, float_t value);
 typedef ret_t (*vgcanvas_set_fill_color_t)(vgcanvas_t* vg, color_t color);
+typedef ret_t (*vgcanvas_set_stroke_color_t)(vgcanvas_t* vg, color_t color);
+
+typedef ret_t (*vgcanvas_set_fill_gradient_t)(vgcanvas_t* vg, const vg_gradient_t* gradient);
+typedef ret_t (*vgcanvas_set_stroke_gradient_t)(vgcanvas_t* vg, const vg_gradient_t* gradient);
 
 typedef ret_t (*vgcanvas_set_fill_linear_gradient_t)(vgcanvas_t* vg, float_t sx, float_t sy,
                                                      float_t ex, float_t ey, color_t icolor,
@@ -112,7 +128,6 @@ typedef ret_t (*vgcanvas_set_fill_radial_gradient_t)(vgcanvas_t* vg, float_t cx,
                                                      float_t inr, float_t outr, color_t icolor,
                                                      color_t ocolor);
 
-typedef ret_t (*vgcanvas_set_stroke_color_t)(vgcanvas_t* vg, color_t color);
 typedef ret_t (*vgcanvas_set_stroke_linear_gradient_t)(vgcanvas_t* vg, float_t sx, float_t sy,
                                                        float_t ex, float_t ey, color_t icolor,
                                                        color_t ocolor);
@@ -131,12 +146,12 @@ typedef ret_t (*vgcanvas_save_t)(vgcanvas_t* vg);
 typedef ret_t (*vgcanvas_restore_t)(vgcanvas_t* vg);
 
 typedef ret_t (*vgcanvas_create_fbo_t)(vgcanvas_t* vg, uint32_t w, uint32_t h,
-                                       framebuffer_object_t* fbo);
+                                       bool_t custom_draw_model, framebuffer_object_t* fbo);
 typedef ret_t (*vgcanvas_destroy_fbo_t)(vgcanvas_t* vg, framebuffer_object_t* fbo);
 typedef ret_t (*vgcanvas_bind_fbo_t)(vgcanvas_t* vg, framebuffer_object_t* fbo);
 typedef ret_t (*vgcanvas_unbind_fbo_t)(vgcanvas_t* vg, framebuffer_object_t* fbo);
-typedef ret_t (*vgcanvas_nanovg_fbo_to_bitmap_t)(vgcanvas_t* vgcanvas, framebuffer_object_t* fbo,
-                                                 bitmap_t* img, const rect_t* r);
+typedef ret_t (*vgcanvas_fbo_to_bitmap_t)(vgcanvas_t* vgcanvas, framebuffer_object_t* fbo,
+                                          bitmap_t* img, const rect_t* r);
 
 typedef ret_t (*vgcanvas_clear_cache_t)(vgcanvas_t* vg);
 
@@ -146,6 +161,7 @@ typedef struct _vgcanvas_vtable_t {
   vgcanvas_reinit_t reinit;
 
   vgcanvas_begin_frame_t begin_frame;
+  vgcanvas_set_assets_manager_t set_assets_manager;
   vgcanvas_reset_t reset;
   vgcanvas_flush_t flush;
   vgcanvas_clear_rect_t clear_rect;
@@ -170,7 +186,10 @@ typedef struct _vgcanvas_vtable_t {
   vgcanvas_transform_t transform;
   vgcanvas_set_transform_t set_transform;
 
+  vgcanvas_clip_path_t clip_path;
   vgcanvas_clip_rect_t clip_rect;
+  vgcanvas_get_clip_rect_t get_clip_rect;
+  vgcanvas_is_rectf_in_clip_rect_t is_rectf_in_clip_rect;
   vgcanvas_nanovg_intersect_clip_rect_t intersect_clip_rect;
   vgcanvas_fill_t fill;
   vgcanvas_stroke_t stroke;
@@ -184,6 +203,7 @@ typedef struct _vgcanvas_vtable_t {
   vgcanvas_fill_text_t fill_text;
   vgcanvas_measure_text_t measure_text;
   vgcanvas_draw_image_t draw_image;
+  vgcanvas_draw_image_repeat_t draw_image_repeat;
 
   vgcanvas_set_antialias_t set_antialias;
   vgcanvas_set_global_alpha_t set_global_alpha;
@@ -194,6 +214,8 @@ typedef struct _vgcanvas_vtable_t {
   vgcanvas_set_stroke_color_t set_stroke_color;
   vgcanvas_set_stroke_linear_gradient_t set_stroke_linear_gradient;
   vgcanvas_set_stroke_radial_gradient_t set_stroke_radial_gradient;
+  vgcanvas_set_fill_gradient_t set_fill_gradient;
+  vgcanvas_set_stroke_gradient_t set_stroke_gradient;
   vgcanvas_set_line_join_t set_line_join;
   vgcanvas_set_line_cap_t set_line_cap;
   vgcanvas_set_miter_limit_t set_miter_limit;
@@ -208,7 +230,7 @@ typedef struct _vgcanvas_vtable_t {
   vgcanvas_destroy_fbo_t destroy_fbo;
   vgcanvas_bind_fbo_t bind_fbo;
   vgcanvas_unbind_fbo_t unbind_fbo;
-  vgcanvas_nanovg_fbo_to_bitmap_t fbo_to_bitmap;
+  vgcanvas_fbo_to_bitmap_t fbo_to_bitmap;
 
   vgcanvas_clear_cache_t clear_cache;
 
@@ -381,7 +403,7 @@ struct _vgcanvas_t {
    * frame buffer format
    */
   bitmap_format_t format;
-  rect_t clip_rect;
+  rectf_t clip_rect;
   rect_t dirty_rect;
   const vgcanvas_vtable_t* vt;
   assets_manager_t* assets_manager;
@@ -464,11 +486,11 @@ ret_t vgcanvas_flush(vgcanvas_t* vg);
  * 开始绘制，系统内部调用。
  *
  * @param {vgcanvas_t*} vg vgcanvas对象。
- * @param {const rect_t*} dirty_rect 需要绘制的区域。
+ * @param {const dirty_rects_t*} dirty_rects 需要绘制的区域。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t vgcanvas_begin_frame(vgcanvas_t* vg, const rect_t* dirty_rect);
+ret_t vgcanvas_begin_frame(vgcanvas_t* vg, const dirty_rects_t* dirty_rects);
 
 /**
  * @method vgcanvas_clear_rect
@@ -749,6 +771,16 @@ ret_t vgcanvas_transform(vgcanvas_t* vg, float_t a, float_t b, float_t c, float_
  */
 ret_t vgcanvas_set_transform(vgcanvas_t* vg, float_t a, float_t b, float_t c, float_t d, float_t e,
                              float_t f);
+/**
+ * @method vgcanvas_clip_path
+ * 使用当前的path裁剪。
+ *>目前只有部分backend支持(如cairo)。
+ * @annotation ["scriptable"]
+ * @param {vgcanvas_t*} vg vgcanvas对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t vgcanvas_clip_path(vgcanvas_t* vg);
 
 /**
  * @method vgcanvas_clip_rect
@@ -764,6 +796,32 @@ ret_t vgcanvas_set_transform(vgcanvas_t* vg, float_t a, float_t b, float_t c, fl
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t vgcanvas_clip_rect(vgcanvas_t* vg, float_t x, float_t y, float_t w, float_t h);
+
+/**
+ * @method vgcanvas_get_clip_rect
+ * 获取矩形裁剪。
+ *
+ * @param {vgcanvas_t*} vg vgcanvas对象。
+ *
+ * @return {const rectf_t*} 返回裁剪区。
+ */
+const rectf_t* vgcanvas_get_clip_rect(vgcanvas_t* vg);
+
+/**
+ * @method vgcanvas_is_rectf_in_clip_rect
+ * 矩形区域是否在矩形裁剪中。
+ *
+ * @annotation ["scriptable"]
+ * @param {vgcanvas_t*} vg vgcanvas对象。
+ * @param {float_t} left 矩形区域左边。
+ * @param {float_t} top 矩形区域上边。
+ * @param {float_t} right 矩形区域右边。
+ * @param {float_t} bottom 矩形区域下边。
+ *
+ * @return {bool_t} 返回 TURE 则在区域中，返回 FALSE 则不在区域中。
+ */
+bool_t vgcanvas_is_rectf_in_clip_rect(vgcanvas_t* vg, float_t left, float_t top, float_t right,
+                                      float_t bottom);
 
 /**
  * @method vgcanvas_intersect_clip_rect
@@ -940,6 +998,34 @@ ret_t vgcanvas_draw_image(vgcanvas_t* vg, bitmap_t* img, float_t sx, float_t sy,
                           float_t sh, float_t dx, float_t dy, float_t dw, float_t dh);
 
 /**
+ * @method vgcanvas_draw_image_repeat
+ * 绘制图片。
+ * 
+ * 备注：
+ * 当绘制区域大于原图区域时，多余的绘制区域会重复绘制原图区域的东西。（绘制图区按照绘制图片的宽高来绘制的）
+ * 当绘制图片的宽高和原图的不同，在重复绘制的同时加入缩放。
+ *
+ * @annotation ["scriptable"]
+ * @param {vgcanvas_t*} vg vgcanvas对象。
+ * @param {bitmap_t*} img 图片。
+ * @param {float_t} sx 原图区域的 x
+ * @param {float_t} sy 原图区域的 y
+ * @param {float_t} sw 原图区域的 w
+ * @param {float_t} sh 原图区域的 h
+ * @param {float_t} dx 绘制区域的 x
+ * @param {float_t} dy 绘制区域的 y
+ * @param {float_t} dw 绘制区域的 w
+ * @param {float_t} dh 绘制区域的 h
+ * @param {float_t} dst_w 绘制图片的宽
+ * @param {float_t} dst_h 绘制图片的高
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t vgcanvas_draw_image_repeat(vgcanvas_t* vg, bitmap_t* img, float_t sx, float_t sy, float_t sw,
+                                 float_t sh, float_t dx, float_t dy, float_t dw, float_t dh,
+                                 float_t dst_w, float_t dst_h);
+
+/**
  * @method vgcanvas_draw_icon
  * 绘制图标。
  *
@@ -1020,6 +1106,30 @@ ret_t vgcanvas_set_fill_color(vgcanvas_t* vg, color_t color);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t vgcanvas_set_fill_color_str(vgcanvas_t* vg, const char* color);
+
+/**
+ * @method vgcanvas_set_fill_gradient
+ * 设置填充颜色为渐变色。
+ *
+ *>目前只有部分backend支持(如cairo)。
+ * @param {vgcanvas_t*} vg vgcanvas对象。
+ * @param {vg_gradient_t*} gradient gradient对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t vgcanvas_set_fill_gradient(vgcanvas_t* vg, const vg_gradient_t* gradient);
+
+/**
+ * @method vgcanvas_set_stroke_gradient
+ * 设置线条颜色为渐变色。
+ *
+ *>目前只有部分backend支持(如cairo)。
+ * @param {vgcanvas_t*} vg vgcanvas对象。
+ * @param {vg_gradient_t*} gradient gradient对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t vgcanvas_set_stroke_gradient(vgcanvas_t* vg, const vg_gradient_t* gradient);
 
 /**
  * @method vgcanvas_set_fill_linear_gradient
@@ -1220,10 +1330,60 @@ ret_t vgcanvas_clear_cache(vgcanvas_t* vg);
  */
 ret_t vgcanvas_destroy(vgcanvas_t* vg);
 
-ret_t vgcanvas_create_fbo(vgcanvas_t* vg, uint32_t w, uint32_t h, framebuffer_object_t* fbo);
+/**
+ * @method vgcanvas_create_fbo
+ * 创建 fbo 对象。
+ * @param {vgcanvas_t*} vg vgcanvas对象。
+ * @param {uint32_t} w fbo 对象的宽。
+ * @param {uint32_t} h fbo 对象的高。
+ * @param {bool_t} custom_draw_model 是否脱离 awtk 默认的 OpenGL 绘图方法。
+ * @param {framebuffer_object_t*} fbo 需要创建 fbo 的对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t vgcanvas_create_fbo(vgcanvas_t* vg, uint32_t w, uint32_t h, bool_t custom_draw_model,
+                          framebuffer_object_t* fbo);
+
+/**
+ * @method vgcanvas_destroy_fbo
+ * 销毁 fbo 对象。
+ * @param {vgcanvas_t*} vg vgcanvas对象。
+ * @param {framebuffer_object_t*} fbo 需要创建 fbo 的对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
 ret_t vgcanvas_destroy_fbo(vgcanvas_t* vg, framebuffer_object_t* fbo);
+
+/**
+ * @method vgcanvas_bind_fbo
+ * 绑定 fbo 对象。
+ * @param {vgcanvas_t*} vg vgcanvas对象。
+ * @param {framebuffer_object_t*} fbo 需要创建 fbo 的对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
 ret_t vgcanvas_bind_fbo(vgcanvas_t* vg, framebuffer_object_t* fbo);
+
+/**
+ * @method vgcanvas_unbind_fbo
+ * 解开绑定 fbo 对象。
+ * @param {vgcanvas_t*} vg vgcanvas对象。
+ * @param {framebuffer_object_t*} fbo 需要创建 fbo 的对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
 ret_t vgcanvas_unbind_fbo(vgcanvas_t* vg, framebuffer_object_t* fbo);
+
+/**
+ * @method vgcanvas_fbo_to_bitmap
+ * 把 fbo 对象的数据拷贝到 bitmap 中。
+ * @param {vgcanvas_t*} vg vgcanvas对象。
+ * @param {framebuffer_object_t*} fbo 需要创建 fbo 的对象。
+ * @param {bitmap_t*} img 输出的 bitmap 的对象。
+ * @param {const rect_t*} r 需要拷贝的区域。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
 ret_t vgcanvas_fbo_to_bitmap(vgcanvas_t* vg, framebuffer_object_t* fbo, bitmap_t* img,
                              const rect_t* r);
 ret_t fbo_to_img(framebuffer_object_t* fbo, bitmap_t* img);
@@ -1246,6 +1406,12 @@ ret_t vgcanvas_set_assets_manager(vgcanvas_t* vg, assets_manager_t* assets_manag
  * 方头。 
  */
 #define VGCANVAS_LINE_CAP_SQUARE "square"
+
+/**
+ * @const VGCANVAS_LINE_CAP_BUTT
+ * 平头。 
+ */
+#define VGCANVAS_LINE_CAP_BUTT "butt"
 
 /**
  * @enum vgcanvas_line_join_t

@@ -1,5 +1,6 @@
 ﻿#include "awtk.h"
-#include "qr/qr.h"
+#include "../src/qr/qr.h"
+#include "../src/qr_register.h"
 
 static ret_t on_close(void* ctx, event_t* e) {
   tk_quit();

@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  animator manager
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -39,7 +39,7 @@ struct _widget_animator_manager_t {
 
   /*private*/
   uint32_t timer_id;
-  uint32_t last_dispatch_time;
+  uint64_t last_dispatch_time;
   widget_animator_t* first;
 };
 

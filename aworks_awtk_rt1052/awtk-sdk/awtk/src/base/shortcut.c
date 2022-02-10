@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  shortcut
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -39,7 +39,7 @@ shortcut_t* shortcut_init_with_str(shortcut_t* shortcut, const char* str) {
   tokenizer_t t;
   const char* k = NULL;
   return_value_if_fail(shortcut != NULL && str != NULL, NULL);
-  return_value_if_fail(tokenizer_init_ex(&t, str, strlen(str), " +", NULL) != NULL, NULL);
+  return_value_if_fail(tokenizer_init_ex(&t, str, strlen(str), " _+", NULL) != NULL, NULL);
 
   memset(shortcut, 0, sizeof(shortcut_t));
   while (tokenizer_has_more(&t)) {

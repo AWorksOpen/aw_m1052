@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  event manager manager
  *
- * Copyright (c) 2019 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2019 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -38,7 +38,6 @@ typedef ret_t (*event_source_manager_destroy_t)(event_source_manager_t* manager)
  */
 struct _event_source_manager_t {
   darray_t sources;
-  uint32_t last_dispatch_time;
   darray_t dispatching_sources;
 
   event_source_manager_dispatch_t dispatch;

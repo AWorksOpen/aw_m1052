@@ -41,6 +41,13 @@
  */
 
 /**
+ * 如果代码在 flash 中，而资源在文件系统，请定义本宏指明资源所在的路径。
+ * 
+ * #define APP_RES_ROOT "0://awtk/"
+ * 
+ */
+
+/**
  * 如果定义本宏，使用标准的 UNICODE 换行算法，除非资源极为有限，请定义本宏。
  *
  * #define WITH_UNICODE_BREAK 1
@@ -56,15 +63,15 @@
 /**
  * 如果定义本宏，将不透明的 PNG 图片解码成 BGR565 格式，建议定义。
  * 另外和 LCD 的格式保存一致，可以大幅度提高性能。
- * 如果没有定义 WITH_BITMAP_BGR565 和 WITH_BITMAP_RGB565 宏，默认解析为32位色
+ * 如果没有定义 WITH_BITMAP_BGR565 和 WITH_BITMAP_RGB565 宏，默认解析为 32 位色
  *
  * #define WITH_BITMAP_BGR565 1
  */
 
- /**
+/**
  * 如果定义本宏，将不透明的 PNG 图片解码成 RGB565 格式，建议定义。
  * 另外和 LCD 的格式保存一致，可以大幅度提高性能。
- * 如果没有定义 WITH_BITMAP_BGR565 和 WITH_BITMAP_RGB565 宏，默认解析为32位色
+ * 如果没有定义 WITH_BITMAP_BGR565 和 WITH_BITMAP_RGB565 宏，默认解析为 32 位色
  *
  * #define WITH_BITMAP_RGB565 1
  */
@@ -161,15 +168,73 @@
  */
 
 /**
- * 对于低端平台，如果内存不足以提供完整的 FrameBuffer，请定义本宏启用局部 FrameBuffer，可大幅度提高渲染性能。
+ * 对于低端平台，如果内存不足以提供完整的 FrameBuffer，请定义本宏启用局部 FrameBuffer，可大幅度提高渲染性能。（单位是像素个数）
  *
  * #define FRAGMENT_FRAME_BUFFER_SIZE 32 * 1024
  */
 
- /**
- * 启用widget类型检查，请定义本宏(除非编译器不支持，否则请定义它)。
+/**
+ * 启用 widget 类型检查，请定义本宏（除非编译器不支持，否则请定义它）。
  *
  * #define WITH_WIDGET_TYPE_CHECK 1
+ */
+
+/**
+ * 启用输入法，但不想启用联想功能，请定义本宏。
+ *
+ * #define WITHOUT_SUGGEST_WORDS 1
+ */
+
+/**
+ * 如果需要从 zip 文件中加载资源，请定义本宏。
+ *
+ * #define WITH_ASSET_LOADER_ZIP 1
+ */
+
+/**
+ * 对于只有 512K flash 的平台，而且 LCD 格式是 BGR565。如果希望进一步优化空间，去掉多余的 bitmap 格式支持代码。请定义本宏。
+ * 其它 LCD 格式，可以自行修改：src/blend/soft_g2d.c 保留需要的格式即可。
+ *
+ * #define LCD_BGR565_LITE 1
+ */
+
+/**
+ * 如果希望支持文字双向排版算法（如阿拉伯语言），请定义本宏。
+ * 
+ * #define WITH_TEXT_BIDI 1
+ * 
+ */
+
+/**
+ * 开启自定义的离线 canvas，如果板子使用特殊的画布的话，需要定义该宏来定义特殊离线 canvas 函数
+ * 
+ * #define WITH_CANVAS_OFFLINE_CUSTION 1
+ */
+
+/**
+ * 开启透明色背景的刷新机制，一般使用在多图层的透明背景使用
+ * 
+ * #define WITH_LCD_CLEAR_ALPHA 1
+ */
+
+/**
+ * 如果支持多块不连续的内存块，请定义内存块的数目。
+ * 
+ * #define TK_MAX_MEM_BLOCK_NR 4
+ */
+
+/**
+ * 用于控制窗口动画是否使用缓存。开启后可以降低内存需求(减少2倍framebuffer大小的内存)，如果内存紧缺，在下面情况可以开启：
+ *  1. 界面简单
+ *  2. CPU速度快
+ *
+ * 如果绘制速度慢，而且内存紧缺，建议关闭窗口动画。
+ *
+ * 限制条件：
+ *  1.不支持缩放窗口动画。
+ *  2.不支持对话框高亮策略。
+ * 
+ * #define WITHOUT_WINDOW_ANIMATOR_CACHE 1
  */
 ```
 
@@ -217,7 +282,7 @@ awtk-port
 | src/platforms/raw/sys\_tick.c    | 如果需要自己实现 sys tick 中断，可以加入
 | src/vgcanvas                     | 如果需要矢量图或图片旋转（不支持 lcd\_reg) 请加入 vgcanvas\_nanovg_soft.c，否则加入 vgcanvas\_null.c
 | src/widget\_animators            | 除了使用 LCD\_REG 的平台外推荐全部加入
-| src/window\_animators            | 启用 OpenGL(PC/Android/iOS) 时加入 window\_animator\_gpu.c，使用 Framebuffer（一般嵌入式）时加入 window\_animator\_fb.c，低端嵌入式平台请加入 window\_animator\_null.c
+| src/window\_animators            | 加入全部文件，根据宏决定是否启用。
 | src/ubjson                       | 不用不加。
 | src/streams                      | 一般不加。
 | awtk/3rd/agge                    | 在 framebuffer 模式启用 vgcanvas 时加入

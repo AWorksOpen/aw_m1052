@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  main_loop interface
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -87,8 +87,6 @@ ret_t main_loop_recv_event(main_loop_t* l, event_queue_req_t* r) {
 #include "base/timer.h"
 #include "base/window_manager.h"
 
-#define TK_MAX_SLEEP_TIME (1000 / TK_MAX_FPS)
-
 ret_t main_loop_sleep_default(main_loop_t* l) {
   uint64_t now = time_now_ms();
   uint32_t gap = now - l->last_loop_time;
@@ -96,6 +94,7 @@ ret_t main_loop_sleep_default(main_loop_t* l) {
   int32_t least_sleep_time = gap > TK_MAX_SLEEP_TIME ? 0 : (TK_MAX_SLEEP_TIME - gap);
 
   sleep_time = tk_min(least_sleep_time, sleep_time);
+  sleep_time = tk_min(sleep_time, l->curr_expected_sleep_time);
   if (sleep_time > 0) {
     sleep_ms(sleep_time);
   }
@@ -146,4 +145,18 @@ ret_t main_loop_remove_event_source(main_loop_t* l, event_source_t* source) {
   return_value_if_fail(m != NULL && source != NULL, RET_BAD_PARAMS);
 
   return event_source_manager_remove(m, source);
+}
+
+ret_t main_loop_remove_event_source_by_tag(main_loop_t* l, void* tag) {
+  event_source_manager_t* m = main_loop_get_event_source_manager(l);
+  return_value_if_fail(m != NULL, RET_BAD_PARAMS);
+
+  return event_source_manager_remove_by_tag(m, tag);
+}
+
+ret_t main_loop_set_curr_expected_sleep_time(main_loop_t* l, uint32_t sleep_time) {
+  return_value_if_fail(l != NULL, RET_BAD_PARAMS);
+  l->curr_expected_sleep_time = sleep_time;
+
+  return RET_OK;
 }

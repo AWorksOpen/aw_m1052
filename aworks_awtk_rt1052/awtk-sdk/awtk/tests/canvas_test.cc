@@ -1,4 +1,5 @@
 ﻿#include "base/canvas.h"
+#include "base/dirty_rects.h"
 #include "base/font_manager.h"
 #include "font_dummy.h"
 #include "lcd_log.h"
@@ -7,6 +8,7 @@
 
 TEST(Canvas, draw_hline) {
   rect_t r;
+  rect_t r1;
   canvas_t c;
   font_manager_t font_manager;
   lcd_t* lcd = lcd_log_init(800, 600);
@@ -14,7 +16,16 @@ TEST(Canvas, draw_hline) {
   canvas_init(&c, lcd, &font_manager);
 
   r = rect_init(100, 100, 200, 200);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
+
+  ASSERT_EQ(canvas_get_clip_rect(&c, &r1), RET_OK);
+  ASSERT_EQ(r.x, r1.x);
+  ASSERT_EQ(r.y, r1.y);
+  ASSERT_EQ(r.w, r1.w);
+  ASSERT_EQ(r.h, r1.h);
 
   lcd_log_reset(lcd);
   canvas_draw_hline(&c, 90, 110, 40);
@@ -46,7 +57,10 @@ TEST(Canvas, draw_vline) {
   canvas_init(&c, lcd, &font_manager);
 
   r = rect_init(100, 100, 200, 200);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   canvas_draw_vline(&c, 110, 90, 40);
@@ -78,7 +92,10 @@ TEST(Canvas, fill_rect) {
   canvas_init(&c, lcd, &font_manager);
 
   r = rect_init(100, 100, 200, 200);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   canvas_fill_rect(&c, 120, 310, 10, 10);
@@ -130,7 +147,10 @@ TEST(Canvas, clear_rect) {
   canvas_init(&c, lcd, &font_manager);
 
   r = rect_init(100, 100, 200, 200);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   canvas_clear_rect(&c, 120, 310, 10, 10);
@@ -190,7 +210,10 @@ TEST(Canvas, draw_points) {
   points[2].x = x3;                     \
   points[2].y = y3;
   r = rect_init(100, 100, 200, 200);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   POINTS3(0, 10, 100, 10, 320, 10);
@@ -229,7 +252,10 @@ TEST(Canvas, draw_glyph) {
   font_manager_add_font(&font_manager, font_dummy_0("demo0", font_size));
 
   r = rect_init(100, 100, 200, 200);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
   canvas_set_font(&c, "demo0", font_size);
 
   lcd_log_reset(lcd);
@@ -272,7 +298,10 @@ TEST(Canvas, draw_image) {
   img.w = 32;
   img.h = 32;
   r = rect_init(100, 100, 200, 200);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   s = rect_init(0, 0, img.w, img.h);
@@ -345,7 +374,10 @@ TEST(Canvas, draw_image_patch3_x_scale_y) {
   img.w = 32;
   img.h = 32;
   r = rect_init(0, 0, 320, 480);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   d = rect_init(0, 0, img.w, img.h);
@@ -390,7 +422,10 @@ TEST(Canvas, draw_image_patch3_y_scale_x) {
   img.w = 32;
   img.h = 32;
   r = rect_init(0, 0, 320, 480);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   d = rect_init(0, 0, img.w, img.h);
@@ -435,7 +470,10 @@ TEST(Canvas, draw_image_patch9) {
   img.w = 32;
   img.h = 32;
   r = rect_init(0, 0, 320, 480);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   d = rect_init(0, 0, img.w, img.h);
@@ -488,7 +526,10 @@ TEST(Canvas, draw_image_repeat_x) {
   img.w = 32;
   img.h = 32;
   r = rect_init(0, 0, 320, 480);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   r = rect_init(0, 0, img.w, img.h);
@@ -547,7 +588,10 @@ TEST(Canvas, draw_image_repeat_y) {
   img.w = 32;
   img.h = 32;
   r = rect_init(0, 0, 320, 480);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   r = rect_init(0, 0, img.w, img.h);
@@ -607,7 +651,10 @@ TEST(Canvas, draw_image_repeat_y_inverse) {
   img.w = 32;
   img.h = 32;
   r = rect_init(0, 0, 320, 480);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   r = rect_init(0, 0, img.w, img.h);
@@ -660,7 +707,10 @@ TEST(Canvas, draw_image_repeat) {
   img.w = 32;
   img.h = 32;
   r = rect_init(0, 0, 320, 480);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   r = rect_init(0, 0, img.w, img.h);
@@ -708,7 +758,10 @@ TEST(Canvas, draw_image_repeat9) {
   img.w = 32;
   img.h = 32;
   r = rect_init(0, 0, 320, 480);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   r = rect_init(0, 0, img.w, img.h);
@@ -798,7 +851,10 @@ TEST(Canvas, draw_image_repeat3_x) {
   img.w = 32;
   img.h = 32;
   r = rect_init(0, 0, 320, 480);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   r = rect_init(0, 0, img.w, img.h);
@@ -852,7 +908,10 @@ TEST(Canvas, draw_image_repeat3_y) {
   img.w = 32;
   img.h = 32;
   r = rect_init(0, 0, 320, 480);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   r = rect_init(0, 0, img.w, img.h);
@@ -906,7 +965,10 @@ TEST(Canvas, draw_image_scale_w) {
   img.w = 32;
   img.h = 32;
   r = rect_init(0, 0, 320, 480);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   r = rect_init(0, 0, img.w, img.h);
@@ -951,7 +1013,10 @@ TEST(Canvas, draw_image_scale_h) {
   img.w = 32;
   img.h = 32;
   r = rect_init(0, 0, 320, 480);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   r = rect_init(0, 0, img.w, img.h);
@@ -996,7 +1061,10 @@ TEST(Canvas, draw_image_scale) {
   img.w = 32;
   img.h = 32;
   r = rect_init(0, 0, 320, 480);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   r = rect_init(0, 0, img.w, img.h);
@@ -1041,7 +1109,10 @@ TEST(Canvas, draw_image_center) {
   img.w = 32;
   img.h = 32;
   r = rect_init(0, 0, 320, 480);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   r = rect_init(0, 0, img.w, img.h);
@@ -1087,7 +1158,10 @@ TEST(Canvas, draw_image_default_ex2) {
   img.w = 32;
   img.h = 32;
   r = rect_init(0, 0, 320, 480);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   s = rect_init(0, 0, img.w, img.h);
@@ -1121,7 +1195,10 @@ TEST(Canvas, draw_image_scale_ex2) {
   img.w = 32;
   img.h = 32;
   r = rect_init(0, 0, 320, 480);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   s = rect_init(0, 0, img.w, img.h);
@@ -1155,7 +1232,10 @@ TEST(Canvas, draw_image_center_ex2) {
   img.w = 32;
   img.h = 32;
   r = rect_init(0, 0, 320, 480);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   s = rect_init(0, 0, img.w, img.h);
@@ -1189,7 +1269,10 @@ TEST(Canvas, draw_image_icon_ex2) {
   img.w = 32;
   img.h = 32;
   r = rect_init(0, 0, 320, 480);
-  canvas_begin_frame(&c, &r, LCD_DRAW_NORMAL);
+  dirty_rects_t dr;
+  dirty_rects_init(&dr);
+  dirty_rects_add(&dr, &r);
+  canvas_begin_frame(&c, &dr, LCD_DRAW_NORMAL);
 
   lcd_log_reset(lcd);
   s = rect_init(0, 0, img.w, img.h);

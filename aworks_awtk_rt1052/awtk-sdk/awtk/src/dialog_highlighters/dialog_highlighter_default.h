@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  default dialog_highlighter
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied highlighterrranty of
@@ -63,11 +63,11 @@ struct _dialog_highlighter_default_t {
  * @method dialog_highlighter_default_create
  * 创建缺省的对话框高亮策略。
  * @annotation ["constructor"]
- * @param {object_t*} args 参数。
+ * @param {tk_object_t*} args 参数。
  *
  * @return {dialog_highlighter_t*} 返回对话框高亮策略对象。
  */
-dialog_highlighter_t* dialog_highlighter_default_create(object_t* args);
+dialog_highlighter_t* dialog_highlighter_default_create(tk_object_t* args);
 
 #define DIALOG_HIGHLIGHTER_DEFAULT_ARG_START_ALPHA "start_alpha"
 #define DIALOG_HIGHLIGHTER_DEFAULT_ARG_END_ALPHA "end_alpha"

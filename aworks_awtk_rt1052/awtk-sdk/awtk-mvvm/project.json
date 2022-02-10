@@ -1,0 +1,58 @@
+{
+  "name": "awtk-mvvm",
+  "version": "1.0.0",
+  "date": "2020-07-20",
+  "team": "AWTK Develop Team",
+  "author": "Li XianJing <xianjimli@hotmail.com>",
+  "desc": "awtk-mvvm",
+  "copyright": "Guangzhou ZHIYUAN Electronics Co.,Ltd.",
+  "entry": "main",
+  "assets": {
+    "activedTheme": "default",
+    "outputDir": "res",
+    "loadFrom": "any",
+    "const": "resource_data",
+    "screenDPR": "x1",
+    "defaultLanguage": "zh",
+    "defaultCountry": "CN",
+    "themes": {
+      "default": {
+        "activedSystemBar": "system_bar",
+        "activedBottomSystemBar": "system_bar_b",
+        "packaged": true,
+        "fonts": {
+          "default": {
+            "text": " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~，。？！确定取消"
+          },
+          "ap": {
+            "text": " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+          }
+        },
+        "lcd": {
+          "width": "480",
+          "height": "640",
+          "colorDepth": "16bit",
+          "colorFormat": "BGR(A)"
+        }
+      },
+      "dark": {
+        "activedSystemBar": "system_bar",
+        "activedBottomSystemBar": "system_bar_b",
+        "packaged": true,
+        "fonts": {},
+        "lcd": {
+          "width": "480",
+          "height": "640",
+          "colorDepth": "16bit",
+          "colorFormat": "BGR(A)"
+        }
+      }
+    }
+  },
+  "creator": {
+    "name": "AWTK Designer",
+    "version": "1.0.0"
+  },
+  "awtkRoot": "${AWTK_SDK_PATH}/awtk",
+  "type": "PROJECT_WIDGETS_APPLICATION"
+}

@@ -1,15 +1,15 @@
 {
-  "name": "aworks_awtk_rt1052", 
-  "version": "1.0.2", 
-  "description": "awtk component of aworks on rt1052", 
   "category": "package", 
-  "build_ref": "048128ed5dc7f5c07ccfe9a28f1e0ac84d503b91", 
-  "build_id": "76410", 
-  "repository": "http://192.168.23.62/aworks2/aworks-awtk-rt1052", 
+  "build_id": "121395", 
   "engines": [
-    "axio-engine@1.1.0-a.79", 
+    "axio-engine@1.1.0-a.88", 
     "axbuilder.custom@1.2.3", 
     "package_manager.package@1.1.0"
   ], 
-  "status": "stable"
+  "name": "aworks_awtk_rt1052", 
+  "repository": "http://192.168.23.62/aworks2/aworks-awtk-rt1052", 
+  "build_ref": "bb27db32333b6efd46a1f6f7abc779804ad17057", 
+  "version": "1.0.5", 
+  "status": "stable", 
+  "description": "awtk component of aworks on rt1052"
 }

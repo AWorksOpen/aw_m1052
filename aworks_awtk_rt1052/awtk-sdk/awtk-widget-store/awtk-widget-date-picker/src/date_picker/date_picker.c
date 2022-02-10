@@ -285,7 +285,7 @@ static ret_t date_picker_on_button_clicked(void* ctx, event_t* e) {
     }
   } else {
     int day = tk_atoi(name);
-    if (day > 0 && day < 31) {
+    if (day > 0 && day <= 31) {
       date_picker->day = day;
     }
   }

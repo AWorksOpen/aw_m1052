@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  slide window animator
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -70,7 +70,7 @@ ret_t window_animator_slide_draw_prev(window_animator_t* wa) {
   return RET_OK;
 }
 
-window_animator_t* window_animator_slide_create(bool_t open, object_t* args,
+window_animator_t* window_animator_slide_create(bool_t open, tk_object_t* args,
                                                 const window_animator_vtable_t* vt) {
   value_t v;
   window_animator_t* wa = window_animator_create(open, vt);
@@ -80,16 +80,16 @@ window_animator_t* window_animator_slide_create(bool_t open, object_t* args,
   was->end_alpha = 0;
   was->start_alpha = 0;
 
-  if (object_get_prop(args, WINDOW_ANIMATOR_SLIDE_ARG_ALPHA, &v) == RET_OK) {
+  if (tk_object_get_prop(args, WINDOW_ANIMATOR_SLIDE_ARG_ALPHA, &v) == RET_OK) {
     was->start_alpha = value_int(&v);
     was->end_alpha = value_int(&v);
   }
 
-  if (object_get_prop(args, WINDOW_ANIMATOR_SLIDE_ARG_START_ALPHA, &v) == RET_OK) {
+  if (tk_object_get_prop(args, WINDOW_ANIMATOR_SLIDE_ARG_START_ALPHA, &v) == RET_OK) {
     was->start_alpha = value_int(&v);
   }
 
-  if (object_get_prop(args, WINDOW_ANIMATOR_SLIDE_ARG_END_ALPHA, &v) == RET_OK) {
+  if (tk_object_get_prop(args, WINDOW_ANIMATOR_SLIDE_ARG_END_ALPHA, &v) == RET_OK) {
     was->end_alpha = value_int(&v);
   }
 

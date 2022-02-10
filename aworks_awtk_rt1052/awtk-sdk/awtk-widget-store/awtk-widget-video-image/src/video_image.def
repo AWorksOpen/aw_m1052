@@ -6,7 +6,11 @@ EXPORTS
     video_image_cast
     video_image_set_video_name
     video_image_set_auto_play
-    video_image_set_delay_paly
+    video_image_set_delay_play
+    video_image_set_loop
+    video_image_replay
+    video_image_set_playback_rate
+    video_image_get_playback_rate
     video_image_set_draw_video_image
     video_image_set_init_bitmap_func
     video_image_set_dispose_image_func

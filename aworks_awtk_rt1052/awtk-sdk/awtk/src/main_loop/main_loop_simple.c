@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  a simple main loop
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * this program is distributed in the hope that it will be useful,
  * but without any warranty; without even the implied warranty of
@@ -48,6 +48,24 @@ static ret_t main_loop_simple_recv_event_mutex(main_loop_t* l, event_queue_req_t
   return ret;
 }
 
+ret_t main_loop_post_multi_gesture_event(main_loop_t* l, multi_gesture_event_t* event) {
+  event_queue_req_t r;
+  multi_gesture_event_t evt;
+  main_loop_simple_t* loop = (main_loop_simple_t*)l;
+
+  memset(&r, 0x00, sizeof(r));
+  memset(&evt, 0x00, sizeof(multi_gesture_event_t));
+  return_value_if_fail(loop != NULL, RET_BAD_PARAMS);
+
+  memcpy(&evt, event, sizeof(multi_gesture_event_t));
+
+  evt.e.time = time_now_ms();
+  evt.e.size = sizeof(multi_gesture_event_t);
+  r.multi_gesture_event = evt;
+
+  return main_loop_queue_event(l, &r);
+}
+
 ret_t main_loop_post_pointer_event(main_loop_t* l, bool_t pressed, xy_t x, xy_t y) {
   event_queue_req_t r;
   pointer_event_t event;
@@ -61,6 +79,7 @@ ret_t main_loop_post_pointer_event(main_loop_t* l, bool_t pressed, xy_t x, xy_t 
   event.y = y;
   event.button = 0;
   event.e.time = time_now_ms();
+  event.e.size = sizeof(pointer_event_t);
 
   if (pressed) {
     loop->last_x = x;
@@ -105,6 +124,8 @@ ret_t main_loop_post_key_event(main_loop_t* l, bool_t pressed, uint8_t key) {
 
   loop->last_key = key;
   event.key = key;
+  event.e.time = time_now_ms();
+  event.e.size = sizeof(key_event_t);
 
   if (pressed) {
     loop->key_pressed = TRUE;
@@ -133,6 +154,7 @@ static ret_t main_loop_dispatch_events(main_loop_simple_t* loop) {
   while ((time_out - time_in < 20) && (main_loop_recv_event((main_loop_t*)loop, &r) == RET_OK)) {
     widget_t* widget = loop->base.wm;
     switch (r.event.type) {
+      case EVT_CONTEXT_MENU:
       case EVT_POINTER_DOWN:
       case EVT_POINTER_MOVE:
       case EVT_POINTER_UP:
@@ -145,11 +167,24 @@ static ret_t main_loop_dispatch_events(main_loop_simple_t* loop) {
       case EVT_KEY_UP:
         window_manager_dispatch_input_event(widget, (event_t*)&(r.key_event));
         break;
-      case REQ_ADD_IDLE:
-        idle_add(r.add_idle.func, r.add_idle.e.target);
+      case REQ_EXEC_IN_UI: {
+        r.exec_in_ui.info.func(&(r.exec_in_ui.info));
         break;
-      case REQ_ADD_TIMER:
-        timer_add(r.add_timer.func, r.add_timer.e.target, r.add_timer.duration);
+      }
+      case REQ_ADD_IDLE: {
+        uint32_t id = idle_add(r.add_idle.func, r.add_idle.e.target);
+        if (id != TK_INVALID_ID && r.add_idle.on_destroy != NULL) {
+          idle_set_on_destroy(id, r.add_idle.on_destroy, r.add_idle.on_destroy_ctx);
+        }
+      } break;
+      case REQ_ADD_TIMER: {
+        uint32_t id = timer_add(r.add_timer.func, r.add_timer.e.target, r.add_timer.duration);
+        if (id != TK_INVALID_ID && r.add_timer.on_destroy != NULL) {
+          timer_set_on_destroy(id, r.add_timer.on_destroy, r.add_timer.on_destroy_ctx);
+        }
+      } break;
+      case EVT_MULTI_GESTURE:
+        window_manager_dispatch_input_event(widget, (event_t*)&(r.multi_gesture_event));
         break;
       default: {
         if (r.event.target != NULL) {
@@ -175,6 +210,7 @@ static ret_t main_loop_dispatch_input(main_loop_simple_t* loop) {
 }
 
 static ret_t main_loop_simple_step(main_loop_t* l) {
+  uint32_t curr_expected_sleep_time = 0xFFFFFFFF;
   main_loop_simple_t* loop = (main_loop_simple_t*)l;
 
   main_loop_dispatch_input(loop);
@@ -183,6 +219,9 @@ static ret_t main_loop_simple_step(main_loop_t* l) {
 
   window_manager_check_and_layout(loop->base.wm);
   window_manager_paint(loop->base.wm);
+
+  curr_expected_sleep_time = window_manager_get_curr_expected_sleep_time(loop->base.wm);
+  main_loop_set_curr_expected_sleep_time(l, curr_expected_sleep_time);
 
   return RET_OK;
 }
@@ -251,8 +290,8 @@ main_loop_simple_t* main_loop_simple_init(int w, int h, main_loop_queue_event_t 
   timer_source = event_source_timer_create(timer_manager());
   event_source_manager_add(loop->event_source_manager, idle_source);
   event_source_manager_add(loop->event_source_manager, timer_source);
-  OBJECT_UNREF(idle_source);
-  OBJECT_UNREF(timer_source);
+  TK_OBJECT_UNREF(idle_source);
+  TK_OBJECT_UNREF(timer_source);
 
   return loop;
 }

@@ -1,7 +1,7 @@
 {
   "name": "chart_view",
   "version": "1.0.0",
-  "date": "2020-06-09",
+  "date": "2021-07-01",
   "team": "AWTK Develop Team",
   "author": "Tang JunJie <tangjunjie@zlg.cn>",
   "desc": "图表控件，包含：曲线图、柱状图和饼图。",

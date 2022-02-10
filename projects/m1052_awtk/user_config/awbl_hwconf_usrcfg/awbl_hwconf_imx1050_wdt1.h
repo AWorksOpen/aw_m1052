@@ -15,7 +15,7 @@
 
 #ifdef  AW_DEV_IMX1050_WDT1
 
-#include "driver/wdt/awbl_imx1050_wdt.h"
+#include "driver/wdt/awbl_imx10xx_wdt.h"
 
 aw_local void __imx1050_wdt1_plfm_init (void)
 {
@@ -24,18 +24,18 @@ aw_local void __imx1050_wdt1_plfm_init (void)
 };
 
 /* watchdog feed device infomation */
-aw_local aw_const struct awbl_imx1050_wdt_devinfo __g_imx1050_wdt1_devinfo = {
+aw_local aw_const struct awbl_imx10xx_wdt_devinfo __g_imx1050_wdt1_devinfo = {
     IMX1050_WDOG1_BASE,         /* reg base addr */
     1000,                       /* watchdog time (ms)*/
     __imx1050_wdt1_plfm_init
 };
 
 /* allocate wdt1 device instance RAM */
-aw_local struct awbl_imx1050_wdt_dev __g_imx1050_wdt1_dev;
+aw_local struct awbl_imx10xx_wdt_dev __g_imx1050_wdt1_dev;
 
 #define  AWBL_HWCONF_IMX1050_WDT1    \
     {                                \
-        IMX1050_WDT_NAME,            \
+        AWBL_IMX10XX_WDT_NAME,       \
         1,                           \
         AWBL_BUSID_PLB,              \
         0,                           \

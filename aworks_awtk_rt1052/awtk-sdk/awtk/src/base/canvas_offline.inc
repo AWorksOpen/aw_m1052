@@ -32,8 +32,9 @@
 #include "widget_consts.h"
 #include "window_manager.h"
 #include "canvas_offline.h"
+#include "base/vgcanvas_asset_manager.h"
 
-#ifdef WITH_NANOVG_GPU
+#ifdef WITH_GPU
 
 #ifdef WITHOUT_GLAD
 #include <SDL.h>
@@ -64,13 +65,29 @@ typedef struct _canvas_offline_gpu_t {
 #include "../lcd/lcd_mem_rgba8888.h"
 #include "../lcd/lcd_mem_bgra8888.h"
 
+#ifdef LINUX
+#include "../lcd/lcd_mem_rgb888.h"
+#include "../lcd/lcd_mem_bgr888.h"
 #endif
+
+#endif
+
+static ret_t canvas_offline_begin_frame(canvas_t* c, const dirty_rects_t* dirty_rects, lcd_draw_mode_t draw_mode) {
+  ret_t ret = RET_OK;
+  const rect_t* dirty_rect = dirty_rects != NULL ? &(dirty_rects->max) : NULL;
+  ret = canvas_offline_begin_draw(c);
+  return_value_if_fail(ret == RET_OK, ret);
+  ret = canvas_set_clip_rect(c, dirty_rect);
+  return_value_if_fail(ret == RET_OK, ret);
+  return RET_OK;
+}
 
 canvas_t* canvas_offline_create(uint32_t w, uint32_t h, bitmap_format_t format) {
   canvas_t* c = NULL;
   native_window_t* native_window = NULL;
 
-#ifdef WITH_NANOVG_GPU
+#ifdef WITH_GPU
+  ret_t ret = RET_OK;
   float_t ratio = 0.0f;
   vgcanvas_t* vg = NULL;
   framebuffer_object_t* fbo = NULL;
@@ -100,7 +117,7 @@ canvas_t* canvas_offline_create(uint32_t w, uint32_t h, bitmap_format_t format) 
   return_value_if_fail(native_window != NULL, NULL);
 
   c = native_window_get_canvas(native_window);
-#ifdef WITH_NANOVG_GPU
+#ifdef WITH_GPU
 
   if (format != BITMAP_FMT_RGBA8888) {
     assert(!" opengl gpu only supported RGBA foramt ");
@@ -140,11 +157,13 @@ canvas_t* canvas_offline_create(uint32_t w, uint32_t h, bitmap_format_t format) 
   canvas_init((canvas_t*)canvas, c->lcd, widget_get_font_manager(window_manager()));
   canvas_set_assets_manager((canvas_t*)canvas, widget_get_assets_manager(window_manager()));
   canvas_set_global_alpha((canvas_t*)canvas, 0xff);
-  vgcanvas_create_fbo(vg, w, h, fbo);
-
-  return (canvas_t*)canvas;
+  ret = vgcanvas_create_fbo(vg, w, h, FALSE, fbo);
+  if (ret != RET_OK) {
+    assert(!" create fbo fail \n");
+    log_warn(" create fbo fail \n");
+  }
 #else
-
+  (void)c;
   canvas = TKMEM_ZALLOC(canvas_offline_t);
   return_value_if_fail(canvas != NULL, NULL);
 
@@ -166,7 +185,15 @@ canvas_t* canvas_offline_create(uint32_t w, uint32_t h, bitmap_format_t format) 
     lcd = lcd_mem_bgr565_create_single_fb(bitmap->w, bitmap->h, buff);
   } else if (bitmap->format == BITMAP_FMT_RGB565) {
     lcd = lcd_mem_rgb565_create_single_fb(bitmap->w, bitmap->h, buff);
-  } else {
+  } 
+#ifdef LINUX
+  else if (bitmap->format == BITMAP_FMT_RGB888) {
+    lcd = lcd_mem_rgb888_create_single_fb(bitmap->w, bitmap->h, buff);
+  } else if (bitmap->format == BITMAP_FMT_BGR888) {
+    lcd = lcd_mem_bgr888_create_single_fb(bitmap->w, bitmap->h, buff);
+  }
+#endif
+  else {
     assert(!" bitmap format not supported yet \n");
     log_warn(" bitmap format not supported yet \n");
   }
@@ -174,17 +201,18 @@ canvas_t* canvas_offline_create(uint32_t w, uint32_t h, bitmap_format_t format) 
 
   if (lcd != NULL) {
     canvas_t* c_tmp = NULL;
-    ((lcd_mem_t*)lcd)->vgcanvas = canvas_get_vgcanvas(c);
     c_tmp = canvas_init(&(canvas->base), lcd, widget_get_font_manager(window_manager()));
     canvas_set_assets_manager(c_tmp, widget_get_assets_manager(window_manager()));
     canvas_set_global_alpha(&(canvas->base), 0xff);
     canvas_begin_frame(c_tmp, NULL, LCD_DRAW_OFFLINE);
-    return c_tmp;
   } else {
+    TKMEM_FREE(canvas);
     return NULL;
   }
-
 #endif
+  ((canvas_t*)canvas)->end_frame = canvas_offline_end_draw;
+  ((canvas_t*)canvas)->begin_frame = canvas_offline_begin_frame;
+  return (canvas_t*)canvas; 
 }
 #ifdef AWTK_WEB
 ret_t canvas_offline_clear_canvas(canvas_t* canvas) {
@@ -198,7 +226,7 @@ ret_t canvas_offline_clear_canvas(canvas_t* canvas) {
 }
 #else
 ret_t canvas_offline_clear_canvas(canvas_t* canvas) {
-#ifndef WITH_NANOVG_GPU
+#ifndef WITH_GPU
   rect_t rect;
   canvas_offline_t* canvas_offline = NULL;
 #endif
@@ -210,7 +238,7 @@ ret_t canvas_offline_clear_canvas(canvas_t* canvas) {
   }
 #endif
 
-#ifdef WITH_NANOVG_GPU
+#ifdef WITH_GPU
   glEnable(GL_SCISSOR_TEST);
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -227,7 +255,7 @@ ret_t canvas_offline_clear_canvas(canvas_t* canvas) {
 ret_t canvas_offline_begin_draw(canvas_t* canvas) {
   vgcanvas_t* vg = NULL;
   canvas_offline_t* canvas_offline = NULL;
-#ifdef WITH_NANOVG_GPU
+#ifdef WITH_GPU
   canvas_offline_gpu_t* c = NULL;
 #endif
 
@@ -241,12 +269,11 @@ ret_t canvas_offline_begin_draw(canvas_t* canvas) {
   return_value_if_fail(canvas != NULL, RET_BAD_PARAMS);
   vg = lcd_get_vgcanvas(canvas->lcd);
   canvas_offline = (canvas_offline_t*)canvas;
-#ifdef WITH_NANOVG_GPU
+#ifdef WITH_GPU
   c = (canvas_offline_gpu_t*)canvas;
   if (vg != NULL && canvas_offline->begin_draw == 0) {
     canvas_get_clip_rect(canvas, &canvas_offline->canvas_clip_rect);
-    canvas_offline->vg_clip_rect =
-        rect_init(vg->clip_rect.x, vg->clip_rect.y, vg->clip_rect.w, vg->clip_rect.h);
+    canvas_offline->vg_clip_rect = rect_from_rectf(vgcanvas_get_clip_rect(vg));
     c->base.lcd_w = canvas->lcd->w;
     c->base.lcd_h = canvas->lcd->h;
 
@@ -280,7 +307,7 @@ ret_t canvas_offline_begin_draw(canvas_t* canvas) {
 ret_t canvas_offline_end_draw(canvas_t* canvas) {
   vgcanvas_t* vg = NULL;
   canvas_offline_t* canvas_offline = NULL;
-#ifdef WITH_NANOVG_GPU
+#ifdef WITH_GPU
   canvas_offline_gpu_t* c = NULL;
 #endif
 
@@ -296,7 +323,7 @@ ret_t canvas_offline_end_draw(canvas_t* canvas) {
   canvas_offline = (canvas_offline_t*)canvas;
 
   canvas_offline->begin_draw--;
-#ifdef WITH_NANOVG_GPU
+#ifdef WITH_GPU
   c = (canvas_offline_gpu_t*)canvas;
   if (vg != NULL && canvas_offline->begin_draw == 0) {
     uint16_t flag = BITMAP_FLAG_CHANGED;
@@ -307,10 +334,9 @@ ret_t canvas_offline_end_draw(canvas_t* canvas) {
     vgcanvas_restore(vg);
     vgcanvas_unbind_fbo(vg, c->fbo);
 
-    c->base.bitmap->specific = tk_pointer_from_int(c->fbo->id);
-
     c->base.bitmap->flags &= (~flag);
     c->base.bitmap->flags |= BITMAP_FLAG_TEXTURE;
+    vgcanvas_asset_manager_add_image(vgcanvas_asset_manager(), vg, c->base.bitmap, tk_pointer_from_int(c->fbo->id));
 
     canvas_set_clip_rect(canvas, &canvas_offline->canvas_clip_rect);
   }
@@ -379,29 +405,32 @@ ret_t canvas_offline_bitmap_move_to_new_bitmap(canvas_t* canvas, bitmap_t* bitma
 
   memcpy(bitmap, canvas_bitmap, sizeof(bitmap_t));
 
-  TKMEM_FREE(canvas_bitmap);
   bitmap->should_free_handle = should_free_handle;
   
 #ifdef AWTK_WEB 
   ctx->vg = canvas_get_vgcanvas(canvas);
   ctx->fbo = ((canvas_offline_gpu_t*)canvas)->fbo;
   ((canvas_offline_gpu_t*)canvas)->fbo = NULL;
+  vgcanvas_asset_manager_remove_image(vgcanvas_asset_manager(), lcd_get_vgcanvas(canvas->lcd), canvas_bitmap);
 
   bitmap->specific_ctx = ctx;
   bitmap->image_manager = image_manager();
   bitmap->specific_destroy = canvas_offline_web_bitmap_destroy;
-#elif defined(WITH_NANOVG_GPU)
+#elif defined(WITH_GPU)
+  vgcanvas_asset_manager_remove_image(vgcanvas_asset_manager(), lcd_get_vgcanvas(canvas->lcd), canvas_bitmap);
   bitmap->specific = NULL;
+  bitmap->specific_destroy = NULL;
   bitmap->image_manager = image_manager();
 #endif
   bitmap->flags = BITMAP_FLAG_IMMUTABLE;
   ((canvas_offline_t*)canvas)->bitmap = NULL;
 
+  TKMEM_FREE(canvas_bitmap);
   return RET_OK;
 }
 
 ret_t canvas_offline_flush_bitmap(canvas_t* canvas) {
-#ifdef WITH_NANOVG_GPU
+#ifdef WITH_GPU
   rect_t r;
   vgcanvas_t* vg = NULL;
   canvas_offline_gpu_t* c = (canvas_offline_gpu_t*)canvas;
@@ -414,7 +443,7 @@ ret_t canvas_offline_flush_bitmap(canvas_t* canvas) {
   }
 #endif
 
-#ifdef WITH_NANOVG_GPU
+#ifdef WITH_GPU
   vg = lcd_get_vgcanvas(canvas->lcd);
   if (vg != NULL && c->fbo != NULL) {
     c = (canvas_offline_gpu_t*)canvas;
@@ -430,7 +459,7 @@ ret_t canvas_offline_flush_bitmap(canvas_t* canvas) {
 
 ret_t canvas_offline_destroy(canvas_t* canvas) {
   bitmap_t* bitmap = NULL;
-#ifdef WITH_NANOVG_GPU
+#ifdef WITH_GPU
   vgcanvas_t* vg = NULL;
   framebuffer_object_t* fbo = NULL;
 #else
@@ -446,16 +475,16 @@ ret_t canvas_offline_destroy(canvas_t* canvas) {
 #endif
 
   bitmap = ((canvas_offline_t*)canvas)->bitmap;
-#ifdef WITH_NANOVG_GPU
+#ifdef WITH_GPU
   vg = lcd_get_vgcanvas(canvas->lcd);
   fbo = ((canvas_offline_gpu_t*)canvas)->fbo;
   if (fbo != NULL) {
     vgcanvas_destroy_fbo(vg, fbo);
+    TKMEM_FREE(fbo);
   }
 #else
   system_info_set_lcd_w(info, ((canvas_offline_t*)canvas)->lcd_w);
   system_info_set_lcd_h(info, ((canvas_offline_t*)canvas)->lcd_h);
-  ((lcd_mem_t*)canvas->lcd)->vgcanvas = NULL;
   lcd_destroy(canvas->lcd);
 #endif
   if (bitmap != NULL) {

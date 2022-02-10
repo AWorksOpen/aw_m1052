@@ -1,11 +1,11 @@
 {
   "name": "qr",
   "version": "1.0.0",
-  "date":"2020-06-01",
-  "team":"AWTK Develop Team",
-  "author":"Li XianJing <xianjimli@hotmail.com>",
-  "desc":"显示二维码的控件",
-  "copyright":"Guangzhou ZHIYUAN Electronics Co.,Ltd.",
+  "date": "2020-06-01",
+  "team": "AWTK Develop Team",
+  "author": "Li XianJing <xianjimli@hotmail.com>",
+  "desc": "显示二维码的控件",
+  "copyright": "Guangzhou ZHIYUAN Electronics Co.,Ltd.",
   "type": "PROJECT_CUSTOM_WIDGET",
   "entry": "main",
   "assets": {

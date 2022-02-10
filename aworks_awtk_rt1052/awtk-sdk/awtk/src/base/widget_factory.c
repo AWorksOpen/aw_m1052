@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  widget factory
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,75 +19,38 @@
  *
  */
 
-#include "tkc/mem.h"
-
-#include "tkc/value.h"
-#include "tkc/utils.h"
 #include "base/widget_factory.h"
 
-static widget_factory_t* widget_factory_init(widget_factory_t* factory);
-static ret_t widget_factory_deinit(widget_factory_t* factory);
-
 static widget_factory_t* s_widget_factory = NULL;
-typedef struct _creator_item_t {
-  char type[TK_NAME_LEN + 1];
-  widget_create_t create;
-} creator_item_t;
-
-static int32_t creator_item_cmp(const creator_item_t* iter, const char* type) {
-  return strcmp(iter->type, type);
-}
 
 widget_factory_t* widget_factory(void) {
   return s_widget_factory;
 }
 
 widget_factory_t* widget_factory_create(void) {
-  widget_factory_t* factory = TKMEM_ZALLOC(widget_factory_t);
-  return_value_if_fail(factory != NULL, NULL);
-
-  return widget_factory_init(factory);
-}
-
-static widget_factory_t* widget_factory_init(widget_factory_t* factory) {
-  return_value_if_fail(factory != NULL, NULL);
-
-  emitter_init(EMITTER(factory));
-  darray_init(&(factory->creators), 0, default_destroy, (tk_compare_t)creator_item_cmp);
-
-  return factory;
+  return general_factory_create();
 }
 
 ret_t widget_factory_register(widget_factory_t* factory, const char* type, widget_create_t create) {
-  creator_item_t* item = NULL;
   return_value_if_fail(factory != NULL && type != NULL && create != NULL, RET_BAD_PARAMS);
 
-  item = TKMEM_ZALLOC(creator_item_t);
-  return_value_if_fail(item != NULL, RET_OOM);
+  return general_factory_register(factory, type, (tk_create_t)create);
+}
 
-  item->create = create;
-  tk_strncpy(item->type, type, TK_NAME_LEN);
-  darray_push(&(factory->creators), item);
-
-  return RET_OK;
+ret_t widget_factory_register_multi(widget_factory_t* factory,
+                                    const general_factory_table_t* table) {
+  return general_factory_register_table(factory, table);
 }
 
 widget_t* widget_factory_create_widget(widget_factory_t* factory, const char* type,
                                        widget_t* parent, xy_t x, xy_t y, wh_t w, wh_t h) {
-  widget_t* widget = NULL;
-  const creator_item_t* iter = NULL;
+  widget_create_t create = NULL;
   return_value_if_fail(factory != NULL && type != NULL, NULL);
 
-  iter = darray_find(&(factory->creators), (void*)type);
-  return_value_if_fail(iter != NULL, NULL);
+  create = (widget_create_t)general_factory_find(factory, type);
+  return_value_if_fail(create != NULL, NULL);
 
-  widget = iter->create(parent, x, y, w, h);
-  if (widget != NULL) {
-    event_t e = event_init(EVT_WIDGET_CREATED, widget);
-    emitter_dispatch(EMITTER(factory), &e);
-  }
-
-  return widget;
+  return create(parent, x, y, w, h);
 }
 
 ret_t widget_factory_set(widget_factory_t* factory) {
@@ -96,20 +59,9 @@ ret_t widget_factory_set(widget_factory_t* factory) {
   return RET_OK;
 }
 
-static ret_t widget_factory_deinit(widget_factory_t* factory) {
-  return_value_if_fail(factory != NULL, RET_BAD_PARAMS);
-
-  darray_deinit(&(factory->creators));
-  emitter_deinit(EMITTER(factory));
-
-  return RET_OK;
-}
-
 ret_t widget_factory_destroy(widget_factory_t* factory) {
-  return_value_if_fail(factory != NULL, RET_BAD_PARAMS);
-
-  widget_factory_deinit(factory);
-  TKMEM_FREE(factory);
-
-  return RET_OK;
+  if (s_widget_factory == factory) {
+    s_widget_factory = NULL;
+  }
+  return general_factory_destroy(factory);
 }

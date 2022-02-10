@@ -1,0 +1,16 @@
+{
+  "name":"html_view",
+  "date":"2021-03-09",
+  "team":"AWTK Develop Team",
+  "author":"Li XianJing <xianjimli@hotmail.com>",
+  "desc":"Simple HTML View",
+  "copyright":"Guangzhou ZHIYUAN Electronics Co.,Ltd.",
+  "includes":[],
+  "props": [
+    {
+      "name":"url",
+      "desc":"网址。",
+      "type":"char*"
+    }
+  ]
+}

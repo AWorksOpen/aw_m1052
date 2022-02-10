@@ -46,7 +46,6 @@ static ret_t table_row_get_prop(widget_t* widget, const char* name, value_t* v) 
 }
 
 static ret_t table_row_set_prop(widget_t* widget, const char* name, const value_t* v) {
-  table_row_t* table_row = TABLE_ROW(widget);
   return_value_if_fail(widget != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
 
   if (tk_str_eq(TABLE_ROW_PROP_INDEX, name)) {

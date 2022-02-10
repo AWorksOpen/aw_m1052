@@ -358,7 +358,6 @@ ret_t tooltip_draw_tip(widget_t* widget, canvas_t* c) {
   font_size = style_get_int(style, STYLE_ID_FONT_SIZE, TK_DEFAULT_FONT_SIZE);
 
   if (bg_color.rgba.a || bd_color.rgba.a || text_color.rgba.a) {
-    vgcanvas_t* vg = canvas_get_vgcanvas(c);
     bool_t use_vg = vg != NULL && ((radius > 3 || border_width > 1));
 
     str_nr = tooltip_calc_tip(widget, c, spacer, margin_left, margin_right, margin_top,

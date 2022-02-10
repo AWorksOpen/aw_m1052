@@ -79,7 +79,7 @@ void exit_if_need_not_update_for_infiles(const char* out, int infiles_number, ..
   bool_t is_not_need_update = TRUE;
 
   if (out == NULL) {
-    log_debug("invalid params: %s \n", out);
+    log_debug("invalid params\n");
     exit(-1);
   }
 
@@ -200,6 +200,8 @@ ret_t output_c_source(const char* filename, const char* theme, const char* prefi
 ret_t output_res_c_source_ex(const char* filename, const char* theme, uint16_t type,
                              uint16_t subtype, uint8_t* buff, uint32_t size, const char* name) {
   asset_info_t* res = NULL;
+  const char* array_name = NULL;
+  const char* asset_name = NULL;
   uint32_t total_size = sizeof(asset_info_t) + size;
   const key_type_value_t* kv = asset_type_find_by_value(type);
   return_value_if_fail(kv != NULL, RET_BAD_PARAMS);
@@ -214,15 +216,21 @@ ret_t output_res_c_source_ex(const char* filename, const char* theme, uint16_t t
   res->subtype = subtype;
   memcpy(res->data, buff, size);
   if (name != NULL) {
-    tk_strncpy(res->name, name, sizeof(res->name) - 1);
+    array_name = name;
+    asset_name = asset_info_get_formatted_name(name);
   } else {
+    char full_name[MAX_PATH] = {0};
     if (type == ASSET_TYPE_DATA) {
-      filename_to_name_ex(filename, res->name, sizeof(res->name), FALSE);
+      filename_to_name_ex(filename, full_name, MAX_PATH, FALSE);
     } else {
-      filename_to_name(filename, res->name, sizeof(res->name));
+      filename_to_name(filename, full_name, MAX_PATH);
     }
+    array_name = (const char*)full_name;
+    asset_name = asset_info_get_formatted_name(full_name);
   }
-  output_c_source(filename, theme, kv->name, res->name, (uint8_t*)res, total_size);
+  tk_strncpy(res->name, asset_name, sizeof(res->name) - 1);
+
+  output_c_source(filename, theme, kv->name, array_name, (uint8_t*)res, total_size);
   free(res);
 
   return RET_OK;
@@ -271,6 +279,12 @@ bool_t end_with(const char* p, const char* str) {
   return strncmp(p + strlen(p) - strlen(str), str, strlen(str)) == 0;
 }
 
+bool_t case_end_with(const char* p, const char* str) {
+  return_value_if_fail(p != NULL && str != NULL && strlen(p) >= strlen(str), FALSE);
+
+  return tk_str_ieq(p + strlen(p) - strlen(str), str);
+}
+
 const char* to_lower(char* str) {
   char* p = str;
 
@@ -303,7 +317,7 @@ wchar_t** argvw_create(int argc, char* argv[]) {
 
   for (i = 0; i < argc; i++) {
     wstr_set_utf8(&str, argv[i]);
-    argvw[i] = wcsdup(str.str);
+    argvw[i] = wcs_dup(str.str);
   }
   argvw[i] = NULL;
 

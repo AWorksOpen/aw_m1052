@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  vector graphics canvas interface.
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -28,7 +28,11 @@
 ret_t vgcanvas_set_assets_manager(vgcanvas_t* vg, assets_manager_t* assets_manager) {
   return_value_if_fail(vg != NULL, RET_BAD_PARAMS);
 
-  vg->assets_manager = assets_manager;
+  if (vg->vt->set_assets_manager != NULL) {
+    return vg->vt->set_assets_manager(vg, assets_manager);
+  } else {
+    vg->assets_manager = assets_manager;
+  }
 
   return RET_OK;
 }
@@ -40,9 +44,12 @@ ret_t vgcanvas_reset(vgcanvas_t* vg) {
 }
 
 ret_t vgcanvas_reset_curr_state(vgcanvas_t* vg) {
-  return_value_if_fail(vg != NULL && vg->vt->reset_curr_state != NULL, RET_BAD_PARAMS);
-
-  return vg->vt->reset_curr_state(vg);
+  return_value_if_fail(vg != NULL, RET_BAD_PARAMS);
+  if (vg->vt->reset_curr_state != NULL) {
+    return vg->vt->reset_curr_state(vg);
+  } else {
+    return RET_NOT_IMPL;
+  }
 }
 
 ret_t vgcanvas_flush(vgcanvas_t* vg) {
@@ -88,32 +95,40 @@ ret_t vgcanvas_translate(vgcanvas_t* vg, float_t x, float_t y) {
   return vg->vt->translate(vg, x, y);
 }
 
+ret_t vgcanvas_clip_path(vgcanvas_t* vg) {
+  return_value_if_fail(vg != NULL && vg->vt->clip_path != NULL, RET_BAD_PARAMS);
+
+  return vg->vt->clip_path(vg);
+}
+
+bool_t vgcanvas_is_rectf_in_clip_rect(vgcanvas_t* vg, float_t left, float_t top, float_t right,
+                                      float_t bottom) {
+  return_value_if_fail(vg != NULL && vg->vt->is_rectf_in_clip_rect != NULL, FALSE);
+
+  return vg->vt->is_rectf_in_clip_rect(vg, left, top, right, bottom);
+}
+
+const rectf_t* vgcanvas_get_clip_rect(vgcanvas_t* vg) {
+  return_value_if_fail(vg != NULL, NULL);
+  if (vg->vt->get_clip_rect == NULL) {
+    return &vg->clip_rect;
+  } else {
+    return vg->vt->get_clip_rect(vg);
+  }
+}
+
 ret_t vgcanvas_clip_rect(vgcanvas_t* vg, float_t x, float_t y, float_t w, float_t h) {
   return_value_if_fail(vg != NULL && vg->vt->clip_rect != NULL, RET_BAD_PARAMS);
-
   fix_xywh(x, y, w, h);
-  vg->clip_rect.x = x;
-  vg->clip_rect.y = y;
-  vg->clip_rect.w = w;
-  vg->clip_rect.h = h;
-
+  vg->clip_rect = rectf_init(x, y, w, h);
   return vg->vt->clip_rect(vg, x, y, w, h);
 }
 
 ret_t vgcanvas_intersect_clip_rect(vgcanvas_t* vg, float_t x, float_t y, float_t w, float_t h) {
-  ret_t ret = RET_OK;
   return_value_if_fail(vg != NULL && vg->vt->intersect_clip_rect != NULL, RET_BAD_PARAMS);
 
   fix_xywh(x, y, w, h);
-
-  ret = vg->vt->intersect_clip_rect(vg, &x, &y, &w, &h);
-
-  vg->clip_rect.x = x;
-  vg->clip_rect.y = y;
-  vg->clip_rect.w = w;
-  vg->clip_rect.h = h;
-
-  return ret;
+  return vg->vt->intersect_clip_rect(vg, &x, &y, &w, &h);
 }
 
 ret_t vgcanvas_fill(vgcanvas_t* vg) {
@@ -286,6 +301,15 @@ ret_t vgcanvas_draw_image(vgcanvas_t* vg, bitmap_t* img, float_t sx, float_t sy,
   return vg->vt->draw_image(vg, img, sx, sy, sw, sh, dx, dy, dw, dh);
 }
 
+ret_t vgcanvas_draw_image_repeat(vgcanvas_t* vg, bitmap_t* img, float_t sx, float_t sy, float_t sw,
+                                 float_t sh, float_t dx, float_t dy, float_t dw, float_t dh,
+                                 float_t dst_w, float_t dst_h) {
+  return_value_if_fail(vg != NULL && vg->vt->draw_image_repeat != NULL && img != NULL,
+                       RET_BAD_PARAMS);
+
+  return vg->vt->draw_image_repeat(vg, img, sx, sy, sw, sh, dx, dy, dw, dh, dst_w, dst_h);
+}
+
 ret_t vgcanvas_set_antialias(vgcanvas_t* vg, bool_t value) {
   return_value_if_fail(vg != NULL && vg->vt->set_antialias != NULL, RET_BAD_PARAMS);
 
@@ -390,10 +414,10 @@ ret_t vgcanvas_set_miter_limit(vgcanvas_t* vg, float_t value) {
   return vg->vt->set_miter_limit(vg, value);
 }
 
-ret_t vgcanvas_begin_frame(vgcanvas_t* vg, const rect_t* dirty_rect) {
+ret_t vgcanvas_begin_frame(vgcanvas_t* vg, const dirty_rects_t* dirty_rects) {
   return_value_if_fail(vg != NULL && vg->vt->begin_frame != NULL, RET_BAD_PARAMS);
 
-  return vg->vt->begin_frame(vg, dirty_rect);
+  return vg->vt->begin_frame(vg, dirty_rects);
 }
 
 ret_t vgcanvas_save(vgcanvas_t* vg) {
@@ -414,10 +438,10 @@ ret_t vgcanvas_end_frame(vgcanvas_t* vg) {
   return vg->vt->end_frame(vg);
 }
 
-ret_t vgcanvas_create_fbo(vgcanvas_t* vg, uint32_t w, uint32_t h, framebuffer_object_t* fbo) {
+ret_t vgcanvas_create_fbo(vgcanvas_t* vg, uint32_t w, uint32_t h, bool_t custom_draw_model,
+                          framebuffer_object_t* fbo) {
   return_value_if_fail(vg != NULL && vg->vt->create_fbo != NULL && fbo != NULL, RET_BAD_PARAMS);
-
-  return vg->vt->create_fbo(vg, w, h, fbo);
+  return vg->vt->create_fbo(vg, w, h, custom_draw_model, fbo);
 }
 
 ret_t vgcanvas_destroy_fbo(vgcanvas_t* vg, framebuffer_object_t* fbo) {
@@ -532,3 +556,47 @@ ret_t vgcanvas_clear_cache(vgcanvas_t* vg) {
 
   return vg->vt->clear_cache(vg);
 }
+
+ret_t vgcanvas_set_stroke_gradient(vgcanvas_t* vg, const vg_gradient_t* gradient) {
+  return_value_if_fail(vg != NULL && vg->vt != NULL && gradient != NULL, RET_BAD_PARAMS);
+
+  if (vg->vt->set_stroke_gradient == NULL) {
+    color_t c1 = vg_gradient_get_first_color((vg_gradient_t*)gradient);
+    color_t c2 = vg_gradient_get_last_color((vg_gradient_t*)gradient);
+    if (gradient->gradient.type == GRADIENT_LINEAR) {
+      const vg_gradient_linear_info_t* info = &(gradient->info.linear);
+      return vgcanvas_set_stroke_linear_gradient(vg, info->sx, info->sy, info->ex, info->ey, c1,
+                                                 c2);
+    } else if (gradient->gradient.type == GRADIENT_RADIAL) {
+      const vg_gradient_radial_info_t* info = &(gradient->info.radial);
+      return vgcanvas_set_stroke_radial_gradient(vg, info->x0, info->y0, info->r0, info->r1, c1,
+                                                 c2);
+    } else {
+      return RET_NOT_IMPL;
+    }
+  } else {
+    return vg->vt->set_stroke_gradient(vg, gradient);
+  }
+}
+
+ret_t vgcanvas_set_fill_gradient(vgcanvas_t* vg, const vg_gradient_t* gradient) {
+  return_value_if_fail(vg != NULL && vg->vt != NULL && gradient != NULL, RET_BAD_PARAMS);
+
+  if (vg->vt->set_fill_gradient == NULL) {
+    color_t c1 = vg_gradient_get_first_color((vg_gradient_t*)gradient);
+    color_t c2 = vg_gradient_get_last_color((vg_gradient_t*)gradient);
+    if (gradient->gradient.type == GRADIENT_LINEAR) {
+      const vg_gradient_linear_info_t* info = &(gradient->info.linear);
+      return vgcanvas_set_fill_linear_gradient(vg, info->sx, info->sy, info->ex, info->ey, c1, c2);
+    } else if (gradient->gradient.type == GRADIENT_RADIAL) {
+      const vg_gradient_radial_info_t* info = &(gradient->info.radial);
+      return vgcanvas_set_fill_radial_gradient(vg, info->x0, info->y0, info->r0, info->r1, c1, c2);
+    } else {
+      return RET_NOT_IMPL;
+    }
+  } else {
+    return vg->vt->set_fill_gradient(vg, gradient);
+  }
+}
+
+#include "vg_gradient.inc"

@@ -92,12 +92,11 @@ TEST(Button, remove_parent) {
 
   widget_resize(w, 320, 240);
   widget_on(b, EVT_CLICK, button_on_click_to_remove_parent, NULL);
-  e.e = event_init(EVT_POINTER_DOWN, w);
-  e.x = 35;
-  e.y = 35;
+
+  pointer_event_init(&e, EVT_POINTER_DOWN, w, 35, 35);
   window_manager_dispatch_input_event(w->parent, (event_t*)(&e));
 
-  e.e = event_init(EVT_POINTER_UP, w);
+  pointer_event_init(&e, EVT_POINTER_UP, w, 35, 35);
   window_manager_dispatch_input_event(w->parent, (event_t*)(&e));
 
   widget_destroy(w);
@@ -126,15 +125,16 @@ static ret_t on_click2(void* ctx, event_t* e) {
 }
 
 TEST(Button, event) {
+  pointer_event_t evt;
   widget_t* w = window_create(NULL, 0, 0, 320, 240);
-  event_t e = event_init(EVT_CLICK, w);
+  event_t* e = pointer_event_init(&evt, EVT_CLICK, w, 0, 0);
 
   widget_on(w, EVT_CLICK, on_click1, w);
   widget_on(w, EVT_CLICK, on_click2, w);
 
-  ASSERT_EQ(widget_dispatch(w, &e), RET_OK);
-  ASSERT_EQ(widget_dispatch(w, &e), RET_OK);
-  ASSERT_EQ(widget_dispatch(w, &e), RET_OK);
+  ASSERT_EQ(widget_dispatch(w, e), RET_OK);
+  ASSERT_EQ(widget_dispatch(w, e), RET_OK);
+  ASSERT_EQ(widget_dispatch(w, e), RET_OK);
 
   widget_destroy(w);
 }
@@ -155,19 +155,40 @@ TEST(Button, activate) {
 
   widget_on_keydown(w, (key_event_t*)key_event_init(&e, EVT_KEY_DOWN, w, TK_KEY_SPACE));
   widget_on_keyup(w, (key_event_t*)key_event_init(&e, EVT_KEY_UP, w, TK_KEY_SPACE));
+  idle_dispatch();
   ASSERT_EQ(count, 1);
 
   widget_on_keydown(w, (key_event_t*)key_event_init(&e, EVT_KEY_DOWN, w, TK_KEY_SPACE));
   widget_on_keyup(w, (key_event_t*)key_event_init(&e, EVT_KEY_UP, w, TK_KEY_SPACE));
+  idle_dispatch();
   ASSERT_EQ(count, 2);
 
   widget_on_keydown(w, (key_event_t*)key_event_init(&e, EVT_KEY_DOWN, w, TK_KEY_RETURN));
   widget_on_keyup(w, (key_event_t*)key_event_init(&e, EVT_KEY_UP, w, TK_KEY_RETURN));
+  idle_dispatch();
   ASSERT_EQ(count, 3);
 
   widget_on_keydown(w, (key_event_t*)key_event_init(&e, EVT_KEY_DOWN, w, TK_KEY_RETURN));
   widget_on_keyup(w, (key_event_t*)key_event_init(&e, EVT_KEY_UP, w, TK_KEY_RETURN));
+  idle_dispatch();
   ASSERT_EQ(count, 4);
 
   widget_destroy(w);
+}
+
+TEST(Button, to_xml) {
+  str_t str;
+  widget_t* w1 = button_create(NULL, 10, 20, 30, 40);
+
+  str_init(&str, 0);
+
+  widget_set_text_utf8(w1, "<>&\"");
+  widget_to_xml(w1, &str);
+  log_debug("w1:%s\n", str.str);
+  ASSERT_STREQ(str.str,
+               "<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>\r\n<button x=\"10\" "
+               "y=\"20\" w=\"30\" h=\"40\" text=\"&lt;&gt;&amp;&quot;\">\n</button>\n");
+  widget_destroy(w1);
+
+  str_reset(&str);
 }

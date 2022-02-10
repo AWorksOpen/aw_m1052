@@ -8,18 +8,22 @@
 | 函数名称 | 说明 | 
 | -------- | ------------ | 
 | <a href="#utils_t_compare_always_equal">compare\_always\_equal</a> | 始终返回相等。 |
+| <a href="#utils_t_data_url_copy">data\_url\_copy</a> | 将数据从源URL拷贝到目标URL。 |
 | <a href="#utils_t_default_destroy">default\_destroy</a> | 缺省的destroy函数。释放data指向的内存。 |
 | <a href="#utils_t_dummy_destroy">dummy\_destroy</a> | 空的destroy函数。 |
 | <a href="#utils_t_filename_to_name">filename\_to\_name</a> | 从完整文件名中获取文件名。 |
 | <a href="#utils_t_filename_to_name_ex">filename\_to\_name\_ex</a> | 从完整文件名中获取文件名。 |
 | <a href="#utils_t_image_region_parse">image\_region\_parse</a> | 解析子图的区域信息。 |
+| <a href="#utils_t_object_to_json">object\_to\_json</a> | 将对象转换成json字符串。 |
 | <a href="#utils_t_pointer_compare">pointer\_compare</a> | 指针比较。 |
 | <a href="#utils_t_tk_atob">tk\_atob</a> | 将字符串转换为布尔类型。 |
 | <a href="#utils_t_tk_atof">tk\_atof</a> | 将字符串转换为浮点类型。 |
-| <a href="#utils_t_tk_atoi">tk\_atoi</a> | 将字符串转换为整形。 |
+| <a href="#utils_t_tk_atoi">tk\_atoi</a> | 将字符串转换为整型数。 |
+| <a href="#utils_t_tk_atol">tk\_atol</a> | 将字符串转换为整型。 |
+| <a href="#utils_t_tk_atoul">tk\_atoul</a> | 将字符串转换为整型。 |
 | <a href="#utils_t_tk_ftoa">tk\_ftoa</a> | 将浮点型转换为字符串。 |
 | <a href="#utils_t_tk_is_valid_name">tk\_is\_valid\_name</a> | 判断是否是有效的属性名。 |
-| <a href="#utils_t_tk_itoa">tk\_itoa</a> | 将整形转换为字符串。 |
+| <a href="#utils_t_tk_itoa">tk\_itoa</a> | 将整型转换为字符串。 |
 | <a href="#utils_t_tk_memcpy16">tk\_memcpy16</a> | 拷贝数据2字节。 |
 | <a href="#utils_t_tk_memcpy32">tk\_memcpy32</a> | 拷贝数据4字节。 |
 | <a href="#utils_t_tk_memset16">tk\_memset16</a> | 设置数据2字节。 |
@@ -28,6 +32,7 @@
 | <a href="#utils_t_tk_pixel_copy">tk\_pixel\_copy</a> | 已bpp字节为标准拷贝数据。 |
 | <a href="#utils_t_tk_pointer_from_int">tk\_pointer\_from\_int</a> | 将int转换成指针。 |
 | <a href="#utils_t_tk_pointer_to_int">tk\_pointer\_to\_int</a> | 将指针转换成int。 |
+| <a href="#utils_t_tk_qsort">tk\_qsort</a> | 快速排序。 |
 | <a href="#utils_t_tk_skip_to_num">tk\_skip\_to\_num</a> | 跳过字符串函数，如：字符串"hello123world"，返回的结果是"123world"。 |
 | <a href="#utils_t_tk_snprintf">tk\_snprintf</a> | 将可变参数(...)按照format格式化字符串，并将字符串复制到str中。 |
 | <a href="#utils_t_tk_sscanf">tk\_sscanf</a> | 从字符串读取格式化输入。 |
@@ -37,18 +42,24 @@
 | <a href="#utils_t_tk_str_icmp">tk\_str\_icmp</a> | 字符串比较函数（不区分大小写）。 |
 | <a href="#utils_t_tk_str_start_with">tk\_str\_start\_with</a> | 检查字符串是否以指定的字符串prefix开头。 |
 | <a href="#utils_t_tk_str_tolower">tk\_str\_tolower</a> | 将大写字母转换为小写字母。 |
+| <a href="#utils_t_tk_str_totitle">tk\_str\_totitle</a> | 将单词首字母转换为大写字母。 |
 | <a href="#utils_t_tk_str_toupper">tk\_str\_toupper</a> | 将小写字母转换为大写字母。 |
 | <a href="#utils_t_tk_strcpy">tk\_strcpy</a> | 将src所指向的字符串复制到dst。 |
 | <a href="#utils_t_tk_strdup">tk\_strdup</a> | 字符串拷贝函数。 |
 | <a href="#utils_t_tk_strlen">tk\_strlen</a> | 获取字符串的长度。str为空时返回0。 |
 | <a href="#utils_t_tk_strncpy">tk\_strncpy</a> | 将src所指向的字符串复制到dst，最多复制len个字符串，并在[len]位置添加'\0'。 |
+| <a href="#utils_t_tk_strncpy_s">tk\_strncpy\_s</a> | 将src所指向的字符串复制到dst，最多复制min(dst_len-1, src_len)个字符串，并在[len]位置添加'\0'。 |
 | <a href="#utils_t_tk_strndup">tk\_strndup</a> | 字符串拷贝函数，最多复制len个字符串。 |
-| <a href="#utils_t_tk_strtol">tk\_strtol</a> | 将字符串转换为长整形。 |
+| <a href="#utils_t_tk_strrstr">tk\_strrstr</a> | 从后往前查找指定的字符串。 |
+| <a href="#utils_t_tk_strtoi">tk\_strtoi</a> | 将字符串转换为整型。 |
+| <a href="#utils_t_tk_strtol">tk\_strtol</a> | 将字符串转换为长整型。 |
+| <a href="#utils_t_tk_strtoll">tk\_strtoll</a> | 将字符串转换为长整型。 |
 | <a href="#utils_t_tk_under_score_to_camel">tk\_under\_score\_to\_camel</a> | 将下划线名字转成驼峰名字。 |
+| <a href="#utils_t_tk_vsnprintf">tk\_vsnprintf</a> | 将可变参数ap按照format格式化字符串，并将字符串复制到str中。 |
 | <a href="#utils_t_tk_watob">tk\_watob</a> | 将宽字符串转换为布尔类型。 |
 | <a href="#utils_t_tk_watof">tk\_watof</a> | 将宽字符串转换为浮点类型。 |
-| <a href="#utils_t_tk_watoi">tk\_watoi</a> | 将宽字符串转换为整形。 |
-| <a href="#utils_t_tk_watoi_n">tk\_watoi\_n</a> | 将宽字符串转换为整形。 |
+| <a href="#utils_t_tk_watoi">tk\_watoi</a> | 将宽字符串转换为整型。 |
+| <a href="#utils_t_tk_watoi_n">tk\_watoi\_n</a> | 将宽字符串转换为整型。 |
 | <a href="#utils_t_tk_wstr_count_c">tk\_wstr\_count\_c</a> | 统计UCS字符串中某个字符出现的次数。 |
 | <a href="#utils_t_tk_wstr_dup_utf8">tk\_wstr\_dup\_utf8</a> | 将utf8字符串拷贝为UCS字符串。 |
 | <a href="#utils_t_tk_wstrdup">tk\_wstrdup</a> | 宽字符串拷贝函数。 |
@@ -73,6 +84,26 @@ int compare_always_equal (const void* a, const void* b);
 | 返回值 | int | 始终返回0。 |
 | a | const void* | 数据a。 |
 | b | const void* | 数据b。 |
+#### data\_url\_copy 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="utils_t_data_url_copy">将数据从源URL拷贝到目标URL。
+
+* 函数原型：
+
+```
+ret_t data_url_copy (const char* dst_url, const char* src_url);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
+| dst\_url | const char* | 目标URL。 |
+| src\_url | const char* | 源URL。 |
 #### default\_destroy 函数
 -----------------------
 
@@ -176,6 +207,26 @@ ret_t image_region_parse (uint32_t img_w, uint32_t img_h, const char* region, re
 | img\_h | uint32\_t | 图片宽度。 |
 | region | const char* | region。 |
 | r | rect\_t* | 返回具体位置。 |
+#### object\_to\_json 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="utils_t_object_to_json">将对象转换成json字符串。
+
+* 函数原型：
+
+```
+ret_t object_to_json (object_t* obj, str_t* str);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
+| obj | object\_t* | object对象。 |
+| str | str\_t* | 用于返回结果。 |
 #### pointer\_compare 函数
 -----------------------
 
@@ -239,20 +290,58 @@ double tk_atof (const char* str);
 
 * 函数功能：
 
-> <p id="utils_t_tk_atoi">将字符串转换为整形。
+> <p id="utils_t_tk_atoi">将字符串转换为整型数。
 
 * 函数原型：
 
 ```
-int tk_atoi (const char* str);
+int32_t tk_atoi (const char* str);
 ```
 
 * 参数说明：
 
 | 参数 | 类型 | 说明 |
 | -------- | ----- | --------- |
-| 返回值 | int | 返回转换后的整形。 |
-| str | const char* | 要转换为整形的字符串。 |
+| 返回值 | int32\_t | 返回转换后的整型。 |
+| str | const char* | 要转换为整型数的字符串。 |
+#### tk\_atol 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="utils_t_tk_atol">将字符串转换为整型。
+
+* 函数原型：
+
+```
+int64_t tk_atol (const char* str);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | int64\_t | 返回转换后的整型。 |
+| str | const char* | 要转换为整型的字符串。 |
+#### tk\_atoul 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="utils_t_tk_atoul">将字符串转换为整型。
+
+* 函数原型：
+
+```
+uint64_t tk_atoul (const char* str);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | uint64\_t | 返回转换后的整型。 |
+| str | const char* | 要转换为整型的字符串。 |
 #### tk\_ftoa 函数
 -----------------------
 
@@ -298,7 +387,7 @@ bool_t tk_is_valid_name (const char* name);
 
 * 函数功能：
 
-> <p id="utils_t_tk_itoa">将整形转换为字符串。
+> <p id="utils_t_tk_itoa">将整型转换为字符串。
 
 * 函数原型：
 
@@ -313,7 +402,7 @@ const char* tk_itoa (char* str, int len, int n);
 | 返回值 | const char* | 返回字符串。 |
 | str | char* | 保存字符串缓冲区。 |
 | len | int | 缓冲区大小。 |
-| n | int | 要转换的整形。 |
+| n | int | 要转换的整型。 |
 #### tk\_memcpy16 函数
 -----------------------
 
@@ -483,6 +572,27 @@ int32_t tk_pointer_to_int (const void* p);
 | -------- | ----- | --------- |
 | 返回值 | int32\_t | 返回对应的int数据。 |
 | p | const void* | 指针。 |
+#### tk\_qsort 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="utils_t_tk_qsort">快速排序。
+
+* 函数原型：
+
+```
+ret_t tk_qsort (void** array, size_t nr, tk_compare_t cmp);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
+| array | void** | 数据。 |
+| nr | size\_t | 元素个数。 |
+| cmp | tk\_compare\_t | 比较函数。 |
 #### tk\_skip\_to\_num 函数
 -----------------------
 
@@ -519,7 +629,7 @@ int tk_snprintf (char* str, size_t size, const char* format);
 
 | 参数 | 类型 | 说明 |
 | -------- | ----- | --------- |
-| 返回值 | int | 返回格式化后的字符串长度+1。 |
+| 返回值 | int | 返回格式化后的字符串长度。 |
 | str | char* | 目标字符串。 |
 | size | size\_t | 拷贝字节数。 |
 | format | const char* | 格式化字符串。 |
@@ -651,6 +761,7 @@ bool_t tk_str_start_with (const char* str, const char* prefix);
 * 函数功能：
 
 > <p id="utils_t_tk_str_tolower">将大写字母转换为小写字母。
+>修改传入的字符串。
 
 * 函数原型：
 
@@ -664,12 +775,33 @@ char* tk_str_tolower (char* str);
 | -------- | ----- | --------- |
 | 返回值 | char* | 返回转换后的小写字母字符串。 |
 | str | char* | 要被转换成小写字母的字符串。 |
+#### tk\_str\_totitle 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="utils_t_tk_str_totitle">将单词首字母转换为大写字母。
+>修改传入的字符串。
+
+* 函数原型：
+
+```
+char* tk_str_totitle (char* str);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | char* | 返回转换后的字符串。 |
+| str | char* | 被转换的字符串。 |
 #### tk\_str\_toupper 函数
 -----------------------
 
 * 函数功能：
 
 > <p id="utils_t_tk_str_toupper">将小写字母转换为大写字母。
+>修改传入的字符串。
 
 * 函数原型：
 
@@ -762,8 +894,30 @@ char* tk_strncpy (char* dst, const char* src, size_t len);
 | -------- | ----- | --------- |
 | 返回值 | char* | 返回目标字符串。 |
 | dst | char* | 目标字符串。 |
-| src | const char* | 原字符串。 |
+| src | const char* | 源字符串。 |
 | len | size\_t | 要复制的字符串个数。 |
+#### tk\_strncpy\_s 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="utils_t_tk_strncpy_s">将src所指向的字符串复制到dst，最多复制min(dst_len-1, src_len)个字符串，并在[len]位置添加'\0'。
+
+* 函数原型：
+
+```
+char* tk_strncpy_s (char* dst, size_t dst_len, const char* src, size_t src_len);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | char* | 返回目标字符串。 |
+| dst | char* | 目标字符串。 |
+| dst\_len | size\_t | 目标字符串内存长度。 |
+| src | const char* | 源字符串。 |
+| src\_len | size\_t | 要复制的字符串个数。 |
 #### tk\_strndup 函数
 -----------------------
 
@@ -784,12 +938,53 @@ char* tk_strndup (const char* str, uint32_t len);
 | 返回值 | char* | 返回指向的复制字符串指针，如果失败则返回NULL。 |
 | str | const char* | 原字符串。 |
 | len | uint32\_t | 要复制的字符串个数。 |
+#### tk\_strrstr 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="utils_t_tk_strrstr">从后往前查找指定的字符串。
+
+* 函数原型：
+
+```
+const char* tk_strrstr (const char* str, const char* substr);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | const char* | 返回字符串的位置或者NULL。 |
+| str | const char* | 字符串。 |
+| substr | const char* | 子字符串。 |
+#### tk\_strtoi 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="utils_t_tk_strtoi">将字符串转换为整型。
+
+* 函数原型：
+
+```
+int32_t tk_strtoi (const char* str, const char** end, int base);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | int32\_t | 返回转换后的整型。 |
+| str | const char* | 要转换为整型的字符串。 |
+| end | const char** | 对类型char*的对象的引用。 |
+| base | int | 基数。 |
 #### tk\_strtol 函数
 -----------------------
 
 * 函数功能：
 
-> <p id="utils_t_tk_strtol">将字符串转换为长整形。
+> <p id="utils_t_tk_strtol">将字符串转换为长整型。
 
 * 函数原型：
 
@@ -801,8 +996,29 @@ long tk_strtol (const char* str, const char** end, int base);
 
 | 参数 | 类型 | 说明 |
 | -------- | ----- | --------- |
-| 返回值 | long | 返回转换后的长整形。 |
-| str | const char* | 要转换为长整形的字符串。 |
+| 返回值 | long | 返回转换后的长整型。 |
+| str | const char* | 要转换为长整型的字符串。 |
+| end | const char** | 对类型char*的对象的引用。 |
+| base | int | 基数。 |
+#### tk\_strtoll 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="utils_t_tk_strtoll">将字符串转换为长整型。
+
+* 函数原型：
+
+```
+int64_t tk_strtoll (const char* str, const char** end, int base);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | int64\_t | 返回转换后的长整型。 |
+| str | const char* | 要转换为长整型的字符串。 |
 | end | const char** | 对类型char*的对象的引用。 |
 | base | int | 基数。 |
 #### tk\_under\_score\_to\_camel 函数
@@ -826,6 +1042,28 @@ const char* tk_under_score_to_camel (const char* name, char* out, uint32_t max_o
 | name | const char* | 下划线名字。 |
 | out | char* | 驼峰名字(保存结果)。 |
 | max\_out\_size | uint32\_t | 结果最大长度。 |
+#### tk\_vsnprintf 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="utils_t_tk_vsnprintf">将可变参数ap按照format格式化字符串，并将字符串复制到str中。
+
+* 函数原型：
+
+```
+int tk_vsnprintf (char* str, size_t size, const char* format, va_list ap);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | int | 返回格式化后的字符串长度。 |
+| str | char* | 目标字符串。 |
+| size | size\_t | 拷贝字节数。 |
+| format | const char* | 格式化字符串。 |
+| ap | va\_list | 可变参数。 |
 #### tk\_watob 函数
 -----------------------
 
@@ -869,7 +1107,7 @@ double tk_watof (const wchar_t* str);
 
 * 函数功能：
 
-> <p id="utils_t_tk_watoi">将宽字符串转换为整形。
+> <p id="utils_t_tk_watoi">将宽字符串转换为整型。
 
 * 函数原型：
 
@@ -881,14 +1119,14 @@ int tk_watoi (const wchar_t* str);
 
 | 参数 | 类型 | 说明 |
 | -------- | ----- | --------- |
-| 返回值 | int | 返回转换后的整形。 |
-| str | const wchar\_t* | 要转换为整形的宽字符串。 |
+| 返回值 | int | 返回转换后的整型。 |
+| str | const wchar\_t* | 要转换为整型的宽字符串。 |
 #### tk\_watoi\_n 函数
 -----------------------
 
 * 函数功能：
 
-> <p id="utils_t_tk_watoi_n">将宽字符串转换为整形。
+> <p id="utils_t_tk_watoi_n">将宽字符串转换为整型。
 
 * 函数原型：
 
@@ -900,8 +1138,8 @@ int tk_watoi_n (const wchar_t* str, uint32_t len);
 
 | 参数 | 类型 | 说明 |
 | -------- | ----- | --------- |
-| 返回值 | int | 返回转换后的整形。 |
-| str | const wchar\_t* | 要转换为整形的宽字符串。 |
+| 返回值 | int | 返回转换后的整型。 |
+| str | const wchar\_t* | 要转换为整型的宽字符串。 |
 | len | uint32\_t | 字符串长度。 |
 #### tk\_wstr\_count\_c 函数
 -----------------------

@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  Unicode Bidirectional Algorithm.
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -180,7 +180,7 @@ static inline ret_t bidi_log2vis(bidi_t* bidi, const wchar_t* str, uint32_t size
   return RET_OK;
 }
 
-static bidi_type_t bidi_type_from_name(const char* name) {
+static inline bidi_type_t bidi_type_from_name(const char* name) {
   return BIDI_TYPE_AUTO;
 }
 

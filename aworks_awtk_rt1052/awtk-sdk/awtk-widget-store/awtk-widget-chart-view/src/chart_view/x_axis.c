@@ -31,7 +31,7 @@ static ret_t x_axis_update_data_tick(widget_t* widget) {
   axis_t* axis = AXIS(widget);
   return_value_if_fail(axis != NULL && axis->data != NULL, RET_BAD_PARAMS);
 
-  divnr = axis->axis_type == AXIS_TYPE_VALUE ? (axis->data->size - 1) : axis->data->size;
+  divnr = axis->axis_type != AXIS_TYPE_CATEGORY ? (axis->data->size - 1) : axis->data->size;
   range = axis->draw_rect.w - 1;
 
   for (i = 0; i < axis->data->size; i++) {
@@ -48,6 +48,11 @@ static ret_t x_axis_on_paint_begin(widget_t* widget, canvas_t* c) {
 
   if (axis->need_update_data) {
     ret_t ret;
+
+    if (axis->axis_type == AXIS_TYPE_TIME && axis->data_from_series == NULL) {
+      axis_set_data_from_series(widget, axis_p_time_generate_default, widget);
+    }
+
     if (axis->data_from_series != NULL) {
       ret = axis_update_data_from_series(widget);
     } else {
@@ -103,19 +108,24 @@ static float_t x_axis_measure_series_interval(widget_t* widget) {
   }
 }
 
-ret_t x_axis_measure_series(widget_t* widget, void* measure_params, fifo_t* src, fifo_t* dst) {
+ret_t x_axis_measure_series(widget_t* widget, void* measure_params, object_t* src, object_t* dst) {
   int32_t i;
   int32_t nr;
   int32_t index;
+  uint32_t src_size, dst_capacity, dst_unit_size;
   float_t sinterval, soffset;
   float_t y, prange, vrange, vmin, srange;
   axis_measure_series_params_t* params = (axis_measure_series_params_t*)measure_params;
   axis_t* axis = AXIS(widget);
   return_value_if_fail(axis != NULL && params != NULL, RET_BAD_PARAMS);
   return_value_if_fail(src != NULL && dst != NULL, RET_BAD_PARAMS);
-  return_value_if_fail(dst->unit_size > 0, RET_BAD_PARAMS);
 
-  nr = tk_min(dst->capacity, src->size - params->index_of_fifo);
+  dst_unit_size = SERIES_FIFO_GET_UNIT_SIZE(dst);
+  return_value_if_fail(dst_unit_size > 0, RET_BAD_PARAMS);
+
+  src_size = SERIES_FIFO_GET_SIZE(src);
+  dst_capacity = SERIES_FIFO_GET_CAPACITY(dst);
+  nr = tk_min(dst_capacity, src_size - params->index_of_fifo);
   return_value_if_true(nr == 0, RET_OK);
 
   vmin = axis->max * axis->min > 0 ? axis->min : 0;
@@ -128,7 +138,7 @@ ret_t x_axis_measure_series(widget_t* widget, void* measure_params, fifo_t* src,
 
   if (tk_abs(sinterval) >= 1.0) {
     for (i = 0; i < nr; i++) {
-      index = src->size - params->index_of_fifo - nr + i;
+      index = src_size - params->index_of_fifo - nr + i;
       y = sinterval * ((float_t)i - params->index_of_fold);
       if (i < params->index_of_fold) {
         y = sinterval * (srange - params->index_of_fold + i) + soffset;
@@ -136,19 +146,19 @@ ret_t x_axis_measure_series(widget_t* widget, void* measure_params, fifo_t* src,
         y = sinterval * (i - params->index_of_fold) + soffset;
       }
 
-      fifo_push(dst, NULL);
-      params->draw_data_set(fifo_at(dst, dst->size - 1), y, src, index, vmin, vrange, prange,
-                            axis->inverse);
+      series_fifo_push(dst, NULL);
+      params->draw_data_set(series_fifo_get(dst, SERIES_FIFO_GET_SIZE(dst) - 1), y, src, index,
+                            vmin, vrange, prange, axis->inverse);
     }
   } else {
-    void* d = TKMEM_CALLOC(1, dst->unit_size);
-    void* dmin = TKMEM_CALLOC(1, dst->unit_size);
-    void* dmax = TKMEM_CALLOC(1, dst->unit_size);
+    void* d = TKMEM_CALLOC(1, dst_unit_size);
+    void* dmin = TKMEM_CALLOC(1, dst_unit_size);
+    void* dmax = TKMEM_CALLOC(1, dst_unit_size);
     bool_t increase = TRUE;
 
     // 根据分辨率过滤采样点，每个像素点上最多绘制2个采样点
     for (i = 0; i < nr; i++) {
-      index = src->size - params->index_of_fifo - nr + i;
+      index = src_size - params->index_of_fifo - nr + i;
       y = sinterval * ((float_t)i - params->index_of_fold);
       if (i < params->index_of_fold) {
         y = sinterval * (srange - params->index_of_fold + i) + soffset;
@@ -159,33 +169,33 @@ ret_t x_axis_measure_series(widget_t* widget, void* measure_params, fifo_t* src,
       params->draw_data_set(d, y, src, index, vmin, vrange, prange, axis->inverse);
 
       if (i == 0) {
-        memcpy(dmin, d, dst->unit_size);
-        memcpy(dmax, d, dst->unit_size);
+        memcpy(dmin, d, dst_unit_size);
+        memcpy(dmax, d, dst_unit_size);
       } else {
-        if (params->draw_data_compare_series(d, dmin) == 0 && index + 1 < src->size) {
+        if (params->draw_data_compare_series(d, dmin) == 0 && index + 1 < src_size) {
           increase = increase && params->draw_data_compare_value(dmax, d) >= 0;
           params->draw_data_min_value(dmin, d);
           params->draw_data_max_value(dmax, d);
         } else {
           if (params->draw_data_compare_value(dmin, dmax) == 0) {
-            break_if_true(dst->size + 1 > nr);
-            fifo_push(dst, dmin);
+            break_if_true(SERIES_FIFO_GET_SIZE(dst) + 1 > nr);
+            series_fifo_push(dst, dmin);
           } else {
-            break_if_true(dst->size + 2 > nr);
+            break_if_true(SERIES_FIFO_GET_SIZE(dst) + 2 > nr);
             if (increase) {
-              fifo_push(dst, dmax);
-              fifo_push(dst, dmin);
+              series_fifo_push(dst, dmax);
+              series_fifo_push(dst, dmin);
             } else {
-              fifo_push(dst, dmin);
-              fifo_push(dst, dmax);
+              series_fifo_push(dst, dmin);
+              series_fifo_push(dst, dmax);
             }
           }
 
           if (i == nr - 1) {
-            fifo_push(dst, d);
+            series_fifo_push(dst, d);
           } else {
-            memcpy(dmin, d, dst->unit_size);
-            memcpy(dmax, d, dst->unit_size);
+            memcpy(dmin, d, dst_unit_size);
+            memcpy(dmax, d, dst_unit_size);
           }
 
           increase = TRUE;
@@ -381,7 +391,7 @@ ret_t x_axis_draw_label(axis_t* axis, canvas_t* c) {
     r.w = labels[1]->tick - labels[0]->tick;
   }
 
-  if (axis->axis_type == AXIS_TYPE_VALUE) {
+  if (axis->axis_type != AXIS_TYPE_CATEGORY) {
     offset = -r.w / 2;
   } else if (axis->axis_type == AXIS_TYPE_CATEGORY) {
     r.w = axis->inverse ? -r.w : r.w;
@@ -470,6 +480,10 @@ static const char* s_x_axis_properties[] = {WIDGET_PROP_MIN,
                                             AXIS_PROP_TICK_SHOW,
                                             AXIS_PROP_LABEL_SHOW,
                                             AXIS_PROP_TITLE_SHOW,
+                                            AXIS_PROP_TIME_RECENT_TIME,
+                                            AXIS_PROP_TIME_DIV,
+                                            AXIS_PROP_TIME_SAMPLING_RATE,
+                                            AXIS_PROP_TIME_FORMAT,
                                             NULL};
 
 TK_DECL_VTABLE(x_axis) = {.type = WIDGET_TYPE_X_AXIS,

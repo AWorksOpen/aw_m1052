@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  input stream base on socket
  *
- * Copyright (c) 2019 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2019 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -33,9 +33,18 @@ static int32_t tk_istream_tcp_read(tk_istream_t* stream, uint8_t* buff, uint32_t
 
   ret = recv(istream_tcp->sock, buff, max_size, 0);
   if (ret <= 0) {
-    if (errno != EAGAIN) {
+    if (socket_last_io_has_error()) {
       perror("recv");
       istream_tcp->is_broken = TRUE;
+    } else {
+      if (tk_socket_wait_for_data(istream_tcp->sock, 1) == RET_OK) {
+        ret = recv(istream_tcp->sock, buff, max_size, 0);
+        /*not timeout, but no data means connection is closed*/
+        if (ret <= 0) {
+          log_debug("socket %d is closed\n", istream_tcp->sock);
+          istream_tcp->is_broken = TRUE;
+        }
+      }
     }
   }
 
@@ -45,10 +54,10 @@ static int32_t tk_istream_tcp_read(tk_istream_t* stream, uint8_t* buff, uint32_t
 static ret_t tk_istream_tcp_wait_for_data(tk_istream_t* stream, uint32_t timeout_ms) {
   tk_istream_tcp_t* istream_tcp = TK_ISTREAM_TCP(stream);
 
-  return socket_wait_for_data(istream_tcp->sock, timeout_ms);
+  return tk_socket_wait_for_data(istream_tcp->sock, timeout_ms);
 }
 
-static ret_t tk_istream_tcp_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t tk_istream_tcp_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   tk_istream_tcp_t* istream_tcp = TK_ISTREAM_TCP(obj);
   if (tk_str_eq(name, TK_STREAM_PROP_FD)) {
     value_set_int(v, istream_tcp->sock);
@@ -68,11 +77,11 @@ static const object_vtable_t s_tk_istream_tcp_vtable = {.type = "tk_istream_tcp"
                                                         .get_prop = tk_istream_tcp_get_prop};
 
 tk_istream_t* tk_istream_tcp_create(int sock) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   tk_istream_tcp_t* istream_tcp = NULL;
   return_value_if_fail(sock >= 0, NULL);
 
-  obj = object_create(&s_tk_istream_tcp_vtable);
+  obj = tk_object_create(&s_tk_istream_tcp_vtable);
   istream_tcp = TK_ISTREAM_TCP(obj);
   return_value_if_fail(istream_tcp != NULL, NULL);
 
@@ -81,4 +90,10 @@ tk_istream_t* tk_istream_tcp_create(int sock) {
   TK_ISTREAM(obj)->wait_for_data = tk_istream_tcp_wait_for_data;
 
   return TK_ISTREAM(obj);
+}
+
+tk_istream_tcp_t* tk_istream_tcp_cast(tk_istream_t* s) {
+  return_value_if_fail(s != NULL && TK_OBJECT(s)->vt == &s_tk_istream_tcp_vtable, NULL);
+
+  return (tk_istream_tcp_t*)s;
 }

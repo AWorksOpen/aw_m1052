@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  widget property names
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -66,10 +66,58 @@ BEGIN_C_DECLS
 #define WIDGET_PROP_H "h"
 
 /**
+ * @const WIDGET_PROP_MAX_H
+ * 最大高度。
+ */
+#define WIDGET_PROP_MAX_H "max_h"
+
+/**
+ * @const WIDGET_PROP_DESIGN_W
+ * 窗口设计时宽度。
+ */
+#define WIDGET_PROP_DESIGN_W "design_w"
+
+/**
+ * @const WIDGET_PROP_DESIGN_H
+ * 窗口设计时宽度。
+ */
+#define WIDGET_PROP_DESIGN_H "design_h"
+
+/**
+ * @const WIDGET_PROP_AUTO_SCALE_CHILDREN_X
+ * 窗口大小与设计时大小不同时，是否自动调整子控件的x坐标。
+ */
+#define WIDGET_PROP_AUTO_SCALE_CHILDREN_X "auto_scale_children_x"
+
+/**
+ * @const WIDGET_PROP_AUTO_SCALE_CHILDREN_Y
+ * 窗口大小与设计时大小不同时，是否自动调整子控件的y坐标。
+ */
+#define WIDGET_PROP_AUTO_SCALE_CHILDREN_Y "auto_scale_children_y"
+
+/**
+ * @const WIDGET_PROP_AUTO_SCALE_CHILDREN_W
+ * 窗口大小与设计时大小不同时，是否自动调整子控件的宽度。
+ */
+#define WIDGET_PROP_AUTO_SCALE_CHILDREN_W "auto_scale_children_w"
+
+/**
+ * @const WIDGET_PROP_AUTO_SCALE_CHILDREN_H
+ * 窗口大小与设计时大小不同时，是否自动调整子控件的高度。
+ */
+#define WIDGET_PROP_AUTO_SCALE_CHILDREN_H "auto_scale_children_h"
+
+/**
  * @const WIDGET_PROP_INPUTING
  * inputing。
  */
 #define WIDGET_PROP_INPUTING "inputing"
+
+/**
+ * @const WIDGET_PROP_ALWAYS_ON_TOP
+ * always on top。
+ */
+#define WIDGET_PROP_ALWAYS_ON_TOP "always_on_top"
 
 /**
  * @const WIDGET_PROP_CARET_X
@@ -156,6 +204,12 @@ BEGIN_C_DECLS
 #define WIDGET_PROP_SINGLE_INSTANCE "single_instance"
 
 /**
+ * @const WIDGET_PROP_STRONGLY_FOCUS
+ * 点击非focusable控件时，是否让当前焦点控件失去焦点。比如点击窗口空白区域，是否让编辑器失去焦点。 
+ */
+#define WIDGET_PROP_STRONGLY_FOCUS "strongly_focus"
+
+/**
  * @const WIDGET_PROP_CHILDREN_LAYOUT
  * 子控件布局参数。
  */
@@ -197,6 +251,13 @@ BEGIN_C_DECLS
  */
 #define WIDGET_PROP_VIRTUAL_H "virtual_h"
 
+
+/**
+ * @const WIDGET_PROP_LOADING
+ * 控件正在加载。
+ */
+#define WIDGET_PROP_LOADING "loading"
+
 /**
  * @const WIDGET_PROP_NAME
  * 名称。
@@ -228,6 +289,18 @@ BEGIN_C_DECLS
 #define WIDGET_PROP_VALUE "value"
 
 /**
+ * @const WIDGET_PROP_RADIO
+ * CheckButton是否单选。
+ */
+#define WIDGET_PROP_RADIO "radio"
+
+/**
+ * @const WIDGET_PROP_REVERSE
+ * 进度条反向显示。
+ */
+#define WIDGET_PROP_REVERSE "reverse"
+
+/**
  * @const WIDGET_PROP_LENGTH
  * 长度。
  */
@@ -238,6 +311,12 @@ BEGIN_C_DECLS
  * 自动换行。
  */
 #define WIDGET_PROP_LINE_WRAP "line_wrap"
+
+/**
+ * @const WIDGET_PROP_WORD_WRAP
+ * 是否允许单词中换行。
+ */
+#define WIDGET_PROP_WORD_WRAP "word_wrap"
 
 /**
  * @const WIDGET_PROP_TEXT
@@ -432,6 +511,18 @@ BEGIN_C_DECLS
 #define WIDGET_PROP_ACTIVE "active"
 
 /**
+ * @const WIDGET_PROP_CURR_PAGE
+ * 当前页。
+ */
+#define WIDGET_PROP_CURR_PAGE "curr_page"
+
+/**
+ * @const WIDGET_PROP_PAGE_MAX_NUMBER
+ * 页面最大个数。
+ */
+#define WIDGET_PROP_PAGE_MAX_NUMBER "page_max_number"
+
+/**
  * @const WIDGET_PROP_VERTICAL
  * 是否为垂直模式。
  */
@@ -553,7 +644,7 @@ BEGIN_C_DECLS
 
 /**
  * @const WIDGET_PROP_THEME
- * 窗口主题名称。
+ * 窗体样式名称。
  */
 #define WIDGET_PROP_THEME "theme"
 
@@ -589,13 +680,13 @@ BEGIN_C_DECLS
 
 /**
  * @const WIDGET_PROP_THEME_OBJ
- * 窗口的主题对象。
+ * 窗口的窗体样式对象。
  */
 #define WIDGET_PROP_THEME_OBJ "theme_obj"
 
 /**
  * @const WIDGET_PROP_DEFAULT_THEME_OBJ
- * 缺省的主题对象。
+ * 缺省的窗体样式对象。
  */
 #define WIDGET_PROP_DEFAULT_THEME_OBJ "default_theme_obj"
 
@@ -658,6 +749,12 @@ BEGIN_C_DECLS
  * 是否启用动画。
  */
 #define WIDGET_PROP_ANIMATABLE "animatable"
+
+/**
+ * @const WIDGET_PROP_AUTO_HIDE
+ * 是否自动隐藏。
+ */
+#define WIDGET_PROP_AUTO_HIDE "auto_hide"
 
 /**
  * @const WIDGET_PROP_AUTO_HIDE_SCROLL_BAR
@@ -798,6 +895,12 @@ BEGIN_C_DECLS
 #define WIDGET_PROP_CLOSE_WHEN_CLICK_OUTSIDE "close_when_click_outside"
 
 /**
+ * @const WIDGET_PROP_CLOSE_WHEN_TIMEOUT
+ * 超时后关闭窗口。
+ */
+#define WIDGET_PROP_CLOSE_WHEN_TIMEOUT "close_when_timeout"
+
+/**
  * @const WIDGET_PROP_LINE_GAP
  * 行间距。
  */
@@ -847,7 +950,7 @@ BEGIN_C_DECLS
 
 /**
  * @const WIDGET_PROP_WITH_FOCUS_STATE
- * 是否支持焦点状态(如果希望style支持焦点状态，但有不希望焦点停留，可用本属性)。
+ * 是否支持焦点状态(如果希望style支持焦点状态，但又不希望焦点停留，可用本属性)。
  */
 #define WIDGET_PROP_WITH_FOCUS_STATE "with_focus_state"
 
@@ -1237,6 +1340,11 @@ typedef enum _window_stage_t {
    */
   WINDOW_STAGE_NONE = 0,
   /**
+   * @const WINDOW_STAGE_LOADED
+   * 从UI资源加载完成。
+   */
+  WINDOW_STAGE_LOADED,
+  /**
    * @const WINDOW_STAGE_CREATED
    * 创建完成。
    */
@@ -1301,6 +1409,12 @@ typedef enum _window_closable_t {
  * 正常状态。
  */
 #define WIDGET_STATE_NORMAL "normal"
+
+/**
+ * @const WIDGET_STATE_ACTIVATED
+ * 3/5keys模式时，进入激活状态(此时方向键用于修改值)。
+ */
+#define WIDGET_STATE_ACTIVATED "activated"
 
 /**
  * @const WIDGET_STATE_CHANGED
@@ -1492,6 +1606,13 @@ typedef enum _window_closable_t {
  * Four pointed arrow pointing north, south, east, and west。
  */
 #define WIDGET_CURSOR_SIZEALL "cursor_size_all"
+
+/*for fscript*/
+#define STR_PROP_SELF "self"
+#define STR_PROP_PARENT "parent"
+#define STR_PROP_WINDOW "window"
+#define STR_PROP_WINDOW_MANAGER "window_manager"
+#define STR_PROP_MODEL "__model__"
 
 END_C_DECLS
 

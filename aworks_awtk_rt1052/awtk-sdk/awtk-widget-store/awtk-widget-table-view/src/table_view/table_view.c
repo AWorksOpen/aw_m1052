@@ -51,7 +51,6 @@ static ret_t table_view_on_client_scrolled(void* ctx, event_t* e) {
 }
 
 static ret_t table_view_on_scroll_bar_changed(void* ctx, event_t* e) {
-  value_t v;
   widget_t* widget = WIDGET(ctx);
   widget_t* target = WIDGET(e->target);
   table_view_t* table_view = TABLE_VIEW(widget);

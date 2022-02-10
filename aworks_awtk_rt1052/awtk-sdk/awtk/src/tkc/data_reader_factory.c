@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  data reader factory
  *
- * Copyright (c) 2020 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2020 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -61,12 +61,19 @@ ret_t data_reader_factory_register(data_reader_factory_t* factory, const char* p
   creator_item_t* item = NULL;
   return_value_if_fail(factory != NULL && protocol != NULL && create != NULL, RET_BAD_PARAMS);
 
-  item = TKMEM_ZALLOC(creator_item_t);
-  return_value_if_fail(item != NULL, RET_OOM);
+  item = darray_find(&(factory->creators), (void*)protocol);
+  if (item != NULL) {
+    if (item->create != create) {
+      item->create = create;
+    }
+  } else {
+    item = TKMEM_ZALLOC(creator_item_t);
+    return_value_if_fail(item != NULL, RET_OOM);
 
-  item->create = create;
-  tk_strncpy(item->protocol, protocol, TK_NAME_LEN);
-  darray_push(&(factory->creators), item);
+    item->create = create;
+    tk_strncpy(item->protocol, protocol, TK_NAME_LEN);
+    darray_push(&(factory->creators), item);
+  }
 
   return RET_OK;
 }

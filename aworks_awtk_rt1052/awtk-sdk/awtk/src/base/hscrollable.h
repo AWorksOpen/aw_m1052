@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  input method text hscrollable
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -45,12 +45,15 @@ typedef struct _hscrollable_t {
   velocity_t velocity;
   widget_animator_t* wa;
   bool_t always_scrollable;
+  bool_t enable_hscroll_animator;
 } hscrollable_t;
 
 hscrollable_t* hscrollable_create(widget_t* widget);
 ret_t hscrollable_set_xoffset(hscrollable_t* hscrollable, int32_t xoffset);
 ret_t hscrollable_set_virtual_w(hscrollable_t* hscrollable, int32_t virtual_w);
 ret_t hscrollable_set_always_scrollable(hscrollable_t* hscrollable, bool_t always_scrollable);
+ret_t hscrollable_set_enable_hscroll_animator(hscrollable_t* hscrollable,
+                                              bool_t enable_hscroll_animator);
 
 ret_t hscrollable_on_event(hscrollable_t* hscrollable, event_t* e);
 ret_t hscrollable_get_prop(hscrollable_t* hscrollable, const char* name, value_t* v);
@@ -58,6 +61,8 @@ ret_t hscrollable_set_prop(hscrollable_t* hscrollable, const char* name, const v
 ret_t hscrollable_on_paint_children(hscrollable_t* hscrollable, canvas_t* c);
 
 ret_t hscrollable_destroy(hscrollable_t* hscrollable);
+
+#define HSCROLLABLE_PROP_ENABLE_HSCROLL_ANIMATOR "enable_hscroll_animator"
 
 END_C_DECLS
 

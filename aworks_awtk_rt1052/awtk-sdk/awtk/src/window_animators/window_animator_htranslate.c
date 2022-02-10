@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  horizontal translate window animator
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -39,10 +39,16 @@ static ret_t window_animator_htranslate_draw_prev(window_animator_t* wa) {
   float_t x = tk_roundi(win->w * percent);
   float_t w = win->w - x;
 
-  rect_t src = rect_init(x, win->y, w, win->h);
-  rect_t dst = rect_init(0, win->y, w, win->h);
-
-  return lcd_draw_image(c->lcd, &(wa->prev_img), rect_scale(&src, wa->ratio), &dst);
+#ifndef WITHOUT_WINDOW_ANIMATOR_CACHE
+  rectf_t src = rectf_init(x, win->y, w, win->h);
+  rectf_t dst = rectf_init(0.0f, win->y, w, win->h);
+  return lcd_draw_image(c->lcd, &(wa->prev_img), rectf_scale(&src, wa->ratio), &dst);
+#else
+  canvas_translate(c, -x, 0);
+  widget_paint(win, c);
+  canvas_untranslate(c, -x, 0);
+  return RET_OK;
+#endif /*WITHOUT_WINDOW_ANIMATOR_CACHE*/
 }
 
 static ret_t window_animator_htranslate_draw_curr(window_animator_t* wa) {
@@ -52,10 +58,17 @@ static ret_t window_animator_htranslate_draw_curr(window_animator_t* wa) {
   float_t x = tk_roundi(win->w * (1 - percent));
   float_t w = win->w - x;
 
-  rect_t src = rect_init(0, win->y, w, win->h);
-  rect_t dst = rect_init(x, win->y, w, win->h);
+#ifndef WITHOUT_WINDOW_ANIMATOR_CACHE
+  rectf_t src = rectf_init(0.0f, win->y, w, win->h);
+  rectf_t dst = rectf_init(x, win->y, w, win->h);
+  return lcd_draw_image(c->lcd, &(wa->curr_img), rectf_scale(&src, wa->ratio), &dst);
+#else
+  canvas_translate(c, x, 0);
+  widget_paint(win, c);
+  canvas_untranslate(c, x, 0);
 
-  return lcd_draw_image(c->lcd, &(wa->curr_img), rect_scale(&src, wa->ratio), &dst);
+  return RET_OK;
+#endif /*WITHOUT_WINDOW_ANIMATOR_CACHE*/
 }
 
 static const window_animator_vtable_t s_window_animator_htranslate_vt = {
@@ -67,6 +80,6 @@ static const window_animator_vtable_t s_window_animator_htranslate_vt = {
     .draw_prev_window = window_animator_htranslate_draw_prev,
     .draw_curr_window = window_animator_htranslate_draw_curr};
 
-window_animator_t* window_animator_htranslate_create(bool_t open, object_t* args) {
+window_animator_t* window_animator_htranslate_create(bool_t open, tk_object_t* args) {
   return window_animator_create(open, &s_window_animator_htranslate_vt);
 }

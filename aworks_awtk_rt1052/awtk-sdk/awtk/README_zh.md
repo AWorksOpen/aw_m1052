@@ -66,7 +66,7 @@
 
 * 通过脏矩算法只更新变化的部分。
 * 支持 3 FrameBuffer 让界面以最高帧率运行 （可选）。
-* UI 描述文件和主题文件使用高效的二进制格式，解析在瞬间完成。
+* UI 描述文件和窗体样式文件使用高效的二进制格式，解析在瞬间完成。
 * 支持各种 GPU 加速接口。如 OpenGL、DirectX、Vulkan 和 Metal 等。
 * 支持嵌入式平台的各种 2D 加速接口。目前 STM32 的 DMA2D 和 NXP 的 PXP 接口，厂家可以轻松扩展自己的加速接口。
 
@@ -93,7 +93,7 @@
 * 支持控件动画。
 * 支持高清屏。
 * 支持界面描述文件。
-* 支持主题描述文件。
+* 支持窗体样式描述文件。
 * 主题切换实时生效。
 * 支持控件布局策略。
 * 支持对话框高亮策略。
@@ -132,6 +132,7 @@
 [AWTK](README.md) 本身是用 C 语言开发的，可以通过 IDL 生成各种脚本语言的绑定。生成的绑定代码不是简单的把 C 语言的 API 映射到脚本语言，而是生成脚本语言原生代码风格的 API。目前支持以下语言 （以后根据需要增加）：
 
 * C
+* Go
 * C++
 * lua
 * java
@@ -160,6 +161,8 @@
 > 详情请参考：https://github.com/zlgopen/awtk-mvvm
 
 ### 10. 开放源码，免费商用 (LGPL)。
+
+> 欢迎对照 [《GUI 引擎评价指标》](https://github.com/zlgopen/gui-lib-evaluation) 进行评测。
 
 ## 四、模拟运行：
 
@@ -211,7 +214,7 @@ scons
 如果没有安装 scons 和依赖的软件包，请在终端运行下面的命令：
 
 ```
-sudo apt-get install gcc g++ scons libsndio-dev libgtk-3-dev libglu1-mesa libglu1-mesa-dev libgl1-mesa-glx libgl1-mesa-dev libasound2-dev git vim clang-format libharfbuzz-dev nodejs
+sudo apt-get install gcc g++ scons libsndio-dev libgtk-3-dev libglu1-mesa libglu1-mesa-dev libgl1-mesa-glx libgl1-mesa-dev libasound2-dev libibus-1.0-dev fcitx-libs-dev git vim clang-format libharfbuzz-dev nodejs libreadline-dev
 ```
 
 编译运行 （在终端下，进入 awtk 所在的目录，并运行下列命令）：
@@ -276,6 +279,8 @@ npm install -g glob
 
 * [LUA 绑定](https://github.com/zlgopen/awtk-lua)
 
+* [Go 绑定](https://github.com/zlgopen/awtk-go)
+
 * [C++ 绑定](https://github.com/zlgopen/awtk-cpp)
 
 * [JAVA 绑定](https://github.com/zlgopen/awtk-java)
@@ -296,13 +301,25 @@ npm install -g glob
 
 * [MVVM 模板工程](https://github.com/zlgopen/awtk-mvvm-c-hello)
 
-* [awtk-restful-httpd](https://github.com/zlgopen/awtk-restful-httpd)
+* [CSV文件操作](https://github.com/zlgopen/awtk-csv-file)
+
+* [数据库Repository](https://github.com/zlgopen/awtk-database-repository)
+
+* [Sqlite 基于 AWTK 的移植](https://github.com/zlgopen/awtk-sqlite3)
+
+* [VSCode实时预览插件](https://github.com/zlgopen/awtk-vscode-plugin)
+
+* [为嵌入式平台开发的RESTful的Web服务](https://github.com/zlgopen/awtk-restful-httpd)
 
 * [自动测试引擎](https://github.com/zlgopen/awtk-ui-automation)
+
+* [回归测试](https://github.com/zlgopen/awtk-regression-test)
 
 * [C 示例代码](https://github.com/zlgopen/awtk-c-demos)
 
 * [精彩示例](https://github.com/zlgopen/awtk-examples)
+
+* [HTTP 客户端库](https://github.com/zlgopen/awtk-http-client)
 
 * [AWTK-MVVM](https://github.com/zlgopen/awtk-mvvm)
 
@@ -322,19 +339,27 @@ npm install -g glob
 
 * [扩展控件实例：表格视图](https://github.com/zlgopen/awtk-widget-table-view)
 
+* [扩展控件实例：HTML 视图](https://github.com/zlgopen/awtk-widget-html-view)
+
 * [扩展控件实例：垂直文本](https://github.com/zlgopen/awtk-widget-vlabel)
 
 * [扩展控件实例：仿微信列表项](https://github.com/zlgopen/awtk-widget-slidable-row)
 
+* [扩展控件实例：Lottie动画](https://github.com/zlgopen/awtk-widget-rlottie)
+
+* [扩展控件实例：Rive动画](https://github.com/zlgopen/awtk-widget-rive)
+
 * [自定义字体加载器：加载部分字体](https://github.com/zlgopen/awtk-custom-font-loader)
 
-第三方提供：
+* [用reactjs开发AWTK应用程序](https://github.com/zlgopen/react-awtk)
 
-* [react-awtk](https://github.com/wenyufei2018/react-awtk)
+第三方提供：
 
 * [扩展控件实例：二维码](https://github.com/CUITzhaoqi/awtk-qr)
 
 * [扩展控件实例：圆形滑块](https://github.com/longyuwlz/awtk_slider_circle)
+
+* [扩展控件实例：手势密码控件](https://gitee.com/zhangzhongji/awtk-widget-gesture-lock)
 
 ## 九、文档
 

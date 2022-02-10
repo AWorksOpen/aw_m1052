@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  rect struct and utils functions.
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -48,6 +48,17 @@ typedef struct _point_t {
 } point_t;
 
 /**
+ * @method point_init
+ * 初始化point对象。
+ *
+ * @param {xy_t} x x坐标。
+ * @param {xy_t} y y坐标。
+ *
+ * @return {point_t} 返回point对象。
+ */
+point_t point_init(xy_t x, xy_t y);
+
+/**
  * @class pointf_t
  * @order -10
  * @annotation ["scriptable"]
@@ -67,6 +78,63 @@ typedef struct _pointf_t {
    */
   float_t y;
 } pointf_t;
+
+/**
+ * @method pointf_init
+ * 初始化point对象。
+ *
+ * @param {float_t} x x坐标。
+ * @param {float_t} y y坐标。
+ *
+ * @return {pointf_t} 返回point对象。
+ */
+pointf_t pointf_init(float_t x, float_t y);
+
+/**
+ * @class rectf_t
+ * @order -10
+ * @annotation ["scriptable"]
+ * 矩形。包括一个x坐标、y坐标、宽度和高度。
+ */
+typedef struct _rectf_t {
+  /**
+   * @property {float} x
+   * @annotation ["readable", "scriptable"]
+   * x坐标。
+   */
+  float x;
+  /**
+   * @property {float} y
+   * @annotation ["readable", "scriptable"]
+   * y坐标。
+   */
+  float y;
+  /**
+   * @property {float} w
+   * @annotation ["readable", "scriptable"]
+   * 宽度。
+   */
+  float w;
+  /**
+   * @property {float} h
+   * @annotation ["readable", "scriptable"]
+   * 高度。
+   */
+  float h;
+} rectf_t;
+
+/**
+ * @method rectf_init
+ * 初始化rectf对象。
+ *
+ * @param {float} x x坐标。
+ * @param {float} y y坐标。
+ * @param {float} w 宽度。
+ * @param {float} h 高度。
+ *
+ * @return {rectf_t} 返回rect对象。
+ */
+rectf_t rectf_init(float x, float y, float w, float h);
 
 /**
  * @class rect_t
@@ -198,13 +266,13 @@ ret_t rect_merge(rect_t* dst_r, const rect_t* r);
  * @method rect_contains
  * 判断指定的点在rect范围内。
  *
- * @param {rect_t*} r rect对象。
+ * @param {const rect_t*} r rect对象。
  * @param {xy_t} x x坐标。
  * @param {xy_t} y y坐标。
  *
  * @return {bool_t} 返回在rect范围内。
  */
-bool_t rect_contains(rect_t* r, xy_t x, xy_t y);
+bool_t rect_contains(const rect_t* r, xy_t x, xy_t y);
 
 /**
  * @method rect_fix
@@ -226,6 +294,48 @@ rect_t rect_fix(rect_t* r, wh_t max_w, wh_t max_h);
  * @return {rect_t} 返回交集。
  */
 rect_t rect_intersect(const rect_t* r1, const rect_t* r2);
+
+/**
+ * @method rect_has_intersect
+ * 判断两个rect的是否存在交集。
+ *
+ * @param {const rect_t*} r1 rect对象。
+ * @param {const rect_t*} r2 rect对象。
+ *
+ * @return {bool_t} 返回TRUE表示存在，否则表示不存在。
+ */
+bool_t rect_has_intersect(const rect_t* r1, const rect_t* r2);
+
+/**
+ * @method rectf_scale
+ * 缩放rectf对象。
+ *
+ * @param {rectf_t*} r rect对象。
+ * @param {float_t} scale 缩放比例。
+ *
+ * @return {rectf_t*} 返回rect对象。
+ */
+rectf_t* rectf_scale(rectf_t* r, float_t scale);
+
+/**
+ * @method rect_to_rectf
+ * rect 类型转换到 rectf 类型。
+ *
+ * @param {const rect_t*} r1 rect 对象。
+ *
+ * @return {rectf_t} 返回 rectf_t 对象。
+ */
+rectf_t rect_to_rectf(const rect_t* r);
+
+/**
+ * @method rect_from_rectf
+ * rectf 类型转换到 rect 类型。
+ *
+ * @param {const rectf_t*} r rectf 对象。
+ *
+ * @return {rect_t} 返回 rect 对象。
+ */
+rect_t rect_from_rectf(const rectf_t* r);
 
 END_C_DECLS
 

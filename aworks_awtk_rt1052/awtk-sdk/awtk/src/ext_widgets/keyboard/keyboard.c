@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  keyboard
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -50,9 +50,16 @@ static ret_t keyboard_on_destroy(widget_t* widget) {
 
 static ret_t keyboard_on_event(widget_t* widget, event_t* e) {
   keyboard_t* keyboard = KEYBOARD(widget);
+  return_value_if_fail(keyboard != NULL, RET_BAD_PARAMS);
   if (e->type == EVT_KEY_DOWN || e->type == EVT_KEY_UP) {
     key_event_t* evt = (key_event_t*)e;
     /*goto here only when grab_keys=true*/
+    if (evt->key == TK_KEY_LEFT || evt->key == TK_KEY_RIGHT || evt->key == TK_KEY_DOWN ||
+        evt->key == TK_KEY_UP) {
+      /*let window move focus*/
+      return RET_OK;
+    }
+
     if (e->type == EVT_KEY_DOWN) {
       keyboard->key_down = evt->key;
     } else {
@@ -99,7 +106,7 @@ widget_t* keyboard_create(widget_t* parent, xy_t x, xy_t y, wh_t w, wh_t h) {
 
 static ret_t on_visit_widget_to_focus_first(void* ctx, const void* data) {
   widget_t* w = WIDGET(data);
-
+  return_value_if_fail(w != NULL, RET_BAD_PARAMS);
   if (w->focusable) {
     widget_set_focused(w, TRUE);
 
@@ -164,7 +171,7 @@ static ret_t keyboard_set_active_page(widget_t* button, const char* name) {
 static ret_t keyboard_preedit_confirm(widget_t* widget) {
   input_method_t* im = input_method();
   keyboard_t* keyboard = KEYBOARD(widget);
-
+  return_value_if_fail(keyboard != NULL, RET_BAD_PARAMS);
   input_method_dispatch_preedit_confirm(im);
   widget_set_prop_int(widget, WIDGET_PROP_PREEDIT_INDEX, -1);
 
@@ -174,6 +181,7 @@ static ret_t keyboard_preedit_confirm(widget_t* widget) {
 }
 
 static ret_t keyboard_on_preedit_timeout(const timer_info_t* info) {
+  return_value_if_fail(info != NULL, RET_BAD_PARAMS);
   keyboard_preedit_confirm(WIDGET(info->ctx));
 
   return RET_REMOVE;
@@ -184,6 +192,7 @@ static ret_t keyboard_on_button_click(void* ctx, event_t* e) {
   widget_t* button = WIDGET(e->target);
   widget_t* win = widget_get_window(button);
   keyboard_t* keyboard = KEYBOARD(win);
+  return_value_if_fail(im != NULL && keyboard != NULL && button != NULL, RET_BAD_PARAMS);
 
   const char* name = button->name;
   const char* opt = strstr(name, STR_KEY_OPT);
@@ -233,13 +242,14 @@ static ret_t keyboard_on_button_click(void* ctx, event_t* e) {
     return keyboard_set_active_page(button, page_name + strlen(STR_PAGE_PREFIX));
   } else if (hard_key != NULL) {
     const key_type_value_t* kv = NULL;
-    key_event_t key_event;
+    key_event_t evt;
+    widget_t* wm = window_manager();
     hard_key += strlen(STR_HARD_KEY_PREFIX);
     kv = keys_type_find(hard_key);
     return_value_if_fail(kv != NULL, RET_BAD_PARAMS);
 
-    widget_dispatch(window_manager(), key_event_init(&key_event, EVT_KEY_DOWN, NULL, kv->value));
-    widget_dispatch(window_manager(), key_event_init(&key_event, EVT_KEY_UP, NULL, kv->value));
+    window_manager_dispatch_input_event(wm, key_event_init(&evt, EVT_KEY_DOWN, wm, kv->value));
+    window_manager_dispatch_input_event(wm, key_event_init(&evt, EVT_KEY_UP, wm, kv->value));
 
     return RET_OK;
   } else if (key != NULL) {
@@ -316,11 +326,15 @@ static ret_t keyboard_on_action_info(void* ctx, event_t* e) {
 }
 
 static ret_t keyboard_hook_buttons(void* ctx, const void* iter) {
+  const char* name = NULL;
+  const char* type = NULL;
   widget_t* widget = WIDGET(iter);
   input_method_t* im = input_method();
   keyboard_t* keyboard = KEYBOARD(ctx);
-  const char* name = widget->name;
-  const char* type = widget_get_type(widget);
+  return_value_if_fail(keyboard != NULL && im != NULL && widget != NULL, RET_BAD_PARAMS);
+
+  name = widget->name;
+  type = widget_get_type(widget);
 
   if (tk_str_eq(type, WIDGET_TYPE_BUTTON) && name != NULL) {
     widget_on(widget, EVT_CLICK, keyboard_on_button_click, keyboard);
@@ -337,11 +351,12 @@ static ret_t keyboard_hook_buttons(void* ctx, const void* iter) {
 static ret_t keyboard_on_load(void* ctx, event_t* e) {
   widget_t* widget = WIDGET(ctx);
   widget_t* pages = widget_lookup_by_type(widget, WIDGET_TYPE_PAGES, TRUE);
+  pages_t* pages_widget = PAGES(pages);
 
   (void)e;
   widget_foreach(widget, keyboard_hook_buttons, widget);
-  if (pages != NULL) {
-    keyboard_focus_first(widget_get_child(pages, PAGES(pages)->active));
+  if (pages_widget != NULL) {
+    keyboard_focus_first(widget_get_child(pages, pages_widget->active));
   } else {
     keyboard_focus_first(widget);
   }

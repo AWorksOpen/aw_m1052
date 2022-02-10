@@ -1,12 +1,21 @@
 #!/bin/bash
 
-SRC=$1
+if [ "$1" == "" ]
+then
+  SRC=res/assets
+else
+  SRC="$1"
+fi
 
-if [ -z "$SRC" ] 
-  then
-    echo "Usage: $0 assets_dir"
-    exit 0
-  fi
+echo "SRC=$SRC"
+
+if [ -e "$SRC" ] 
+then
+  echo "preparing..."
+else
+  echo "res/assets not exists"
+  exit 0
+fi
 
 rm -rf temp
 rm -f assets.zip
@@ -15,6 +24,7 @@ mkdir temp
 cp -rf "$SRC" temp 
 
 cd temp/assets
+rm -fv *.inc
 
 for f in *;
 do 
@@ -33,8 +43,8 @@ cd ..
 zip -r ../assets.zip assets
 
 cd ..
-
 rm -rf temp
 
+echo "assets saved to assets.zip:"
 ls -l assets.zip
 

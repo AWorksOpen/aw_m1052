@@ -1,5 +1,8 @@
 ﻿#include "widgets/progress_bar.h"
 #include "gtest/gtest.h"
+#include <string.h>
+
+using std::string;
 
 TEST(progress_bar, basic) {
   value_t v1;
@@ -15,6 +18,16 @@ TEST(progress_bar, basic) {
   ASSERT_EQ(widget_set_prop(s, WIDGET_PROP_VERTICAL, &v1), RET_OK);
   ASSERT_EQ(widget_get_prop(s, WIDGET_PROP_VERTICAL, &v2), RET_OK);
   ASSERT_EQ(value_bool(&v1), value_bool(&v2));
+
+  value_set_bool(&v1, TRUE);
+  ASSERT_EQ(widget_set_prop(s, WIDGET_PROP_REVERSE, &v1), RET_OK);
+  ASSERT_EQ(widget_get_prop(s, WIDGET_PROP_REVERSE, &v2), RET_OK);
+  ASSERT_EQ(value_bool(&v1), value_bool(&v2));
+
+  value_set_str(&v1, "%02.2f");
+  ASSERT_EQ(widget_set_prop(s, WIDGET_PROP_FORMAT, &v1), RET_OK);
+  ASSERT_EQ(widget_get_prop(s, WIDGET_PROP_FORMAT, &v2), RET_OK);
+  ASSERT_EQ(string(value_str(&v1)), string(value_str(&v2)));
 
   widget_destroy(s);
 }
@@ -32,7 +45,7 @@ TEST(progress_bar, max) {
   ASSERT_EQ(value_int(&v1), value_int(&v2));
 
   ASSERT_EQ(progress_bar_set_value(s, 500), RET_OK);
-  ASSERT_EQ(progress_bar_get_percent(s), 50);
+  ASSERT_EQ(progress_bar_get_percent(s), 50u);
 
   widget_destroy(s);
 }

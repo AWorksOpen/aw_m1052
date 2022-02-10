@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  decorate object with lock
  *
- * Copyright (c) 2020 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2020 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -29,17 +29,17 @@ BEGIN_C_DECLS
 
 /**
  * @class object_locker_t
- * @parent object_t
+ * @parent tk_object_t
  *
  * 对现有的object对象进行装饰，添加访问互斥功能。
  *
  */
 typedef struct _object_locker_t {
-  object_t object;
+  tk_object_t object;
 
   /*private*/
   tk_mutex_nest_t* mutex;
-  object_t* obj;
+  tk_object_t* obj;
 } object_locker_t;
 
 /**
@@ -49,14 +49,22 @@ typedef struct _object_locker_t {
  *
  * @annotation ["constructor"]
  *
- * @param {object_t*} obj 待装饰的对象。
+ * @param {tk_object_t*} obj 待装饰的对象。
  *
- * @return {object_t*} 返回object对象。
+ * @return {tk_object_t*} 返回object对象。
  *
  */
-object_t* object_locker_create(object_t* obj);
+tk_object_t* object_locker_create(tk_object_t* obj);
 
-object_locker_t* object_locker_cast(object_t* obj);
+/**
+ * @method object_locker_cast
+ * 转换为object_locker对象。
+ * @annotation ["cast"]
+ * @param {tk_object_t*} obj object_locker对象。
+ *
+ * @return {object_locker_t*} object_locker对象。
+ */
+object_locker_t* object_locker_cast(tk_object_t* obj);
 #define OBJECT_LOCKER(obj) object_locker_cast(obj)
 
 END_C_DECLS

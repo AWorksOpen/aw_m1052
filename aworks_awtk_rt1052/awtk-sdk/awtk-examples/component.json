@@ -1,0 +1,7 @@
+{
+    "version": "2.0.5+sha.231bbfb",
+    "frameworks": [
+        "awtk@>=1.5"
+    ],
+    "name": "awtk-examples"
+}

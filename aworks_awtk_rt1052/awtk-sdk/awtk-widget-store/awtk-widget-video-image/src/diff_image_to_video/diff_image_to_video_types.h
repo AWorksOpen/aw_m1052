@@ -65,6 +65,7 @@ typedef struct _video_info_t {
   unsigned int height;
   unsigned int delays;
   unsigned int channels;
+  unsigned int line_length;
   unsigned int time_length;
   unsigned int frame_number;
   image_format_t frame_image_type;

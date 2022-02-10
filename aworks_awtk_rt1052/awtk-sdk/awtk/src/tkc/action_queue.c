@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  action_queue
  *
- * Copyright (c) 2020 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2020 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,7 +27,7 @@ action_queue_t* action_queue_create(uint16_t capacity) {
   action_queue_t* q = NULL;
   return_value_if_fail(capacity > 1, NULL);
 
-  size = sizeof(action_queue_t) + (capacity - 1) * sizeof(qaction_t);
+  size = sizeof(action_queue_t) + sizeof(qaction_t*) * capacity;
   q = (action_queue_t*)TKMEM_ALLOC(size);
   return_value_if_fail(q != NULL, NULL);
 

@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  input stream base on file
  *
- * Copyright (c) 2019 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2019 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -55,11 +55,11 @@ static bool_t tk_istream_file_eos(tk_istream_t* stream) {
   return fs_file_eof(istream_file->file);
 }
 
-static ret_t tk_istream_file_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t tk_istream_file_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   return RET_NOT_FOUND;
 }
 
-static ret_t tk_istream_file_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t tk_istream_file_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   tk_istream_file_t* istream_file = TK_ISTREAM_FILE(obj);
 
   if (tk_str_eq(name, TK_STREAM_PROP_IS_EOS)) {
@@ -71,7 +71,7 @@ static ret_t tk_istream_file_get_prop(object_t* obj, const char* name, value_t* 
   return RET_NOT_FOUND;
 }
 
-static ret_t tk_istream_file_on_destroy(object_t* obj) {
+static ret_t tk_istream_file_on_destroy(tk_object_t* obj) {
   tk_istream_file_t* istream_file = TK_ISTREAM_FILE(obj);
 
   fs_file_close(istream_file->file);
@@ -87,16 +87,16 @@ static const object_vtable_t s_tk_istream_file_vtable = {.type = "tk_istream_fil
                                                          .get_prop = tk_istream_file_get_prop,
                                                          .set_prop = tk_istream_file_set_prop};
 
-tk_istream_t* tk_istream_file_create(const char* filename) {
-  object_t* obj = NULL;
+tk_istream_t* tk_istream_file_create_ex(const char* filename, const char* mode) {
+  tk_object_t* obj = NULL;
   fs_file_t* file = NULL;
   tk_istream_file_t* istream_file = NULL;
-  return_value_if_fail(filename != NULL, NULL);
+  return_value_if_fail(filename != NULL && mode != NULL, NULL);
 
-  file = fs_open_file(os_fs(), filename, "rb");
+  file = fs_open_file(os_fs(), filename, mode);
   return_value_if_fail(file != NULL, NULL);
 
-  obj = object_create(&s_tk_istream_file_vtable);
+  obj = tk_object_create(&s_tk_istream_file_vtable);
   istream_file = TK_ISTREAM_FILE(obj);
   if (istream_file == NULL) {
     fs_file_close(file);
@@ -111,4 +111,8 @@ tk_istream_t* tk_istream_file_create(const char* filename) {
   TK_ISTREAM(obj)->wait_for_data = tk_istream_file_wait_for_data;
 
   return TK_ISTREAM(obj);
+}
+
+tk_istream_t* tk_istream_file_create(const char* filename) {
+  return tk_istream_file_create_ex(filename, "rb");
 }

@@ -31,9 +31,14 @@ void axis_p_parse_split_line_params(void* ctx, const char* name, const value_t* 
 void axis_p_parse_tick_params(void* ctx, const char* name, const value_t* v);
 void axis_p_parse_label_params(void* ctx, const char* name, const value_t* v);
 void axis_p_parse_title_params(void* ctx, const char* name, const value_t* v);
+void axis_p_parse_time_params(void* ctx, const char* name, const value_t* v);
 
 ret_t axis_p_get_prop(widget_t* widget, const char* name, value_t* v);
 ret_t axis_p_set_prop(widget_t* widget, const char* name, const value_t* v);
+
+ret_t axis_p_time_generate_default(widget_t* widget, uint32_t recent_index, uint32_t begin,
+                                   uint32_t end, uint32_t middle, float_t interval, darray_t* v,
+                                   void* ctx);
 
 END_C_DECLS
 

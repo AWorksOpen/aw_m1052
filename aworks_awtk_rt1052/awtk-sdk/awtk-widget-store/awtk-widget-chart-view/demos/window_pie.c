@@ -19,7 +19,7 @@
  *
  */
 #include "awtk.h"
-#include "pie_slice/pie_slice.h"
+#include "../src/pie_slice/pie_slice.h"
 
 #define SAVE_EXPLODED "save_exploded"
 #define DELAY_TIME 100
@@ -77,11 +77,10 @@ static ret_t on_btn_view(void* ctx, event_t* e) {
   const char* name = iter->name;
   str_set(&str, name);
   if (str_start_with(&str, "pie") && str_end_with(&str, "label")) {
-    char dst[20];
     memset(dst, 0x0, sizeof(dst));
     tk_strncpy(dst, name, 4);
     tk_snprintf(dst, sizeof(dst), "%s_slice", dst);
-    widget_t* pie_slice = widget_lookup(win, dst, TRUE);
+    pie_slice = widget_lookup(win, dst, TRUE);
 
     value_t v;
     widget_get_prop(pie_slice, PIE_SLICE_PROP_IS_EXPLODED, &v);
@@ -109,7 +108,7 @@ static ret_t on_pie_view(void* ctx, event_t* e) {
   str_t str;
   str_init(&str, 20);
 
-  WIDGET_FOR_EACH_CHILD_BEGIN(target, iter, i)
+  WIDGET_FOR_EACH_CHILD_BEGIN(target->parent, iter, i)
   pie_slice_t* pie_slice = (pie_slice_t*)iter;
   str_set(&str, pie_slice->widget.name);
   str_replace(&str, "slice", "label");
@@ -259,7 +258,7 @@ static ret_t on_arch_timer(const timer_info_t* timer) {
       widget_set_prop(win, "is_arch", value_set_bool(&v1, TRUE));
       inner_radius = new_inner_radius;
     }
-    widget_t* pie_view = widget_lookup(win, "pie_view", TRUE);
+    pie_view = widget_lookup(win, "pie_view", TRUE);
     if (pie_view) {
       WIDGET_FOR_EACH_CHILD_BEGIN(pie_view, iter, i)
       pie_slice_t* pie_slice = PIE_SLICE(iter);

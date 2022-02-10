@@ -70,14 +70,18 @@ int open_gl(void) {
         "/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL"
     };
 #else
+#ifdef WITH_GLAD_SPECIAL_OPENGL_LIB 
+    static const char *NAMES[] = { WITH_GLAD_SPECIAL_OPENGL_LIB };
+#else
     static const char *NAMES[] = {"libGL.so.1", "libGL.so", "libGLESv2.so"};
+#endif
 #endif
 
     unsigned int index = 0;
     for(index = 0; index < (sizeof(NAMES) / sizeof(NAMES[0])); index++) {
         libGL = dlopen(NAMES[index], RTLD_NOW | RTLD_GLOBAL);
         if(libGL != NULL) {
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(WITH_GLAD_SPECIAL_OPENGL_LIB)
             return 1;
 #else
 			if (index < 2) {
@@ -127,11 +131,11 @@ int gladLoadGL(void) {
     int status = 0;
 
     if(open_gl()) {
-#ifdef WITH_NANOVG_GLES2
+#ifdef WITH_GPU_GLES2
         status = gladLoadGLES2Loader(&get_proc);
 #else
         status = gladLoadGLLoader(&get_proc);
-#endif/*WITH_NANOVG_GLES2*/        
+#endif/*WITH_GPU_GLES2*/        
         close_gl();
     }
 

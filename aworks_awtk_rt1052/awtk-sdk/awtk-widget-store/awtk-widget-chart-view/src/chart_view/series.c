@@ -25,6 +25,7 @@
 #include "base/widget_vtable.h"
 #include "series.h"
 #include "series_p.h"
+#include "chart_animator.h"
 
 static const key_type_value_t s_series_dispaly_mode_value[] = {{"push", 0, SERIES_DISPLAY_PUSH},
                                                                {"cover", 0, SERIES_DISPLAY_COVER}};
@@ -42,9 +43,9 @@ series_dispaly_mode_t series_dispaly_mode_from_str(const char* mode) {
 }
 
 uint32_t series_count(widget_t* widget) {
-  ret_t ret = RET_NOT_IMPL;
+  uint32_t ret = 0;
   series_t* series = SERIES(widget);
-  return_value_if_fail(series != NULL && series->vt != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(series != NULL && series->vt != NULL, 0);
 
   if (series->vt->count) {
     ret = series->vt->count(widget);
@@ -84,6 +85,18 @@ ret_t series_push(widget_t* widget, const void* data, uint32_t nr) {
 
   if (series->vt->push) {
     ret = series->vt->push(widget, data, nr);
+  }
+
+  return ret;
+}
+
+ret_t series_clear(widget_t* widget) {
+  ret_t ret = RET_NOT_IMPL;
+  series_t* series = SERIES(widget);
+  return_value_if_fail(series != NULL && series->vt != NULL, RET_BAD_PARAMS);
+
+  if (series->vt->clear) {
+    ret = series->vt->clear(widget);
   }
 
   return ret;
@@ -188,25 +201,40 @@ const wchar_t* series_get_title(widget_t* widget) {
 }
 
 ret_t series_set_capacity(widget_t* widget, uint32_t capacity) {
-  series_t* series = SERIES(widget);
-  return_value_if_fail(series != NULL && capacity > 0, RET_BAD_PARAMS);
-
-  series->capacity = capacity;
-  series->need_reset_fifo = TRUE;
-  return RET_OK;
-}
-
-ret_t series_set_unit_size(widget_t* widget, uint32_t unit_size) {
-  series_t* series = SERIES(widget);
-  return_value_if_fail(series != NULL && unit_size > 0, RET_BAD_PARAMS);
-
-  series->unit_size = unit_size;
-  series->need_reset_fifo = TRUE;
-  return RET_OK;
+  return series_p_set_capacity(widget, capacity);
 }
 
 ret_t series_set_new_period(widget_t* widget, uint32_t new_period) {
   return series_p_set_new_period(widget, new_period);
+}
+
+ret_t series_set_fifo(widget_t* widget, object_t* obj) {
+  object_t* fifo = obj;
+  series_t* series = SERIES(widget);
+  return_value_if_fail(series != NULL && fifo != NULL, RET_BAD_PARAMS);
+
+  if (series->prepare_fifo != NULL) {
+    fifo = series->prepare_fifo(widget, series->prepare_fifo_ctx, obj);
+  } else if (series->fifo != obj) {
+    OBJECT_REF(fifo);
+  }
+
+  return series_p_set_fifo(widget, fifo);
+}
+
+ret_t series_set_prepare_fifo(widget_t* widget, series_prepare_fifo_t prepare, void* ctx) {
+  series_t* series = SERIES(widget);
+  return_value_if_fail(series != NULL, RET_BAD_PARAMS);
+
+  series->prepare_fifo = prepare;
+  series->prepare_fifo_ctx = ctx;
+
+  return RET_OK;
+}
+
+static ret_t series_on_destroy(void* ctx, event_t* e){
+  widget_t* widget = WIDGET(e->target);
+  return series_p_on_destroy(widget);
 }
 
 TK_DECL_VTABLE(series) = {.size = sizeof(series_t), .parent = TK_PARENT_VTABLE(widget)};
@@ -217,10 +245,10 @@ widget_t* series_create(widget_t* parent, const widget_vtable_t* vt, xy_t x, xy_
   series_t* series = SERIES(widget);
   return_value_if_fail(series != NULL, NULL);
 
-  series->capacity = 10;
-  series->unit_size = sizeof(float_t);
+  widget_on(widget, EVT_DESTROY, series_on_destroy, NULL);
+
+  series->animator_create = chart_animator_fifo_float_value_create;
   series->value_animation = 500;
-  series->need_reset_fifo = TRUE;
   series->coverage = 1;
 
   return widget;

@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  blend bgr565 on bgr565
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,11 +24,11 @@
 #include "base/pixel_pack_unpack.h"
 
 #define pixel_dst_t pixel_bgr565_t
+#define pixel_dst_bpp pixel_bgr565_BPP
 #define pixel_dst_format pixel_bgr565_format
 #define pixel_dst_to_rgba pixel_bgr565_to_rgba
 #define pixel_dst_from_rgb pixel_bgr565_from_rgb
 #define pixel_dst_from_rgba pixel_bgr565_from_rgba
-//#define pixel_dst_from_rgba(r, g, b, a) pixel_bgr565_from_rgb(r, g, b)
 
 #define pixel_src_t pixel_bgr565_t
 #define pixel_src_format pixel_bgr565_format
@@ -60,8 +60,8 @@ static inline void blend_a_bgr565_bgra8888(uint8_t* dst, uint8_t* src, uint8_t a
 #include "pixel_ops.inc"
 #include "blend_image.inc"
 
-ret_t blend_image_bgr565_bgr565(bitmap_t* dst, bitmap_t* src, const rect_t* dst_r,
-                                const rect_t* src_r, uint8_t a) {
+ret_t blend_image_bgr565_bgr565(bitmap_t* dst, bitmap_t* src, const rectf_t* dst_r,
+                                const rectf_t* src_r, uint8_t a) {
   return_value_if_fail(dst != NULL && src != NULL && src_r != NULL && dst_r != NULL,
                        RET_BAD_PARAMS);
   return_value_if_fail(dst->format == BITMAP_FMT_BGR565 && src->format == BITMAP_FMT_BGR565,

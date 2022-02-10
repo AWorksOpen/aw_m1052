@@ -273,3 +273,65 @@ ret_t locale_info_change(locale_info_t* locale_info, const char* language, const
 ```
 design/default/styles/keyboard.xml
 ```
+
+#### 21. 如何处理：Cannot find module 'glob'
+
+一般来说，执行下面的命令即可：
+
+```
+npm install -g glob
+```
+
+在 Linux/MacOS 上，有时仍然出现错误，可以通过下面的命令，设置 NODE_PATH 环境变量：
+
+```
+export NODE_PATH="$(npm root -g)"
+```
+
+#### 22. 如何处理 ImportError: No module named PIL
+
+这个需要安装 Pillow 模块 (python)，运行下面的命令可以安装：
+
+```
+pip3 install Pillow
+```
+
+如果系统同时安装了 python2，可以加个 alias。
+
+```
+alias python=python3
+```
+
+#### 23. 如何让用户不可以调整 desktop 应用程序的窗口大小。 
+
+在 awtk\_config.py 中定义宏 NATIVE\_WINDOW\_NOT\_RESIZABLE，重新编译即可：
+
+```python
+COMMON_CCFLAGS=COMMON_CCFLAGS+' -DNATIVE_WINDOW_NOT_RESIZABLE=1 '
+```
+
+#### 24. 为什么定义了AWTK\_LITE，还是会占用很大内存？
+  
+AWTK\_LITE 主要是用来在低端平台裁剪代码的，内存占用主要于图片缓存有关。可以通过图片管理器的接口设置缓存大小：
+
+
+```c
+/**
+ * @method image_manager_set_max_mem_size_of_cached_images
+ * 设置图片缓存占用的最大内存。
+ * @param {image_manager_t*} imm 图片管理器对象。
+ * @param {uint32_t} max_mem_size 最大缓存内存。 
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t image_manager_set_max_mem_size_of_cached_images(image_manager_t* imm, uint32_t max_mem_size);
+```
+
+#### 25. 如何在命令行重新生成资源？
+
+使用下列命令：
+
+```
+python scripts/update_res.py all
+```
+

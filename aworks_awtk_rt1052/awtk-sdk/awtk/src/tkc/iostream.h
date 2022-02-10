@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  input/ouput stream interface
  *
- * Copyright (c) 2019 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2019 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -36,13 +36,13 @@ typedef tk_ostream_t* (*tk_iostream_get_ostream_t)(tk_iostream_t* stream);
 
 /**
  * @class tk_iostream_t
- * @parent object_t
+ * @parent tk_object_t
  *
  * 输入输出流的接口。
  *
  */
 struct _tk_iostream_t {
-  object_t object;
+  tk_object_t object;
 
   tk_iostream_get_istream_t get_istream;
   tk_iostream_get_ostream_t get_ostream;

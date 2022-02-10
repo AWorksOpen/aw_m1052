@@ -100,7 +100,7 @@
           {
             "type": "const char*",
             "name": "value",
-            "desc": "格式字符串。。"
+            "desc": "格式字符串。"
           }
         ],
         "annotation": {
@@ -131,7 +131,7 @@
       }
     ],
     "header": "qr/qr.h",
-    "desc": "显示二维码的控件\nqr\\_t是[widget\\_t](widget_t.md)的子类控件，widget\\_t的函数均适用于qr\\_t控件。\n\n在xml中使用\"qr\"标签创建数值文本控件。如：\n\n```xml\n<!-- ui -->\n<qr x=\"c\" y=\"m\" w=\"240\" h=\"240\" value=\"https://github.com/zlgopen/awtk\" />\n```\n在c代码中使用函数qr\\_create创建数值文本控件。如：\n\n```c\nwidget_t* qr = qr_create(win, 10, 10, 128, 128);\n```\n可用通过style来设置控件的显示风格，如字体的大小和颜色等等。如：\n\n```xml\n<!-- style -->\n<qr>\n<style name=\"default\" >\n<normal fg_color=\"black\" bg_color=\"white\"/>\n<disable fg_color=\"gray\" bg_color=\"#f0f0f0\"/>\n</style>\n</qr>\n```",
+    "desc": "显示二维码的控件\nqr\\_t是[widget\\_t](widget_t.md)的子类控件，widget\\_t的函数均适用于qr\\_t控件。\n\n在xml中使用\"qr\"标签创建数值文本控件。如：\n\n```xml\n<!-- ui -->\n<qr x=\"c\" y=\"m\" w=\"240\" h=\"240\" value=\"https://github.com/zlgopen/awtk\"/>\n```\n在c代码中使用函数qr\\_create创建数值文本控件。如：\n\n```c\nwidget_t* qr = qr_create(win, 10, 10, 128, 128);\n```\n可用通过style来设置控件的显示风格，如字体的大小和颜色等等。如：\n\n```xml\n<!-- style -->\n<qr>\n<style name=\"default\" >\n<normal fg_color=\"black\" bg_color=\"white\" bg_image=\"message\"/>\n<disable fg_color=\"gray\" bg_color=\"#f0f0f0\"/>\n</style>\n</qr>\n```",
     "name": "qr_t",
     "parent": "widget_t",
     "annotation": {

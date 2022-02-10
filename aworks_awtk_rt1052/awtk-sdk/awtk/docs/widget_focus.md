@@ -32,10 +32,21 @@
 
 ### 1. 缺省用 tab 键循环切换焦点。
 
-```
+```c
 #ifndef TK_KEY_MOVE_FOCUS_NEXT
 #define TK_KEY_MOVE_FOCUS_NEXT "tab"
 #endif /*TK_KEY_MOVE_FOCUS_NEXT*/
+
+#ifndef TK_KEY_MOVE_FOCUS_PREV
+#define TK_KEY_MOVE_FOCUS_PREV "shift+tab"
+#endif /*TK_KEY_MOVE_FOCUS_PREV*/
+```
+
+在嵌入式系统中，可以根据需要，定义成其它键。比如：
+
+```c
+#define TK_KEY_MOVE_FOCUS_NEXT "left"
+#define TK_KEY_MOVE_FOCUS_PREV "right"
 ```
 
 ### 2. 可以为当前窗口指定的向前和向后移动焦点的键值。
@@ -111,3 +122,5 @@
 * [键名的定义：https://github.com/zlgopen/awtk/blob/master/src/base/enums.c](https://github.com/zlgopen/awtk/blob/master/src/base/enums.c#L99)。
 
 * [键值映射：https://github.com/zlgopen/awtk/blob/master/docs/map_key.md](https://github.com/zlgopen/awtk/blob/master/docs/map_key.md)
+
+* [如何支持极简键盘 (3 键键盘、5 键键盘和旋转按钮）](how_to_support_5keys_3keys.md )

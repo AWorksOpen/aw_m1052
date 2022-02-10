@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  svg common
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -42,7 +42,7 @@ typedef struct _bsvg_header_t {
 } bsvg_header_t;
 #pragma pack(pop)
 
-#define BSVG_MAGIC 0x20181115
+#define BSVG_MAGIC 0x20181115u
 #define BSVG_MIN_SIZE (sizeof(bsvg_header_t) + sizeof(svg_shape_t))
 
 END_C_DECLS

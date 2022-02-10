@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  event_queue
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -28,26 +28,48 @@
 
 BEGIN_C_DECLS
 
-enum { REQ_ADD_IDLE = EVT_REQ_START, REQ_ADD_TIMER };
+enum { REQ_ADD_IDLE = EVT_REQ_START, REQ_ADD_TIMER, REQ_EXEC_IN_UI };
 
 typedef struct _add_idle_t {
   event_t e;
   idle_func_t func;
+  tk_destroy_t on_destroy;
+  void* on_destroy_ctx;
 } add_idle_t;
 
 typedef struct _add_timer_t {
   event_t e;
   timer_func_t func;
   uint32_t duration;
+  tk_destroy_t on_destroy;
+  void* on_destroy_ctx;
 } add_timer_t;
+
+struct _exec_info_t;
+typedef struct _exec_info_t exec_info_t;
+
+typedef ret_t (*exec_func_t)(exec_info_t* info);
+
+struct _exec_info_t {
+  exec_func_t func;
+  void* ctx;
+  void* extra;
+};
+
+typedef struct _exec_in_ui_t {
+  event_t e;
+  exec_info_t info;
+} exec_in_ui_t;
 
 typedef union _event_queue_req_t {
   event_t event;
   key_event_t key_event;
   wheel_event_t wheel_event;
   pointer_event_t pointer_event;
+  multi_gesture_event_t multi_gesture_event;
   add_idle_t add_idle;
   add_timer_t add_timer;
+  exec_in_ui_t exec_in_ui;
 } event_queue_req_t;
 
 typedef struct _event_queue_t {

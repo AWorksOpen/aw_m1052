@@ -26,6 +26,7 @@
 #include "usb_camera/usb_camera.h"
 
 ret_t usb_camera_register(void) {
+  usb_camerat_register_from_base_class();
   return widget_factory_register(widget_factory(), WIDGET_TYPE_USB_CAMERA, usb_camera_create);
 }
 

@@ -30,8 +30,28 @@
 #include "base/window_manager.h"
 #include "ui_loader/ui_builder_default.h"
 
+#if !defined(STR_DEFAULT_KEYBOARD)
+#if defined(WITH_IME_T9)
+#define STR_DEFAULT_KEYBOARD "kb_default_t9"
+#elif defined(WITH_IME_T9EXT)
+#define STR_DEFAULT_KEYBOARD "kb_default_t9ext"
+#else
+#define STR_DEFAULT_KEYBOARD "kb_default"
+#endif
+#endif/*STR_DEFAULT_KEYBOARD*/
+
+#if !defined(STR_ASCII_KEYBOARD)
+#if defined(WITH_IME_T9)
+#define STR_ASCII_KEYBOARD "kb_ascii_t9"
+#elif defined(WITH_IME_T9EXT)
+#define STR_ASCII_KEYBOARD "kb_default_t9ext"
+#else
+#define STR_ASCII_KEYBOARD "kb_ascii"
+#endif
+#endif/*STR_ASCII_KEYBOARD*/
+
 static ret_t input_method_default_on_edit_destroy(void* ctx, event_t* e);
-static ret_t input_method_default_on_keyboard_destroy(void* ctx, event_t* e);
+static ret_t input_method_default_on_keyboard_close(void* ctx, event_t* e);
 
 static const char* input_type_to_keyboard_name(int32_t input_type) {
   const char* keyboard = NULL;
@@ -74,12 +94,13 @@ static const char* input_type_to_keyboard_name(int32_t input_type) {
       break;
     }
     case INPUT_EMAIL:
+    case INPUT_ASCII:
     case INPUT_PASSWORD: {
-      keyboard = "kb_ascii";
+      keyboard = STR_ASCII_KEYBOARD;
       break;
     }
     default: {
-      keyboard = "kb_default";
+      keyboard = STR_DEFAULT_KEYBOARD;
       break;
     }
   }
@@ -167,15 +188,41 @@ static bool_t is_key_board_overlap_edit(widget_t* keyboard, widget_t* edit) {
   point_t p = {0, 0};
   widget_to_screen(edit, &p);
 
-  if (p.x > keyboard->x && p.x < (keyboard->x + keyboard->w)) {
+  if (p.x >= keyboard->x && p.x < (keyboard->x + keyboard->w)) {
     return TRUE;
   }
 
-  if (keyboard->x > p.x && keyboard->x < (p.x + edit->w)) {
+  if (keyboard->x >= p.x && keyboard->x < (p.x + edit->w)) {
     return TRUE;
   }
 
   return FALSE;
+}
+
+static ret_t input_type_keyboard_follow_edit(input_method_t* im) {
+  int32_t x = 0;
+  int32_t y = 0;
+  point_t p = {0, 0};
+  widget_t* widget = im->widget;
+  widget_t* wm = window_manager();
+  widget_t* keyboard = im->keyboard;
+
+  widget_to_screen(widget, &p);
+
+  x = p.x;
+  y = p.y + widget->h;
+  if ((y + keyboard->h) > wm->h) {
+    y = p.y - keyboard->h;
+  }
+
+  if ((x + keyboard->w) > wm->w) {
+    x = wm->w - keyboard->w;
+  }
+
+  widget_move(keyboard, x, y);
+  widget_set_self_layout(keyboard, NULL);
+
+  return RET_OK;
 }
 
 static ret_t input_type_open_keyboard(input_method_t* im, const char* keyboard_name,
@@ -184,10 +231,11 @@ static ret_t input_type_open_keyboard(input_method_t* im, const char* keyboard_n
   point_t p = {0, 0};
   widget_t* widget = im->widget;
   widget_t* win = widget_get_window(widget);
+  bool_t win_is_keyboard = widget_is_keyboard(win);
   const char* close_anim_hint = WINDOW_ANIMATOR_POPUP;
   const char* open_anim_hint = open_anim ? close_anim_hint : "";
 
-  if (keyboard_name == NULL) {
+  if (keyboard_name == NULL || *keyboard_name == '\0') {
     return RET_OK;
   }
 
@@ -195,15 +243,22 @@ static ret_t input_type_open_keyboard(input_method_t* im, const char* keyboard_n
   im->keyboard = window_open(keyboard_name);
   if (im->keyboard == NULL) {
     log_debug("Not found keyboard [%s], try default.\n", keyboard_name);
-    im->keyboard = window_open("kb_default");
+    im->keyboard = window_open(STR_DEFAULT_KEYBOARD);
   }
   return_value_if_fail(im->keyboard != NULL, RET_NOT_FOUND);
 
   im->busy = TRUE;
   widget_on(im->keyboard, EVT_WINDOW_OPEN, input_method_default_on_keyboard_open, im);
-  widget_on(im->keyboard, EVT_DESTROY, input_method_default_on_keyboard_destroy, im);
+  widget_on(im->keyboard, EVT_DESTROY, input_method_default_on_keyboard_close, im);
 
-  if ((p.y + widget->h) > im->keyboard->y) {
+  if (widget_get_prop_bool(im->keyboard, WIDGET_PROP_FLOATING, FALSE)) {
+    input_type_keyboard_follow_edit(im);
+    if (im->keyboard->y < p.y) {
+      open_anim_hint = close_anim_hint = WINDOW_ANIMATOR_POPUP;
+    } else {
+      open_anim_hint = close_anim_hint = WINDOW_ANIMATOR_POPDOWN;
+    }
+  } else if ((p.y + widget->h) > im->keyboard->y) {
     im->win = win;
     if (is_key_board_overlap_edit(widget, im->keyboard)) {
       im->win_delta_y = win->y + win->h - im->keyboard->y;
@@ -214,7 +269,7 @@ static ret_t input_type_open_keyboard(input_method_t* im, const char* keyboard_n
     }
     open_anim_hint = close_anim_hint;
     widget_on(im->keyboard, EVT_WINDOW_OPEN, on_push_window, im);
-  } else if ((win->y + win->h) < im->keyboard->y) {
+  } else if (win_is_keyboard && (win->y + win->h) < im->keyboard->y) {
     /*when new keyboard height is not eq old keyboard height*/
     close_anim_hint = "vtranslate";
     im->win_delta_y += win->y + win->h - im->keyboard->y;
@@ -249,9 +304,12 @@ static ret_t input_method_default_show_keyboard(input_method_t* im) {
   if (im->keyboard != NULL) {
     bool_t edit_is_in_view = (p.y >= 0) && ((p.y + widget->h) <= im->keyboard->y);
 
-    if (tk_str_eq(im->keyboard_name, keyboard_name) && edit_is_in_view) {
+    if (widget_get_prop_bool(im->keyboard, WIDGET_PROP_FLOATING, FALSE) &&
+        tk_str_eq(im->keyboard_name, keyboard_name)) {
+      input_type_keyboard_follow_edit(im);
+      return RET_OK;
+    } else if (tk_str_eq(im->keyboard_name, keyboard_name) && edit_is_in_view) {
       /*old edit and new edit has same input type, reuse old keyboard*/
-
       return RET_OK;
     } else {
       /*keyboard is open, close old one, disable open animation of new one*/
@@ -264,8 +322,9 @@ static ret_t input_method_default_show_keyboard(input_method_t* im) {
       open_anim = FALSE;
     }
   }
-
-  tk_strncpy(im->keyboard_name, keyboard_name, TK_NAME_LEN);
+  if (keyboard_name != NULL) {
+    tk_strncpy(im->keyboard_name, keyboard_name, TK_NAME_LEN);
+  }
 
   return input_type_open_keyboard(im, keyboard_name, open_anim);
 }
@@ -316,7 +375,7 @@ static ret_t input_method_default_ensure_suggest_words(input_method_t* im) {
   return RET_OK;
 }
 
-static ret_t input_method_default_on_keyboard_destroy(void* ctx, event_t* e) {
+static ret_t input_method_default_on_keyboard_close(void* ctx, event_t* e) {
   widget_t* widget = WIDGET(e->target);
   input_method_t* im = (input_method_t*)ctx;
 
@@ -390,6 +449,7 @@ ret_t input_method_default_destroy(input_method_t* im) {
   return_value_if_fail(im != NULL, RET_BAD_PARAMS);
 
   emitter_deinit(&(im->emitter));
+  input_engine_deinit(im->engine);
   input_engine_destroy(im->engine);
   suggest_words_destroy(im->suggest_words);
   assets_manager_unref(assets_manager(), (const asset_info_t*)(im->data));
@@ -409,6 +469,7 @@ input_method_t* input_method_default_create(void) {
 
   emitter_init(&(im->emitter));
   im->engine = input_engine_create(im);
+  input_engine_init(im->engine);
 
   return im;
 }

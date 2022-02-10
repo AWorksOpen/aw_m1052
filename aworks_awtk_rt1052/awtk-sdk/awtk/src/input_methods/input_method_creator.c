@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  input method creator
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -22,7 +22,7 @@
 #include "base/system_info.h"
 #include "input_method_null.inc"
 
-#if !defined(WITH_NULL_IM) && !defined(MOBILE_APP)
+#if (!defined(WITH_NULL_IM) && !defined(MOBILE_APP)) || defined(WITH_DEFAULT_IM)
 #include "input_method_default.inc"
 #endif /**/
 
@@ -37,7 +37,10 @@ extern input_method_t* input_method_web_create(void);
 input_method_t* input_method_create(void) {
   input_method_t* im = NULL;
 
-#if defined(WITH_NULL_IM)
+/*方便android上强制使用AWTK的内置输入法*/
+#if defined(WITH_DEFAULT_IM)
+  im = input_method_default_create();
+#elif defined(WITH_NULL_IM)
   im = input_method_null_create();
 #elif defined(AWTK_WEB)
   im = input_method_web_create();
@@ -45,7 +48,7 @@ input_method_t* input_method_create(void) {
 #if defined(MOBILE_APP)
   im = input_method_sdl_create();
 #else
-  if (system_info()->app_type == APP_SIMULATOR) {
+  if (system_info()->app_type != APP_DESKTOP) {
     im = input_method_default_create();
   } else {
     im = input_method_sdl_create();

@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  text_selector
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -84,7 +84,7 @@ typedef struct _text_selector_t {
   /**
    * @property {uint32_t} visible_nr
    * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 可见的选项数量(只能是3或者5，缺省为5)。
+   * 可见的选项数量(只能是1或者3或者5，缺省为5)。
    */
   uint32_t visible_nr;
 
@@ -105,18 +105,25 @@ typedef struct _text_selector_t {
   char* options;
 
   /**
-   * @property {bool_t} localize_options
-   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 是否本地化(翻译)选项(缺省为FALSE)。
-   */
-  bool_t localize_options;
-
-  /**
    * @property {float_t} yspeed_scale
    * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
    * y偏移速度比例。
    */
   float_t yspeed_scale;
+
+  /**
+   * @property {uint32_t} animating_time
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 滚动动画播放时间。(单位毫秒)
+   */
+  uint32_t animating_time;
+
+  /**
+   * @property {bool_t} localize_options
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 是否本地化(翻译)选项(缺省为FALSE)。
+   */
+  bool_t localize_options;
 
   /**
    * @property {bool_t} loop_options
@@ -125,25 +132,36 @@ typedef struct _text_selector_t {
    */
   bool_t loop_options;
 
+  /**
+   * @property {bool_t} enable_value_animator
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 是否修改值时启用动画。
+   */
+  bool_t enable_value_animator;
+
   /*private*/
+  bool_t pressed;
+  bool_t is_init;
   str_t text;
   int32_t ydown;
   int32_t yoffset;
   int32_t yoffset_save;
-  bool_t pressed;
   velocity_t velocity;
   widget_animator_t* wa;
-  text_selector_option_t* option_items;
+  int32_t draw_widget_y;
+  int32_t draw_widget_h;
   uint32_t locale_info_id;
+  int32_t last_selected_index;
+  text_selector_option_t* option_items;
 } text_selector_t;
 
 /**
- * @event {event_t} EVT_VALUE_WILL_CHANGE
+ * @event {value_change_event_t} EVT_VALUE_WILL_CHANGE
  * 值(当前项)即将改变事件。
  */
 
 /**
- * @event {event_t} EVT_VALUE_CHANGED
+ * @event {value_change_event_t} EVT_VALUE_CHANGED
  * 值(当前项)改变事件。
  */
 
@@ -215,6 +233,21 @@ ret_t text_selector_append_option(widget_t* widget, int32_t value, const char* t
 ret_t text_selector_set_options(widget_t* widget, const char* options);
 
 /**
+ * @method text_selector_set_range_options_ex
+ * 设置一系列的整数选项。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget text_selector对象。
+ * @param {int32_t} start 起始值。
+ * @param {uint32_t} nr 个数。
+ * @param {int32_t} step 步长。
+ * @param {const char*} format 选项的格式化。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t text_selector_set_range_options_ex(widget_t* widget, int32_t start, uint32_t nr, int32_t step,
+                                         const char* format);
+
+/**
  * @method text_selector_set_range_options
  * 设置一系列的整数选项。
  * @annotation ["scriptable"]
@@ -240,6 +273,7 @@ text_selector_option_t* text_selector_get_option(widget_t* widget, uint32_t inde
 /**
  * @method text_selector_get_value
  * 获取text_selector的值。
+ * @alias text_selector_get_value_int
  * @annotation ["scriptable"]
  * @param {widget_t*} widget text_selector对象。
  *
@@ -335,10 +369,34 @@ ret_t text_selector_set_loop_options(widget_t* widget, bool_t loop_options);
  */
 ret_t text_selector_set_yspeed_scale(widget_t* widget, float_t yspeed_scale);
 
+/**
+ * @method text_selector_set_animating_time
+ * 设置滚动动画播放时间。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget 控件对象。
+ * @param {uint32_t} animating_time 滚动动画播放时间。(单位毫秒)
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t text_selector_set_animating_time(widget_t* widget, uint32_t animating_time);
+
+/**
+ * @method text_selector_set_enable_value_animator
+ * 设置是否修改值时启用动画。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget 控件对象。
+ * @param {bool_t} enable_value_animator 是否修改值时启用动画
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t text_selector_set_enable_value_animator(widget_t* widget, bool_t enable_value_animator);
+
 #define TEXT_SELECTOR_PROP_VISIBLE_NR "visible_nr"
 #define WIDGET_TYPE_TEXT_SELECTOR "text_selector"
 #define TEXT_SELECTOR_PROP_LOOP_OPTIONS "loop_options"
 #define TEXT_SELECTOR_PROP_Y_SPEED_SCALE "yspeed_scale"
+#define TEXT_SELECTOR_PROP_ANIMATION_TIME "animating_time"
+#define TEXT_SELECTOR_PROP_ENABLE_VALUE_ANIMATOR "enable_value_animator"
 #define TEXT_SELECTOR(widget) ((text_selector_t*)(text_selector_cast(WIDGET(widget))))
 
 /*public for subclass and runtime type check*/

@@ -1,7 +1,7 @@
 <window name="main">
   <button_ex name="button_ex" x="350" y="74" w="113" h="40" visible="true" new_h="340" disg:custom="container">
-    <label name="temperature_num" x="29" y="8" w="25" h="25" text="26"/>
-    <label name="temperature_unit" x="57" y="8" w="25" h="25" text="℃"/>
+    <label name="temperature_num" x="29" y="8" w="26" h="26" text="26"/>
+    <label name="temperature_unit" x="57" y="8" w="26" h="26" text="℃"/>
     <slider name="slider" x="46" y="47" w="25" h="277" bar_size="10" vertical="true" max="30"/>
   </button_ex>
   <label name="label" x="300" y="25" w="230" h="28" style:normal:font_size="22" style:normal:bg_color="#D8D8D8" text="click the button below"/>

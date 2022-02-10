@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  awtk toolkit c libs
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,6 +21,7 @@
 
 #ifndef TK_BASE_H
 #define TK_BASE_H
+#include "base/bidi.h"
 #include "base/ui_feedback.h"
 #include "base/assets_manager.h"
 #include "base/awtk_config_sample.h"

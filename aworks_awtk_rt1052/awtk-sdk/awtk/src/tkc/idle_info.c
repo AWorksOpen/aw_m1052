@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  idle info
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -43,29 +43,59 @@ static const object_vtable_t s_idle_info_vtable = {
     .desc = "idle_info",
     .size = sizeof(idle_info_t),
     .is_collection = FALSE,
-    .on_destroy = (object_on_destroy_t)idle_info_on_destroy};
+    .on_destroy = (tk_object_on_destroy_t)idle_info_on_destroy};
 
-idle_info_t* idle_info_create(idle_manager_t* idle_manager, idle_func_t on_idle, void* ctx) {
-  object_t* obj = object_create(&s_idle_info_vtable);
+idle_info_t* idle_info_create(idle_manager_t* idle_manager, idle_func_t on_idle, void* ctx,
+                              uint16_t idle_info_type) {
+  tk_object_t* obj = tk_object_create(&s_idle_info_vtable);
   idle_info_t* idle = IDLE_INFO(obj);
   return_value_if_fail(idle != NULL, NULL);
 
   idle->ctx = ctx;
   idle->on_idle = on_idle;
+  idle->idle_info_type = idle_info_type;
 
   if (idle_manager != NULL) {
-    idle->id = idle_manager->next_idle_id++;
-    if (idle->id == TK_INVALID_ID) {
-      idle->id = idle_manager->next_idle_id++;
+    uint32_t id = idle_manager_get_next_idle_id(idle_manager);
+    idle->id = id;
+
+    if (id != TK_INVALID_ID) {
+      idle_manager_append(idle_manager, idle);
+    } else {
+      tk_object_unref(obj);
+      return_value_if_fail(id != TK_INVALID_ID, NULL);
     }
-    idle_manager_append(idle_manager, idle);
   }
 
   return idle;
 }
 
-int idle_info_compare(const void* a, const void* b) {
+int idle_info_compare_by_id(const void* a, const void* b) {
   return ((const idle_info_t*)a)->id - ((const idle_info_t*)b)->id;
+}
+
+int idle_info_compare_by_ctx(const void* a, const void* b) {
+  const idle_info_t* info_a = (const idle_info_t*)a;
+  return (char*)(info_a->ctx) - (char*)(b);
+}
+
+int idle_info_compare_by_ctx_and_type(const void* a, const void* b) {
+  const idle_info_t* info_a = (const idle_info_t*)a;
+  const idle_info_t* info_b = (const idle_info_t*)b;
+  if (info_a->idle_info_type == info_b->idle_info_type) {
+    return (char*)(info_a->ctx) - (char*)(info_b->ctx);
+  }
+  return -1;
+}
+
+idle_info_t* idle_info_init_dummy_with_ctx_and_type(idle_info_t* idle, uint16_t type, void* ctx) {
+  return_value_if_fail(idle != NULL, NULL);
+  memset(idle, 0x00, sizeof(idle_info_t));
+
+  idle->ctx = ctx;
+  idle->idle_info_type = type;
+
+  return idle;
 }
 
 idle_info_t* idle_info_init_dummy(idle_info_t* idle, uint32_t id) {

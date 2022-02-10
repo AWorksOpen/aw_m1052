@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  canvas provides basic drawings functions.
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -22,14 +22,16 @@
 #ifndef TK_CANVAS_H
 #define TK_CANVAS_H
 
+#include "base/lcd.h"
+#include "base/dirty_rects.h"
 #include "base/system_info.h"
 #include "base/font_manager.h"
-#include "base/lcd.h"
 
 BEGIN_C_DECLS
 
-struct _canvas_t;
-typedef struct _canvas_t canvas_t;
+typedef ret_t (*canvas_end_frame_t)(canvas_t* c);
+typedef ret_t (*canvas_begin_frame_t)(canvas_t* c, const dirty_rects_t* dirty_rects,
+                                      lcd_draw_mode_t draw_mode);
 
 /**
  * @class canvas_t
@@ -160,6 +162,9 @@ struct _canvas_t {
   /*private*/
   /*确保begin_frame/end_frame配对使用*/
   bool_t began_frame;
+
+  canvas_end_frame_t end_frame;
+  canvas_begin_frame_t begin_frame;
 };
 
 /**
@@ -209,6 +214,19 @@ wh_t canvas_get_height(canvas_t* c);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t canvas_get_clip_rect(canvas_t* c, rect_t* r);
+
+/**
+ * @method canvas_is_rect_in_clip_rect
+ * 判断改矩形区域是否在裁剪区中
+ * @param {canvas_t*} c canvas对象。
+ * @param {xy_t} left 矩形区域左边。
+ * @param {xy_t} top 矩形区域上边。
+ * @param {xy_t} right 矩形区域右边。
+ * @param {xy_t} bottom 矩形区域下边。
+ *
+ * @return {bool_t} 返回TRUE表示是，否则表示不是。
+ */
+bool_t canvas_is_rect_in_clip_rect(canvas_t* c, xy_t left, xy_t top, xy_t right, xy_t bottom);
 
 /**
  * @method canvas_set_clip_rect
@@ -407,8 +425,25 @@ ret_t canvas_draw_points(canvas_t* c, const point_t* points, uint32_t nr);
 ret_t canvas_fill_rect(canvas_t* c, xy_t x, xy_t y, wh_t w, wh_t h);
 
 /**
+ * @method canvas_fill_rect_gradient
+ * 绘制矩形。
+ *
+ * @param {canvas_t*} c canvas对象。
+ * @param {xy_t} x x坐标。
+ * @param {xy_t} y y坐标。
+ * @param {wh_t} w 宽度。
+ * @param {wh_t} h 高度。
+ * @param {gradient_t*} gradient 渐变颜色。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t canvas_fill_rect_gradient(canvas_t* c, xy_t x, xy_t y, wh_t w, wh_t h, gradient_t* gradient);
+
+/**
  * @method canvas_clear_rect
- * 填充矩形。
+ * 用填充颜色填充指定矩形。
+ * 
+ *> 如果lcd的颜色格式带alpha通道，连同alpha的值一起修改。
  *
  * @annotation ["scriptable"]
  * @param {canvas_t*} c canvas对象。
@@ -678,9 +713,19 @@ ret_t canvas_reset(canvas_t* c);
  */
 ret_t canvas_draw_image_at(canvas_t* c, bitmap_t* img, xy_t x, xy_t y);
 
-/*public for internal use*/
+/**
+ * @method canvas_draw_icon_in_rect
+ * 在指定rect内绘制icon。
+ *
+ * @param {canvas_t*} c canvas对象。
+ * @param {bitmap_t*} img 图片对象。
+ * @param {const rect_t*} r 矩形区域。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
 ret_t canvas_draw_icon_in_rect(canvas_t* c, bitmap_t* img, const rect_t* r);
 
+/*public for internal use*/
 ret_t canvas_draw_image_center(canvas_t* c, bitmap_t* img, const rect_t* dst);
 ret_t canvas_draw_image_patch3_x(canvas_t* c, bitmap_t* img, const rect_t* dst);
 ret_t canvas_draw_image_patch3_x_scale_y(canvas_t* c, bitmap_t* img, const rect_t* dst);
@@ -716,7 +761,19 @@ ret_t canvas_draw_image_scale_down(canvas_t* c, bitmap_t* img, const rect_t* src
 ret_t canvas_draw_line(canvas_t* c, xy_t x1, xy_t y1, xy_t x2, xy_t y2);
 ret_t canvas_draw_char(canvas_t* c, wchar_t chr, xy_t x, xy_t y);
 ret_t canvas_draw_image_matrix(canvas_t* c, bitmap_t* img, matrix_t* matrix);
+
+/**
+ * @method canvas_set_fps
+ * 设置FPS。
+ *
+ * @param {canvas_t*} c canvas对象。
+ * @param {bool_t} show_fps 是否显示fps。
+ * @param {uint32_t} fps FPS。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
 ret_t canvas_set_fps(canvas_t* c, bool_t show_fps, uint32_t fps);
+
 /**
  * @method canvas_set_font_manager
  * 设置canvas的font_manager对象。
@@ -757,18 +814,19 @@ ret_t canvas_get_text_metrics(canvas_t* canvas, float_t* ascent, float_t* descen
  * 绘制开始。
  *
  * @param {canvas_t*} c canvas对象。
- * @param {const rect_t*} dirty_rect 脏矩形。
+ * @param {const dirty_rects_t*} dirty_rects 脏矩形。
  * @param {lcd_draw_mode_t} draw_mode 绘制模式。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t canvas_begin_frame(canvas_t* c, const rect_t* dirty_rect, lcd_draw_mode_t draw_mode);
+ret_t canvas_begin_frame(canvas_t* c, const dirty_rects_t* dirty_rects, lcd_draw_mode_t draw_mode);
 
 /**
  * @method canvas_fill_rounded_rect
  * 填充区域。
  * @param {canvas_t*} c canvas对象。
  * @param {const rect_t*} r 矩形。
+ * @param {const rect_t*} bg_r 矩形（默认为 NULL，当圆角直径大于 r 矩形的宽高后，会根据 bg_r 矩形来决定是否需要缩小圆角半径）。
  * @param {const color_t*} color 颜色。
  * @param {uint32_t} radius 圆角半径。
  *
@@ -778,12 +836,48 @@ ret_t canvas_fill_rounded_rect(canvas_t* c, const rect_t* r, const rect_t* bg_r,
                                const color_t* color, uint32_t radius);
 
 /**
- * @method canvas_fill_rounded_rect_ex
- * 填充区域。
+ * @method canvas_fill_rounded_rect_gradient
+ * 填充圆角矩形区域。
+ * @param {canvas_t*} c canvas对象。
+ * @param {const rect_t*} r 矩形。
+ * @param {const rect_t*} bg_r 矩形（默认为 NULL，当圆角直径大于 r 矩形的宽高后，会根据 bg_r 矩形来决定是否需要缩小圆角半径）。
+ * @param {const gradient_t*} gradient 渐变颜色。
+ * @param {uint32_t} radius 圆角半径。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t canvas_fill_rounded_rect_gradient(canvas_t* c, const rect_t* r, const rect_t* bg_r,
+                                        const gradient_t* gradient, uint32_t radius);
+
+/**
+ * @method canvas_fill_rounded_rect_gradient_ex
+ * 填充圆角矩形区域。
  * 半径半径小于等于2，则表示该角为直角，如果全部角都为直角则返回RET_FAIL。（如果全是直角，该函数效率没有canvas_fill_rect函数快）
  * 如果各个半径都不一样的话，就是会使用vg，如果不支持vg就会返回RET_FAIL（直角的情况除外）。
  * @param {canvas_t*} c canvas对象。
  * @param {const rect_t*} r 矩形。
+ * @param {const rect_t*} bg_r 矩形。（默认为 NULL，当圆角直径大于 r 矩形的宽高后，会根据 bg_r 矩形来决定是否需要缩小圆角半径）
+ * @param {const gradient_t*} gradient 渐变颜色。
+ * @param {uint32_t} radius_tl 左上角圆角半径。
+ * @param {uint32_t} radius_tr 右上角圆角半径。
+ * @param {uint32_t} radius_bl 左下角圆角半径。
+ * @param {uint32_t} radius_br 右下角圆角半径。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t canvas_fill_rounded_rect_gradient_ex(canvas_t* c, const rect_t* r, const rect_t* bg_r,
+                                           const gradient_t* gradient, uint32_t radius_tl,
+                                           uint32_t radius_tr, uint32_t radius_bl,
+                                           uint32_t radius_br);
+
+/**
+ * @method canvas_fill_rounded_rect_ex
+ * 填充圆角矩形区域。
+ * 半径半径小于等于2，则表示该角为直角，如果全部角都为直角则返回RET_FAIL。（如果全是直角，该函数效率没有canvas_fill_rect函数快）
+ * 如果各个半径都不一样的话，就是会使用vg，如果不支持vg就会返回RET_FAIL（直角的情况除外）。
+ * @param {canvas_t*} c canvas对象。
+ * @param {const rect_t*} r 矩形。
+ * @param {const rect_t*} bg_r 矩形。（默认为 NULL，当圆角直径大于 r 矩形的宽高后，会根据 bg_r 矩形来决定是否需要缩小圆角半径）
  * @param {const color_t*} color 颜色。
  * @param {uint32_t} radius_tl 左上角圆角半径。
  * @param {uint32_t} radius_tr 右上角圆角半径。
@@ -801,6 +895,7 @@ ret_t canvas_fill_rounded_rect_ex(canvas_t* c, const rect_t* r, const rect_t* bg
  * 绘制边框。
  * @param {canvas_t*} c canvas对象。
  * @param {const rect_t*} r 矩形。
+ * @param {const rect_t*} bg_r 矩形（默认为 NULL，当圆角直径大于 r 矩形的宽高后，会根据 bg_r 矩形来决定是否需要缩小圆角半径）。
  * @param {const color_t*} color 颜色。
  * @param {uint32_t} radius 圆角半径。
  * @param {uint32_t} border_width 边宽。
@@ -817,6 +912,7 @@ ret_t canvas_stroke_rounded_rect(canvas_t* c, const rect_t* r, const rect_t* bg_
  * 如果各个半径都不一样的话，就是会使用vg，如果不支持vg就会返回RET_FAIL（直角的情况除外）。
  * @param {canvas_t*} c canvas对象。
  * @param {const rect_t*} r 矩形。
+ * @param {const rect_t*} bg_r 矩形（默认为 NULL，当圆角直径大于 r 矩形的宽高后，会根据 bg_r 矩形来决定是否需要缩小圆角半径）。
  * @param {const color_t*} color 颜色。
  * @param {uint32_t} radius_tl 左上角圆角半径。
  * @param {uint32_t} radius_tr 右上角圆角半径。

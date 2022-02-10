@@ -1,11 +1,11 @@
 {
   "name": "awtk-sdk", 
-  "version": "1.5.3", 
+  "version": "22.1.0", 
   "description": "AWTK sdk released", 
   "category": "package", 
-  "build_ref": "20cb78f2065d6c8ac6bb819855652aea980e566b", 
-  "build_id": "68853", 
-  "repository": "http://192.168.23.62/gui/awtk-get", 
+  "build_ref": "6dd7f0f70313f0d87da133505ee2f1b3a9101021", 
+  "build_id": "121321", 
+  "repository": "http://192.168.23.62/gui/awtk_get", 
   "engines": [
     "axio-engine@1.1.0-a.78", 
     "axbuilder.custom@1.2.3", 

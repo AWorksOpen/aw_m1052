@@ -5,18 +5,26 @@
 #include <vector>
 #include <string>
 #include "frame_image.hpp"
-#include "diff_image_to_video_types.h"
+#include "../../../src/diff_image_to_video/diff_image_to_video_types.h"
+
+typedef unsigned int (*diff_image_video_get_image_line_length_t)(unsigned int w, unsigned int bpp, void* ctx);
 
 namespace diff_image_video {
 
 #define RECT_SIZE 16
+
 class diff_image_to_video_save_image_data {
 private:
+  void* ctx;
   std::list<std::string> file_format_list;
-
+  diff_image_video_get_image_line_length_t get_image_line_length;
 public:
   diff_image_to_video_save_image_data();
   ~diff_image_to_video_save_image_data();
+
+  void set_get_image_line_length_func(diff_image_video_get_image_line_length_t get_image_line_length, void* ctx);
+
+  unsigned int get_line_length(unsigned int w, unsigned int bpp);
 
   bool save_image_data_list(const std::string &image_dir,
                             const std::string &image_name_format,

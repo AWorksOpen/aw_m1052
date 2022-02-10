@@ -15,6 +15,7 @@
 #include <io.h>
 #include <direct.h>
 #include <Shlobj.h>
+#include <fileapi.h>
 #define unlink _unlink
 #define rename MoveFileA
 #define ftruncate _chsize
@@ -40,7 +41,7 @@ static ret_t fs_stat_info_from_stat(fs_stat_info_t* fst, struct _stat64i32* st) 
 #else
 static ret_t fs_stat_info_from_stat(fs_stat_info_t* fst, struct stat* st) {
 #endif /*WIN32*/
-  return_value_if_fail(fst != NULL && &st != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(fst != NULL && st != NULL, RET_BAD_PARAMS);
 
   memset(fst, 0x00, sizeof(fs_stat_info_t));
   fst->dev = st->st_dev;
@@ -328,6 +329,24 @@ static ret_t fs_os_remove_dir(fs_t* fs, const char* name) {
   }
 }
 
+static ret_t fs_os_change_dir(fs_t* fs, const char* name) {
+  (void)fs;
+  return_value_if_fail(name != NULL, RET_FAIL);
+#if defined(WIN32)
+  wchar_t* w_name = tk_wstr_dup_utf8(name);
+  int8_t ret = _wchdir(w_name);
+  TKMEM_FREE(w_name);
+  if (ret == 0) {
+#else
+  if (chdir(name) == 0) {
+#endif
+    return RET_OK;
+  } else {
+    perror(name);
+    return RET_FAIL;
+  }
+}
+
 static ret_t fs_os_create_dir(fs_t* fs, const char* name) {
   (void)fs;
   return_value_if_fail(name != NULL, RET_FAIL);
@@ -408,6 +427,42 @@ static ret_t fs_os_get_exe(fs_t* fs, char path[MAX_PATH + 1]) {
   return RET_OK;
 }
 
+static ret_t fs_os_get_temp_path(fs_t* fs, char path[MAX_PATH + 1]) {
+#if defined(ANDROID)
+  const char* tempdir = SDL_AndroidGetInternalStoragePath();
+  memset(path, 0x00, MAX_PATH + 1);
+
+  return_value_if_fail(tempdir != NULL, RET_FAIL);
+  tk_strncpy(path, tempdir, MAX_PATH);
+
+  return RET_OK;
+#elif defined(LINUX) || defined(__APPLE__) || defined(IOS)
+  const char* tempdir = NULL;
+  memset(path, 0x00, MAX_PATH + 1);
+
+  if ((tempdir = getenv("TMPDIR")) == NULL) {
+    tempdir = "/tmp";
+  }
+
+  return_value_if_fail(tempdir != NULL, RET_FAIL);
+  tk_strncpy(path, tempdir, MAX_PATH);
+
+  return RET_OK;
+#elif defined(WIN32)
+  WCHAR tempdir[MAX_PATH + 1];
+  DWORD ret = GetTempPathW(MAX_PATH, tempdir);
+  str_t str;
+  str_init(&str, MAX_PATH);
+  str_from_wstr(&str, tempdir);
+  tk_strncpy(path, str.str, MAX_PATH);
+  str_reset(&str);
+
+  return RET_OK;
+#endif
+
+  return RET_FAIL;
+}
+
 static ret_t fs_os_get_user_storage_path(fs_t* fs, char path[MAX_PATH + 1]) {
 #if defined(ANDROID)
   const char* homedir = SDL_AndroidGetInternalStoragePath();
@@ -470,9 +525,19 @@ static ret_t fs_os_stat(fs_t* fs, const char* name, fs_stat_info_t* fst) {
 
 #if defined(WIN32) && !defined(MINGW)
   struct _stat64i32 st;
-  wchar_t* w_name = tk_wstr_dup_utf8(name);
-  stat_ret = _wstat(w_name, &st);
-  TKMEM_FREE(w_name);
+  if (strlen(name) == 2 && name[1] == ':') {
+    /*append slash*/
+    wchar_t wname[4];
+    wname[0] = name[0];
+    wname[1] = name[1];
+    wname[2] = '\\';
+    wname[3] = 0;
+    stat_ret = _wstat(wname, &st);
+  } else {
+    wchar_t* w_name = tk_wstr_dup_utf8(name);
+    stat_ret = _wstat(w_name, &st);
+    TKMEM_FREE(w_name);
+  }
 #else
   struct stat st;
   stat_ret = stat(name, &st);
@@ -493,6 +558,7 @@ static const fs_t s_os_fs = {.open_file = fs_os_open_file,
                              .open_dir = fs_os_open_dir,
                              .remove_dir = fs_os_remove_dir,
                              .create_dir = fs_os_create_dir,
+                             .change_dir = fs_os_change_dir,
                              .dir_exist = fs_os_dir_exist,
                              .dir_rename = fs_os_dir_rename,
 
@@ -501,6 +567,7 @@ static const fs_t s_os_fs = {.open_file = fs_os_open_file,
                              .get_cwd = fs_os_get_cwd,
                              .get_exe = fs_os_get_exe,
                              .get_user_storage_path = fs_os_get_user_storage_path,
+                             .get_temp_path = fs_os_get_temp_path,
                              .stat = fs_os_stat};
 
 fs_t* os_fs(void) {

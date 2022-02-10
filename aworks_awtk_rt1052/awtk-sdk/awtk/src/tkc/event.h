@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  event
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -132,6 +132,11 @@ typedef struct _event_t {
    */
   void* target;
 
+  /**
+   * @property {void*} native_window_handle
+   * @annotation ["readable"]
+   * 原生窗口句柄。
+   */
   void* native_window_handle;
 } event_t;
 
@@ -151,6 +156,16 @@ typedef ret_t (*event_func_t)(void* ctx, event_t* e);
 event_t* event_cast(event_t* event);
 
 /**
+ * @method event_get_type
+ * 获取event类型。 
+ * @annotation ["scriptable"]
+ * @param {event_t*} event event对象。
+ *
+ * @return {uint32_t}  返回event类型。
+ */
+uint32_t event_get_type(event_t* event);
+
+/**
  * @method event_create
  * @annotation ["constructor", "scriptable", "gc"]
  * 创建event对象。
@@ -161,6 +176,17 @@ event_t* event_cast(event_t* event);
  * @return {event_t*} 返回事件对象。
  */
 event_t* event_create(uint32_t type);
+
+/**
+ * @method event_clone
+ * @annotation ["constructor"]
+ * clone事件对象。
+ *
+ * @param {event_t*} event event对象。
+ *
+ * @return {event_t*} 返回事件对象。
+ */
+event_t* event_clone(event_t* event);
 
 /**
  * @method event_destroy
@@ -381,7 +407,7 @@ typedef struct _cmd_exec_event_t {
   /**
    * @property {bool_t} can_exec
    * @annotation ["readable", "scriptable"]
-   * 执行结果(适用于CAN_EXEC)。
+   * 标识命令是否可以执行(适用于CAN_EXEC)。
    */
   bool_t can_exec;
 } cmd_exec_event_t;

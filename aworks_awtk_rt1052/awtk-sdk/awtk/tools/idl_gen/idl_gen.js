@@ -344,13 +344,17 @@ class IDLGen {
   }
 
   parseFile(filename) {
-    const content = fs.readFileSync(filename).toString();
-    const name = filename.match(/[a-z|_\d|\.|A-Z]*\/[a-z|_\d|\.|A-Z]*$/)[0];
+    try {
+      const content = fs.readFileSync(filename).toString();
+      const name = filename.match(/[a-z|_\d|\.|A-Z]*\/[a-z|_\d|\.|A-Z]*$/)[0];
 
-    console.log('Process: ' + filename);
-    this.filename = name;
-    this.fullFileName = filename;
-    this.parseFileContent(name, content);
+      console.log('Process: ' + filename);
+      this.filename = name;
+      this.fullFileName = filename;
+      this.parseFileContent(name, content);
+    }catch(e) {
+      console.log(e);
+    }
   }
 
   parseFolder(folder) {
@@ -413,6 +417,9 @@ class IDLGen {
 
   saveResult(filename) {
     const str = JSON.stringify(this.result, null, '  ');
+    if (!fs.existsSync(path.dirname(filename))) {
+      fs.mkdirSync(path.dirname(filename), {recursive: true});
+    }
     fs.writeFileSync(filename, str);
   }
 

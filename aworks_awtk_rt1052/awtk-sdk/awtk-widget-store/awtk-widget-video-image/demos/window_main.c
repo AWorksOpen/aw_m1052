@@ -1,4 +1,5 @@
 ﻿#include "awtk.h"
+#include "../src/video_image_register.h"
 #include "../src/video_image/video_image.h"
 
 static ret_t on_close(void* ctx, event_t* e) {
@@ -32,13 +33,14 @@ ret_t video_image_dispose_image(void* ctx, bitmap_t* bitmap) {
   return RET_OK;
 }
 /* 这个是 pc 的 AGGE 模式下才是这样设置 offline buffer ，其他模式慎用 */
-ret_t video_image_init_image(void* ctx, bitmap_t* bitmap, uint32_t w, uint32_t h, uint32_t channels, bitmap_format_t format) {
+ret_t video_image_init_image(void* ctx, bitmap_t* bitmap, uint32_t w, uint32_t h, uint32_t channels, uint32_t line_length, bitmap_format_t format) {
   canvas_t* c = widget_get_canvas(window_manager());
   lcd_t* lcd = c->lcd;
   lcd_mem_special_t* special = (lcd_mem_special_t*)lcd;
   bitmap_format_t lcd_format = lcd_get_desired_bitmap_format(lcd);
   uint32_t lcd_channels = bitmap_get_bpp_of_format(lcd_format);
-  if (lcd->w != w || lcd->h != h || lcd_channels != channels || lcd_format != format) {
+  if (lcd->w != w || lcd->h != h || lcd_channels != channels || lcd_format != format || line_length != special->lcd_mem->line_length) {
+    assert(!"lcd->w != w || lcd->h != h || lcd_channels != channels || lcd_format != format || line_length != lcd_line_length");
     return RET_FAIL;
   }
   /* 把 offline buffer 设置到 bitmap 上面，让序列帧的位图数据保持到 offline buffer 上面。 */
@@ -53,6 +55,21 @@ ret_t video_image_init_image(void* ctx, bitmap_t* bitmap, uint32_t w, uint32_t h
 }
 #endif
 
+static ret_t on_key_replay(void* ctx, event_t* e) {
+  static float_t playback_rate = 1.0f;
+  key_event_t* evt = (key_event_t*)e;
+  if (evt->key == TK_KEY_r) {
+    video_image_replay(WIDGET(ctx));
+  } else if (evt->key == TK_KEY_LEFT) {
+    playback_rate *= 0.5f;
+    video_image_set_playback_rate(WIDGET(ctx), playback_rate);
+  } else if (evt->key == TK_KEY_RIGHT) {
+    playback_rate *= 2.0f;
+    video_image_set_playback_rate(WIDGET(ctx), playback_rate);
+  }
+  return RET_OK;
+}
+
 /**
  * 初始化
  */
@@ -64,6 +81,8 @@ ret_t application_init(void) {
 
   widget_t* label = widget_lookup_by_type(win, "label", TRUE);
   widget_t* video_image = widget_lookup_by_type(win, WIDGET_TYPE_VIDEO_IMAGE, TRUE);
+
+  widget_on(window_manager(), EVT_KEY_DOWN, on_key_replay, video_image);
 
 #ifdef VIDEO_IMAGE_FUNC
   /* 由于会把数据直接绘制到 offline 上面了，所以 video_image 控件不需要调用绘制函数把 bitmap 绘制到 lcd 上面。 */
@@ -81,7 +100,7 @@ ret_t application_init(void) {
    * 所以需要通过原来默认的方法释放该 bitmap。
    * 如果想避免这个情况，可以不在 xml 中写入 video_name，通过代码来设置 video_name。
    */
-  video_image_set_video_name(video_image, "image_138");
+  video_image_set_video_name(video_image, "video_12");
   video_image_set_dispose_image_func(video_image, video_image_dispose_image, NULL);
 #endif
 

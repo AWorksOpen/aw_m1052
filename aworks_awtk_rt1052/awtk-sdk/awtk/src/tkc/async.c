@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  async call
  *
- * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2019 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -56,7 +56,10 @@ static ret_t qaction_async_on_event(qaction_t* action, event_t* event) {
 
   if (event->type == EVT_DONE) {
     done_event_t* e = (done_event_t*)event;
-    info->on_result(info->ctx, e->result);
+    if (info->on_result != NULL) {
+      info->on_result(info->ctx, e->result);
+    }
+
     qaction_destroy(action);
   }
 
@@ -74,9 +77,9 @@ ret_t async_call(async_exec_t exec, async_on_result_t on_result, void* ctx) {
   return action_thread_pool_exec(s_async_thread_pool, a);
 }
 
-ret_t async_call_init(void) {
+ret_t async_call_init_ex(uint32_t max_threads, uint32_t min_threads) {
   return_value_if_fail(s_async_thread_pool == NULL, RET_BAD_PARAMS);
-  s_async_thread_pool = action_thread_pool_create(5, 1);
+  s_async_thread_pool = action_thread_pool_create(max_threads, min_threads);
   return_value_if_fail(s_async_thread_pool != NULL, RET_BAD_PARAMS);
 
   return RET_OK;

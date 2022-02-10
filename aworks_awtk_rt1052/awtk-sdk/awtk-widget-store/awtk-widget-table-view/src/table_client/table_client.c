@@ -60,6 +60,8 @@ ret_t table_client_set_row_height(widget_t* widget, uint32_t row_height) {
 }
 
 ret_t table_client_set_rows(widget_t* widget, uint32_t rows) {
+  int32_t yoffset = 0;
+  int32_t rows_per_page = 0;
   table_client_t* table_client = TABLE_CLIENT(widget);
   return_value_if_fail(table_client != NULL, RET_BAD_PARAMS);
   return_value_if_fail(rows <= MAX_ROWS, RET_BAD_PARAMS);
@@ -70,8 +72,10 @@ ret_t table_client_set_rows(widget_t* widget, uint32_t rows) {
     return RET_OK;
   }
 
-  if (table_client->yoffset >= table_client_get_virtual_h(widget)) {
-    int32_t yoffset = table_client_get_virtual_h(widget) - widget->h;
+  rows_per_page = table_client_rows_per_page(widget);
+  yoffset = table_client_get_virtual_h(widget);
+  if (table_client->yoffset + table_client->row_height * rows_per_page >= yoffset) {
+    yoffset = yoffset - widget->h;
     table_client_set_yoffset(widget, yoffset);
   } else {
     table_client_on_scroll(widget);
@@ -197,13 +201,15 @@ static ret_t table_client_prepare_data(widget_t* widget) {
   int32_t max_rows_to_load = PAGES_TO_LOAD * rows_per_page;
   return_value_if_fail(widget->children != NULL, RET_BAD_PARAMS);
 
-  if ((start_index + max_rows_to_load) > table_client->rows) {
+  if ((start_index + max_rows_to_load) >= table_client->rows) {
     nr = table_client->rows - start_index;
   } else {
     nr = max_rows_to_load;
   }
 
   nr = tk_min(nr, table_client->rows);
+  nr = tk_min(nr, widget_count_children(widget));
+  max_rows_to_load = tk_min(max_rows_to_load, widget_count_children(widget));
 
   for (i = 0; i < nr; i++) {
     uint32_t index = start_index + i;
@@ -238,13 +244,7 @@ static ret_t table_client_on_scroll(widget_t* widget) {
   table_client_t* table_client = TABLE_CLIENT(widget);
   int32_t vstart_index = table_client_get_vstart_index(widget);
   int32_t rows_per_page = table_client_rows_per_page(widget);
-  int32_t vend_index = vstart_index + rows_per_page;
   int32_t start_index = table_client->start_index;
-  int32_t end_index = start_index + PAGES_TO_LOAD * rows_per_page;
-
-  if (vstart_index > start_index && vend_index < end_index) {
-    return RET_OK;
-  }
 
   start_index = vstart_index - rows_per_page;
   table_client->start_index = tk_max(0, start_index);
@@ -258,27 +258,34 @@ ret_t table_client_ensure_children(widget_t* widget) {
   xy_t ih = 0;
   uint32_t i = 0;
   uint32_t nr = 0;
-  widget_t* twidget = widget_get_child(widget, 0);
   table_client_t* table_client = TABLE_CLIENT(widget);
   int32_t rows_per_page = table_client_rows_per_page(widget);
-  return_value_if_fail(twidget != NULL && table_client->row_height > 0, RET_BAD_PARAMS);
+  return_value_if_fail(table_client->row_height > 0, RET_BAD_PARAMS);
 
   iw = widget->w;
   ih = table_client->row_height;
   nr = PAGES_TO_LOAD * rows_per_page;
 
-  if (nr <= widget_count_children(widget)) {
-    return RET_OK;
-  }
+  if (table_client->on_prepare_row != NULL) {
+    table_client->on_prepare_row(table_client->on_prepare_row_ctx, widget, nr);
+  } else {
+    widget_t* twidget = widget_get_child(widget, 0);
+    return_value_if_fail(twidget != NULL, RET_BAD_PARAMS);
 
-  for (i = 0; i < nr; i++) {
-    ENSURE(widget_clone(twidget, widget) != NULL);
+    if (nr <= widget_count_children(widget)) {
+      return RET_OK;
+    }
+
+    for (i = 0; i < nr - 1; i++) {
+      ENSURE(widget_clone(twidget, widget) != NULL);
+    }
   }
 
   nr = widget_count_children(widget);
   for (i = 0; i < nr; i++) {
     widget_t* iter = widget_get_child(widget, i);
     widget_move_resize(iter, 0, ih * i, iw, ih);
+    widget_layout(iter);
 
     if (table_client->on_create_row != NULL) {
       table_client->on_create_row(table_client->on_create_row_ctx, i, iter);
@@ -324,10 +331,6 @@ ret_t table_client_scroll_to(widget_t* widget, int32_t yoffset_end, int32_t dura
   int32_t rows_per_page = table_client_rows_per_page(widget);
   return_value_if_fail(table_client != NULL, RET_FAIL);
 
-  if (yoffset_end == table_client->yoffset) {
-    return RET_OK;
-  }
-
   max_yoffset = table_client->row_height * (table_client->rows - rows_per_page);
   if (yoffset_end > max_yoffset) {
     yoffset_end = max_yoffset;
@@ -335,6 +338,10 @@ ret_t table_client_scroll_to(widget_t* widget, int32_t yoffset_end, int32_t dura
 
   if (yoffset_end < 0) {
     yoffset_end = 0;
+  }
+
+  if (yoffset_end == table_client->yoffset) {
+    return RET_OK;
   }
 
   yoffset = table_client->yoffset;
@@ -527,9 +534,18 @@ static ret_t table_client_on_event(widget_t* widget, event_t* e) {
       ret = table_client->dragged ? RET_STOP : RET_OK;
       break;
     }
+    case EVT_RESIZE:
+    case EVT_MOVE_RESIZE: {
+      if (widget_is_window_opened(widget)) {
+        table_client_ensure_children(widget);
+      }
+      break;
+    }
+    default:
+      break;
   }
 
-  return RET_OK;
+  return ret;
 }
 
 const char* s_table_client_properties[] = {
@@ -545,10 +561,10 @@ static ret_t table_client_paint_children(widget_t* widget, canvas_t* c) {
   int32_t rows_per_page = table_client_rows_per_page(widget);
   return_value_if_fail(widget->children != NULL, RET_BAD_PARAMS);
 
-  if ((vstart_index + rows_per_page) > table_client->rows) {
+  if ((vstart_index + rows_per_page) >= table_client->rows) {
     nr = table_client->rows - vstart_index;
   } else {
-    nr = rows_per_page + 2;
+    nr = rows_per_page + 1;
   }
 
   for (i = 0; i < nr; i++) {
@@ -620,6 +636,26 @@ ret_t table_client_set_on_create_row(widget_t* widget, table_client_on_create_ro
   return RET_OK;
 }
 
+ret_t table_client_set_on_prepare_row(widget_t* widget,
+                                      table_client_on_prepare_row_t on_prepare_row, void* ctx) {
+  table_client_t* table_client = TABLE_CLIENT(widget);
+  return_value_if_fail(table_client != NULL, RET_BAD_PARAMS);
+
+  table_client->on_prepare_row_ctx = ctx;
+  table_client->on_prepare_row = on_prepare_row;
+
+  return RET_OK;
+}
+
+static ret_t table_client_get_offset(widget_t* widget, xy_t* out_x, xy_t* out_y) {
+  table_client_t* table_client = TABLE_CLIENT(widget);
+  return_value_if_fail(table_client != NULL && out_x != NULL && out_y != NULL, RET_BAD_PARAMS);
+  *out_x = 0;
+  *out_y = table_client->yoffset;
+
+  return RET_OK;
+}
+
 TK_DECL_VTABLE(table_client) = {.size = sizeof(table_client_t),
                                 .type = WIDGET_TYPE_TABLE_CLIENT,
                                 .scrollable = TRUE,
@@ -628,6 +664,7 @@ TK_DECL_VTABLE(table_client) = {.size = sizeof(table_client_t),
                                 .parent = TK_PARENT_VTABLE(widget),
                                 .create = table_client_create,
                                 .on_paint_self = table_client_on_paint_self,
+                                .get_offset = table_client_get_offset,
                                 .set_prop = table_client_set_prop,
                                 .get_prop = table_client_get_prop,
                                 .on_event = table_client_on_event,

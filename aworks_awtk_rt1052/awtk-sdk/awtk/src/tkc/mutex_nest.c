@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  mutex recursive
  *
- * Copyright (c) 2020 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2020 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -83,8 +83,8 @@ ret_t tk_mutex_nest_unlock(tk_mutex_nest_t* mutex_nest) {
     assert(mutex_nest->ref >= 0);
 
     if (mutex_nest->ref == 0) {
-      ret = tk_mutex_unlock(mutex_nest->mutex);
       mutex_nest->owner = 0;
+      ret = tk_mutex_unlock(mutex_nest->mutex);
     }
   } else {
     log_debug("not mutex owner\n");

@@ -1,28 +1,34 @@
 <window theme="main" >
   <table_view x="10" y="10" w="-20" h="-80">
     <table_header x="0"  y="0" w="100%" h="30" name="title" children_layout="default(r=1,c=0,s=5,m=5)">
-      <label w="10%" text="Index" />
-      <label w="20%" text="Name" />
+      <label w="8%" text="Index"/>
+      <label w="20%" text="Name"/>
       <label w="10%" text="Chinese"/>
-      <label w="10%" text="Math" />
-      <label w="10%" text="English" />
-      <label w="40%" text="Memo" />
+      <label w="10%" text="Math"/>
+      <label w="10%" text="English"/>
+      <label w="20%" text="Memo"/>
+      <label w="10%" text="Checked"/>
+      <label w="10%" text="Action"/>
     </table_header>
 
     <table_client name="table_client" x="0"  y="30" w="100%" h="-30" row_height="40">
-      <table_row children_layout="default(r=1,c=0,s=5,m=5)">
-        <label name="index"  w="10%" h="100%" />
-        <label name="name"  w="20%" h="100%" />
-        <label name="chinese"  w="10%" h="100%" />
-        <label name="math"  w="10%" h="100%" />
-        <label name="english"  w="10%" h="100%"/>
-        <edit name="memo"  w="40%" h="80%"/>
+      <table_row children_layout="default(r=1,c=0,s=5,m=5)" w="100%">
+        <label name="index" w="8%" h="100%" />
+        <label name="name" w="20%" h="100%" />
+        <label name="chinese" w="10%" h="100%" />
+        <label name="math" w="10%" h="100%" />
+        <label name="english" w="10%" h="100%"/>
+        <edit name="memo" w="20%" h="80%"/>
+        <check_button name="checked" w="10%"/>
+        <button name="remove" w="10%" text="remove"/>
       </table_row>
-
     </table_client>
+
     <scroll_bar_d name="vbar" x="right" y="30" w="12" h="-30" value="0"/>
   </table_view>
-  <view x="10" y="b:10" w="-20" h="40" children_layout="default(r=1,c=3,s=20,m=5)">
+  <view x="10" y="b:10" w="-20" h="40" children_layout="default(r=1,c=5,s=20,m=5)">
+    <button name="clear" text="Clear" />
+    <button name="remove_checked" text="Remove"/>
     <button name="save" text="Save" />
     <button name="reload" text="Reload" />
     <button name="quit" text="Quit" />

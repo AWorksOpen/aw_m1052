@@ -21,7 +21,7 @@ static table_row_t* table_row_of(widget_t* child) {
 static ret_t on_value_changed(void* ctx, event_t* e) {
   table_row_t* row = table_row_of(WIDGET(e->target));
 
-  log_debug("changed: %d value=%d\n", row->index, widget_get_value(WIDGET(e->target)));
+  log_debug("changed: %d value=%d\n", row->index, widget_get_value_int(WIDGET(e->target)));
 
   return RET_OK;
 }
@@ -67,6 +67,7 @@ static ret_t on_load_data(void* ctx, uint32_t index, widget_t* row) {
   widget_set_text_utf8(widget_lookup(row, "name", TRUE), name);
   widget_set_value(widget_lookup(row, "value", TRUE),index%100);
   widget_set_value(widget_lookup(row, "color", TRUE), 0);
+  widget_use_style(row, index%2==0 ? "even" : "odd");
 
   return RET_OK;
 }

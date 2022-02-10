@@ -23,7 +23,7 @@
 #define TK_CHART_ANIMATOR_H
 
 #include "awtk.h"
-#include "../base/fifo.h"
+#include "../base/series_fifo_default.h"
 
 BEGIN_C_DECLS
 
@@ -112,7 +112,7 @@ widget_animator_t* chart_animator_fifo_minmax_value_create(widget_t* widget, uin
  * @method chart_animator_fifo_value_set_params
  * 设置fifo数据动画对象的参数。
  * @param {widget_animator_t*} animator 动画对象本身。
- * @param {fifo_t*} fifo fifo对象。
+ * @param {object_t*} fifo 新的fifo对象。
  * @param {uint32_t} index 需要更改的起始位置。
  * @param {const void*} data 新数据。
  * @param {uint32_t} nr 新数据的数量。
@@ -120,7 +120,7 @@ widget_animator_t* chart_animator_fifo_minmax_value_create(widget_t* widget, uin
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t chart_animator_fifo_value_set_params(widget_animator_t* animator, fifo_t* fifo,
+ret_t chart_animator_fifo_value_set_params(widget_animator_t* animator, object_t* fifo,
                                            uint32_t index, const void* data, uint32_t nr,
                                            uint32_t update_max);
 

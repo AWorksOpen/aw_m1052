@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  popdown window animator
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -30,6 +30,6 @@ static const window_animator_vtable_t s_window_animator_popdown_vt = {
     .draw_prev_window = window_animator_overlap_default_draw_prev,
     .draw_curr_window = window_animator_to_bottom_draw_curr};
 
-window_animator_t* window_animator_popdown_create(bool_t open, object_t* args) {
+window_animator_t* window_animator_popdown_create(bool_t open, tk_object_t* args) {
   return window_animator_create(open, &s_window_animator_popdown_vt);
 }

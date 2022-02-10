@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  timer info
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -43,33 +43,64 @@ static const object_vtable_t s_timer_info_vtable = {
     .desc = "timer_info",
     .size = sizeof(timer_info_t),
     .is_collection = FALSE,
-    .on_destroy = (object_on_destroy_t)timer_info_on_destroy};
+    .on_destroy = (tk_object_on_destroy_t)timer_info_on_destroy};
 
 timer_info_t* timer_info_create(timer_manager_t* tm, timer_func_t on_timer, void* ctx,
-                                uint32_t duration) {
-  object_t* obj = object_create(&s_timer_info_vtable);
+                                uint32_t duration, uint16_t timer_info_type) {
+  tk_object_t* obj = tk_object_create(&s_timer_info_vtable);
   timer_info_t* timer = TIMER_INFO(obj);
   return_value_if_fail(timer != NULL, NULL);
 
   timer->ctx = ctx;
+  timer->suspend = FALSE;
   timer->on_timer = on_timer;
   timer->duration = duration;
+  timer->timer_info_type = timer_info_type;
 
   if (tm != NULL) {
+    uint32_t id = timer_manager_get_next_timer_id(tm);
+    timer->id = id;
     timer->timer_manager = tm;
     timer->start = tm->get_time();
-    timer->id = tm->next_timer_id++;
-    if (timer->id == TK_INVALID_ID) {
-      timer->id = tm->next_timer_id++;
+
+    if (id != TK_INVALID_ID) {
+      timer_manager_append(tm, timer);
+    } else {
+      tk_object_unref(obj);
+      return_value_if_fail(id != TK_INVALID_ID, NULL);
     }
-    timer_manager_append(tm, timer);
   }
 
   return timer;
 }
 
-int timer_info_compare(const void* a, const void* b) {
+int timer_info_compare_by_id(const void* a, const void* b) {
   return ((const timer_info_t*)a)->id - ((const timer_info_t*)b)->id;
+}
+
+int timer_info_compare_by_ctx(const void* a, const void* b) {
+  const timer_info_t* info_a = (const timer_info_t*)a;
+  return (char*)(info_a->ctx) - (char*)(b);
+}
+
+int timer_info_compare_by_ctx_and_type(const void* a, const void* b) {
+  const timer_info_t* info_a = (const timer_info_t*)a;
+  const timer_info_t* info_b = (const timer_info_t*)b;
+  if (info_a->timer_info_type == info_b->timer_info_type) {
+    return (char*)(info_a->ctx) - (char*)(info_b->ctx);
+  }
+  return -1;
+}
+
+timer_info_t* timer_info_init_dummy_with_ctx_and_type(timer_info_t* timer, uint16_t type,
+                                                      void* ctx) {
+  return_value_if_fail(timer != NULL, NULL);
+  memset(timer, 0x00, sizeof(timer_info_t));
+
+  timer->ctx = ctx;
+  timer->timer_info_type = type;
+
+  return timer;
 }
 
 timer_info_t* timer_info_init_dummy(timer_info_t* timer, uint32_t id) {

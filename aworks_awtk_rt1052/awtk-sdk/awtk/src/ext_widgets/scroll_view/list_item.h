@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  list_item
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -87,6 +87,11 @@ typedef struct _list_item_t {
   bool_t downed;
   point_t down;
 } list_item_t;
+
+/**
+ * @event {pointer_event_t} EVT_CLICK
+ * 点击事件。
+ */
 
 /**
  * @method list_item_create

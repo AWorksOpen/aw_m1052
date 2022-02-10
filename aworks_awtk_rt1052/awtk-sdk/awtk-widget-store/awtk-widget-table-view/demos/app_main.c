@@ -8,4 +8,6 @@ extern ret_t application_init(void);
 
 extern ret_t application_exit(void);
 
+#define APP_TYPE APP_DESKTOP
+
 #include "awtk_main.inc"

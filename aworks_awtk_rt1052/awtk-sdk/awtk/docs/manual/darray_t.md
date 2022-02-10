@@ -33,17 +33,24 @@ darray_destroy(darray);
 | <a href="#darray_t_darray_destroy">darray\_destroy</a> | 销毁darray对象。 |
 | <a href="#darray_t_darray_find">darray\_find</a> | 查找第一个满足条件的元素。 |
 | <a href="#darray_t_darray_find_all">darray\_find\_all</a> | 查找全部满足条件的元素。 |
+| <a href="#darray_t_darray_find_ex">darray\_find\_ex</a> | 查找第一个满足条件的元素。 |
 | <a href="#darray_t_darray_find_index">darray\_find\_index</a> | 查找第一个满足条件的元素，并返回位置。 |
+| <a href="#darray_t_darray_find_index_ex">darray\_find\_index\_ex</a> | 查找第一个满足条件的元素，并返回位置。 |
 | <a href="#darray_t_darray_foreach">darray\_foreach</a> | 遍历元素。 |
 | <a href="#darray_t_darray_get">darray\_get</a> | 获取指定序数的元素。 |
 | <a href="#darray_t_darray_head">darray\_head</a> | 返回第一个元素。 |
 | <a href="#darray_t_darray_init">darray\_init</a> | 初始化darray对象。 |
+| <a href="#darray_t_darray_insert">darray\_insert</a> | 插入一个元素。 |
 | <a href="#darray_t_darray_pop">darray\_pop</a> | 弹出最后一个元素。 |
 | <a href="#darray_t_darray_push">darray\_push</a> | 在尾巴追加一个元素。 |
 | <a href="#darray_t_darray_remove">darray\_remove</a> | 删除第一个满足条件的元素。 |
 | <a href="#darray_t_darray_remove_all">darray\_remove\_all</a> | 删除全部满足条件的元素。 |
+| <a href="#darray_t_darray_remove_ex">darray\_remove\_ex</a> | 删除第一个满足条件的元素。 |
 | <a href="#darray_t_darray_remove_index">darray\_remove\_index</a> | 删除指定位置的元素。 |
+| <a href="#darray_t_darray_replace">darray\_replace</a> | 设置指定序数的元素(销毁旧的数据)。 |
+| <a href="#darray_t_darray_set">darray\_set</a> | 设置指定序数的元素(不销毁旧的数据)。 |
 | <a href="#darray_t_darray_sort">darray\_sort</a> | 排序。 |
+| <a href="#darray_t_darray_sorted_insert">darray\_sorted\_insert</a> | 插入一个元素到有序数组。 |
 | <a href="#darray_t_darray_tail">darray\_tail</a> | 返回最后一个元素。 |
 ### 属性
 <p id="darray_t_properties">
@@ -86,14 +93,14 @@ void* darray_bsearch (darray_t* darray, tk_compare_t cmp, void* ctx);
 * 函数原型：
 
 ```
-int darray_bsearch_index (darray_t* darray, tk_compare_t cmp, void* ctx);
+int32_t darray_bsearch_index (darray_t* darray, tk_compare_t cmp, void* ctx);
 ```
 
 * 参数说明：
 
 | 参数 | 类型 | 说明 |
 | -------- | ----- | --------- |
-| 返回值 | int | 如果找到，返回满足条件的对象的位置，否则返回-1。 |
+| 返回值 | int32\_t | 如果找到，返回满足条件的对象的位置，否则返回-1。 |
 | darray | darray\_t* | 数组对象。 |
 | cmp | tk\_compare\_t | 比较函数，为NULL则使用内置的比较函数。 |
 | ctx | void* | 比较函数的上下文。 |
@@ -246,6 +253,27 @@ ret_t darray_find_all (darray_t* darray, tk_compare_t cmp, void* ctx, darray_t* 
 | cmp | tk\_compare\_t | 比较函数，为NULL则使用内置的比较函数。 |
 | ctx | void* | 比较函数的上下文。 |
 | matched | darray\_t* | 返回满足条件的元素。 |
+#### darray\_find\_ex 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="darray_t_darray_find_ex">查找第一个满足条件的元素。
+
+* 函数原型：
+
+```
+void* darray_find_ex (darray_t* darray, tk_compare_t cmp, void* ctx);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | void* | 如果找到，返回满足条件的对象，否则返回NULL。 |
+| darray | darray\_t* | 数组对象。 |
+| cmp | tk\_compare\_t | 比较函数，为NULL则使用内置的比较函数。 |
+| ctx | void* | 比较函数的上下文。 |
 #### darray\_find\_index 函数
 -----------------------
 
@@ -256,15 +284,36 @@ ret_t darray_find_all (darray_t* darray, tk_compare_t cmp, void* ctx, darray_t* 
 * 函数原型：
 
 ```
-int darray_find_index (darray_t* darray, void* ctx);
+int32_t darray_find_index (darray_t* darray, void* ctx);
 ```
 
 * 参数说明：
 
 | 参数 | 类型 | 说明 |
 | -------- | ----- | --------- |
-| 返回值 | int | 如果找到，返回满足条件的对象的位置，否则返回-1。 |
+| 返回值 | int32\_t | 如果找到，返回满足条件的对象的位置，否则返回-1。 |
 | darray | darray\_t* | 数组对象。 |
+| ctx | void* | 比较函数的上下文。 |
+#### darray\_find\_index\_ex 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="darray_t_darray_find_index_ex">查找第一个满足条件的元素，并返回位置。
+
+* 函数原型：
+
+```
+int32_t darray_find_index_ex (darray_t* darray, tk_compare_t cmp, void* ctx);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | int32\_t | 如果找到，返回满足条件的对象的位置，否则返回-1。 |
+| darray | darray\_t* | 数组对象。 |
+| cmp | tk\_compare\_t | 比较函数，为NULL则使用内置的比较函数。 |
 | ctx | void* | 比较函数的上下文。 |
 #### darray\_foreach 函数
 -----------------------
@@ -336,7 +385,7 @@ void* darray_head (darray_t* darray);
 * 函数原型：
 
 ```
-darray_t* darray_init (darray_t* darray, uint32_t* capacity, tk_destroy_t destroy, tk_compare_t compare);
+darray_t* darray_init (darray_t* darray, uint32_t capacity, tk_destroy_t destroy, tk_compare_t compare);
 ```
 
 * 参数说明：
@@ -345,9 +394,30 @@ darray_t* darray_init (darray_t* darray, uint32_t* capacity, tk_destroy_t destro
 | -------- | ----- | --------- |
 | 返回值 | darray\_t* | 数组对象。 |
 | darray | darray\_t* | 数组对象。 |
-| capacity | uint32\_t* | 数组的初始容量。 |
+| capacity | uint32\_t | 数组的初始容量。 |
 | destroy | tk\_destroy\_t | 元素销毁函数。 |
 | compare | tk\_compare\_t | 元素比较函数。 |
+#### darray\_insert 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="darray_t_darray_insert">插入一个元素。
+
+* 函数原型：
+
+```
+ret_t darray_insert (darray_t* darray, uint32_t index, void* data);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
+| darray | darray\_t* | 数组对象。 |
+| index | uint32\_t | 位置序数。 |
+| data | void* | 待插入的元素。 |
 #### darray\_pop 函数
 -----------------------
 
@@ -428,6 +498,27 @@ ret_t darray_remove_all (darray_t* darray, tk_compare_t cmp, void* ctx);
 | darray | darray\_t* | 数组对象。 |
 | cmp | tk\_compare\_t | 比较函数，为NULL则使用内置的比较函数。 |
 | ctx | void* | 比较函数的上下文。 |
+#### darray\_remove\_ex 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="darray_t_darray_remove_ex">删除第一个满足条件的元素。
+
+* 函数原型：
+
+```
+ret_t darray_remove_ex (darray_t* darray, tk_compare_t cmp, void* ctx);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
+| darray | darray\_t* | 数组对象。 |
+| cmp | tk\_compare\_t | 比较函数，为NULL则使用内置的比较函数。 |
+| ctx | void* | 比较函数的上下文。 |
 #### darray\_remove\_index 函数
 -----------------------
 
@@ -448,6 +539,48 @@ ret_t darray_remove_index (darray_t* darray, uint32_t index);
 | 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
 | darray | darray\_t* | 数组对象。 |
 | index | uint32\_t | 位置序数。 |
+#### darray\_replace 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="darray_t_darray_replace">设置指定序数的元素(销毁旧的数据)。
+
+* 函数原型：
+
+```
+ret_t darray_replace (darray_t* darray, uint32_t index, void* data);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
+| darray | darray\_t* | 数组对象。 |
+| index | uint32\_t | 序数。 |
+| data | void* | 数据。 |
+#### darray\_set 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="darray_t_darray_set">设置指定序数的元素(不销毁旧的数据)。
+
+* 函数原型：
+
+```
+ret_t darray_set (darray_t* darray, uint32_t index, void* data);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
+| darray | darray\_t* | 数组对象。 |
+| index | uint32\_t | 序数。 |
+| data | void* | 数据。 |
 #### darray\_sort 函数
 -----------------------
 
@@ -468,6 +601,28 @@ ret_t darray_sort (darray_t* darray, tk_compare_t cmp);
 | 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
 | darray | darray\_t* | 数组对象。 |
 | cmp | tk\_compare\_t | 比较函数，为NULL则使用内置的比较函数。 |
+#### darray\_sorted\_insert 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="darray_t_darray_sorted_insert">插入一个元素到有序数组。
+
+* 函数原型：
+
+```
+ret_t darray_sorted_insert (darray_t* darray, void* data, tk_compare_t compare, bool_t replace_if_exist);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
+| darray | darray\_t* | 数组对象。 |
+| data | void* | 待插入的元素。 |
+| compare | tk\_compare\_t | 元素比较函数。 |
+| replace\_if\_exist | bool\_t | 如果存在是否替换。 |
 #### darray\_tail 函数
 -----------------------
 

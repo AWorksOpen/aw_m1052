@@ -119,6 +119,8 @@ copyAwtkFiles('src/window_animators', 'awtk/src/window_animators')
 copyAwtkFiles('src/dialog_highlighters', 'awtk/src/dialog_highlighters')
 
 copyAwtkFile('src/awtk.h', 'awtk/src/awtk.h')
+copyAwtkFile('src/awtk_version.h', 'awtk/src/awtk_version.h')
+copyAwtkFile('src/tkc.h', 'awtk/src/tkc.h')
 copyAwtkFile('src/awtk_tkc.h', 'awtk/src/awtk_tkc.h')
 copyAwtkFile('src/awtk_base.h', 'awtk/src/awtk_base.h')
 copyAwtkFile('src/awtk_global.c', 'awtk/src/awtk_global.c')
@@ -130,6 +132,7 @@ copyAwtkFile('src/native_window/native_window_raw.h', 'awtk/src/native_window/na
 copyAwtkFile('src/window_manager/window_manager_default.c', 'awtk/src/window_manager/window_manager_default.c')
 copyAwtkFile('src/window_manager/window_manager_default.h', 'awtk/src/window_manager/window_manager_default.h')
 copyAwtkFile('src/graphic_buffer/graphic_buffer_default.c', 'awtk/src/graphic_buffer/graphic_buffer_default.c')
+copyAwtkFile('src/fscript_ext/fscript_ext.h', 'awtk/src/fscript_ext/fscript_ext.h')
 
 if VGCANVAS == 'NANOVG' and (NANOVG_BACKEND == 'AGG' or NANOVG_BACKEND == 'AGGE'):
     copyAwtkFile('src/vgcanvas/vgcanvas_nanovg_soft.c', 'awtk/src/vgcanvas/vgcanvas_nanovg_soft.c')
@@ -156,10 +159,11 @@ for f in LCD_FILES:
     copyAwtkFile(sfilename, dfilename)
 
 INPUT_METHODS_FILES=['input_engines/input_engine_pinyin.cpp',
+    'input_engines/ime_utils.c',
+    'input_engines/ime_utils.h',
     'input_methods/input_method_creator.c',
     'input_methods/input_method_default.inc',
-    'input_methods/input_method_null.inc',
-    'input_methods/suggest_words.inc']
+    'input_methods/input_method_null.inc']
 for f in INPUT_METHODS_FILES:
     sfilename=os.path.join('src/', f);
     dfilename=os.path.join('awtk/src/', f);
@@ -174,20 +178,4 @@ for f in MAIN_LOOP_FILES:
     copyAwtkFile(sfilename, dfilename)
 
 
-copyAwtkFiles('demos/assets', 'awtk-demos/assets')
-
-DEMO_FILES=['assets.h',
-    'assets.c',
-    'demo_main.c',
-    'demo_ui_app.c',
-    'common.inc',
-    'vg_common.inc']
-for f in DEMO_FILES:
-    sfilename=os.path.join('demos', f);
-    dfilename=os.path.join('awtk-demos/', f);
-    copyAwtkFile(sfilename, dfilename)
-
-
 copyPortFiles('../awtk-port', 'awtk-port')
-# copyPortFiles('pxp', 'pxp')
-# copyPortFile('user_code/main.c', 'awtk-demos/main.c')	

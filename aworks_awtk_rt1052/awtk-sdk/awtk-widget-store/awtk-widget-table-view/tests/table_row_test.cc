@@ -2,7 +2,6 @@
 #include "gtest/gtest.h"
 
 TEST(table_row, basic) {
-  value_t v;
   widget_t* w = table_row_create(NULL, 10, 20, 30, 40);
   
   ASSERT_EQ(widget_set_prop_int(w, TABLE_ROW_PROP_INDEX, 10), RET_OK);

@@ -5,6 +5,7 @@ APP_TOOLS = None
 if awtk.TOOLS_NAME != '' :
   APP_TOOLS = [awtk.TOOLS_NAME]
 
+awtk.genIdlAndDef();
 DefaultEnvironment(TOOLS = APP_TOOLS,
   CCFLAGS = awtk.AWTK_CCFLAGS,
   LIBS = awtk.LIBS,
@@ -18,7 +19,7 @@ DefaultEnvironment(TOOLS = APP_TOOLS,
 
 SConscriptFiles=awtk.NANOVG_BACKEND_PROJS + [
   '3rd/cjson/SConscript',
-  '3rd/nanovg/SConscript',
+  '3rd/mbedtls/SConscript',
   '3rd/glad/SConscript',
   '3rd/gpinyin/SConscript', 
   '3rd/libunibreak/SConscript',
@@ -26,10 +27,16 @@ SConscriptFiles=awtk.NANOVG_BACKEND_PROJS + [
   '3rd/miniz/SConscript',
   '3rd/fribidi/SConscript',
   'src/SConscript',
+  'src/csv/SConscript',
   'src/conf_io/SConscript',
+  'src/hal/SConscript',
   'src/streams/SConscript',
+  'src/streams/tools/SConscript',
   'src/compressors/SConscript',
   'src/ubjson/SConscript',
+  'src/fscript_ext/SConscript',
+  'src/xml/SConscript',
+  'src/charset/SConscript',
   'tools/common/SConscript', 
   'tools/theme_gen/SConscript', 
   'tools/font_gen/SConscript', 
@@ -38,11 +45,11 @@ SConscriptFiles=awtk.NANOVG_BACKEND_PROJS + [
   'tools/image_dither/SConscript',
   'tools/res_gen/SConscript', 
   'tools/str_gen/SConscript', 
-  'tools/ui_gen/qt_to_xml/SConscript',
   'tools/ui_gen/xml_to_ui/SConscript',
   'tools/svg_gen/SConscript',
   'demos/SConscript', 
-  #'tests/SConscript'
+  #'tests/SConscript',
+  'src/hal/tools/network_shell/SConscript',
   ] + awtk.OS_PROJECTS
   
 os.environ['TK_ROOT'] = awtk.TK_ROOT;

@@ -1,31 +1,5 @@
 LIBRARY   chart_view
 EXPORTS
-    fifo_create
-    fifo_init
-    fifo_clone
-    fifo_part_clone
-    fifo_at_abs
-    fifo_at
-    fifo_set_abs
-    fifo_set
-    fifo_get_abs
-    fifo_get
-    fifo_prev
-    fifo_next
-    fifo_tail
-    fifo_head
-    fifo_index_of
-    fifo_count
-    fifo_find
-    fifo_find_index
-    fifo_push
-    fifo_pop
-    fifo_npush
-    fifo_npop
-    fifo_clear
-    fifo_foreach
-    fifo_deinit
-    fifo_destroy
     axis_data_create
     axis_data_destroy
     chart_view_supported_render_mode
@@ -35,44 +9,20 @@ EXPORTS
     chart_animator_fifo_colorful_value_create
     chart_animator_fifo_minmax_value_create
     chart_animator_fifo_value_set_params
-    axis_create
-    axis_on_destroy
-    axis_set_range
-    axis_get_range
-    axis_set_offset
-    axis_get_offset
-    axis_set_data
-    axis_set_data_from_series
-    axis_set_need_update_data
-    axis_cast
-    widget_is_axis
-    chart_view_create
-    chart_view_set_top_series
-    chart_view_cast
-    series_create
-    series_count
-    series_set
-    series_rset
-    series_push
-    series_at
-    series_get_current
-    series_is_point_in
-    series_index_of_point_in
-    series_to_local
-    series_set_tooltip_format
-    series_get_tooltip
-    series_set_capacity
-    series_set_unit_size
-    series_set_new_period
-    series_set_title
-    series_get_title
-    series_cast
-    widget_is_series
-    tooltip_create
-    tooltip_create_default
-    tooltip_move
-    tooltip_cast
-    widget_is_tooltip
+    series_fifo_part_clone
+    series_fifo_get
+    series_fifo_set
+    series_fifo_set_reverse
+    series_fifo_compare
+    series_fifo_find
+    series_fifo_find_index
+    series_fifo_push
+    series_fifo_pop
+    series_fifo_npush
+    series_fifo_npop
+    series_fifo_clear
+    series_fifo_set_capacity
+    series_fifo_set_block_event
     pie_slice_create
     pie_slice_cast
     pie_slice_set_value
@@ -87,14 +37,61 @@ EXPORTS
     pie_slice_set_exploded
     pie_slice_set_exploded_4_others
     pie_slice_set_exploded_4_all
+    chart_view_create
+    chart_view_set_top_series
+    chart_view_cast
+    series_fifo_set_event_cast
+    series_fifo_set_event_init
+    series_fifo_push_event_cast
+    series_fifo_push_event_init
+    series_fifo_pop_event_cast
+    series_fifo_pop_event_init
+    axis_create
+    axis_on_destroy
+    axis_set_range
+    axis_get_range
+    axis_set_offset
+    axis_get_offset
+    axis_set_data
+    axis_set_data_from_series
+    axis_set_need_update_data
+    axis_cast
+    widget_is_axis
+    series_create
+    series_count
+    series_set
+    series_rset
+    series_push
+    series_clear
+    series_at
+    series_get_current
+    series_is_point_in
+    series_index_of_point_in
+    series_to_local
+    series_set_tooltip_format
+    series_get_tooltip
+    series_set_capacity
+    series_set_new_period
+    series_set_title
+    series_get_title
+    series_set_fifo
+    series_set_prepare_fifo
+    series_cast
+    widget_is_series
+    tooltip_create
+    tooltip_create_default
+    tooltip_move
+    tooltip_cast
+    widget_is_tooltip
     line_series_create
     line_series_cast
+    bar_series_create
+    bar_series_cast
     x_axis_create
     x_axis_cast
     y_axis_create
     y_axis_cast
-    bar_series_create
-    bar_series_cast
+    series_fifo_default_create
     line_series_colorful_create
     widget_is_line_series_colorful
     bar_series_minmax_create

@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  utf8 encode decode
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,6 +19,7 @@
  *
  */
 
+#include "tkc/mem.h"
 #include "tkc/utf8.h"
 
 /*UTF8-related functions are copied from glib.*/
@@ -75,6 +76,10 @@ static const char utf8_skip_data[256] = {
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
     3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 1, 1};
+
+uint32_t tk_utf8_get_bytes_of_leading(uint8_t c) {
+  return utf8_skip_data[c];
+}
 
 const char* const g_utf8_skip = utf8_skip_data;
 #define g_utf8_next_char(p) (char*)((p) + g_utf8_skip[*(const unsigned char*)(p)])
@@ -230,28 +235,79 @@ err_out:
 }
 
 char* tk_utf8_from_utf16_ex(const wchar_t* in, uint32_t in_size, char* out, uint32_t out_size) {
-  return_value_if_fail(in != NULL && out != NULL, NULL);
+  return_value_if_fail(in != NULL && out != NULL && out_size > 0, NULL);
+  if (in_size == 0) {
+    *out = '\0';
+    return out;
+  }
 
   return utf16_to_utf8(in, in_size, out, out_size);
 }
 
 char* tk_utf8_from_utf16(const wchar_t* str, char* out, uint32_t size) {
-  return_value_if_fail(str != NULL && out != NULL, NULL);
+  return_value_if_fail(str != NULL && out != NULL && size > 0, NULL);
 
   return utf16_to_utf8(str, wcslen(str), out, size);
 }
 
 wchar_t* tk_utf8_to_utf16(const char* str, wchar_t* out, uint32_t size) {
+  return_value_if_fail(str != NULL && out != NULL, NULL);
+
+  return tk_utf8_to_utf16_ex(str, strlen(str), out, size);
+}
+
+wchar_t* tk_utf8_to_utf16_ex(const char* str, uint32_t size, wchar_t* out, uint32_t out_size) {
   uint32_t i = 0;
   const char* p = str;
+  const char* end = NULL;
   const char* next = NULL;
   return_value_if_fail(str != NULL && out != NULL, NULL);
 
-  while (p != NULL && *p && (i + 1) < size) {
+  end = str + size;
+  while (p != NULL && p < end && (i + 1) < out_size) {
     out[i++] = utf8_get_char(p, &next);
     p = next;
   }
   out[i] = '\0';
 
   return out;
+}
+
+char* tk_utf8_dup_utf16(const wchar_t* in, int32_t size) {
+  char* out = NULL;
+  uint32_t out_size = 0;
+  return_value_if_fail(in != NULL, NULL);
+
+  if (size < 0) {
+    size = wcslen(in);
+  }
+
+  out_size = size * 4 + 1;
+  out = TKMEM_ALLOC(out_size);
+  return_value_if_fail(out != NULL, NULL);
+  memset(out, 0x00, out_size);
+
+  return tk_utf8_from_utf16_ex(in, size, out, out_size - 1);
+}
+
+char* tk_utf8_trim_invalid_char(char* str) {
+  int32_t i = 0;
+  int32_t n = 0;
+  char* p = str;
+  return_value_if_fail(str != NULL, str);
+
+  while (*p) {
+    n = tk_utf8_get_bytes_of_leading(*p);
+    if (n > 0) {
+      for (i = 0; i < n; i++) {
+        if (p[i] == '\0') {
+          *p = '\0';
+          return str;
+        }
+      }
+    }
+    p += n;
+  }
+
+  return str;
 }

@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  bitmap manager
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -29,8 +29,8 @@ typedef struct _bitmap_cache_t {
   bitmap_t image;
   char* name;
   uint32_t access_count;
-  uint32_t created_time;
-  uint32_t last_access_time;
+  uint64_t created_time;
+  uint64_t last_access_time;
 } bitmap_cache_t;
 
 static int bitmap_cache_cmp_time(bitmap_cache_t* a, bitmap_cache_t* b) {
@@ -45,9 +45,18 @@ static int bitmap_cache_cmp_data(bitmap_cache_t* a, bitmap_cache_t* b) {
   return (char*)(a->image.buffer) - (char*)(b->image.buffer);
 }
 
+static int bitmap_cache_cmp_access_time_dec(bitmap_cache_t* a, bitmap_cache_t* b) {
+  return (b->last_access_time) - (a->last_access_time);
+}
+
 static ret_t bitmap_cache_destroy(bitmap_cache_t* cache) {
   return_value_if_fail(cache != NULL, RET_BAD_PARAMS);
+  bitmap_t* image = &(cache->image);
+  image_manager_t* imm = image->image_manager;
 
+  if (imm != NULL && image->should_free_data) {
+    imm->mem_size_of_cached_images -= bitmap_get_mem_size(image);
+  }
   log_debug("unload image %s\n", cache->name);
   bitmap_destroy(&(cache->image));
   TKMEM_FREE(cache->name);
@@ -74,6 +83,17 @@ image_manager_t* image_manager_create(void) {
   return image_manager_init(imm);
 }
 
+static locale_info_t* image_manager_get_locale_info(image_manager_t* imm) {
+  return_value_if_fail(imm != NULL, NULL);
+  locale_info_t* locale = locale_info();
+
+  if (imm->assets_manager != NULL && imm->assets_manager->locale_info != NULL) {
+    locale = imm->assets_manager->locale_info;
+  }
+
+  return locale;
+}
+
 image_manager_t* image_manager_init(image_manager_t* imm) {
   return_value_if_fail(imm != NULL, NULL);
 
@@ -81,6 +101,26 @@ image_manager_t* image_manager_init(image_manager_t* imm) {
   imm->assets_manager = assets_manager();
 
   return imm;
+}
+
+static ret_t image_manager_clear_cache(image_manager_t* imm) {
+  bitmap_cache_t* iter = NULL;
+  return_value_if_fail(imm != NULL, RET_BAD_PARAMS);
+  if (imm->images.size == 0 || imm->max_mem_size_of_cached_images == 0 ||
+      imm->mem_size_of_cached_images < imm->max_mem_size_of_cached_images) {
+    return RET_OK;
+  }
+
+  darray_sort(&(imm->images), (tk_compare_t)bitmap_cache_cmp_access_time_dec);
+  do {
+    iter = (bitmap_cache_t*)darray_pop(&(imm->images));
+    bitmap_cache_destroy(iter);
+    log_debug("clear cache: mem_size_of_cached_images=%u nr=%u", imm->mem_size_of_cached_images,
+              imm->images.size);
+  } while (imm->images.size > 0 &&
+           imm->mem_size_of_cached_images > imm->max_mem_size_of_cached_images);
+
+  return RET_OK;
 }
 
 ret_t image_manager_add(image_manager_t* imm, const char* name, const bitmap_t* image) {
@@ -97,6 +137,12 @@ ret_t image_manager_add(image_manager_t* imm, const char* name, const bitmap_t* 
   cache->name = tk_strdup(name);
   cache->image.name = cache->name;
   cache->last_access_time = cache->created_time;
+
+  cache->image.image_manager = imm;
+  if (image->should_free_data) {
+    imm->mem_size_of_cached_images += bitmap_get_mem_size((bitmap_t*)image);
+    image_manager_clear_cache(imm);
+  }
 
   return darray_push(&(imm->images), cache);
 }
@@ -131,7 +177,11 @@ ret_t image_manager_lookup(image_manager_t* imm, const char* name, bitmap_t* ima
 ret_t image_manager_update_specific(image_manager_t* imm, bitmap_t* image) {
   bitmap_cache_t info;
   bitmap_cache_t* iter = NULL;
-  return_value_if_fail(imm != NULL && image != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(image != NULL, RET_BAD_PARAMS);
+
+  if (imm == NULL) {
+    return RET_FAIL;
+  }
 
   if (image->image_manager != NULL) {
     imm = image->image_manager;
@@ -184,6 +234,7 @@ static ret_t image_manager_get_bitmap_impl(image_manager_t* imm, const char* nam
                                                     (bitmap_format_t)(header->format));
     image->should_free_data = image->buffer != NULL;
     image_manager_add(imm, name, image);
+    image->should_free_data = FALSE;
 
     return RET_OK;
   } else if (res->subtype != ASSET_TYPE_IMAGE_BSVG) {
@@ -219,17 +270,20 @@ ret_t image_manager_get_bitmap_exprs(image_manager_t* imm, const char* exprs, bi
 
 ret_t image_manager_get_bitmap(image_manager_t* imm, const char* name, bitmap_t* image) {
   return_value_if_fail(imm != NULL && name != NULL && image != NULL, RET_BAD_PARAMS);
+  locale_info_t* locale_info = image_manager_get_locale_info(imm);
 
   if (strstr(name, TK_LOCALE_MAGIC) != NULL) {
     char locale[TK_NAME_LEN + 1];
     char real_name[TK_NAME_LEN + 1];
-    const char* language = locale_info()->language;
-    const char* country = locale_info()->country;
+    const char* language = locale_info->language;
+    const char* country = locale_info->country;
 
-    tk_snprintf(locale, sizeof(locale) - 1, "%s_%s", language, country);
-    tk_replace_locale(name, real_name, locale);
-    if (image_manager_get_bitmap_impl(imm, real_name, image) == RET_OK) {
-      return RET_OK;
+    if (strlen(language) > 0 && strlen(country) > 0) {
+      tk_snprintf(locale, sizeof(locale) - 1, "%s_%s", language, country);
+      tk_replace_locale(name, real_name, locale);
+      if (image_manager_get_bitmap_impl(imm, real_name, image) == RET_OK) {
+        return RET_OK;
+      }
     }
 
     tk_replace_locale(name, real_name, language);
@@ -263,6 +317,19 @@ ret_t image_manager_set_assets_manager(image_manager_t* imm, assets_manager_t* a
   imm->assets_manager = am;
 
   return RET_OK;
+}
+
+bool_t image_manager_has_bitmap(image_manager_t* imm, bitmap_t* image) {
+  bitmap_cache_t b;
+  return_value_if_fail(imm != NULL && image != NULL, RET_BAD_PARAMS);
+
+  b.image.buffer = image->buffer;
+
+  if (darray_find_ex(&(imm->images), (tk_compare_t)bitmap_cache_cmp_data, &b) == NULL) {
+    return FALSE;
+  } else {
+    return TRUE;
+  }
 }
 
 ret_t image_manager_unload_unused(image_manager_t* imm, uint32_t time_delta_s) {
@@ -303,6 +370,14 @@ ret_t image_manager_destroy(image_manager_t* imm) {
 
   image_manager_deinit(imm);
   TKMEM_FREE(imm);
+
+  return RET_OK;
+}
+
+ret_t image_manager_set_max_mem_size_of_cached_images(image_manager_t* imm, uint32_t max_mem_size) {
+  return_value_if_fail(imm != NULL, RET_BAD_PARAMS);
+
+  imm->max_mem_size_of_cached_images = max_mem_size;
 
   return RET_OK;
 }

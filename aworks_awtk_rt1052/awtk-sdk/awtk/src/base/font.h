@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  font interface
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -47,7 +47,17 @@ typedef enum _glyph_format_t {
    * @const GLYPH_FMT_RGBA
    * 每个像素占用4个字节。
    */
-  GLYPH_FMT_RGBA
+  GLYPH_FMT_RGBA,
+  /**
+   * @const GLYPH_FMT_ALPHA2
+   * 每个像素占用2bit。
+   */
+  GLYPH_FMT_ALPHA2,
+  /**
+   * @const GLYPH_FMT_ALPHA4
+   * 每个像素占用4bit。
+   */
+  GLYPH_FMT_ALPHA4
 } glyph_format_t;
 
 struct _font_t;

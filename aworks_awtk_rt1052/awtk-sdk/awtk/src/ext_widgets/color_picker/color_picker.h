@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  color_picker
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -74,6 +74,9 @@ typedef struct _color_picker_t {
 
   /*private*/
   color_t c;
+  float_t c_r_value;
+  float_t c_g_value;
+  float_t c_b_value;
   bool_t inited;
   color_t init_c;
   int32_t last_hue;
@@ -81,12 +84,12 @@ typedef struct _color_picker_t {
 } color_picker_t;
 
 /**
- * @event {event_t} EVT_VALUE_WILL_CHANGE
+ * @event {value_change_event_t} EVT_VALUE_WILL_CHANGE
  * 值(颜色)即将改变事件。
  */
 
 /**
- * @event {event_t} EVT_VALUE_CHANGED
+ * @event {value_change_event_t} EVT_VALUE_CHANGED
  * 值(颜色)改变事件。
  */
 

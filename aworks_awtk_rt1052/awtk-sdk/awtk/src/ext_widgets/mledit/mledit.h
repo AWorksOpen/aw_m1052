@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  mledit
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -60,36 +60,6 @@ typedef struct _mledit_t {
   widget_t widget;
 
   /**
-   * @property {bool_t} readonly
-   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 编辑器是否为只读。
-   */
-  bool_t readonly;
-  /**
-   * @property {uint8_t} top_margin
-   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 上边距。
-   */
-  uint8_t top_margin;
-  /**
-   * @property {uint8_t} bottom_margin
-   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 下边距。
-   */
-  uint8_t bottom_margin;
-  /**
-   * @property {uint8_t} left_margin
-   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 左边距。
-   */
-  uint8_t left_margin;
-  /**
-   * @property {uint8_t} right_margin
-   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 右边距。
-   */
-  uint8_t right_margin;
-  /**
    * @property {char*} tips
    * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
    * 输入提示。
@@ -107,27 +77,42 @@ typedef struct _mledit_t {
    * 自定义软键盘名称。
    */
   char* keyboard;
-
-  /**
-   * @property {bool_t} wrap_word
-   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 是否自动折行。
-   */
-  bool_t wrap_word;
-
   /**
    * @property {uint32_t} max_lines
    * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
    * 最大行数。
    */
   uint32_t max_lines;
-
+  /**
+   * @property {uint32_t} max_chars
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 最大字符数。
+   */
+  uint32_t max_chars;
   /**
    * @property {uint32_t} scroll_line
    * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
    * 鼠标一次滚动行数。
    */
   uint32_t scroll_line;
+  /**
+   * @property {bool_t} overwrite
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 是否启用覆盖行。
+   */
+  bool_t overwrite;
+  /**
+   * @property {bool_t} wrap_word
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 是否自动折行。
+   */
+  bool_t wrap_word;
+  /**
+   * @property {bool_t} readonly
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 编辑器是否为只读。
+   */
+  bool_t readonly;
 
   /**
    * @property {bool_t} cancelable
@@ -155,21 +140,29 @@ typedef struct _mledit_t {
    */
   bool_t close_im_when_blured;
   /*private*/
+  bool_t lock_scrollbar_value;
+  uint8_t margin;
+  uint8_t top_margin;
+  uint8_t left_margin;
+  uint8_t right_margin;
+  uint8_t bottom_margin;
+
+  bool_t is_key_inputing;
+
   text_edit_t* model;
   uint32_t timer_id;
 
   wstr_t temp;
   wstr_t saved_text;
-  uint64_t last_user_action_time;
 } mledit_t;
 
 /**
- * @event {event_t} EVT_VALUE_CHANGING
+ * @event {value_change_event_t} EVT_VALUE_CHANGING
  * 文本正在改变事件(编辑中)。
  */
 
 /**
- * @event {event_t} EVT_VALUE_CHANGED
+ * @event {value_change_event_t} EVT_VALUE_CHANGED
  * 文本改变事件。
  */
 
@@ -232,6 +225,17 @@ ret_t mledit_set_focus(widget_t* widget, bool_t focus);
 ret_t mledit_set_wrap_word(widget_t* widget, bool_t wrap_word);
 
 /**
+ * @method mledit_set_overwrite
+ * 设置编辑器是否启用覆盖行（在行数达到最大行数时，可继续新增行，但最早的行将会消失）。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget widget对象。
+ * @param {bool_t} overwrite 是否启用覆盖行。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t mledit_set_overwrite(widget_t* widget, bool_t overwrite);
+
+/**
  * @method mledit_set_max_lines
  * 设置编辑器的最大行数。
  * @annotation ["scriptable"]
@@ -241,6 +245,17 @@ ret_t mledit_set_wrap_word(widget_t* widget, bool_t wrap_word);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t mledit_set_max_lines(widget_t* widget, uint32_t max_lines);
+
+/**
+ * @method mledit_set_max_chars
+ * 设置编辑器的最大字符数（0 为不限制字符数）。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget widget对象。
+ * @param {uint32_t} max_chars 最大字符数。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t mledit_set_max_chars(widget_t* widget, uint32_t max_chars);
 
 /**
  * @method mledit_set_tips
@@ -288,6 +303,16 @@ ret_t mledit_set_keyboard(widget_t* widget, const char* keyboard);
 ret_t mledit_set_cursor(widget_t* widget, uint32_t cursor);
 
 /**
+ * @method mledit_get_cursor
+ * 获取编辑器光标位置。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget widget对象。
+ *
+ * @return {uint32_t} 返回光标位置。
+ */
+uint32_t mledit_get_cursor(widget_t* widget);
+
+/**
  * @method mledit_set_scroll_line
  * 设置编辑器滚动速度。
  * @annotation ["scriptable"]
@@ -297,6 +322,17 @@ ret_t mledit_set_cursor(widget_t* widget, uint32_t cursor);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t mledit_set_scroll_line(widget_t* widget, uint32_t scroll_line);
+
+/**
+ * @method mledit_scroll_to_offset
+ * 设置编辑器滚动到指定偏移位置。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget widget对象。
+ * @param {uint32_t} offset 偏移位置。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t mledit_scroll_to_offset(widget_t* widget, uint32_t offset);
 
 /**
  * @method mledit_set_open_im_when_focused
@@ -326,6 +362,41 @@ ret_t mledit_set_open_im_when_focused(widget_t* widget, bool_t open_im_when_focu
 ret_t mledit_set_close_im_when_blured(widget_t* widget, bool_t close_im_when_blured);
 
 /**
+ * @method mledit_set_select
+ * 选择编辑器中指定范围的文本。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget widget对象。
+ * @param {uint32_t} start 起始偏移。
+ * @param {uint32_t} end 结束偏移。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t mledit_set_select(widget_t* widget, uint32_t start, uint32_t end);
+
+/**
+ * @method mledit_get_selected_text
+ * 获取选中的文本。
+ * 使用完后需调用 TKMEM_FREE() 进行释放文本占有内存。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget widget对象。
+ *
+ * @return {char*} 返回选中文本。
+ */
+char* mledit_get_selected_text(widget_t* widget);
+
+/**
+ * @method mledit_insert_text
+ * 插入一段文本。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget widget对象。
+ * @param {uint32_t} offset 插入的偏移位置。
+ * @param {const char*} text 待插入的文本。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t mledit_insert_text(widget_t* widget, uint32_t offset, const char* text);
+
+/**
  * @method mledit_cast
  * 转换为mledit对象(供脚本语言使用)。
  * @annotation ["cast", "scriptable"]
@@ -338,7 +409,9 @@ widget_t* mledit_cast(widget_t* widget);
 #define WIDGET_TYPE_MLEDIT "mledit"
 
 #define MLEDIT_PROP_MAX_LINES "max_lines"
+#define MLEDIT_PROP_MAX_CHARS "max_chars"
 #define MLEDIT_PROP_WRAP_WORD "wrap_word"
+#define MLEDIT_PROP_OVERWRITE "overwrite"
 #define MLEDIT_PROP_SCROLL_LINE "scroll_line"
 #define MLEDIT(widget) ((mledit_t*)(mledit_cast(WIDGET(widget))))
 

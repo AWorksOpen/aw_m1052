@@ -90,6 +90,24 @@ ret_t usb_camera_prepare_image_fun(void *ctx, bitmap_t *image) {
   return ret;
 }
 
+bitmap_t* usb_camera_prepare_image_create_image_fun(void* ctx, bitmap_format_t format,
+                                                  bitmap_t* old_image) {
+  uint32_t bpp = bitmap_get_bpp_of_format(format);
+  usb_camera_device_base_t *usb_camera_device_base = (usb_camera_device_base_t *)ctx;
+  return_value_if_fail(usb_camera_device_base != NULL, NULL);
+
+  if (old_image == NULL ||
+      usb_camera_device_base->device_ratio.width != old_image->w ||
+      usb_camera_device_base->device_ratio.height != old_image->h) {
+    if (old_image != NULL) {
+      bitmap_destroy(old_image);
+    }
+    return bitmap_create_ex(usb_camera_device_base->device_ratio.width, usb_camera_device_base->device_ratio.height, 0, format);
+  }
+
+  return old_image;
+}
+
 ret_t usb_camera_devices_info_list_destroy(void *data) {
   TKMEM_FREE(data);
   return RET_OK;

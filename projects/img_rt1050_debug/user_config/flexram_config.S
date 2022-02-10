@@ -51,7 +51,7 @@ flex_ram_config:
     dsb
 
     //配置GPR17中的FLEX RAM,全部为DTCM
-    ldr     r1, = 0xAAAAAAAA;
+    ldr     r1, = 0xAAAAAAA5;
     ldr     r0, = REG_IOMUXC_GPR17;
     str     r1,[r0];
     dsb

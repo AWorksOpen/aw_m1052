@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  ui_feedback
  *
- * Copyright (c) 2019 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2019 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -37,6 +37,13 @@ ret_t ui_feedback_request(widget_t* widget, event_t* evt) {
 ret_t ui_feedback_init(ui_on_feedback_t on_feedback, void* ctx) {
   s_on_feedback = on_feedback;
   s_on_feedback_ctx = ctx;
+
+  return RET_OK;
+}
+
+ret_t ui_feedback_deinit(void) {
+  s_on_feedback = NULL;
+  s_on_feedback_ctx = NULL;
 
   return RET_OK;
 }

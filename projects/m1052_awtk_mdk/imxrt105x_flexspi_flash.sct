@@ -12,10 +12,10 @@
 #define     FLASH_START             0x60400000  /* flash start address */
 #define     FLASH_SIZE              0x400000    /* flash size: 4M */ 
 
-#define     DATA_START              0x80C00000  /* data start address */
-#define     DATA_SIZE               0x100000     /* code size: 512k */
+#define     DATA_START              0x80A00000  /* data start address */
+#define     DATA_SIZE               0xFE800     /* code size: 1018k */
 
-#define     RELOAD_CODE_START       0x2007F000  /* reload code start address */
+#define     RELOAD_CODE_START       0x80AFF000  /* reload code start address */
 #define     RELOAD_CODE_SIZE        0x1000      /* reload code size: 4k */
 
 #define     STACK_START             DATA_START  /* stack start address */

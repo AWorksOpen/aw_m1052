@@ -29,6 +29,8 @@ Usage: scons SHARED=[true|false] IDL_DEF=[true|false] LCD=[800_480|...] LINUX_FB
 
 * 参数 LANGUAGE 是可选的，用于指定语言（如缺省为 zh\_CN)。
 
+* 参数 BUILD_DIR 是可选的，用于指定编译输出目录，缺省为应用程序的根目录。
+
 * 参数 AWTK_ROOT 是可选的，用于指定依赖的 AWTK 的路径。
 
 > 注意：
@@ -53,6 +55,12 @@ scons LCD=480_272
 
 ```
 scons LINUX_FB=true
+```
+
+> 编译 linux fb 版本，同时指定输出到arm下目录。
+
+```
+scons LINUX_FB=true BUILD_DIR=arm
 ```
 
 ## 编译 linux-fb 版本需要按下列步骤进行

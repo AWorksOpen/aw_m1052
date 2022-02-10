@@ -36,23 +36,11 @@ typedef struct _series_t {
   widget_t widget;
 
   /**
-   * @property {fifo_t*} fifo
+   * @property {object_t*} fifo
    * @annotation ["readable"]
    * 序列fifo。
    */
-  fifo_t* fifo;
-  /**
-   * @property {uint32_t} capacity
-   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 序列fifo的容量。
-   */
-  uint32_t capacity;
-  /**
-   * @property {uint32_t} unit_size
-   * @annotation ["set_prop","get_prop","readable","persitent"]
-   * 序列值的大小。
-   */
-  uint32_t unit_size;
+  object_t* fifo;
   /**
    * @property {uint32_t} offset
    * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
@@ -72,6 +60,12 @@ typedef struct _series_t {
    */
   uint32_t value_animation;
   /**
+   * @property {series_animator_create_t} animator_create
+   * @annotation ["readable"]
+   * 创建动画对象。
+   */
+  series_animator_create_t animator_create;
+  /**
    * @property {series_tooltip_format_t} tooltip_format
    * @annotation ["readable"]
    * 提示信息格式化。
@@ -84,19 +78,25 @@ typedef struct _series_t {
    */
   void* tooltip_format_ctx;
   /**
+   * @property {series_prepare_fifo_t} prepare_fifo
+   * @annotation ["readable"]
+   * 预处理fifo的回调函数，可以注册事件处理函数。
+   */
+  series_prepare_fifo_t prepare_fifo;
+  /**
+   * @property {void*} prepare_fifo_ctx
+   * @annotation ["readable"]
+   * 预处理fifo的上下文。
+   */
+  void* prepare_fifo_ctx;
+  /**
    * @property {series_vtable_t} vt
    * @annotation ["readable"]
    * 虚函数表。
    */
   const series_vtable_t* vt;
   /**
-   * @property {bool_t} need_reset_fifo
-   * @annotation ["readable"]
-   * 是否需要重置数据fifo。
-   */
-  uint8_t need_reset_fifo : 1;
-  /**
-   * @property {bool_t} need_reset_fifo
+   * @property {bool_t} inited
    * @annotation ["readable"]
    * 是否已初始化。
    */
@@ -184,6 +184,16 @@ ret_t series_rset(widget_t* widget, uint32_t index, const void* data, uint32_t n
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t series_push(widget_t* widget, const void* data, uint32_t nr);
+
+/**
+ * @method series_clear
+ * 清除全部序列点。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget widget对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t series_clear(widget_t* widget);
 
 /**
  * @method series_at
@@ -283,17 +293,6 @@ ret_t series_get_tooltip(widget_t* widget, uint32_t index, wstr_t* v);
 ret_t series_set_capacity(widget_t* widget, uint32_t capacity);
 
 /**
- * @method series_set_unit_size
- * 设置单个序列点数据的大小。
- * @annotation ["scriptable"]
- * @param {widget_t*} widget widget对象。
- * @param {uint32_t} unit_size 单个序列点数据的大小。
- *
- * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */
-ret_t series_set_unit_size(widget_t* widget, uint32_t unit_size);
-
-/**
  * @method series_set_new_period
  * 设置序列的新周期点数。
  * @annotation ["scriptable"]
@@ -324,6 +323,29 @@ ret_t series_set_title(widget_t* widget, const char* title);
  * @return {wchar_t*} 返回文本。
  */
 const wchar_t* series_get_title(widget_t* widget);
+
+/**
+ * @method series_set_fifo
+ * 设置序列fifo。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget widget对象。
+ * @param {object_t*} obj fifo的object对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t series_set_fifo(widget_t* widget, object_t* obj);
+
+/**
+ * @method series_set_prepare_fifo
+ * 设置预处理fifo回调函数。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget widget对象。
+ * @param {series_prepare_fifo_t} prepare 预处理fifo的回调。
+ * @param {void*} ctx 预处理时的上下文。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t series_set_prepare_fifo(widget_t* widget, series_prepare_fifo_t prepare, void* ctx);
 
 /**
  * @method series_cast

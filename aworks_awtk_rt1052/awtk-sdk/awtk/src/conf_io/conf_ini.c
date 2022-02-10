@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  ini 
  *
- * Copyright (c) 2020 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2020 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -22,6 +22,7 @@
 #include "tkc/mem.h"
 #include "tkc/utils.h"
 #include "conf_io/conf_ini.h"
+#include "tkc/data_writer_factory.h"
 
 typedef enum _parser_state_t {
   STATE_NONE = 0,
@@ -77,7 +78,7 @@ conf_doc_t* conf_doc_load_ini(const char* data) {
           state = STATE_BEFORE_GROUP;
         } else if (c == '#') {
           state = STATE_COMMENT;
-        } else if (!isspace(c)) {
+        } else if (!tk_isspace(c)) {
           state = STATE_KEY;
           str_set_with_len(s, &c, 1);
         }
@@ -90,7 +91,7 @@ conf_doc_t* conf_doc_load_ini(const char* data) {
         break;
       }
       case STATE_BEFORE_GROUP: {
-        if (!isspace(c)) {
+        if (!tk_isspace(c)) {
           state = STATE_GROUP;
           str_set_with_len(s, &c, 1);
         }
@@ -125,9 +126,14 @@ conf_doc_t* conf_doc_load_ini(const char* data) {
         break;
       }
       case STATE_BEFORE_VALUE: {
-        if (!isspace(c)) {
+        if (c != ' ' && c != '\t') {
           state = STATE_VALUE;
-          str_set_with_len(s, &c, 1);
+          if (c == '\r' || c == '\n') {
+            str_set(s, "");
+            p -= 1;
+          } else {
+            str_set_with_len(s, &c, 1);
+          }
         }
 
         break;
@@ -285,7 +291,24 @@ error:
   return RET_FAIL;
 }
 
-object_t* conf_ini_load(const char* url, bool_t create_if_not_exist) {
+tk_object_t* conf_ini_load(const char* url, bool_t create_if_not_exist) {
   return conf_obj_create(conf_doc_save_ini_writer, conf_doc_load_ini_reader, url,
                          create_if_not_exist);
+}
+
+ret_t conf_ini_save_as(tk_object_t* obj, const char* url) {
+  data_writer_t* writer = NULL;
+  conf_doc_t* doc = conf_obj_get_doc(obj);
+  return_value_if_fail(doc != NULL && url != NULL, RET_BAD_PARAMS);
+  writer = data_writer_factory_create_writer(data_writer_factory(), url);
+  return_value_if_fail(writer != NULL, RET_BAD_PARAMS);
+
+  conf_doc_save_ini_writer(doc, writer);
+  data_writer_destroy(writer);
+
+  return RET_OK;
+}
+
+tk_object_t* conf_ini_create(void) {
+  return conf_ini_load(NULL, TRUE);
 }

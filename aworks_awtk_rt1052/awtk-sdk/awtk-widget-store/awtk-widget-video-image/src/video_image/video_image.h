@@ -31,7 +31,7 @@ typedef ret_t (*video_image_dispose_image_t)(void* ctx, bitmap_t* bitmap);
 typedef ret_t (*video_image_to_image_begin_t)(void* ctx, bitmap_t* bitmap);
 typedef ret_t (*video_image_draw_image_t)(void* ctx, bitmap_t* bitmap, canvas_t *c);
 typedef ret_t (*video_image_to_image_end_t)(void* ctx, bitmap_t* bitmap, bool_t is_get_frame);
-typedef ret_t (*video_image_init_image_t)(void* ctx, bitmap_t* bitmap, uint32_t w, uint32_t h, uint32_t channels, bitmap_format_t format);
+typedef ret_t (*video_image_init_image_t)(void* ctx, bitmap_t* bitmap, uint32_t w, uint32_t h, uint32_t channels, uint32_t line_length, bitmap_format_t format);
 
 /**
  * @class video_image_t
@@ -78,11 +78,11 @@ typedef struct _video_image_t {
   bool_t auto_play;
 
   /**
-   * @property {uint32_t} delay_paly
+   * @property {bool_t} loop
    * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 延迟播放。
+   * 是否循环播放。
    */
-  uint32_t delay_paly;
+  bool_t loop;
 
   /**
    * @property {bool_t} draw_video_image
@@ -90,6 +90,13 @@ typedef struct _video_image_t {
    * 是否自动绘制视频贴图数据。（默认为TRUE，该成员变量是为了某一些特殊场景使用）
    */
   bool_t draw_video_image;
+
+  /**
+   * @property {uint32_t} delay_play
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 延迟播放。
+   */
+  uint32_t delay_play;
 
   /**
    * @property {void*} init_image_ctx
@@ -155,6 +162,12 @@ typedef struct _video_image_t {
    * 解码序列帧后回调函数
    */
   video_image_to_image_end_t to_image_end;
+  /**
+   * @property {float_t} playback_rate
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 播放速度（默认为1）
+   */
+  float_t playback_rate;
 
   /*private*/
   bool_t is_done;
@@ -163,10 +176,15 @@ typedef struct _video_image_t {
   bool_t is_get_frame;
 
   bitmap_t bitmap;
+  uint8_t* bitmap_data;
   uint32_t timer_id;
   uint32_t frame_interval;
   uint32_t frame_number_max;
   uint32_t frame_number_curr;
+
+  uint32_t old_bitmap_h;
+  uint32_t old_bitmap_line_length;
+  uint8_t* first_bitmap_data;
 
   asset_info_t* video_asset_info;
 
@@ -219,15 +237,58 @@ ret_t video_image_set_video_name(widget_t* widget, const char* video_name);
 ret_t video_image_set_auto_play(widget_t* widget, bool_t auto_play);
 
 /**
- * @method video_image_set_delay_paly
+ * @method video_image_set_delay_play
  * 设置延迟播放。
  * @annotation ["scriptable"]
  * @param {widget_t*} widget widget对象。
- * @param {uint32_t} delay_paly 延迟播放。
+ * @param {uint32_t} delay_play 延迟播放。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t video_image_set_delay_paly(widget_t* widget, uint32_t delay_paly);
+ret_t video_image_set_delay_play(widget_t* widget, uint32_t delay_play);
+
+/**
+ * @method video_image_set_loop
+ * 设置循环播放。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget widget对象。
+ * @param {uint32_t} loop 循环播放。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t video_image_set_loop(widget_t* widget, bool_t loop);
+
+/**
+ * @method video_image_replay
+ * 马上重新播放序列帧。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget widget对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t video_image_replay(widget_t *widget);
+
+/**
+ * @method video_image_set_playback_rate
+ * 设置当前播放速度。
+ * 备注：序列帧没有跳帧功能，所以播放速度会受限解码和渲染速度，无法突破解码和渲染速度的限制。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget widget对象。
+ * @param {float_t} playback_rate 播放速度（1 为正常播放速度，小于 1 播放速度会变慢，大于 1 播放速度会变快）。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t video_image_set_playback_rate(widget_t *widget, float_t playback_rate);
+
+/**
+ * @method video_image_get_playback_rate
+ * 获取当前播放速度
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget widget对象。
+ *
+ * @return {float_t} 返回播放速度。
+ */
+float_t video_image_get_playback_rate(widget_t *widget);
 
 /**
  * @method video_image_set_draw_video_image
@@ -301,9 +362,11 @@ ret_t video_image_set_to_image_begin_func(widget_t* widget, video_image_to_image
  */
 ret_t video_image_set_to_image_end_func(widget_t* widget, video_image_to_image_end_t to_image_end, void* to_image_end_ctx);
 
+#define VIDEO_IMAGE_PROP_LOOP "loop"
 #define VIDEO_IMAGE_PROP_VIDEO_NAME "video_name"
 #define VIDEO_IMAGE_PROP_AUTO_PLAY "auto_play"
-#define VIDEO_IMAGE_PROP_DELAY_PALY "delay_paly"
+#define VIDEO_IMAGE_PROP_DELAY_PLAY "delay_play"
+#define VIDEO_IMAGE_PROP_PLAYBACK_RETE "playback_rate"
 #define VIDEO_IMAGE_PROP_DRAW_VIDEO_IMAGE "draw_video_image"
 
 #define WIDGET_TYPE_VIDEO_IMAGE "video_image"

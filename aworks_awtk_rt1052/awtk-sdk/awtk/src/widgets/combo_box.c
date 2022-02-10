@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  combo_box
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -28,6 +28,8 @@
 #include "widgets/combo_box.h"
 #include "tkc/tokenizer.h"
 #include "widgets/combo_box_item.h"
+
+#define COMBO_BOX_DEFAULT_MARGIN 1
 
 static ret_t combo_box_on_button_click(void* ctx, event_t* e);
 static ret_t combo_box_sync_index_to_value(widget_t* widget, uint32_t index);
@@ -59,6 +61,7 @@ static ret_t combo_box_set_selected_index_ex(widget_t* widget, uint32_t index, w
 static ret_t combo_box_on_copy(widget_t* widget, widget_t* other) {
   combo_box_t* combo_box = COMBO_BOX(widget);
   combo_box_t* combo_box_other = COMBO_BOX(other);
+  return_value_if_fail(combo_box != NULL && combo_box_other != NULL, RET_BAD_PARAMS);
 
   edit_on_copy(widget, other);
 
@@ -87,6 +90,10 @@ static ret_t combo_box_on_destroy(widget_t* widget) {
 
   edit_on_destroy(widget);
 
+  if (combo_box->combobox_popup != NULL) {
+    widget_destroy(combo_box->combobox_popup);
+  }
+
   return RET_OK;
 }
 
@@ -99,6 +106,7 @@ static ret_t combo_box_set_text(widget_t* widget, const char* text, const wchar_
   if (value_widget == NULL) {
     value_widget = widget;
   } else {
+    TKMEM_FREE(widget->tr_text);
     widget_set_text(widget, L"");
   }
 
@@ -179,6 +187,25 @@ ret_t combo_box_set_options(widget_t* widget, const char* options) {
   return combo_box_parse_options(widget, options);
 }
 
+static ret_t combo_box_text_to_index(widget_t* widget, const char* text) {
+  ret_t ret = RET_FAIL;
+  combo_box_t* combo_box = COMBO_BOX(widget);
+  combo_box_option_t* option = NULL;
+  int32_t i = 0;
+  return_value_if_fail(widget != NULL && combo_box != NULL, RET_BAD_PARAMS);
+
+  option = combo_box->option_items;
+  for (; option != NULL; option = option->next, i++) {
+    if (tk_str_eq(text, option->text)) {
+      combo_box->selected_index = i;
+      ret = RET_OK;
+      break;
+    }
+  }
+
+  return ret;
+}
+
 static ret_t combo_box_set_prop(widget_t* widget, const char* name, const value_t* v) {
   if (tk_str_eq(name, WIDGET_PROP_OPEN_WINDOW)) {
     combo_box_set_open_window(widget, value_str(v));
@@ -198,13 +225,42 @@ static ret_t combo_box_set_prop(widget_t* widget, const char* name, const value_
   } else if (tk_str_eq(name, WIDGET_PROP_ITEM_HEIGHT)) {
     combo_box_set_item_height(widget, value_uint32(v));
     return RET_OK;
+  } else if (tk_str_eq(name, WIDGET_PROP_TEXT)) {
+    str_t str;
+    str_init(&str, 0);
+    edit_set_prop(widget, WIDGET_PROP_TEXT, v);
+    str_from_wstr(&str, widget_get_text(widget));
+    combo_box_text_to_index(widget, str.str);
+    str_reset(&str);
+    return RET_OK;
   } else {
     return edit_set_prop(widget, name, v);
   }
 }
 
+static ret_t combo_box_on_layout_children_for_combobox_popup(widget_t* widget) {
+  combo_box_t* combo_box = COMBO_BOX(widget);
+  return_value_if_fail(combo_box != NULL, RET_BAD_PARAMS);
+
+  if (combo_box->combobox_popup != NULL) {
+    point_t p = {0, 0};
+    int32_t margin = COMBO_BOX_DEFAULT_MARGIN;
+    int32_t item_height = combo_box->item_height;
+    int32_t nr = combo_box_count_options(widget);
+    int32_t h = nr * item_height + 2 * margin;
+    if (combo_box->open_window != NULL) {
+      h = combo_box->combobox_popup->h;
+    }
+    combo_box_combobox_popup_calc_position(widget, h, &p);
+    widget_move_resize(combo_box->combobox_popup, p.x, p.y, widget->w, h);
+  }
+  return RET_OK;
+}
+
 static ret_t combo_box_on_layout_children(widget_t* widget) {
+  combo_box_t* combo_box = COMBO_BOX(widget);
   widget_t* button = widget_lookup_by_type(widget, WIDGET_TYPE_BUTTON, TRUE);
+  return_value_if_fail(combo_box != NULL, RET_BAD_PARAMS);
 
   widget_layout_children_default(widget);
   if (button != NULL) {
@@ -214,13 +270,17 @@ static ret_t combo_box_on_layout_children(widget_t* widget) {
       widget_layout(button);
     }
   }
-
+  if (combo_box->on_layout_combobox_popup) {
+    combo_box->on_layout_combobox_popup(widget);
+  } else {
+    combo_box_on_layout_children_for_combobox_popup(widget);
+  }
   return RET_OK;
 }
 
 static uint32_t edit_get_right_margin(widget_t* widget) {
   int32_t right_margin = 0;
-  style_t* style = widget->astyle;
+  style_t* style = widget != NULL ? widget->astyle : NULL;
 
   right_margin = widget_get_prop_int(widget, WIDGET_PROP_RIGHT_MARGIN, 0);
 
@@ -238,6 +298,7 @@ static uint32_t edit_get_right_margin(widget_t* widget) {
 static ret_t combo_box_on_key_event(widget_t* widget, key_event_t* evt) {
   ret_t ret = RET_OK;
   edit_t* edit = EDIT(WIDGET(widget));
+  return_value_if_fail(edit != NULL, RET_BAD_PARAMS);
 
   if (evt->key == TK_KEY_UP) {
     ret = RET_STOP;
@@ -266,7 +327,7 @@ static ret_t combo_box_on_event(widget_t* widget, event_t* e) {
   ret_t ret = RET_OK;
   combo_box_t* combo_box = COMBO_BOX(widget);
   edit_t* edit = EDIT(WIDGET(combo_box));
-  return_value_if_fail(combo_box != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(combo_box != NULL && edit != NULL && e != NULL, RET_BAD_PARAMS);
 
   switch (e->type) {
     case EVT_WIDGET_LOAD: {
@@ -274,13 +335,16 @@ static ret_t combo_box_on_event(widget_t* widget, event_t* e) {
       if (widget_lookup(widget, WIDGET_NAME_VALUE, TRUE) != NULL) {
         combo_box_sync_index_to_value(widget, combo_box->selected_index);
       }
+
+      if (widget->text.size == 0 && widget->tr_text == NULL) {
+        combo_box_set_selected_index(widget, 0);
+      }
       break;
     }
     case EVT_RESIZE:
     case EVT_MOVE_RESIZE: {
       if (edit_get_right_margin(widget) == 0) {
         edit->right_margin = widget->h;
-        edit->left_margin = 4;
       }
       break;
     }
@@ -355,10 +419,10 @@ widget_t* combo_box_create_self(widget_t* parent, xy_t x, xy_t y, wh_t w, wh_t h
   widget_t* widget = edit_create_ex(parent, TK_REF_VTABLE(combo_box), x, y, w, h);
   combo_box_t* combo_box = COMBO_BOX(widget);
   edit_t* edit = EDIT(WIDGET(combo_box));
-  return_value_if_fail(combo_box != NULL, NULL);
-
-  edit->left_margin = 0;
-  edit->right_margin = 0;
+  return_value_if_fail(combo_box != NULL && edit != NULL, NULL);
+  widget_set_prop_int(widget, WIDGET_PROP_MARGIN, 0);
+  widget_set_prop_int(widget, WIDGET_PROP_LEFT_MARGIN, 0);
+  widget_set_prop_int(widget, WIDGET_PROP_RIGHT_MARGIN, 0);
   str_init(&(combo_box->text), 32);
   combo_box->localize_options = TRUE;
 
@@ -368,6 +432,7 @@ widget_t* combo_box_create_self(widget_t* parent, xy_t x, xy_t y, wh_t w, wh_t h
 static ret_t combo_box_on_item_click(void* ctx, event_t* e) {
   widget_t* widget = WIDGET(ctx);
   widget_t* item = WIDGET(e->target);
+  return_value_if_fail(widget != NULL && item != NULL, RET_BAD_PARAMS);
 
   combo_box_set_selected_index_ex(widget, widget_index_of(item), item);
 
@@ -382,6 +447,7 @@ static ret_t combo_box_on_item_click(void* ctx, event_t* e) {
 static ret_t combo_box_visit_item(void* ctx, const void* data) {
   widget_t* iter = WIDGET(data);
   combo_box_t* combo_box = COMBO_BOX(ctx);
+  return_value_if_fail(combo_box != NULL && iter != NULL, RET_BAD_PARAMS);
 
   if (tk_str_eq(widget_get_type(iter), WIDGET_TYPE_COMBO_BOX_ITEM)) {
     int32_t index = widget_index_of(iter);
@@ -423,19 +489,51 @@ static ret_t combo_box_create_popup_items(combo_box_t* combo_box, widget_t* pare
   return RET_OK;
 }
 
+ret_t combo_box_combobox_popup_on_close_func(void* ctx, event_t* e) {
+  combo_box_t* combo_box = COMBO_BOX(ctx);
+  return_value_if_fail(combo_box != NULL, RET_BAD_PARAMS);
+
+  combo_box->combobox_popup = NULL;
+
+  return RET_OK;
+}
+
+ret_t combo_box_combobox_popup_calc_position(widget_t* widget, wh_t popup_h, point_t* p) {
+  combo_box_t* combo_box = COMBO_BOX(widget);
+  return_value_if_fail(combo_box != NULL && p != NULL, RET_BAD_PARAMS);
+
+  memset(p, 0x00, sizeof(point_t));
+  widget_to_screen(widget, p);
+  if ((p->y + widget->h + popup_h) < combo_box->combobox_popup->parent->h) {
+    p->y += widget->h;
+  } else if (p->y >= popup_h) {
+    p->y -= combo_box->combobox_popup->h;
+  } else {
+    p->y = 0;
+  }
+  return RET_OK;
+}
+
 static widget_t* combo_box_create_popup(combo_box_t* combo_box) {
   value_t v;
+  int32_t w = 0;
+  int32_t h = 0;
+  int32_t nr = 0;
   char params[128];
-  int32_t margin = 2;
+  widget_t* win = NULL;
+  int32_t item_height = 0;
   widget_t* widget = WIDGET(combo_box);
-  int32_t item_height = combo_box->item_height;
-  int32_t nr = combo_box_count_options(widget);
-  int32_t w = widget->w;
-  int32_t h = nr * item_height + 2 * margin;
-  widget_t* win = popup_create(NULL, 0, 0, w, h);
+  int32_t margin = COMBO_BOX_DEFAULT_MARGIN;
+  return_value_if_fail(combo_box != NULL && widget != NULL, NULL);
+  item_height = combo_box->item_height;
+  nr = combo_box_count_options(widget);
+  w = widget->w;
+  h = nr * item_height + 2 * margin;
+  win = popup_create(NULL, 0, 0, w, h);
 
   value_set_bool(&v, TRUE);
   widget_set_prop(win, WIDGET_PROP_CLOSE_WHEN_CLICK_OUTSIDE, &v);
+  widget_set_prop_str(win, WIDGET_PROP_THEME, "combobox_popup");
 
   tk_snprintf(params, sizeof(params) - 1, "default(m=%d, r=%d c=%d)", margin, nr, 1);
   widget_set_children_layout(win, params);
@@ -444,6 +542,9 @@ static widget_t* combo_box_create_popup(combo_box_t* combo_box) {
   combo_box_create_popup_items(combo_box, win);
   widget_layout(win);
 
+  combo_box->combobox_popup = win;
+
+  widget_on(win, EVT_WINDOW_CLOSE, combo_box_combobox_popup_on_close_func, widget);
   return win;
 }
 
@@ -455,6 +556,8 @@ static ret_t combo_box_active(widget_t* widget) {
   return_value_if_fail(widget != NULL && combo_box != NULL, RET_BAD_PARAMS);
   if (combo_box->open_window) {
     win = window_open(combo_box->open_window);
+    combo_box->combobox_popup = win;
+    widget_on(win, EVT_WINDOW_CLOSE, combo_box_combobox_popup_on_close_func, widget);
   }
 
   if (win != NULL) {
@@ -475,17 +578,8 @@ static ret_t combo_box_active(widget_t* widget) {
   widget_set_prop_str(win, WIDGET_PROP_MOVE_FOCUS_PREV_KEY, "up");
   widget_set_prop_str(win, WIDGET_PROP_MOVE_FOCUS_NEXT_KEY, "down");
   combo_box_hook_items(combo_box, win);
-  widget_to_screen(widget, &p);
 
-  wm = win->parent;
-  if ((p.y + widget->h + win->h) < wm->h) {
-    p.y += widget->h;
-  } else if (p.y >= win->h) {
-    p.y -= win->h;
-  } else {
-    p.y = 0;
-  }
-
+  combo_box_combobox_popup_calc_position(widget, win->h, &p);
   widget_move(win, p.x, p.y);
 
   return RET_OK;
@@ -506,6 +600,34 @@ widget_t* combo_box_create(widget_t* parent, xy_t x, xy_t y, wh_t w, wh_t h) {
   widget_use_style(popup, "combobox_down");
 
   return widget;
+}
+
+ret_t combo_box_remove_option(widget_t* widget, int32_t value) {
+  combo_box_option_t* iter = NULL;
+  combo_box_option_t* prev = NULL;
+  combo_box_t* combo_box = COMBO_BOX(widget);
+  return_value_if_fail(combo_box != NULL, RET_BAD_PARAMS);
+
+  iter = combo_box->option_items;
+  prev = combo_box->option_items;
+
+  while (iter != NULL) {
+    if (iter->value == value) {
+      if (iter == combo_box->option_items) {
+        combo_box->option_items = iter->next;
+      } else {
+        prev->next = iter->next;
+      }
+
+      TKMEM_FREE(iter->text);
+      TKMEM_FREE(iter);
+      return RET_OK;
+    }
+    prev = iter;
+    iter = iter->next;
+  }
+
+  return RET_NOT_FOUND;
 }
 
 ret_t combo_box_reset_options(widget_t* widget) {
@@ -739,11 +861,14 @@ widget_t* combo_box_cast(widget_t* widget) {
   return widget;
 }
 
-ret_t combo_box_set_custom_open_popup(widget_t* widget, combo_box_custom_open_popup_t open_popup) {
+ret_t combo_box_set_custom_open_popup(
+    widget_t* widget, combo_box_custom_open_popup_t open_popup,
+    combo_box_custom_on_layout_combobox_popup_t on_layout_combobox_popup) {
   combo_box_t* combo_box = COMBO_BOX(widget);
   return_value_if_fail(combo_box != NULL, RET_BAD_PARAMS);
 
   combo_box->open_popup = open_popup;
+  combo_box->on_layout_combobox_popup = on_layout_combobox_popup;
 
   return RET_OK;
 }

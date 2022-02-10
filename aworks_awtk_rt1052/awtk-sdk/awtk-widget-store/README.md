@@ -21,32 +21,32 @@
 
 ##### awtk-widget-button-ex
 
-![](awtk-widget-button-ex\docs\ui.png)
+![](awtk-widget-button-ex/docs/images/ui.png)
 
 ##### awtk-widget-chart-view
 
-![](awtk-widget-chart-view\docs\曲线图.png)
+![](awtk-widget-chart-view/docs/images/曲线图.png)
 
 ##### awtk-widget-date-picker
 
-![](awtk-widget-date-picker\docs\images\ui.jpg)
+![](awtk-widget-date-picker/docs/images/ui.jpg)
 
 ##### awtk-widget-label-rotate
 
-![](awtk-widget-label-rotate\docs\images\ui.jpg)
+![](awtk-widget-label-rotate/docs/images/ui.jpg)
 
 ##### awtk-widget-mask-view
 
-![](awtk-widget-mask-view\docs\image\mask_view.png)
+![](awtk-widget-mask-view/docs/images/mask_view.png)
 
 ##### awtk-widget-number-label
 
-![](awtk-widget-number-label\docs\images\ui.jpg)
+![](awtk-widget-number-label/docs/images/ui.jpg)
 
 ##### awtk-widget-qr
 
-![](awtk-widget-qr\docs\images\demo.png)
+![](awtk-widget-qr/docs/images/demo.png)
 
 ##### awtk-widget-table-view
 
-![](awtk-widget-table-view\docs\images\ui.png)
+![](awtk-widget-table-view/docs/images/ui.png)

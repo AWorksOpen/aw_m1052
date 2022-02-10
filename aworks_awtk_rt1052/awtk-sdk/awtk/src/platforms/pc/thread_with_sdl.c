@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  sdl implemented thread related functions.
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -60,14 +60,17 @@ ret_t tk_mutex_lock(tk_mutex_t* mutex) {
 }
 
 ret_t tk_mutex_try_lock(tk_mutex_t* mutex) {
+  int ret = 0;
   return_value_if_fail(mutex != NULL, RET_BAD_PARAMS);
 
-  if (SDL_TryLockMutex(mutex->mutex) != 0) {
-    log_debug("SDL_LockMutex fail\n");
-    return RET_FAIL;
+  ret = SDL_TryLockMutex(mutex->mutex);
+  if (ret == SDL_MUTEX_TIMEDOUT) {
+    return RET_TIMEOUT;
+  } else if (ret == 0) {
+    return RET_OK;
   }
 
-  return RET_OK;
+  return RET_FAIL;
 }
 
 ret_t tk_mutex_unlock(tk_mutex_t* mutex) {
@@ -199,7 +202,7 @@ struct _tk_thread_t {
   tk_thread_entry_t entry;
   char name[TK_NAME_LEN + 1];
   uint32_t stack_size;
-  uint32_t priority;
+  int32_t priority;
 };
 
 ret_t tk_thread_set_name(tk_thread_t* thread, const char* name) {
@@ -218,10 +221,24 @@ ret_t tk_thread_set_stack_size(tk_thread_t* thread, uint32_t stack_size) {
   return RET_OK;
 }
 
-ret_t tk_thread_set_priority(tk_thread_t* thread, uint32_t priority) {
+int32_t tk_thread_get_priority_from_platform(tk_thread_priority_t priority) {
+  switch (priority) {
+    case TK_THREAD_PRIORITY_LOWEST:
+      return SDL_THREAD_PRIORITY_LOW;
+    case TK_THREAD_PRIORITY_HIGHEST:
+      return SDL_THREAD_PRIORITY_HIGH;
+    case TK_THREAD_PRIORITY_TIME_CRITICAL:
+      return SDL_THREAD_PRIORITY_TIME_CRITICAL;
+    case TK_THREAD_PRIORITY_NORMAL:
+    default:
+      return SDL_THREAD_PRIORITY_NORMAL;
+  }
+}
+
+ret_t tk_thread_set_priority(tk_thread_t* thread, tk_thread_priority_t priority) {
   return_value_if_fail(thread != NULL, RET_BAD_PARAMS);
 
-  thread->priority = priority;
+  thread->priority = tk_thread_get_priority_from_platform(priority);
 
   return RET_OK;
 }
@@ -254,17 +271,33 @@ static int entry(void* arg) {
   return 0;
 }
 
+extern SDL_Thread* SDL_CreateThreadInternal(int(SDLCALL* fn)(void*), const char* name,
+                                            const size_t stacksize, void* data);
+
 ret_t tk_thread_start(tk_thread_t* thread) {
   return_value_if_fail(thread != NULL, RET_BAD_PARAMS);
+  if (thread->stack_size == 0) {
+    thread->thread = SDL_CreateThread((SDL_ThreadFunction)(entry), thread->name, thread);
+  } else {
+    thread->thread = SDL_CreateThreadInternal((SDL_ThreadFunction)(entry), thread->name,
+                                              thread->stack_size, thread);
+  }
 
-  thread->thread = SDL_CreateThread((SDL_ThreadFunction)(entry), thread->name, thread);
   thread->running = thread->thread != NULL;
-
+  if (thread->running) {
+    SDL_SetThreadPriority((SDL_ThreadPriority)(thread->priority));
+  }
   return thread->running ? RET_OK : RET_FAIL;
 }
 
 ret_t tk_thread_join(tk_thread_t* thread) {
-  return_value_if_fail(thread != NULL, RET_BAD_PARAMS);
+  uint64_t tid = tk_thread_self();
+  return_value_if_fail(thread != NULL && thread->thread != NULL, RET_BAD_PARAMS);
+
+  if (tid == (uint64_t)SDL_GetThreadID(thread->thread)) {
+    return RET_OK;
+  }
+
   if (thread->running) {
     if (thread->thread) {
       SDL_WaitThread(thread->thread, NULL);

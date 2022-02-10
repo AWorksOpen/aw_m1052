@@ -1,0 +1,21 @@
+{
+  "name":"vpage",
+  "date":"2020-10-01",
+  "team":"AWTK Develop Team",
+  "author":"Li XianJing <xianjimli@hotmail.com>",
+  "desc":"虚拟页面(根据情况自动加载/卸载页面)。",
+  "copyright":"Guangzhou ZHIYUAN Electronics Co.,Ltd.",
+  "includes":[],
+  "props": [
+    {
+      "name":"ui_asset_name",
+      "desc":"UI资源名称。",
+      "type":"char*"
+    },
+    {
+      "name":"anim_hint",
+      "desc":"动画类型",
+      "type":"char*"
+    }
+  ]
+}

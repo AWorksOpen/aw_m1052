@@ -6,7 +6,7 @@
 
 static int read_video_frame_info(unsigned char *file_data,
                                  unsigned int file_data_length, unsigned int *w,
-                                 unsigned int *h, unsigned int *channels,
+                                 unsigned int *h, unsigned int *channels, unsigned int *line_length,
                                  unsigned int *frame_number_max,
                                  unsigned int *gif_delay,
                                  bitmap_format_t *format) {
@@ -20,6 +20,7 @@ static int read_video_frame_info(unsigned char *file_data,
   *w = video_info.width;
   *h = video_info.height;
   *channels = video_info.channels;
+  *line_length = video_info.line_length;
   *frame_number_max = video_info.frame_number;
   *gif_delay = video_info.delays;
 
@@ -51,6 +52,7 @@ ret_t diff_to_image_video_image_init(unsigned char *file_data,
                                      unsigned int file_data_length,
                                      unsigned int *w, unsigned int *h, 
                                      unsigned int *channels,
+                                     unsigned int *line_length,
                                      unsigned int *frame_number_max,
                                      unsigned int *delays,
                                      bitmap_format_t *format) {
@@ -59,7 +61,7 @@ ret_t diff_to_image_video_image_init(unsigned char *file_data,
     return RET_OOM;
   }
 
-  if (read_video_frame_info(file_data, file_data_length, w, h, channels,
+  if (read_video_frame_info(file_data, file_data_length, w, h, channels, line_length,
                             frame_number_max, delays, format) == 0) {
 
     return ret;
@@ -75,6 +77,7 @@ ret_t diff_to_image_to_video_image(unsigned char *file_data,
   unsigned int w = 0;
   unsigned int h = 0;
   unsigned int channels = 0;
+  unsigned int line_length = 0;
   unsigned char *image_data = NULL;
 
   return_value_if_fail(file_data != NULL && file_data_length > 0 &&
@@ -88,11 +91,11 @@ ret_t diff_to_image_to_video_image(unsigned char *file_data,
   w = image->w;
   h = image->h;
   channels = bitmap_get_bpp(image);
-
+  line_length = bitmap_get_line_length(image);
   image_data = bitmap_lock_buffer_for_write(image);
 
   ret = diff_image_to_video_read_image_data(file_data, file_data_length,
-                                            frame_number_curr, image_data,
+                                            frame_number_curr, image_data, line_length,
                                             w, h, channels);
 
   bitmap_unlock_buffer(image);

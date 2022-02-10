@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  idle manager
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -77,6 +77,19 @@ uint32_t idle_add(idle_func_t on_idle, void* ctx);
 ret_t idle_queue(idle_func_t on_idle, void* ctx);
 
 /**
+ * @method idle_queue_ex
+ * 用于非GUI线程增加一个idle，本函数向主循环的事件队列中发送一个增加idle的请求。
+ * @annotation ["static"]
+ * @param {idle_func_t} on_idle idle回调函数。
+ * @param {void*} ctx idle回调函数的上下文。
+ * @param {tk_destroy_t} on_destroy 回调函数。
+ * @param {void*} on_destroy_ctx 回调函数上下文。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t idle_queue_ex(idle_func_t on_idle, void* ctx, tk_destroy_t on_destroy, void* on_destroy_ctx);
+
+/**
  * @method idle_remove
  * 删除指定的idle。
  * @annotation ["scriptable", "static"]
@@ -87,9 +100,18 @@ ret_t idle_queue(idle_func_t on_idle, void* ctx);
 ret_t idle_remove(uint32_t idle_id);
 
 /**
+ * @method idle_remove_all_by_ctx
+ * 根据上下文删除所有对应的idle。
+ * @annotation ["scriptable", "static"]
+ * @param {void*} ctx idle回调函数的上下文
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t idle_remove_all_by_ctx(void* ctx);
+
+/**
  * @method idle_find
  * 查找指定ID的idle。
- * @annotation ["private"]
  *
  * @return {idle_info_t*} 返回idle的信息。
  */
@@ -125,6 +147,8 @@ uint32_t idle_count(void);
 
 /*internal use*/
 bool_t idle_exist(idle_func_t on_idle, void* ctx);
+ret_t idle_remove_all_by_ctx_and_type(uint32_t type, void* ctx);
+uint32_t idle_add_with_type(idle_func_t on_idle, void* ctx, uint32_t type);
 
 END_C_DECLS
 

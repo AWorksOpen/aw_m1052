@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  generic value type
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -114,7 +114,7 @@ typedef enum _value_type_t {
   VALUE_TYPE_WSTRING,
   /**
    * @const VALUE_TYPE_OBJECT
-   * object_t*类型。
+   * tk_object_t*类型。
    */
   VALUE_TYPE_OBJECT,
   /**
@@ -137,6 +137,11 @@ typedef enum _value_type_t {
    * 特殊用途。
    */
   VALUE_TYPE_TOKEN,
+  /**
+   * @const VALUE_TYPE_GRADIENT
+   * 渐变颜色。
+   */
+  VALUE_TYPE_GRADIENT,
 } value_type_t;
 
 typedef struct _binary_data_t {
@@ -168,7 +173,6 @@ typedef struct _sized_str_t {
 struct _value_t {
   uint32_t type : 8;
   uint32_t free_handle : 1;
-
   union {
     int8_t i8;
     uint8_t u8;
@@ -186,7 +190,7 @@ struct _value_t {
     void* ptr;
     const char* str;
     const wchar_t* wstr;
-    object_t* object;
+    tk_object_t* object;
     binary_data_t binary_data;
     sized_str_t sized_str;
   } value;
@@ -476,7 +480,6 @@ value_t* value_set_str(value_t* v, const char* value);
  * @method value_dup_str
  * 设置类型为字符串的值(并拷贝字符串)。
  *
- * > 供脚本语言使用。
  * @alias value_set_str
  * @annotation ["scriptable"]
  * @param {value_t*} v     value对象。
@@ -485,6 +488,18 @@ value_t* value_set_str(value_t* v, const char* value);
  * @return {value_t*} value对象本身。
  */
 value_t* value_dup_str(value_t* v, const char* value);
+
+/**
+ * @method value_dup_str_with_len
+ * 设置类型为字符串的值(并拷贝字符串)。
+ *
+ * @param {value_t*} v     value对象。
+ * @param {const char*}   value 待设置的值。
+ * @param {uint32_t} len 长度。
+ *
+ * @return {value_t*} value对象本身。
+ */
+value_t* value_dup_str_with_len(value_t* v, const char* value, uint32_t len);
 
 /**
  * @method value_set_wstr
@@ -505,6 +520,18 @@ value_t* value_set_wstr(value_t* v, const wchar_t* value);
  * @return {const char*} 值。
  */
 const char* value_str(const value_t* v);
+
+/**
+ * @method value_str_ex
+ * 获取类型为字符串的值。
+ * @annotation ["scriptable"]
+ * @param {value_t*} v value对象。
+ * @param {char*} buff 用于格式转换的缓冲区。
+ * @param {uint32_t} size 缓冲区大小。
+ *
+ * @return {const char*} 值。
+ */
+const char* value_str_ex(const value_t* v, char* buff, uint32_t size);
 
 /**
  * @method value_wstr
@@ -560,11 +587,11 @@ value_t* value_set_int(value_t* v, int32_t value);
  * 设置类型为object的值。
  * @annotation ["scriptable"]
  * @param {value_t*} v  value对象。
- * @param {object_t*}  value 待设置的值。
+ * @param {tk_object_t*}  value 待设置的值。
  *
  * @return {value_t*} value对象本身。
  */
-value_t* value_set_object(value_t* v, object_t* value);
+value_t* value_set_object(value_t* v, tk_object_t* value);
 
 /**
  * @method value_object
@@ -572,9 +599,9 @@ value_t* value_set_object(value_t* v, object_t* value);
  * @annotation ["scriptable"]
  * @param {value_t*} v value对象。
  *
- * @return {object_t*} 值。
+ * @return {tk_object_t*} 值。
  */
-object_t* value_object(const value_t* v);
+tk_object_t* value_object(const value_t* v);
 
 /**
  * @method value_set_token
@@ -629,6 +656,17 @@ sized_str_t* value_sized_str(const value_t* v);
 value_t* value_set_binary_data(value_t* v, void* data, uint32_t size);
 
 /**
+ * @method value_dup_binary_data
+ * 设置类型为binary_data的值(复制数据)。
+ * @param {value_t*} v  value对象。
+ * @param {const void*}  value 待设置的值。
+ * @param {uint32_t}  size 长度。
+ *
+ * @return {value_t*} value对象本身。
+ */
+value_t* value_dup_binary_data(value_t* v, const void* data, uint32_t size);
+
+/**
  * @method value_binary_data
  * 获取为binary_data的值。
  * @param {value_t*} v value对象。
@@ -656,6 +694,26 @@ value_t* value_set_ubjson(value_t* v, void* data, uint32_t size);
  * @return {binary_data_t*} 值。
  */
 binary_data_t* value_ubjson(const value_t* v);
+
+/**
+ * @method value_set_gradient
+ * 设置类型为gradient的值。
+ * @param {value_t*} v  value对象。
+ * @param {void*}  value 待设置的值。
+ * @param {uint32_t}  size 长度。
+ *
+ * @return {value_t*} value对象本身。
+ */
+value_t* value_set_gradient(value_t* v, void* data, uint32_t size);
+
+/**
+ * @method value_gradient
+ * 获取为gradient的值。
+ * @param {value_t*} v value对象。
+ *
+ * @return {binary_data_t*} 值。
+ */
+binary_data_t* value_gradient(const value_t* v);
 
 /**
  * @method value_copy
@@ -717,6 +775,16 @@ ret_t value_reset(value_t* v);
  * @return {value_t*} 对象。
  */
 value_t* value_cast(value_t* value);
+
+/**
+ * @method value_type_size
+ * 获取指定类型数据大小。
+ * @annotation ["static"]
+ * @param {value_type_t} type 类型。
+ *
+ * @return {uint32_t} 返回对应数据类型的长度。
+ */
+uint32_t value_type_size(value_type_t type);
 
 END_C_DECLS
 

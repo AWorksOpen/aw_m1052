@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  file manager/browser/choosor
  *
- * Copyright (c) 2020 - 2020 Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2020 - 2021 Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -34,6 +34,16 @@
 #endif /*FB_DATE_TIME_FORMAT*/
 
 ret_t file_browser_view_reload(widget_t* widget);
+
+ret_t file_browser_view_set_top_dir(widget_t* widget, const char* top_dir) {
+  file_browser_view_t* file_browser_view = FILE_BROWSER_VIEW(widget);
+  return_value_if_fail(file_browser_view != NULL, RET_BAD_PARAMS);
+
+  file_browser_view->top_dir = tk_str_copy(file_browser_view->top_dir, top_dir);
+  file_browser_set_top_dir(file_browser_view->fb, top_dir);
+
+  return RET_OK;
+}
 
 ret_t file_browser_view_set_init_dir(widget_t* widget, const char* init_dir) {
   file_browser_view_t* file_browser_view = FILE_BROWSER_VIEW(widget);
@@ -66,9 +76,12 @@ ret_t file_browser_view_set_filter(widget_t* widget, const char* filter) {
 }
 
 static ret_t file_browser_view_sync_sort(widget_t* widget) {
+  const char* sort_by = NULL;
+  bool_t sort_ascending = FALSE;
   file_browser_view_t* file_browser_view = FILE_BROWSER_VIEW(widget);
-  const char* sort_by = file_browser_view->sort_by;
-  bool_t sort_ascending = file_browser_view->sort_ascending;
+  return_value_if_fail(file_browser_view != NULL, RET_BAD_PARAMS);
+  sort_by = file_browser_view->sort_by;
+  sort_ascending = file_browser_view->sort_ascending;
 
   if (sort_by != NULL) {
     if (tk_str_eq(sort_by, SORT_BY_NAME)) {
@@ -132,6 +145,9 @@ static ret_t file_browser_view_get_prop(widget_t* widget, const char* name, valu
   if (tk_str_eq(FILE_BROWSER_VIEW_PROP_INIT_DIR, name)) {
     value_set_str(v, file_browser_view->init_dir);
     return RET_OK;
+  } else if (tk_str_eq(FILE_BROWSER_VIEW_PROP_TOP_DIR, name)) {
+    value_set_str(v, file_browser_view->top_dir);
+    return RET_OK;
   } else if (tk_str_eq(FILE_BROWSER_VIEW_PROP_IGNORE_HIDDEN_FILES, name)) {
     file_browser_view_set_ignore_hidden_files(widget, value_bool(v));
     return RET_OK;
@@ -154,6 +170,9 @@ static ret_t file_browser_view_set_prop(widget_t* widget, const char* name, cons
 
   if (tk_str_eq(FILE_BROWSER_VIEW_PROP_INIT_DIR, name)) {
     file_browser_view_set_init_dir(widget, value_str(v));
+    return RET_OK;
+  } else if (tk_str_eq(FILE_BROWSER_VIEW_PROP_TOP_DIR, name)) {
+    file_browser_view_set_top_dir(widget, value_str(v));
     return RET_OK;
   } else if (tk_str_eq(FILE_BROWSER_VIEW_PROP_IGNORE_HIDDEN_FILES, name)) {
     file_browser_view_set_ignore_hidden_files(widget, value_bool(v));
@@ -179,6 +198,7 @@ static ret_t file_browser_view_on_destroy(widget_t* widget) {
   TKMEM_FREE(file_browser_view->filter);
   TKMEM_FREE(file_browser_view->sort_by);
   TKMEM_FREE(file_browser_view->init_dir);
+  TKMEM_FREE(file_browser_view->top_dir);
   file_browser_destroy(file_browser_view->fb);
 
   widget_destroy(file_browser_view->file_template);
@@ -207,39 +227,51 @@ static ret_t file_browser_view_reload_in_idle(const idle_info_t* info) {
 }
 
 static ret_t file_browser_view_on_item_clicked(void* ctx, event_t* e) {
+  value_change_event_t changed;
   widget_t* target = WIDGET(e->target);
   file_browser_view_t* file_browser_view = FILE_BROWSER_VIEW(ctx);
+  return_value_if_fail(target != NULL && file_browser_view != NULL, RET_BAD_PARAMS);
 
   if (tk_str_eq(target->name, FILE_BROWSER_VIEW_RETURN_UP)) {
     file_browser_up(file_browser_view->fb);
-    idle_add(file_browser_view_reload_in_idle, file_browser_view);
+    widget_add_idle(WIDGET(file_browser_view), file_browser_view_reload_in_idle);
   } else if (tk_str_eq(target->name, FILE_BROWSER_VIEW_FOLDER)) {
     uint32_t index = widget_index_of(target);
     fb_item_t* info = file_browser_get_item(file_browser_view->fb, index - 1);
+    return_value_if_fail(info != NULL, RET_FAIL);
 
     file_browser_enter(file_browser_view->fb, info->name);
-    idle_add(file_browser_view_reload_in_idle, file_browser_view);
+    widget_add_idle(WIDGET(file_browser_view), file_browser_view_reload_in_idle);
   } else {
     uint32_t index = widget_index_of(target);
     fb_item_t* info = file_browser_get_item(file_browser_view->fb, index - 1);
+    return_value_if_fail(info != NULL, RET_FAIL);
 
     if (file_browser_view->selected_file != NULL) {
       widget_set_text_utf8(file_browser_view->selected_file, info->name);
     }
   }
 
-  widget_dispatch_simple_event(WIDGET(ctx), EVT_VALUE_CHANGED);
+  value_change_event_init(&changed, EVT_VALUE_CHANGED, ctx);
+  value_set_str(&(changed.new_value), file_browser_view->fb->cwd);
+  widget_dispatch(WIDGET(ctx), (event_t*)&changed);
+
+  log_debug("cwd: %s\n", value_str(&(changed.new_value)));
 
   return RET_OK;
 }
 
 static ret_t file_browser_view_recycle_items(widget_t* widget) {
+  widget_t* container = NULL;
+  darray_t* file_items_cache = NULL;
+  darray_t* folder_items_cache = NULL;
   file_browser_view_t* file_browser_view = FILE_BROWSER_VIEW(widget);
-  widget_t* container = file_browser_view->container;
-  darray_t* file_items_cache = &(file_browser_view->file_items_cache);
-  darray_t* folder_items_cache = &(file_browser_view->folder_items_cache);
+  return_value_if_fail(file_browser_view != NULL, RET_BAD_PARAMS);
+  container = file_browser_view->container;
+  file_items_cache = &(file_browser_view->file_items_cache);
+  folder_items_cache = &(file_browser_view->folder_items_cache);
 
-  if (container->children != NULL) {
+  if (container != NULL && container->children != NULL) {
     WIDGET_FOR_EACH_CHILD_BEGIN(container, iter, i)
     widget_remove_child_prepare(container, iter);
     if (tk_str_eq(iter->name, FILE_BROWSER_VIEW_FILE)) {
@@ -257,9 +289,12 @@ static ret_t file_browser_view_recycle_items(widget_t* widget) {
 
 static widget_t* file_browser_view_create_file_item(widget_t* widget) {
   widget_t* item = NULL;
+  darray_t* cache = NULL;
+  widget_t* container = NULL;
   file_browser_view_t* file_browser_view = FILE_BROWSER_VIEW(widget);
-  widget_t* container = file_browser_view->container;
-  darray_t* cache = &(file_browser_view->file_items_cache);
+  return_value_if_fail(file_browser_view != NULL, NULL);
+  container = file_browser_view->container;
+  cache = &(file_browser_view->file_items_cache);
 
   if (cache->size > 0) {
     item = WIDGET(darray_pop(cache));
@@ -274,9 +309,12 @@ static widget_t* file_browser_view_create_file_item(widget_t* widget) {
 
 static widget_t* file_browser_view_create_folder_item(widget_t* widget) {
   widget_t* item = NULL;
+  darray_t* cache = NULL;
+  widget_t* container = NULL;
   file_browser_view_t* file_browser_view = FILE_BROWSER_VIEW(widget);
-  widget_t* container = file_browser_view->container;
-  darray_t* cache = &(file_browser_view->folder_items_cache);
+  return_value_if_fail(file_browser_view != NULL, NULL);
+  container = file_browser_view->container;
+  cache = &(file_browser_view->folder_items_cache);
 
   if (cache->size > 0) {
     item = WIDGET(darray_pop(cache));
@@ -294,8 +332,8 @@ ret_t file_browser_view_reload(widget_t* widget) {
   widget_t* item = NULL;
   widget_t* item_child = NULL;
   file_browser_view_t* file_browser_view = FILE_BROWSER_VIEW(widget);
-  widget_t* container = file_browser_view->container;
-  return_value_if_fail(container != NULL, RET_BAD_PARAMS);
+  widget_t* container = file_browser_view != NULL ? file_browser_view->container : NULL;
+  return_value_if_fail(container != NULL && file_browser_view != NULL, RET_BAD_PARAMS);
 
   file_browser_view_recycle_items(widget);
 
@@ -366,6 +404,7 @@ static ret_t file_browser_view_init_ui(widget_t* widget) {
   widget_t* template = NULL;
   widget_t* container = NULL;
   file_browser_view_t* file_browser_view = FILE_BROWSER_VIEW(widget);
+  return_value_if_fail(file_browser_view != NULL, RET_BAD_PARAMS);
 
   container = widget_lookup(widget, FILE_BROWSER_VIEW_CONTAINER, TRUE);
   return_value_if_fail(container != NULL, RET_BAD_PARAMS);
@@ -453,9 +492,13 @@ ret_t file_browser_view_register(void) {
 }
 
 darray_t* file_browser_view_get_selected_items(widget_t* widget) {
+  darray_t* arr = NULL;
+  widget_t* container = NULL;
   file_browser_view_t* file_browser_view = FILE_BROWSER_VIEW(widget);
-  widget_t* container = file_browser_view->container;
-  darray_t* arr = &(file_browser_view->selected_items);
+  return_value_if_fail(file_browser_view != NULL, NULL);
+
+  container = file_browser_view->container;
+  arr = &(file_browser_view->selected_items);
 
   darray_clear(arr);
 

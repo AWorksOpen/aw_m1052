@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  image manager
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -58,6 +58,10 @@ struct _image_manager_t {
    * 资源管理器。
    */
   assets_manager_t* assets_manager;
+
+  /*private*/
+  uint32_t mem_size_of_cached_images;
+  uint32_t max_mem_size_of_cached_images;
 };
 
 /**
@@ -98,6 +102,16 @@ image_manager_t* image_manager_create(void);
 image_manager_t* image_manager_init(image_manager_t* imm);
 
 /**
+ * @method image_manager_set_max_mem_size_of_cached_images
+ * 设置图片缓存占用的最大内存。
+ * @param {image_manager_t*} imm 图片管理器对象。
+ * @param {uint32_t} max_mem_size 最大缓存内存(字节数)。 
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t image_manager_set_max_mem_size_of_cached_images(image_manager_t* imm, uint32_t max_mem_size);
+
+/**
  * @method image_manager_get_bitmap
  * 获取指定的图片。
  * 先从缓存查找，如果没找到，再加载并缓存。
@@ -121,6 +135,16 @@ ret_t image_manager_get_bitmap(image_manager_t* imm, const char* name, bitmap_t*
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t image_manager_preload(image_manager_t* imm, const char* name);
+
+/**
+ * @method image_manager_has_bitmap
+ * 图片是否在图片管理中。
+ * @param {image_manager_t*} imm 图片管理器对象。
+ * @param {bitmap_t*} image 图片。
+ *
+ * @return {bool_t} 返回TRUE表示存在，否则表示不存在。
+ */
+bool_t image_manager_has_bitmap(image_manager_t* imm, bitmap_t* image);
 
 /**
  * @method image_manager_unload_unused

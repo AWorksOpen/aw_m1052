@@ -1,4 +1,5 @@
-﻿#include "tkc/utf8.h"
+﻿#include "tkc/mem.h"
+#include "tkc/utf8.h"
 #include "gtest/gtest.h"
 
 TEST(Utf8, ascii) {
@@ -33,7 +34,8 @@ static void dump_unicode(const wchar_t* str) {
 }
 
 TEST(Utf8, chinese) {
-  const char* str = "中文";
+  /* 兼容非utf8编码的编译器，采用utf8编码初始化str，编码内容："中文" */
+  char str[7] = {(char)0xe4, (char)0xb8, (char)0xad, (char)0xe6, (char)0x96, (char)0x87, 0};
   const wchar_t* wstr = L"中文";
   char res_str[128];
   wchar_t res_wstr[128];
@@ -45,4 +47,47 @@ TEST(Utf8, chinese) {
 
   dump_utf8(res_str);
   dump_unicode(res_wstr);
+}
+
+TEST(Utf8, dup) {
+  /* 兼容非utf8编码的编译器，采用utf8编码初始化str，编码内容："中文" */
+  char str[7] = {(char)0xe4, (char)0xb8, (char)0xad, (char)0xe6, (char)0x96, (char)0x87, 0};
+  const wchar_t* wstr = L"中文";
+
+  char* text = tk_utf8_dup_utf16(wstr, -1);
+  ASSERT_STREQ(str, text);
+  TKMEM_FREE(text);
+}
+
+TEST(Utf8, trim_invalid) {
+  char text[32] = {0};
+  /* 兼容非utf8编码的编译器，采用utf8编码初始化str，编码内容："中"、"中文" */
+  char s[4] = {(char)0xe4, (char)0xb8, (char)0xad, 0};
+  char str[7] = {(char)0xe4, (char)0xb8, (char)0xad, (char)0xe6, (char)0x96, (char)0x87, 0};
+
+  memset(text, 0x00, sizeof(text));
+
+  strncpy(text, str, 1);
+  ASSERT_STREQ(tk_utf8_trim_invalid_char(text), "");
+
+  strncpy(text, str, 2);
+  ASSERT_STREQ(tk_utf8_trim_invalid_char(text), "");
+
+  strncpy(text, str, 3);
+  ASSERT_STREQ(tk_utf8_trim_invalid_char(text), s);
+
+  strncpy(text, str, 4);
+  ASSERT_STREQ(tk_utf8_trim_invalid_char(text), s);
+
+  strncpy(text, str, 5);
+  ASSERT_STREQ(tk_utf8_trim_invalid_char(text), s);
+
+  strncpy(text, str, 6);
+  ASSERT_STREQ(tk_utf8_trim_invalid_char(text), str);
+
+  strncpy(text, str, 7);
+  ASSERT_STREQ(tk_utf8_trim_invalid_char(text), str);
+
+  strncpy(text, "abc", 4);
+  ASSERT_STREQ(tk_utf8_trim_invalid_char(text), "abc");
 }

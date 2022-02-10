@@ -4,10 +4,10 @@
 #define     CODE_START              0x80002000  /* code start address */
 #define     CODE_SIZE               0x3FE000    /* code size: 4088K */
 
-#define     DATA_START              0x20000000  /* data start address */
-#define     DATA_SIZE               0x7F000     /* code size: 512k */
+#define     DATA_START              0x80A00000  /* data start address */
+#define     DATA_SIZE               0xFE800     /* code size: 512k */
 
-#define     RELOAD_CODE_START       0x2007F000  /* reload code start address */
+#define     RELOAD_CODE_START       0x80AFF000  /* reload code start address */
 #define     RELOAD_CODE_SIZE        0x1000      /* reload code size: 4k */
 
 #define     STACK_START             DATA_START  /* stack start address */

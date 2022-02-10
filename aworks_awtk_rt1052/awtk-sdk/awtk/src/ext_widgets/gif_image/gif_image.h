@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  gif_image
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -79,6 +79,22 @@ BEGIN_C_DECLS
 typedef struct _gif_image_t {
   image_base_t image_base;
 
+  /**
+   * @property {bool_t} running
+   * @annotation ["readable"]
+   * 是否正在运行。
+   *
+   */
+  bool_t running;
+
+  /**
+   * @property {uint32_t} loop
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 循环播放的次数。
+   *
+   */
+  uint32_t loop;
+
   /*private*/
   uint32_t index;
   uint32_t delay;
@@ -98,6 +114,47 @@ typedef struct _gif_image_t {
  * @return {widget_t*} 对象。
  */
 widget_t* gif_image_create(widget_t* parent, xy_t x, xy_t y, wh_t w, wh_t h);
+
+/**
+ * @method gif_image_play
+ * 播放。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget gif_image对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t gif_image_play(widget_t* widget);
+
+/**
+ * @method gif_image_stop
+ * 停止(并重置index为-1)。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget gif_image对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t gif_image_stop(widget_t* widget);
+
+/**
+ * @method gif_image_pause
+ * 暂停。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget gif_image对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t gif_image_pause(widget_t* widget);
+
+/**
+ * @method gif_image_set_loop
+ * 设置循环播放次数。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget 控件对象。
+ * @param {uint32_t} loop 循环播放次数。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t gif_image_set_loop(widget_t* widget, uint32_t loop);
 
 /**
  * @method gif_image_cast

@@ -14,6 +14,7 @@ EXPORTS
     usb_camera_close_device
     usb_camera_get_video_image_data
     usb_camera_prepare_image_fun
+    usb_camera_prepare_image_create_image_fun
     usb_camera_devices_info_list_destroy
     usb_camera_devices_info_list_compare
     usb_camera_device_ratio_list_destroy

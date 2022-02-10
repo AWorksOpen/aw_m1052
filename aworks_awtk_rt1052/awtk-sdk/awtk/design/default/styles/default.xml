@@ -89,12 +89,14 @@
   <style name="scroll_down" border_color="#a0a0a0">
     <normal     bg_color="#f0f0f0" icon="arrow_down_n"/>
     <pressed    bg_color="#c0c0c0" icon="arrow_down_p"/>
+    <disable    bg_color="gray" icon="arrow_down_p"/>
     <over       bg_color="#e0e0e0" icon="arrow_down_o"/>
   </style>
 
   <style name="scroll_up" border_color="#a0a0a0">
     <normal     bg_color="#f0f0f0" icon="arrow_up_n"/>
     <pressed    bg_color="#c0c0c0" icon="arrow_up_p"/>
+    <disable    bg_color="gray" icon="arrow_up_p"/>
     <over       bg_color="#e0e0e0" icon="arrow_up_o"/>
   </style>
   
@@ -112,6 +114,15 @@
 </button>
 
 <edit selected_fg_color="#020202" selected_text_color="#010101" selected_bg_color="#b5d7fd">
+  <style name="bidi" border_color="#a0a0a0"  text_color="black" text_align_h="left" font_name="trado">
+    <normal     bg_color="#f0f0f0" />
+    <focused    bg_color="#f0f0f0" border_color="black"/>
+    <disable    bg_color="gray" text_color="#d0d0d0" />
+    <changed    bg_color="#f0f0f0" text_color="#ee0000" />
+    <error      bg_color="#f0f0f0" text_color="red" />
+    <empty      bg_color="#f0f0f0" text_color="#a0a0a0" />
+    <empty_focus bg_color="#f0f0f0" text_color="#a0a0a0" border_color="black"/>
+  </style>
   <style name="default" border_color="#a0a0a0"  text_color="black" text_align_h="left">
     <normal     bg_color="#f0f0f0" />
     <focused    bg_color="#f0f0f0" border_color="black"/>
@@ -171,6 +182,10 @@
     <normal text_color="green" />
   </style>
 
+  <style name="white">
+    <normal text_color="white" />
+  </style>
+
   <style name="left">
     <normal text_color="red" text_align_h="left" border_color="#a0a0a0" margin="4" />
   </style>
@@ -204,6 +219,11 @@
 <progress_bar>
   <style name="default">
     <normal text_color="gold" bg_color="#c0c0c0" fg_color="green" border_color="#333333"/>
+  </style>
+
+  <style name="blue" round_radius="5">
+    <normal text_color="#444444" bg_color="#d8d8d8" fg_color="#338fff" border_color="#d8d8d8"/>
+    <disable text_color="#44444466" bg_color="#d8d8d866" fg_color="#338fff66" border_color="#d8d8d866"/>
   </style>
   
   <style name="round">
@@ -245,6 +265,12 @@
     <normal icon="slider_drag"/>
     <pressed icon="slider_drag_p"/>
     <over icon="slider_drag_o"/>
+  </style>
+
+  <style name="img_slider"  bg_image="img_slider_bg" fg_image="img_slider_fg" bg_image_draw_type="default" fg_image_draw_type="default">
+    <normal icon="img_slider_icon"/>
+    <pressed icon="img_slider_icon"/>
+    <over icon="img_slider_icon"/>
   </style>
 </slider>
 
@@ -404,6 +430,7 @@
   <style name="default" border_color="gray">
     <normal bg_color="#f0f0f0"/>
     <over bg_color="#f0f0f0" />
+    <disable bg_color="gray" />
     <pressed bg_color="#f0f0f0" />
   </style>
 </scroll_bar_d>
@@ -447,6 +474,11 @@
     <pressed />
     <over  />
   </style>
+  <style name="border" border_color="#a0a0a0">
+    <normal  />
+    <pressed />
+    <over  />
+  </style>
 </list_item>
 
 <tab_button>
@@ -471,7 +503,7 @@
 </tab_button_group>
 
 <combo_box>
-  <style name="default" border_color="#a0a0a0"  text_color="black" text_align_h="left">
+  <style name="default" border_color="#a0a0a0"  text_color="black" text_align_h="left" margin_left="4" margin_right="30">
     <normal     bg_color="#f0f0f0" />
     <focused    bg_color="#f0f0f0" border_color="black"/>
     <disable    bg_color="gray" text_color="#d0d0d0" />
@@ -481,7 +513,7 @@
 </combo_box>
 
 <combo_box_ex>
-  <style name="default" border_color="#a0a0a0"  text_color="black" text_align_h="left">
+  <style name="default" border_color="#a0a0a0"  text_color="black" text_align_h="left" margin_left="4" margin_right="30">
     <normal     bg_color="#f0f0f0" />
     <focused    bg_color="#f0f0f0" border_color="black"/>
     <disable    bg_color="gray" text_color="#d0d0d0" />
@@ -507,8 +539,11 @@
   <style name="default" fg_color="#a0a0a0"  text_color="black" text_align_h="center">
     <normal     bg_color="#f0f0f0"/>
   </style>
-  <style name="dark" fg_color="#a0a0a0"  text_color="black" text_align_h="center">
-    <normal     bg_color="#ffffff" mask_color="#404040" border_color="#404040"/>
+  <style name="dark"  text_color="black" text_color="black" text_align_h="center">
+    <normal   highlight_font_size="30" highlight_text_color="#00ff00" bg_color="#ffffff" mask_color="#404040" border_color="#404040"/>
+  </style>
+ <style name="image" fg_image="text_selector_border" text_color="black" text_align_h="center">
+    <normal    highlight_font_size="30" highlight_text_color="#00ff00"  bg_color="#ffffff"  border_color="#404040"/>
   </style>
 </text_selector>
 
@@ -552,8 +587,11 @@
   <style name="default">
     <normal text_color="green" fg_color="black" />
   </style>
+  <style name="blue">
+    <normal text_color="white" bg_color="white" fg_color="#338fff" />
+  </style>
   <style name="image">
-    <normal text_color="gold" fg_image="progress_circle" />
+    <normal text_color="gold" bg_color="#00f6aa" fg_image="progress_circle" />
   </style>
 </progress_circle>
 

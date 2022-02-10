@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  native window sdl
  *
- * Copyright (c) 2019 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2019 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,7 +23,7 @@
 #include "base/system_info.h"
 #include "base/window_manager.h"
 
-#ifdef WITH_NANOVG_GL
+#ifdef WITH_GPU_GL
 #ifndef WITHOUT_GLAD
 #include "glad/glad.h"
 #define loadGL gladLoadGL
@@ -40,7 +40,7 @@
 #endif /*IOS*/
 #endif /*WITHOUT_GLAD*/
 
-#endif /*WITH_NANOVG_GL*/
+#endif /*WITH_GPU_GL*/
 
 #include "lcd/lcd_sdl2.h"
 #include "lcd/lcd_nanovg.h"
@@ -49,7 +49,7 @@
 
 typedef struct _native_window_sdl_t {
   native_window_t native_window;
-
+  bool_t is_init;
   SDL_GLContext context;
   SDL_Renderer* render;
   SDL_Window* window;
@@ -78,16 +78,19 @@ static ret_t native_window_sdl_move(native_window_t* win, xy_t x, xy_t y) {
 }
 
 static ret_t native_window_sdl_resize(native_window_t* win, wh_t w, wh_t h) {
+  lcd_t* lcd = NULL;
+  ret_t ret = RET_OK;
   native_window_info_t info;
   native_window_sdl_t* sdl = NATIVE_WINDOW_SDL(win);
-
+  return_value_if_fail(sdl != NULL, RET_BAD_PARAMS);
+  lcd = sdl->canvas.lcd;
   native_window_get_info(win, &info);
 
   win->rect.w = w;
   win->rect.h = h;
 
 #if !defined(ANDROID) && !defined(IOS)
-  if (system_info()->lcd_orientation == LCD_ORIENTATION_0 && (w != info.w || h != info.h)) {
+  if (w != info.w || h != info.h) {
 #ifdef WIN32
     w = w * win->ratio;
     h = h * win->ratio;
@@ -96,7 +99,30 @@ static ret_t native_window_sdl_resize(native_window_t* win, wh_t w, wh_t h) {
     SDL_SetWindowSize(sdl->window, w, h);
   }
 #endif /*ANDROID*/
+  if (lcd != NULL && (lcd->w != w || lcd->h != h)) {
+    ret = lcd_resize(lcd, w, h, 0);
+  }
 
+  return ret;
+}
+
+static ret_t native_window_sdl_set_orientation(native_window_t* win,
+                                               lcd_orientation_t old_orientation,
+                                               lcd_orientation_t new_orientation) {
+  wh_t w, h;
+  native_window_info_t info;
+  native_window_sdl_t* sdl = NATIVE_WINDOW_SDL(win);
+  return_value_if_fail(sdl != NULL, RET_BAD_PARAMS);
+  native_window_get_info(win, &info);
+  w = info.w;
+  h = info.h;
+  if (new_orientation == LCD_ORIENTATION_90 || new_orientation == LCD_ORIENTATION_270) {
+    w = info.h;
+    h = info.w;
+  }
+
+  win->rect.w = w;
+  win->rect.h = h;
   return RET_OK;
 }
 
@@ -163,17 +189,19 @@ static ret_t native_window_sdl_close(native_window_t* win) {
     SDL_DestroyRenderer(sdl->render);
   }
 
-  if (sdl->window != NULL) {
-    SDL_DestroyWindow(sdl->window);
-  }
-
   if (sdl->context != NULL) {
     SDL_GL_DeleteContext(sdl->context);
+  }
+
+  if (sdl->window != NULL) {
+    SDL_DestroyWindow(sdl->window);
   }
 
   sdl->render = NULL;
   sdl->window = NULL;
   sdl->context = NULL;
+
+  SDL_Quit();
 
   return RET_OK;
 }
@@ -185,7 +213,7 @@ static canvas_t* native_window_sdl_get_canvas(native_window_t* win) {
 }
 
 static ret_t native_window_sdl_gl_make_current(native_window_t* win) {
-#ifdef WITH_NANOVG_GL
+#ifdef WITH_GPU_GL
   int fw = 0;
   int fh = 0;
   native_window_sdl_t* sdl = NATIVE_WINDOW_SDL(win);
@@ -195,18 +223,21 @@ static ret_t native_window_sdl_gl_make_current(native_window_t* win) {
   SDL_GL_GetDrawableSize(window, &fw, &fh);
 
   glViewport(0, 0, fw, fh);
-  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-#endif /*WITH_NANOVG_GL*/
+  if (!sdl->is_init) {
+    sdl->is_init = TRUE;
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+  }
+#endif /*WITH_GPU_GL*/
   return RET_OK;
 }
 
 static ret_t native_window_sdl_swap_buffer(native_window_t* win) {
-#ifdef WITH_NANOVG_GL
+#ifdef WITH_GPU_GL
   native_window_sdl_t* sdl = NATIVE_WINDOW_SDL(win);
   SDL_GL_SwapWindow(sdl->window);
 #else
-#endif /*WITH_NANOVG_GL*/
+#endif /*WITH_GPU_GL*/
 
   return RET_OK;
 }
@@ -381,6 +412,7 @@ static const native_window_vtable_t s_native_window_vtable = {
     .type = "native_window_sdl",
     .move = native_window_sdl_move,
     .resize = native_window_sdl_resize,
+    .set_orientation = native_window_sdl_set_orientation,
     .minimize = native_window_sdl_minimize,
     .maximize = native_window_sdl_maximize,
     .restore = native_window_sdl_restore,
@@ -394,7 +426,7 @@ static const native_window_vtable_t s_native_window_vtable = {
     .set_cursor = native_window_sdl_set_cursor,
     .get_canvas = native_window_sdl_get_canvas};
 
-static ret_t native_window_sdl_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t native_window_sdl_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   native_window_t* win = NATIVE_WINDOW(obj);
 
   if (tk_str_eq(NATIVE_WINDOW_PROP_SIZE, name)) {
@@ -407,12 +439,18 @@ static ret_t native_window_sdl_set_prop(object_t* obj, const char* name, const v
     native_window_sdl_move(win, r->x, r->y);
 
     return RET_OK;
+  } else if (tk_str_eq(NATIVE_WINDOW_PROP_TITLE, name)) {
+    SDL_Window* sdlwin = (SDL_Window*)(win->handle);
+    const char* app_name = value_str(v);
+    SDL_SetWindowTitle(sdlwin, app_name);
+    system_info_set_app_name(system_info(), app_name);
+    return RET_OK;
   }
 
   return RET_NOT_FOUND;
 }
 
-static ret_t native_window_sdl_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t native_window_sdl_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   native_window_t* win = NATIVE_WINDOW(obj);
 
   if (tk_str_eq(NATIVE_WINDOW_PROP_SIZE, name) || tk_str_eq(NATIVE_WINDOW_PROP_POSITION, name)) {
@@ -433,15 +471,15 @@ static ret_t native_window_sdl_get_prop(object_t* obj, const char* name, value_t
   return RET_NOT_FOUND;
 }
 
-static ret_t native_window_sdl_on_destroy(object_t* obj) {
+static ret_t native_window_sdl_on_destroy(tk_object_t* obj) {
   log_debug("Close native window.\n");
   native_window_sdl_close(NATIVE_WINDOW(obj));
 
   return RET_OK;
 }
 
-static ret_t native_window_sdl_exec(object_t* obj, const char* cmd, const char* args) {
-#ifdef WITH_NANOVG_GPU
+static ret_t native_window_sdl_exec(tk_object_t* obj, const char* cmd, const char* args) {
+#ifdef WITH_GPU
   native_window_sdl_t* sdl = NATIVE_WINDOW_SDL(obj);
   if (tk_str_eq(cmd, "reset_canvas")) {
     canvas_t* c = &(sdl->canvas);
@@ -451,7 +489,7 @@ static ret_t native_window_sdl_exec(object_t* obj, const char* cmd, const char* 
 
     return RET_OK;
   }
-#endif /*WITH_NANOVG_GPU*/
+#endif /*WITH_GPU*/
 
   return RET_NOT_FOUND;
 }
@@ -469,14 +507,16 @@ static native_window_t* native_window_create_internal(const char* title, uint32_
                                                       int32_t y, uint32_t w, uint32_t h) {
   lcd_t* lcd = NULL;
   native_window_info_t info;
-  object_t* obj = object_create(&s_native_window_sdl_vtable);
+  tk_object_t* obj = tk_object_create(&s_native_window_sdl_vtable);
   native_window_t* win = NATIVE_WINDOW(obj);
   native_window_sdl_t* sdl = NATIVE_WINDOW_SDL(win);
   canvas_t* c = &(sdl->canvas);
 
+#ifndef NATIVE_WINDOW_NOT_RESIZABLE
   if (system_info()->app_type == APP_DESKTOP) {
     flags |= SDL_WINDOW_RESIZABLE;
   }
+#endif /*NATIVE_WINDOW_NOT_RESIZABLE*/
 
 #ifndef WITH_NANOVG_SOFT
   flags |= SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
@@ -491,12 +531,15 @@ static native_window_t* native_window_create_internal(const char* title, uint32_
 #ifdef WITH_NANOVG_SOFT
   sdl->render =
       SDL_CreateRenderer(sdl->window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
+  if (sdl->render == NULL) {
+    sdl->render = SDL_CreateRenderer(sdl->window, -1, SDL_RENDERER_SOFTWARE);
+  }
 #endif /*WITH_NANOVG_SOFT*/
 
   win->handle = sdl->window;
   win->vt = &s_native_window_vtable;
 
-#ifdef WITH_NANOVG_GL
+#ifdef WITH_GPU_GL
   sdl->context = SDL_GL_CreateContext(sdl->window);
   SDL_GL_SetSwapInterval(1);
 
@@ -505,7 +548,7 @@ static native_window_t* native_window_create_internal(const char* title, uint32_
   glDisable(GL_ALPHA_TEST);
   glDisable(GL_DEPTH_TEST);
   glDisable(GL_SCISSOR_TEST);
-#endif /*WITH_NANOVG_GL*/
+#endif /*WITH_GPU_GL*/
 
   if (native_window_get_info(win, &info) == RET_OK) {
     w = info.w;
@@ -518,7 +561,7 @@ static native_window_t* native_window_create_internal(const char* title, uint32_
 #else
 #ifdef WITH_NANOVG_SOFT
   lcd = lcd_sdl2_init(sdl->render);
-#else
+#elif WITH_NANOVG_GPU
   lcd = lcd_nanovg_init(win);
 #endif /*WITH_NANOVG_SOFT*/
 #endif /*WITH_LCD_MONO*/
@@ -536,7 +579,7 @@ native_window_t* native_window_create(widget_t* widget) {
   native_window_t* nw = NULL;
 
   if (s_shared_win != NULL) {
-    object_ref(OBJECT(s_shared_win));
+    tk_object_ref(TK_OBJECT(s_shared_win));
 
     nw = s_shared_win;
   } else {
@@ -553,7 +596,7 @@ native_window_t* native_window_create(widget_t* widget) {
   return nw;
 }
 
-#ifdef WITH_NANOVG_GL
+#ifdef WITH_GPU_GL
 static ret_t sdl_init_gl(void) {
   SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
   SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
@@ -563,10 +606,10 @@ static ret_t sdl_init_gl(void) {
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
   SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
 
-#ifdef WITH_NANOVG_GL2
+#ifdef WITH_GPU_GL2
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-#elif defined(WITH_NANOVG_GL3)
+#elif defined(WITH_GPU_GL3)
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -576,20 +619,21 @@ static ret_t sdl_init_gl(void) {
   log_debug("Init opengl done.\n");
   return RET_OK;
 }
-#endif /*WITH_NANOVG_GL*/
+#endif /*WITH_GPU_GL*/
 
 ret_t native_window_sdl_init(bool_t shared, uint32_t w, uint32_t h) {
   const char* title = system_info()->app_name;
 
+  SDL_SetHint(SDL_HINT_VIDEO_ALLOW_SCREENSAVER, "1");
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_AUDIO) != 0) {
     log_debug("Failed to initialize SDL: %s", SDL_GetError());
     exit(0);
     return RET_FAIL;
   }
 
-#ifdef WITH_NANOVG_GL
+#ifdef WITH_GPU_GL
   sdl_init_gl();
-#endif /*WITH_NANOVG_GL*/
+#endif /*WITH_GPU_GL*/
 
   SDL_StopTextInput();
   if (shared) {
@@ -604,11 +648,16 @@ ret_t native_window_sdl_init(bool_t shared, uint32_t w, uint32_t h) {
 
 ret_t native_window_sdl_deinit(void) {
   if (s_shared_win != NULL) {
-    object_unref(OBJECT(s_shared_win));
+    native_window_sdl_t* sdl = NATIVE_WINDOW_SDL(s_shared_win);
+
+    if (sdl->cursor_surface != NULL) {
+      SDL_FreeSurface(sdl->cursor_surface);
+      sdl->cursor_surface = NULL;
+    }
+
+    tk_object_unref(TK_OBJECT(s_shared_win));
     s_shared_win = NULL;
   }
-
-  SDL_Quit();
 
   return RET_OK;
 }

@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  svg to  bsvg
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -80,6 +80,11 @@ static void svg_init_shape(bsvg_builder_t* svg, svg_shape_t* shape, const char**
   while (attrs[i] != NULL) {
     const char* k = attrs[i];
     const char* v = attrs[i + 1];
+
+    if (v == NULL) {
+      break;
+    }
+
     if (tk_str_eq(k, "stroke-linecap")) {
       shape->line_cap = v[0];
     } else if (tk_str_eq(k, "stroke-linejoin")) {

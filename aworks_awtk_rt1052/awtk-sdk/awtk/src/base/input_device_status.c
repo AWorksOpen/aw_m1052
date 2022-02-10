@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  input device status
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -60,6 +60,20 @@ static bool_t input_device_status_has_pressed_key(input_device_status_t* ids) {
   return FALSE;
 }
 
+ret_t input_device_status_abort_all_pressed_keys(input_device_status_t* ids) {
+  uint32_t i = 0;
+  return_value_if_fail(ids != NULL, RET_BAD_PARAMS);
+
+  for (i = 0; i < MAX_PRESSED_KEYS_NR; i++) {
+    key_pressed_info_t* iter = ids->pressed_info + i;
+    if (iter->key) {
+      iter->should_abort = TRUE;
+    }
+  }
+
+  return RET_OK;
+}
+
 static ret_t input_device_status_dispatch_long_press(input_device_status_t* ids) {
   uint32_t i = 0;
   key_event_t evt;
@@ -68,7 +82,7 @@ static ret_t input_device_status_dispatch_long_press(input_device_status_t* ids)
 
   for (i = 0; i < MAX_PRESSED_KEYS_NR; i++) {
     key_pressed_info_t* iter = ids->pressed_info + i;
-    if (iter->key && !iter->emitted) {
+    if (iter->key && !iter->emitted && !iter->should_abort) {
       uint64_t t = now - iter->time;
       if (t >= TK_KEY_LONG_PRESS_TIME) {
         window_manager_t* wm = WINDOW_MANAGER(window_manager());
@@ -172,32 +186,35 @@ static const key_shift_t key_shift[] = {
     {'7', '&'}, {'8', '*'}, {'9', '('}, {'0', ')'},  {'-', '_'}, {'=', '+'}, {'[', '{'},
     {']', '}'}, {',', '<'}, {'.', '>'}, {'\\', '|'}, {'/', '?'}, {';', ':'}, {'\'', '\"'}};
 
-static ret_t input_device_status_shift_key(input_device_status_t* ids, key_event_t* e) {
-  char c = (char)e->key;
+static uint32_t input_device_status_get_shift_key_code(input_device_status_t* ids,
+                                                       uint32_t old_key_code) {
+  char c = (char)old_key_code;
 
   if (ids->shift) {
     uint32_t i = 0;
     for (i = 0; i < ARRAY_SIZE(key_shift); i++) {
       if (key_shift[i].key == c) {
-        e->key = key_shift[i].shift_key;
-        return RET_OK;
+        return key_shift[i].shift_key;
       }
     }
   }
 
   if (ids->shift && ids->capslock) {
     if (c >= 'A' && c <= 'Z') {
-      e->key = tolower(c);
+      return tolower(c);
     }
-
-    return RET_OK;
   }
 
   if (ids->shift || ids->capslock) {
     if (c >= 'a' && c <= 'z') {
-      e->key = toupper(c);
+      return toupper(c);
     }
   }
+  return old_key_code;
+}
+
+static ret_t input_device_status_shift_key(input_device_status_t* ids, key_event_t* e) {
+  e->key = input_device_status_get_shift_key_code(ids, e->key);
 
   return RET_OK;
 }
@@ -242,6 +259,7 @@ static ret_t input_device_status_init_key_event(input_device_status_t* ids, key_
 }
 
 ret_t input_device_status_on_input_event(input_device_status_t* ids, widget_t* widget, event_t* e) {
+  window_manager_t* wm = WINDOW_MANAGER(widget_get_window_manager(widget));
   return_value_if_fail(ids != NULL && e != NULL, RET_BAD_PARAMS);
 
   ids->widget = widget;
@@ -295,19 +313,36 @@ ret_t input_device_status_on_input_event(input_device_status_t* ids, widget_t* w
     }
     case EVT_KEY_DOWN: {
       key_event_t* evt = (key_event_t*)e;
+      uint32_t key = input_device_status_get_shift_key_code(ids, evt->key);
+      key_pressed_info_t* info = input_device_status_find_press_info(ids, key);
 
-      input_device_status_update_key_status(ids, evt->key, TRUE);
+      input_device_status_update_key_status(ids, key, TRUE);
       input_device_status_init_key_event(ids, evt);
       input_device_status_shift_key(ids, evt);
-      widget_on_keydown(widget, evt);
+
+      if (info == NULL || !info->should_abort) {
+        if (wm->widget_grab_key != NULL) {
+          widget_on_keydown(wm->widget_grab_key, evt);
+        } else {
+          widget_on_keydown(widget, evt);
+        }
+      }
       break;
     }
     case EVT_KEY_UP: {
       key_event_t* evt = (key_event_t*)e;
+      key_pressed_info_t* info = input_device_status_find_press_info(ids, evt->key);
 
       input_device_status_init_key_event(ids, evt);
       input_device_status_shift_key(ids, evt);
-      widget_on_keyup(widget, evt);
+
+      if (info == NULL || !info->should_abort) {
+        if (wm->widget_grab_key != NULL) {
+          widget_on_keyup(wm->widget_grab_key, evt);
+        } else {
+          widget_on_keyup(widget, evt);
+        }
+      }
 
       input_device_status_update_key_status(ids, evt->key, FALSE);
       break;

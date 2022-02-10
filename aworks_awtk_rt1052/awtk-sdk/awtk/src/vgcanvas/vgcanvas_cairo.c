@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  vector graphics canvas base on cairo
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -26,6 +26,7 @@
 #include "cairo/cairo.h"
 #include "tkc/mem.h"
 #include "tkc/darray.h"
+#include "cairo/cairo-private.h"
 
 #define VG_CAIRO_CACHE_MAX_NUMBER 5
 
@@ -57,10 +58,14 @@ typedef struct _vg_cairo_cache_t {
 
 static darray_t vg_cairo_cache;
 
-ret_t vgcanvas_cairo_begin_frame(vgcanvas_t* vgcanvas, const rect_t* dirty_rect) {
+ret_t vgcanvas_cairo_begin_frame(vgcanvas_t* vgcanvas, const dirty_rects_t* dirty_rects) {
+  const rect_t* dirty_rect = dirty_rects != NULL ? &(dirty_rects->max) : NULL;
   const rect_t* r = dirty_rect;
   vgcanvas_cairo_t* canvas = (vgcanvas_cairo_t*)vgcanvas;
   cairo_t* vg = canvas->vg;
+
+  cairo_identity_matrix(vg);
+  vg->status = CAIRO_STATUS_SUCCESS;
 
   cairo_new_path(vg);
   cairo_rectangle(vg, r->x, r->y, r->w, r->h);
@@ -83,8 +88,11 @@ ret_t vgcanvas_cairo_end_frame(vgcanvas_t* vgcanvas) {
 static ret_t vgcanvas_cairo_reset(vgcanvas_t* vgcanvas) {
   vgcanvas_cairo_t* canvas = (vgcanvas_cairo_t*)vgcanvas;
   cairo_t* vg = canvas->vg;
+
   cairo_new_path(vg);
-  vgcanvas->global_alpha = 0xff;
+  cairo_identity_matrix(vg);
+  vgcanvas->global_alpha = 1;
+  vg->status = CAIRO_STATUS_SUCCESS;
 
   return RET_OK;
 }
@@ -221,6 +229,12 @@ static ret_t vgcanvas_cairo_transform(vgcanvas_t* vgcanvas, float_t a, float_t b
   cairo_t* vg = ((vgcanvas_cairo_t*)vgcanvas)->vg;
 
   cairo_matrix_init(&m, a, b, c, d, e, f);
+  if (cairo_matrix_invert(&m) != CAIRO_STATUS_SUCCESS) {
+    log_debug("invalid matrix: %f %f %f %f %f %f\n", a, b, c, d, e, f);
+    return RET_FAIL;
+  }
+
+  cairo_matrix_init(&m, a, b, c, d, e, f);
   cairo_transform(vg, &m);
 
   return RET_OK;
@@ -322,12 +336,39 @@ static ret_t vgcanvas_cairo_fill(vgcanvas_t* vgcanvas) {
   return RET_OK;
 }
 
+static bool_t vgcanvas_cairo_is_rectf_in_clip_rect(vgcanvas_t* vgcanvas, float_t left, float_t top,
+                                                   float_t right, float_t bottom) {
+  cairo_t* vg = ((vgcanvas_cairo_t*)vgcanvas)->vg;
+  if (!cairo_in_clip(vg, left, top) && !cairo_in_clip(vg, right, bottom)) {
+    return FALSE;
+  }
+  return TRUE;
+}
+
+const rectf_t* vgcanvas_cairo_get_clip_rect(vgcanvas_t* vgcanvas) {
+  cairo_t* vg = ((vgcanvas_cairo_t*)vgcanvas)->vg;
+  cairo_rectangle_list_t* list = cairo_copy_clip_rectangle_list(vg);
+  if (list->num_rectangles > 0) {
+    vgcanvas->clip_rect = rectf_init(list->rectangles[0].x, list->rectangles[0].y,
+                                     list->rectangles[0].width, list->rectangles[0].height);
+  }
+  return &(vgcanvas->clip_rect);
+}
+
 static ret_t vgcanvas_cairo_clip_rect(vgcanvas_t* vgcanvas, float_t x, float_t y, float_t w,
                                       float_t h) {
   cairo_t* vg = ((vgcanvas_cairo_t*)vgcanvas)->vg;
 
   cairo_reset_clip(vg);
   cairo_rectangle(vg, x, y, w, h);
+  cairo_clip(vg);
+
+  return RET_OK;
+}
+
+static ret_t vgcanvas_cairo_clip_path(vgcanvas_t* vgcanvas) {
+  cairo_t* vg = ((vgcanvas_cairo_t*)vgcanvas)->vg;
+
   cairo_clip(vg);
 
   return RET_OK;
@@ -423,7 +464,9 @@ static cairo_surface_t* create_surface(uint32_t w, uint32_t h, bitmap_format_t f
       cairo_format = CAIRO_FORMAT_RGB16_565;
       break;
     }
-    default: { return NULL; }
+    default: {
+      return NULL;
+    }
   }
 
   return cairo_image_surface_create_for_data(fbuff, cairo_format, w, h, w * bpp);
@@ -594,9 +637,12 @@ static ret_t vgcanvas_cairo_restore(vgcanvas_t* vgcanvas) {
 }
 
 static ret_t vgcanvas_cairo_create_fbo(vgcanvas_t* vgcanvas, uint32_t w, uint32_t h,
-                                       framebuffer_object_t* fbo) {
+                                       bool_t custom_draw_model, framebuffer_object_t* fbo) {
   (void)vgcanvas;
   (void)fbo;
+  (void)w;
+  (void)h;
+  (void)custom_draw_model;
   return RET_NOT_IMPL;
 }
 
@@ -639,6 +685,65 @@ static ret_t cairo_pattern_add_color_stop_color(cairo_pattern_t* pat, float_t of
   return_value_if_fail(pat != NULL, RET_BAD_PARAMS);
   cairo_pattern_add_color_stop_rgba(pat, offset, c.rgba.r / 255.0f, c.rgba.g / 255.0f,
                                     c.rgba.b / 255.0f, c.rgba.a / 255.0f);
+
+  return RET_OK;
+}
+
+static cairo_pattern_t* vgcanvas_cairo_create_pattern_from_gradient(const vg_gradient_t* gradient) {
+  uint32_t i = 0;
+  cairo_pattern_t* pattern = NULL;
+
+  if (gradient->gradient.type == GRADIENT_LINEAR) {
+    const vg_gradient_linear_info_t* info = &(gradient->info.linear);
+    pattern = cairo_pattern_create_linear(info->sx, info->sy, info->ex, info->ey);
+  } else if (gradient->gradient.type == GRADIENT_RADIAL) {
+    const vg_gradient_radial_info_t* info = &(gradient->info.radial);
+    pattern =
+        cairo_pattern_create_radial(info->x0, info->y0, info->r0, info->x1, info->y1, info->r1);
+  }
+  return_value_if_fail(pattern != NULL, NULL);
+
+  for (i = 0; i < gradient->gradient.nr; i++) {
+    const gradient_stop_t* iter = vg_gradient_get_stop((vg_gradient_t*)gradient, i);
+    cairo_pattern_add_color_stop_color(pattern, iter->offset, iter->color);
+  }
+
+  return pattern;
+}
+
+static ret_t vgcanvas_cairo_set_stroke_gradient(vgcanvas_t* vgcanvas,
+                                                const vg_gradient_t* gradient) {
+  cairo_t* vg = ((vgcanvas_cairo_t*)vgcanvas)->vg;
+  vgcanvas_cairo_t* canvas = (vgcanvas_cairo_t*)vgcanvas;
+
+  if (canvas->stroke_gradient != NULL) {
+    cairo_pattern_destroy(canvas->stroke_gradient);
+    canvas->stroke_gradient = NULL;
+  }
+
+  canvas->stroke_gradient = vgcanvas_cairo_create_pattern_from_gradient(gradient);
+  return_value_if_fail(canvas->stroke_gradient != NULL, RET_FAIL);
+
+  cairo_set_source(vg, canvas->stroke_gradient);
+  canvas->stroke_source_type = CAIRO_SOURCE_GRADIENT;
+
+  return RET_OK;
+}
+
+static ret_t vgcanvas_cairo_set_fill_gradient(vgcanvas_t* vgcanvas, const vg_gradient_t* gradient) {
+  cairo_t* vg = ((vgcanvas_cairo_t*)vgcanvas)->vg;
+  vgcanvas_cairo_t* canvas = (vgcanvas_cairo_t*)vgcanvas;
+
+  if (canvas->fill_gradient != NULL) {
+    cairo_pattern_destroy(canvas->fill_gradient);
+    canvas->fill_gradient = NULL;
+  }
+
+  canvas->fill_gradient = vgcanvas_cairo_create_pattern_from_gradient(gradient);
+  return_value_if_fail(canvas->fill_gradient != NULL, RET_FAIL);
+
+  cairo_set_source(vg, canvas->fill_gradient);
+  canvas->fill_source_type = CAIRO_SOURCE_GRADIENT;
 
   return RET_OK;
 }
@@ -810,6 +915,7 @@ static const vgcanvas_vtable_t vt = {
     .translate = vgcanvas_cairo_translate,
     .transform = vgcanvas_cairo_transform,
     .set_transform = vgcanvas_cairo_set_transform,
+    .clip_path = vgcanvas_cairo_clip_path,
     .clip_rect = vgcanvas_cairo_clip_rect,
     .fill = vgcanvas_cairo_fill,
     .stroke = vgcanvas_cairo_stroke,
@@ -830,6 +936,11 @@ static const vgcanvas_vtable_t vt = {
     .set_stroke_color = vgcanvas_cairo_set_stroke_color,
     .set_stroke_linear_gradient = vgcanvas_cairo_set_stroke_linear_gradient,
     .set_stroke_radial_gradient = vgcanvas_cairo_set_stroke_radial_gradient,
+    .set_stroke_gradient = vgcanvas_cairo_set_stroke_gradient,
+    .set_fill_gradient = vgcanvas_cairo_set_fill_gradient,
+    .is_rectf_in_clip_rect = vgcanvas_cairo_is_rectf_in_clip_rect,
+    .get_clip_rect = vgcanvas_cairo_get_clip_rect,
+
     .set_line_join = vgcanvas_cairo_set_line_join,
     .set_line_cap = vgcanvas_cairo_set_line_cap,
     .set_miter_limit = vgcanvas_cairo_set_miter_limit,

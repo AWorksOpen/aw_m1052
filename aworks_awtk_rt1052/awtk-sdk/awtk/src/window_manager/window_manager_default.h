@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  window manager
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -22,6 +22,7 @@
 #ifndef TK_WINDOW_MANAGER_DEFAULT_H
 #define TK_WINDOW_MANAGER_DEFAULT_H
 
+#include "tkc/fps.h"
 #include "base/native_window.h"
 #include "base/window_manager.h"
 
@@ -41,10 +42,9 @@ typedef struct _window_manager_default_t {
   bool_t ignore_user_input;
   window_animator_t* animator;
 
-  uint32_t fps;
-  uint32_t fps_time;
-  uint32_t fps_count;
+  fps_t fps;
   uint32_t last_paint_cost;
+  uint64_t last_paint_time;
 
   widget_t* pending_close_window;
   widget_t* pending_open_window;
@@ -66,6 +66,7 @@ typedef struct _window_manager_default_t {
 
   int32_t lcd_w;
   int32_t lcd_h;
+
 } window_manager_default_t;
 
 /**

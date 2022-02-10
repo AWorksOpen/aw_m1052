@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  touch screen calibration win
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -84,7 +84,7 @@ typedef struct _calibration_win_t {
 
 /**
  * @method calibration_win_create
- * @annotation ["constructor"]
+ * @annotation ["constructor", "scriptable"]
  * 创建calibration_win对象
  * @param {widget_t*} parent 父控件
  * @param {xy_t} x x坐标

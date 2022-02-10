@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  timer info
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -35,15 +35,20 @@ typedef struct _timer_manager_t timer_manager_t;
 typedef tk_get_time_ms_t timer_get_time_t;
 typedef ret_t (*timer_func_t)(const timer_info_t* timer);
 
+typedef enum _timer_info_type_t {
+  TIMER_INFO_NORMAL = 0,
+  TIMER_INFO_WIDGET_ADD,
+} timer_info_type_t;
+
 /**
  * @class timer_info_t
- * @parent object_t
+ * @parent tk_object_t
  * @annotation ["scriptable"]
  * 单个定时器的信息。
  *
  */
 struct _timer_info_t {
-  object_t object;
+  tk_object_t object;
 
   /**
    * @property {timer_func_t} on_timer
@@ -59,6 +64,14 @@ struct _timer_info_t {
    *
    */
   void* ctx;
+
+  /**
+   * @property {void*} extra_ctx
+   * @annotation ["readable", "scriptable"]
+   * 定时器回调函数的上下文
+   *
+   */
+  void* extra_ctx;
 
   /**
    * @property {uint32_t} id
@@ -107,8 +120,16 @@ struct _timer_info_t {
    */
   void* on_destroy_ctx;
 
+  /**
+   * @property {bool_t} suspend
+   * @annotation ["readable"]
+   * 定时器是否为挂起状态。
+   */
+  bool_t suspend;
+
   /*private*/
   bool_t busy;
+  uint16_t timer_info_type;
   uint64_t last_dispatch_time;
   timer_manager_t* timer_manager;
 };
@@ -124,10 +145,14 @@ struct _timer_info_t {
 timer_info_t* timer_info_cast(timer_info_t* timer);
 
 /*internal use*/
-int timer_info_compare(const void* a, const void* b);
+int timer_info_compare_by_id(const void* a, const void* b);
+int timer_info_compare_by_ctx(const void* a, const void* b);
+int timer_info_compare_by_ctx_and_type(const void* a, const void* b);
 timer_info_t* timer_info_init_dummy(timer_info_t* timer, uint32_t id);
+timer_info_t* timer_info_init_dummy_with_ctx_and_type(timer_info_t* timer, uint16_t type,
+                                                      void* ctx);
 timer_info_t* timer_info_create(timer_manager_t* tm, timer_func_t on_timer, void* ctx,
-                                uint32_t duration);
+                                uint32_t duration, uint16_t timer_info_type);
 
 ret_t timer_info_on_timer(timer_info_t* timer, uint64_t now);
 bool_t timer_info_is_available(timer_info_t* timer, uint64_t now);

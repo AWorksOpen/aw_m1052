@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  fade window animator
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -26,7 +26,7 @@
 
 BEGIN_C_DECLS
 
-window_animator_t* window_animator_fade_create(bool_t open, object_t* args);
+window_animator_t* window_animator_fade_create(bool_t open, tk_object_t* args);
 
 END_C_DECLS
 

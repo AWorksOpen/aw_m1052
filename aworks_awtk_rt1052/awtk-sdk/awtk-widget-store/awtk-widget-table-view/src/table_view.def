@@ -11,6 +11,7 @@ EXPORTS
     table_client_set_yspeed_scale
     table_client_set_on_load_data
     table_client_set_on_create_row
+    table_client_set_on_prepare_row
     table_client_get_virtual_h
     table_client_scroll_to_row
     table_client_scroll_to_yoffset

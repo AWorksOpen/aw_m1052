@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  named value
  *
- * Copyright (c) 2019 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2019 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -57,6 +57,19 @@ typedef struct _named_value_t {
  * @return {named_value_t*} 返回named_value对象。
  */
 named_value_t* named_value_create(void);
+
+/**
+ * @method named_value_create_ex
+ *
+ * 创建named_value对象。
+ * @annotation ["constructor"]
+ *
+ * @param {const char*} name 名称。
+ * @param {const value_t*} value 值。
+ *
+ * @return {ret_t} 返回named_value对象。
+ */
+named_value_t* named_value_create_ex(const char* name, const value_t* value);
 
 /**
  * @method named_value_init
@@ -134,6 +147,30 @@ value_t* named_value_get_value(named_value_t* nv);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t named_value_deinit(named_value_t* nv);
+
+/**
+ * @method named_value_compare
+ *
+ * 比较。
+ *
+ * @param {named_value_t*} nv named_value对象。
+ * @param {named_value_t*} other named_value对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+int32_t named_value_compare(named_value_t* nv, const named_value_t* other);
+
+/**
+ * @method named_value_compare_by_name
+ *
+ * 比较。
+ *
+ * @param {named_value_t*} nv named_value对象。
+ * @param {const char*} name 名称。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+int32_t named_value_compare_by_name(named_value_t* nv, const char* name);
 
 /**
  * @method named_value_destroy

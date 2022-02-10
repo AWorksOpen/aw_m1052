@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  image base
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -30,29 +30,45 @@ ret_t image_base_on_event(widget_t* widget, event_t* e) {
 
   switch (type) {
     case EVT_POINTER_DOWN:
+      image->pressed = TRUE;
+      widget_grab(widget->parent, widget);
+
       if (image->clickable) {
         widget_set_state(widget, WIDGET_STATE_PRESSED);
         widget_invalidate(widget, NULL);
       }
       break;
     case EVT_POINTER_UP: {
-      if (image->clickable) {
-        pointer_event_t evt = *(pointer_event_t*)e;
-        evt.e = event_init(EVT_CLICK, widget);
-        evt.e.size = sizeof(pointer_event_t);
-        widget_dispatch(widget, (event_t*)&evt);
-      }
+      if (image->pressed) {
+        if (image->clickable || image->selectable) {
+          pointer_event_t evt;
+          widget_dispatch(widget, pointer_event_init(&evt, EVT_CLICK, widget, 0, 0));
+        }
 
+        if (!image->selectable) {
+          widget_set_state(widget, WIDGET_STATE_NORMAL);
+        }
+        widget_ungrab(widget->parent, widget);
+      }
+      break;
+    }
+    case EVT_CLICK: {
       if (image->selectable) {
         image->selected = !image->selected;
+        widget_set_state(widget, image->selected ? WIDGET_STATE_SELECTED : WIDGET_STATE_NORMAL);
       }
+      widget_invalidate(widget, NULL);
+      break;
+    }
+    case EVT_POINTER_DOWN_ABORT: {
+      image->pressed = FALSE;
+      widget_ungrab(widget->parent, widget);
 
-      if (image->selected) {
-        widget_set_state(widget, WIDGET_STATE_SELECTED);
+      if (image->selectable) {
+        widget_set_state(widget, image->selected ? WIDGET_STATE_SELECTED : WIDGET_STATE_NORMAL);
       } else {
         widget_set_state(widget, WIDGET_STATE_NORMAL);
       }
-      widget_invalidate(widget, NULL);
       break;
     }
     default:
@@ -264,6 +280,7 @@ ret_t image_transform(widget_t* widget, canvas_t* c) {
 ret_t image_base_on_copy(widget_t* widget, widget_t* other) {
   image_base_t* image = IMAGE_BASE(widget);
   image_base_t* image_other = IMAGE_BASE(other);
+  return_value_if_fail(image != NULL && image_other != NULL, RET_BAD_PARAMS);
 
   image->anchor_x = image_other->anchor_x;
   image->anchor_y = image_other->anchor_y;

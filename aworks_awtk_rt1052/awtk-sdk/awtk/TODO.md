@@ -21,7 +21,6 @@
 * api doc
 * 基本 layout 功能
 * 极速模式
-* Qt 界面文件转换器
 * stm32 移植
 * draw 9patch image
 * draw 3patch\_h image
@@ -94,6 +93,7 @@
 * nodejs 绑定
 * quickjs 绑定
 * lua 绑定
+* go 绑定
 * 用 AWTK 实现界面编辑器
 * MVVM 支持
 * python 绑定
@@ -103,19 +103,23 @@
 * 音频接口。
 * 支持文本双向排版
 * 支持 appuim 自动测试
-* table view
+* 千万级别的table view
+* 支持Lottie动画
+* 多点触摸和手势识别
+* tab控件动画(vpage)
+* 支持rive动画
+* 支持reactjs
 
 ## 短期计划（顺序不定）
 * tree view
 * drag & drop
-* 多点触摸和手势识别
+* image view
+* thumb image view
 
 ## 长期计划
 * Accessibility
 * 支持泰文等特殊文字
 * 支持 vue.js
 * 支持粒子产生器
-* 支持骨骼动画
-* flash 播放器支持
 * 小程序版本
 * 多进程支持

@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  widget animator interface
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -123,9 +123,10 @@ ret_t widget_animator_time_elapse(widget_animator_t* animator, uint32_t delta_ti
 
     if (animator->repeat_times == 0 && animator->yoyo_times == 0) {
       event_t e = event_init(EVT_ANIM_END, animator);
-      emitter_dispatch(&(animator->emitter), &e);
 
       animator->state = ANIMATOR_DONE;
+      emitter_dispatch(&(animator->emitter), &e);
+
       if (animator->destroy_when_done) {
         widget_animator_destroy(animator);
       }
@@ -153,7 +154,9 @@ ret_t widget_animator_start(widget_animator_t* animator) {
 
   animator->state = ANIMATOR_RUNNING;
   emitter_dispatch(&(animator->emitter), &e);
-  widget_animator_update(animator, 0);
+  if (animator->delay == 0) {
+    widget_animator_update(animator, 0);
+  }
 
   return RET_OK;
 }

@@ -11,7 +11,7 @@ SOURCES=Glob('table_view/*.c')+Glob('table_row/*.c')+Glob('table_header/*.c')\
   +Glob('table_client/*.c')+Glob('*.c')
 
 EXPORT_DEF=''
-if OS_NAME == 'Windows':
+if OS_NAME == 'Windows' and os.environ['TOOLS_NAME'] == '':
   EXPORT_DEF = ' /DEF:"src/table_view.def" '
 
 if 'BUILD_SHARED' in os.environ and os.environ['BUILD_SHARED'] == 'True':

@@ -10,7 +10,7 @@ env=DefaultEnvironment().Clone()
 SOURCES=Glob('qr/*.cpp') + Glob('qr/*.c') + Glob('*.c')
 
 EXPORT_DEF=''
-if OS_NAME == 'Windows':
+if OS_NAME == 'Windows' and os.environ['TOOLS_NAME'] == '':
   EXPORT_DEF = ' /DEF:"src/qr.def" '
 
 if 'BUILD_SHARED' in os.environ and os.environ['BUILD_SHARED'] == 'True':

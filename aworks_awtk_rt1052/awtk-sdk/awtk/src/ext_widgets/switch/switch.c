@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  switch
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -78,12 +78,17 @@ static ret_t switch_scroll_to(widget_t* widget, int32_t xoffset_end) {
     return RET_OK;
   }
 
+#ifndef WITHOUT_WIDGET_ANIMATORS
   aswitch->wa = widget_animator_scroll_create(widget, ANIMATING_TIME, 0, EASING_SIN_INOUT);
   return_value_if_fail(aswitch->wa != NULL, RET_OOM);
 
   widget_animator_scroll_set_params(aswitch->wa, xoffset, 0, xoffset_end, 0);
   widget_animator_on(aswitch->wa, EVT_ANIM_END, switch_on_scroll_done, aswitch);
   widget_animator_start(aswitch->wa);
+#else
+  aswitch->xoffset = xoffset_end;
+  switch_on_scroll_done(widget, NULL);
+#endif /*WITHOUT_WIDGET_ANIMATORS*/
 
   return RET_OK;
 }
@@ -100,24 +105,21 @@ static ret_t switch_on_pointer_up(switch_t* aswitch, pointer_event_t* e) {
   max_xoffset = aswitch->max_xoffset_ratio * widget->w;
 
   velocity_update(v, e->e.time, e->x, e->y);
-  xoffset_end = aswitch->xoffset - v->yv;
+  xoffset_end = aswitch->xoffset - v->xv;
 
   if (e->x == aswitch->xdown) {
     /*click*/
-    if (aswitch->value) {
-      xoffset_end = max_xoffset;
-    } else {
-      xoffset_end = min_xoffset;
-    }
+    pointer_event_t click;
+    widget_dispatch(widget, pointer_event_init(&click, EVT_CLICK, widget, e->x, e->y));
   } else {
     if (xoffset_end < max_xoffset / 2) {
       xoffset_end = min_xoffset;
     } else {
       xoffset_end = max_xoffset;
     }
-  }
 
-  switch_scroll_to(widget, xoffset_end);
+    switch_scroll_to(widget, xoffset_end);
+  }
 
   return RET_OK;
 }
@@ -148,11 +150,18 @@ static ret_t switch_on_event(widget_t* widget, event_t* e) {
     case EVT_POINTER_UP: {
       aswitch->pressed = FALSE;
       if (!aswitch->point_down_aborted) {
-        switch_on_pointer_up(aswitch, (pointer_event_t*)e);
+        pointer_event_t* evt = (pointer_event_t*)e;
+        switch_on_pointer_move(aswitch, evt);
+        switch_on_pointer_up(aswitch, evt);
         widget_ungrab(widget->parent, widget);
       } else {
         aswitch->xoffset = aswitch->xoffset_save;
       }
+      break;
+    }
+    case EVT_CLICK: {
+      int max_xoffset = aswitch->max_xoffset_ratio * widget->w;
+      switch_scroll_to(widget, aswitch->value ? max_xoffset : 0);
       break;
     }
     case EVT_POINTER_MOVE: {
@@ -219,8 +228,7 @@ ret_t switch_fill_rect_color(widget_t* widget, canvas_t* c, rect_t* r, bool_t bg
 }
 
 static ret_t switch_on_paint_background_img(widget_t* widget, canvas_t* c, bitmap_t* img) {
-  int32_t w = 0;
-  int32_t h = 0;
+  float_t fw = 0;
   int32_t iw = 0;
   int32_t ih = 0;
   float_t wscale = 0;
@@ -239,15 +247,14 @@ static ret_t switch_on_paint_background_img(widget_t* widget, canvas_t* c, bitma
   xoffset = (float_t)(aswitch->xoffset) / wscale;
   round_radius = style_get_int(widget->astyle, STYLE_ID_ROUND_RADIUS, 0) / hscale;
 
-  h = ih;
-  w = iw * (1 - aswitch->max_xoffset_ratio);
-  wscale = (float_t)(widget->w) / (float_t)w;
+  fw = iw * (1.0f - aswitch->max_xoffset_ratio);
+  wscale = (float_t)(widget->w) / fw;
 
-  if (vg == NULL || (round_radius < 5 && hscale == 1 && wscale == 1)) {
-    int32_t x = (widget->w - w) >> 1;
+  if (vg == NULL || (round_radius < 5 && tk_abs(wscale - 1) <= 0.000001f)) {
+    int32_t x = (widget->w - (int32_t)fw) >> 1;
     int32_t y = (widget->h - ih) >> 1;
-    rect_t src = rect_init(xoffset, 0, w, ih);
-    rect_t dst = rect_init(x, y, w, ih);
+    rect_t src = rect_init(xoffset, 0, (int32_t)fw, ih);
+    rect_t dst = rect_init(x, y, (int32_t)fw, ih);
 
     dst.y = tk_max(0, y);
     dst.h = tk_min(dst.h, widget->h);
@@ -260,7 +267,7 @@ static ret_t switch_on_paint_background_img(widget_t* widget, canvas_t* c, bitma
     vgcanvas_translate(vg, c->ox, c->oy);
     vgcanvas_scale(vg, wscale, hscale);
     vgcanvas_translate(vg, -xoffset, 0);
-    vgcanvas_rounded_rect(vg, xoffset, 0, w, h, round_radius);
+    vgcanvas_rounded_rect(vg, xoffset, 0, fw, ih, round_radius);
     vgcanvas_paint(vg, FALSE, img);
     vgcanvas_restore(vg);
   }
@@ -378,6 +385,7 @@ static ret_t switch_get_prop(widget_t* widget, const char* name, value_t* v) {
     value_set_bool(v, aswitch->value);
     return RET_OK;
   } else if (tk_str_eq(name, WIDGET_PROP_YOFFSET)) {
+    value_set_int(v, 0);
     return RET_OK;
   } else if (tk_str_eq(name, WIDGET_PROP_XOFFSET)) {
     value_set_int(v, aswitch->xoffset);
@@ -421,6 +429,8 @@ TK_DECL_VTABLE(switch) = {
     .inputable = TRUE,
     .size = sizeof(switch_t),
     .type = WIDGET_TYPE_SWITCH,
+    .space_key_to_activate = TRUE,
+    .return_key_to_activate = TRUE,
     .clone_properties = s_switch_properties,
     .persistent_properties = s_switch_properties,
     .parent = TK_PARENT_VTABLE(widget),
@@ -439,7 +449,7 @@ widget_t* switch_create(widget_t* parent, xy_t x, xy_t y, wh_t w, wh_t h) {
 
   aswitch->value = TRUE;
   aswitch->pressed = FALSE;
-  aswitch->max_xoffset_ratio = 0.34f;
+  aswitch->max_xoffset_ratio = 1.0f / 3.0f;
 
   return widget;
 }

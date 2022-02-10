@@ -1,15 +1,15 @@
 {
-  "name": "aw_m1052_disk", 
-  "version": "2.3.0", 
-  "description": "aworks imxrt105x full disk for miniarm1052 board", 
   "category": "package", 
-  "build_ref": "27754dd0bda10369458e60ce29cfb3dbbe9b7df2", 
-  "build_id": "81770", 
-  "repository": "http://192.168.23.62/aworks-team/aw_imxrt105x", 
+  "build_id": "121615", 
   "engines": [
-    "axio-engine@1.1.0-a.67", 
+    "axio-engine@1.1.0-a.88", 
     "axbuilder.custom@1.2.3", 
     "package_manager.package@1.1.0"
   ], 
-  "status": "stable"
+  "name": "aw_m1052_disk", 
+  "repository": "http://192.168.23.62/aworks-team/aw_imxrt105x", 
+  "build_ref": "a141dfaf6a2830731c299d7ea45e3a329f3e785b", 
+  "version": "2.3.1", 
+  "status": "stable", 
+  "description": "aworks imxrt105x full disk for miniarm1052 board"
 }

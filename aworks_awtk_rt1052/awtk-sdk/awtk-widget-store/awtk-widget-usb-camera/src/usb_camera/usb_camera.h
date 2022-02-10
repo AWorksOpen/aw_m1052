@@ -234,7 +234,7 @@ ret_t usb_camera_close(widget_t* widget);
  * @annotation ["scriptable"]
  * @param {widget_t*} widget widget对象。
  *
- * @return {ret_t} 成功返回列表，失败返回NULL。
+ * @return {slist_t*} 成功返回列表，失败返回NULL。
  */
 slist_t* usb_camera_enum_all_devices(widget_t* widget);
 
@@ -244,7 +244,7 @@ slist_t* usb_camera_enum_all_devices(widget_t* widget);
  * @annotation ["scriptable"]
  * @param {widget_t*} widget widget对象。
  *
- * @return {ret_t}  成功返回列表，失败返回NULL。
+ * @return {slist_t*}  成功返回列表，失败返回NULL。
  */
 slist_t* usb_camera_enum_device_all_ratio(widget_t* widget);
 
@@ -254,7 +254,7 @@ slist_t* usb_camera_enum_device_all_ratio(widget_t* widget);
  * @annotation ["scriptable"]
  * @param {widget_t*} widget widget对象。
  *
- * @return {ret_t}  成功返回列表，失败返回NULL。
+ * @return {bool_t}  成功返回TRUE，失败返回FALSE。
  */
 bool_t usb_cemera_is_play(widget_t* widget);
 
@@ -264,7 +264,7 @@ bool_t usb_cemera_is_play(widget_t* widget);
  * @annotation ["scriptable"]
  * @param {widget_t*} widget widget对象。
  *
- * @return {ret_t}  成功返回列表，失败返回NULL。
+ * @return {bool_t}   成功返回TRUE，失败返回FALSE。
  */
 bool_t usb_cemera_is_open(widget_t* widget);
 
@@ -279,6 +279,10 @@ bool_t usb_cemera_is_open(widget_t* widget);
 
 /*public for subclass and runtime type check*/
 TK_EXTERN_VTABLE(usb_camera);
+
+/* private */
+ret_t usb_camerat_register_from_base_class();
+
 
 END_C_DECLS
 

@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  window_base
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -53,12 +53,49 @@ typedef struct _window_base_t {
   /**
    * @property {char*} theme
    * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 主题资源的名称。
-   * 每个窗口都可以有独立的主题文件，如果没指定，则使用系统缺省的主题文件。
-   * 主题是一个XML文件，放在assets/raw/styles目录下。
-   * 请参考[主题](https://github.com/zlgopen/awtk/blob/master/docs/theme.md)
+   * 窗体样式资源的名称。
+   * 每个窗口都可以有独立的窗体样式文件，如果没指定，则使用系统缺省的窗体样式文件。
+   * 窗体样式是一个XML文件，放在assets/raw/styles目录下。
+   * 请参考[窗体样式](https://github.com/zlgopen/awtk/blob/master/docs/theme.md)
    */
   char* theme;
+
+  /**
+   * @property {uint16_t} design_w
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 设计时宽度。
+   */
+  uint16_t design_w;
+  /**
+   * @property {uint16_t} design_h
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 设计时高度。
+   */
+  uint16_t design_h;
+  /**
+   * @property {bool_t} auto_scale_children_x
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 窗口大小与设计时大小不同时，是否自动调整子控件的x坐标。
+   */
+  bool_t auto_scale_children_x;
+  /**
+   * @property {bool_t} auto_scale_children_y
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 窗口大小与设计时大小不同时，是否自动调整子控件的y坐标。
+   */
+  bool_t auto_scale_children_y;
+  /**
+   * @property {bool_t} auto_scale_children_w
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 窗口大小与设计时大小不同时，是否自动调整子控件的宽度。
+   */
+  bool_t auto_scale_children_w;
+  /**
+   * @property {bool_t} auto_scale_children_h
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 窗口大小与设计时大小不同时，是否自动调整子控件的高度。
+   */
+  bool_t auto_scale_children_h;
 
   /**
    * @property {bool_t} disable_anim
@@ -108,10 +145,10 @@ typedef struct _window_base_t {
   /**
    * @property {theme_t*} theme_obj
    * @annotation ["get_prop"]
-   * 窗口的常量主题数据。
+   * 窗口的常量窗体样式数据。
    *
    *>
-   *把主题管理器对象与窗口关联起来，是为了解决UI设计器与被设计的窗口需要从不同的位置加载主题资源的问题。
+   *把窗体样式管理器对象与窗口关联起来，是为了解决UI设计器与被设计的窗口需要从不同的位置加载窗体样式资源的问题。
    */
   theme_t* theme_obj;
 
@@ -203,12 +240,22 @@ typedef struct _window_base_t {
    */
   bool_t single_instance;
 
+  /**
+   * @property {bool_t} strongly_focus
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 点击非focusable控件时，是否让当前焦点控件失去焦点。比如点击窗口空白区域，是否让编辑器失去焦点。 
+   */
+  bool_t strongly_focus;
+
   /*private*/
   const asset_info_t* res_theme;
   font_manager_t* font_manager;
   native_window_t* native_window;
   widget_t* save_focus_widget;
   uint32_t grab_count_when_to_foreground;
+  bool_t need_relayout;
+  bool_t moving_focus_mode;
+  bool_t pressed;
 } window_base_t;
 
 /**
@@ -234,6 +281,21 @@ typedef struct _window_base_t {
 /**
  * @event {event_t} EVT_WINDOW_CLOSE
  * 窗口关闭事件。
+ */
+
+/**
+ * @event {event_t} EVT_WINDOW_LOAD
+ * 窗口加载完成事件。
+ */
+
+/**
+ * @event {event_t} EVT_REQUEST_CLOSE_WINDOW
+ * 请求关闭窗口的事件。
+ */
+
+/**
+ * @event {event_t} EVT_LOCALE_CHANGED
+ * locale改变的事件。
  */
 
 /*for sub class*/
@@ -343,10 +405,30 @@ widget_t* window_base_create(widget_t* parent, const widget_vtable_t* vt, xy_t x
  */
 widget_t* window_base_cast(widget_t* widget);
 
+/**
+ * @method window_base_set_need_relayout
+ * 设置是否需要relayout
+ * @param {widget_t*} widget window_base对象。
+ * @param {bool_t} need_relayout
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。。
+ */
+ret_t window_base_set_need_relayout(widget_t* widget, bool_t need_relayout);
+
 #define WINDOW_BASE(widget) ((window_base_t*)(window_base_cast(WIDGET(widget))))
 
 /*public for subclass and runtime type check*/
 TK_EXTERN_VTABLE(window_base);
+
+/*public for test*/
+/**
+ * @method window_base_auto_scale_children 
+ * 根据参数自动缩放子控件。 
+ * @param {widget_t*} widget window_base对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t window_base_auto_scale_children(widget_t* widget);
 
 END_C_DECLS
 

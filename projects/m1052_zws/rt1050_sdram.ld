@@ -1,7 +1,7 @@
 MEMORY
 {
-    data (xrw)             : ORIGIN = 0x20000000, LENGTH = 508K
-    relocode (rx)          : ORIGIN = 0x2007F000, LENGTH = 4K
+    data (xrw)             : ORIGIN = 0x80A00000, LENGTH = 1018K
+    relocode (rx)          : ORIGIN = 0x80AFF000, LENGTH = 4K
     flash (rx)             : ORIGIN = 0x60000000, LENGTH = 8M
     flexspi_drv(rx)        : ORIGIN = 0x80000000, LENGTH = 4K
     code (rx)              : ORIGIN = 0x80002000, LENGTH = 4088K

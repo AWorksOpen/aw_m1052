@@ -12,13 +12,14 @@ ASSETS_DIR = 'assets'
 OUTPUT_DIR = 'release'
 CWD = os.getcwd()
 OS_NAME = platform.system();
-if OS_NAME == 'Darwin':
-  AWTK_DLL='libawtk.dylib'
-elif OS_NAME == 'Linux':
-  AWTK_DLL='libawtk.so'
-elif OS_NAME == 'Windows':
-  AWTK_DLL='awtk.dll'
 
+def getShareLibExt(): 
+  if OS_NAME == 'Darwin':
+    return 'dylib'
+  elif OS_NAME == 'Windows':
+    return 'dll'
+  else:
+    return 'so'
 
 def init(exe, assets_root, bin_root):
     global BIN_DIR
@@ -97,17 +98,42 @@ def copyFiles(src_root_dir, src, dst_root_dir, dst, ignore_files=[]):
         print('!!! copyFiles src NOT EXISTS: ' + s)
 
 
+def copySharedLib(src, dst):
+  if not os.path.exists(src):
+    print('copy shared lib: ' + src + ' is not exists.')
+  else:
+    files = os.listdir(src)
+    for file in files:
+      srcFilename = joinPath(src, file)
+      dstFilename = joinPath(dst, file)
+      if os.path.isdir(srcFilename):
+        if not os.path.exists(dstFilename):
+          os.makedirs(dstFilename)
+        copySharedLib(srcFilename, dstFilename)
+      else:
+        ext = '.' + getShareLibExt()
+        if file.endswith(ext):
+          print('copy shared lib: ' + srcFilename + ' ==> ' + dstFilename)
+          shutil.copy(srcFilename, dst)
+          os.chmod(dstFilename, 0o755)
+
+
 def copyExe():
     output_bin_dir = joinPath(OUTPUT_DIR, 'bin')
     copyFile(BIN_DIR, EXE_NAME, output_bin_dir, EXE_NAME)
-    copyFile(BIN_DIR, AWTK_DLL, output_bin_dir, AWTK_DLL)
-  
+    copySharedLib(BIN_DIR, output_bin_dir)
+
     os.chmod(joinPath(output_bin_dir, EXE_NAME), 0o755)
 
 def copyAssets():
-    copyFiles(ASSETS_DIR, '', OUTPUT_DIR, 'assets/')	
+    copyFiles(ASSETS_DIR, '', OUTPUT_DIR, 'assets/')
+
+def cleanFiles():
+    d = joinPath(OUTPUT_DIR, 'assets/default/inc')
+    shutil.rmtree(d, True)
 
 
 def release():
     copyExe()
     copyAssets()
+    cleanFiles()

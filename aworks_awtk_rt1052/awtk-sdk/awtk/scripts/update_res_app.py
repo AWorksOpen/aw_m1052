@@ -8,6 +8,9 @@ import collections
 # AWTK_ROOT/scripts/update_res_common.py
 import update_res_common as common
 
+def get_theme(i):
+    return THEMES[i]
+
 def use_theme_config_from_project_json():
     global DPI
     global THEMES
@@ -45,7 +48,10 @@ def use_theme_config_from_project_json():
     if len(assets['themes']) == 0:
         return
 
-    if assets['const'] != 'all_data':
+    if 'loadFrom' in assets and assets['loadFrom'] == 'fs':
+        IS_GENERATE_INC_BITMAP = False
+        IS_GENERATE_INC_RES = False
+    elif 'const' in assets and assets['const'] != 'all_data':
         if assets['const'] == 'resource_data':
             IS_GENERATE_INC_BITMAP = False
         else:
@@ -134,15 +140,30 @@ def on_generate_res_event():
         if hasattr(generate_res, 'on_generate_res_after'):
            common.on_generate_res_after(generate_res.on_generate_res_after)
 
+def getopt(args):
+    return common.get_args(args);
 
 def run(awtk_root, is_excluded_file_handler = None):
+    global DPI
     global AWTK_ROOT
     global TOOLS_ROOT
     global THEMES
+    global APP_THEME
     global APP_ROOT
     global ASSETS_ROOT
+    global OUTPUT_ROOT
     global IS_GENERATE_INC_RES
     global IS_GENERATE_INC_BITMAP
+
+    GDPI=''
+    IMAGEGEN_OPTIONS=''
+    sys_args = common.get_args(sys.argv[1:])
+    if len(sys_args) > 0 :
+        common.set_action(sys_args[0])
+        if len(sys_args) > 1:
+            GDPI = sys_args[1]
+        if len(sys_args) > 2:
+            IMAGEGEN_OPTIONS = sys_args[2]
 
     AWTK_ROOT = awtk_root
     APP_ROOT = common.getcwd()
@@ -160,12 +181,13 @@ def run(awtk_root, is_excluded_file_handler = None):
     TOOLS_ROOT = common.join_path(AWTK_ROOT, 'bin')
     AWTK_ROOT = common.join_path(APP_ROOT, AWTK_ROOT)
     ASSETS_ROOT = common.join_path(APP_ROOT, 'design')
-    ASSET_C = common.join_path(APP_ROOT, 'res/assets.inc')
     OUTPUT_ROOT = common.join_path(APP_ROOT, 'res/assets')
-    if action == 'json':
-        ASSET_C = common.join_path(APP_ROOT, 'assets_web.js')
 
     use_default_theme_config()
+
+    ASSET_C = common.join_path(OUTPUT_ROOT, '../assets.inc')
+    if action == 'json':
+        ASSET_C = common.join_path(APP_ROOT, 'assets_web.js')
 
     if not is_dependencies_ok():
         print('For details, please read scripts/README.md.')
@@ -173,6 +195,12 @@ def run(awtk_root, is_excluded_file_handler = None):
         print('Not found theme.')
         print('For details, please read scripts/README.md.')
     else:
+        if GDPI != '':
+           DPI = GDPI
+        if IMAGEGEN_OPTIONS != '':
+            for theme in THEMES :
+                theme["imagegen_options"] = IMAGEGEN_OPTIONS
+
         common.init(AWTK_ROOT, ASSETS_ROOT, THEMES, ASSET_C, OUTPUT_ROOT)
         common.set_tools_dir(TOOLS_ROOT)
         common.set_dpi(DPI)
@@ -184,5 +212,5 @@ def run(awtk_root, is_excluded_file_handler = None):
         common.update_res()
 
         if isinstance(THEMES[0], dict):
-            if action != 'clean' and action != 'web' and action != 'json' and action != 'pinyin':
+            if action != 'clean' and action != 'web' and action != 'json' and action != 'pinyin' and action != 'res':
                 common.gen_res_c(False)

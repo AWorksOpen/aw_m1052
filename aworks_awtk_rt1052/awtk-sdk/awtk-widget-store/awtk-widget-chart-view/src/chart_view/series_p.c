@@ -22,7 +22,6 @@
 #include "tkc/mem.h"
 #include "tkc/utils.h"
 #include "base/style.h"
-#include "../base/fifo.h"
 #include "series_p.h"
 #include "chart_animator.h"
 #include "base/widget_animator_manager.h"
@@ -56,14 +55,14 @@
     float_t cp1x, cp1y, cp2x, cp2y;                                                                \
     if (i == index + size - 2) {                                                                   \
       draw_data_t* dnext;                                                                          \
-      dnext = (draw_data_t*)(fifo_at(fifo, i - 1));                                                \
+      dnext = (draw_data_t*)(series_fifo_get(fifo, i - 1));                                        \
       cp1x = ox + dprev->x;                                                                        \
       cp1y = oy + dprev->y;                                                                        \
       cp2x = ox + d->x - (dnext->x - dprev->x) / 4;                                                \
       cp2y = oy + d->y - (dnext->y - dprev->y) / 4;                                                \
     } else if (i == 0) {                                                                           \
       draw_data_t* dprev2;                                                                         \
-      dprev2 = (draw_data_t*)(fifo_at(fifo, i + 2));                                               \
+      dprev2 = (draw_data_t*)(series_fifo_get(fifo, i + 2));                                       \
       cp1x = ox + dprev->x + (d->x - dprev2->x) / 4;                                               \
       cp1y = oy + dprev->y + (d->y - dprev2->y) / 4;                                               \
       cp2x = ox + d->x - (d->x - dprev->x) / 4;                                                    \
@@ -72,8 +71,8 @@
       float_t nx, ny;                                                                              \
       draw_data_t* dnext;                                                                          \
       draw_data_t* dprev2;                                                                         \
-      dnext = (draw_data_t*)(fifo_at(fifo, i - 1));                                                \
-      dprev2 = (draw_data_t*)(fifo_at(fifo, i + 2));                                               \
+      dnext = (draw_data_t*)(series_fifo_get(fifo, i - 1));                                        \
+      dprev2 = (draw_data_t*)(series_fifo_get(fifo, i + 2));                                       \
       nx = (vertical && dnext->x - d->x != d->x - dprev->x) ? (d->x * 2 - dprev->x) : (dnext->x);  \
       ny = (!vertical && dnext->y - d->y != d->y - dprev->y) ? (d->y * 2 - dprev->y) : (dnext->y); \
       cp1x = ox + dprev->x + (d->x - dprev2->x) / 4;                                               \
@@ -83,8 +82,8 @@
     } else {                                                                                       \
       draw_data_t* dnext;                                                                          \
       draw_data_t* dprev2;                                                                         \
-      dnext = (draw_data_t*)(fifo_at(fifo, i - 1));                                                \
-      dprev2 = (draw_data_t*)(fifo_at(fifo, i + 2));                                               \
+      dnext = (draw_data_t*)(series_fifo_get(fifo, i - 1));                                        \
+      dprev2 = (draw_data_t*)(series_fifo_get(fifo, i + 2));                                       \
       cp1x = ox + dprev->x + (d->x - dprev2->x) / 4;                                               \
       cp1y = oy + dprev->y + (d->y - dprev2->y) / 4;                                               \
       cp2x = ox + d->x - (dnext->x - dprev->x) / 4;                                                \
@@ -94,24 +93,26 @@
   }
 
 float_t series_p_draw_data_get_x(const void* data) {
-  return ((series_p_draw_data_t*)data)->x;
+  return ((series_data_draw_normal_t*)data)->x;
 }
 
 float_t series_p_draw_data_get_y(const void* data) {
-  return ((series_p_draw_data_t*)data)->y;
+  return ((series_data_draw_normal_t*)data)->y;
 }
 
 int series_p_draw_data_compare_x(const void* a, const void* b) {
-  return tk_roundi(((series_p_draw_data_t*)a)->x) - tk_roundi(((series_p_draw_data_t*)b)->x);
+  return tk_roundi(((series_data_draw_normal_t*)a)->x) -
+         tk_roundi(((series_data_draw_normal_t*)b)->x);
 }
 
 int series_p_draw_data_compare_y(const void* a, const void* b) {
-  return tk_roundi((int)((series_p_draw_data_t*)a)->y) - tk_roundi(((series_p_draw_data_t*)b)->y);
+  return tk_roundi((int)((series_data_draw_normal_t*)a)->y) -
+         tk_roundi(((series_data_draw_normal_t*)b)->y);
 }
 
 void* series_p_draw_data_min_x(void* d, const void* data) {
-  series_p_draw_data_t* a = (series_p_draw_data_t*)d;
-  series_p_draw_data_t* b = (series_p_draw_data_t*)data;
+  series_data_draw_normal_t* a = (series_data_draw_normal_t*)d;
+  series_data_draw_normal_t* b = (series_data_draw_normal_t*)data;
   if (a->x > b->x) {
     a->x = b->x;
   }
@@ -119,8 +120,8 @@ void* series_p_draw_data_min_x(void* d, const void* data) {
 }
 
 void* series_p_draw_data_min_y(void* d, const void* data) {
-  series_p_draw_data_t* a = (series_p_draw_data_t*)d;
-  series_p_draw_data_t* b = (series_p_draw_data_t*)data;
+  series_data_draw_normal_t* a = (series_data_draw_normal_t*)d;
+  series_data_draw_normal_t* b = (series_data_draw_normal_t*)data;
   if (a->y > b->y) {
     a->y = b->y;
   }
@@ -128,8 +129,8 @@ void* series_p_draw_data_min_y(void* d, const void* data) {
 }
 
 void* series_p_draw_data_max_x(void* d, const void* data) {
-  series_p_draw_data_t* a = (series_p_draw_data_t*)d;
-  series_p_draw_data_t* b = (series_p_draw_data_t*)data;
+  series_data_draw_normal_t* a = (series_data_draw_normal_t*)d;
+  series_data_draw_normal_t* b = (series_data_draw_normal_t*)data;
   if (a->x < b->x) {
     a->x = b->x;
   }
@@ -137,19 +138,19 @@ void* series_p_draw_data_max_x(void* d, const void* data) {
 }
 
 void* series_p_draw_data_max_y(void* d, const void* data) {
-  series_p_draw_data_t* a = (series_p_draw_data_t*)d;
-  series_p_draw_data_t* b = (series_p_draw_data_t*)data;
+  series_data_draw_normal_t* a = (series_data_draw_normal_t*)d;
+  series_data_draw_normal_t* b = (series_data_draw_normal_t*)data;
   if (a->y < b->y) {
     a->y = b->y;
   }
   return a;
 }
 
-ret_t series_p_draw_data_set_yx(void* dst, float_t series, fifo_t* value, uint32_t value_index,
+ret_t series_p_draw_data_set_yx(void* dst, float_t series, object_t* value, uint32_t value_index,
                                 float_t value_min, float_t value_range, float_t pixel_range,
                                 bool_t inverse) {
-  series_p_draw_data_t* d = (series_p_draw_data_t*)dst;
-  float_t v = *((float_t*)(fifo_at(value, value_index)));
+  series_data_draw_normal_t* d = (series_data_draw_normal_t*)dst;
+  float_t v = *((float_t*)(series_fifo_get(value, value_index)));
   d->x = (v - value_min) / value_range * pixel_range;
   d->x = inverse ? -d->x : d->x;
   d->y = series;
@@ -157,11 +158,11 @@ ret_t series_p_draw_data_set_yx(void* dst, float_t series, fifo_t* value, uint32
   return RET_OK;
 }
 
-ret_t series_p_draw_data_set_xy(void* dst, float_t series, fifo_t* value, uint32_t value_index,
+ret_t series_p_draw_data_set_xy(void* dst, float_t series, object_t* value, uint32_t value_index,
                                 float_t value_min, float_t value_range, float_t pixel_range,
                                 bool_t inverse) {
-  series_p_draw_data_t* d = (series_p_draw_data_t*)dst;
-  float_t v = *((float_t*)(fifo_at(value, value_index)));
+  series_data_draw_normal_t* d = (series_data_draw_normal_t*)dst;
+  float_t v = *((float_t*)(series_fifo_get(value, value_index)));
   d->y = (v - value_min) / value_range * pixel_range;
   d->y = inverse ? d->y : -d->y;
   d->x = series;
@@ -169,26 +170,26 @@ ret_t series_p_draw_data_set_xy(void* dst, float_t series, fifo_t* value, uint32
 }
 
 float_t series_p_colorful_draw_data_get_x(const void* data) {
-  return ((series_p_colorful_draw_data_t*)data)->x;
+  return ((series_data_draw_colorful_t*)data)->x;
 }
 
 float_t series_p_colorful_draw_data_get_y(const void* data) {
-  return ((series_p_colorful_draw_data_t*)data)->y;
+  return ((series_data_draw_colorful_t*)data)->y;
 }
 
 int series_p_colorful_draw_data_compare_x(const void* a, const void* b) {
-  return tk_roundi(((series_p_colorful_draw_data_t*)a)->x) -
-         tk_roundi(((series_p_colorful_draw_data_t*)b)->x);
+  return tk_roundi(((series_data_draw_colorful_t*)a)->x) -
+         tk_roundi(((series_data_draw_colorful_t*)b)->x);
 }
 
 int series_p_colorful_draw_data_compare_y(const void* a, const void* b) {
-  return tk_roundi(((series_p_colorful_draw_data_t*)a)->y) -
-         tk_roundi(((series_p_colorful_draw_data_t*)b)->y);
+  return tk_roundi(((series_data_draw_colorful_t*)a)->y) -
+         tk_roundi(((series_data_draw_colorful_t*)b)->y);
 }
 
 void* series_p_colorful_draw_data_min_x(void* d, const void* data) {
-  series_p_colorful_draw_data_t* a = (series_p_colorful_draw_data_t*)d;
-  series_p_colorful_draw_data_t* b = (series_p_colorful_draw_data_t*)data;
+  series_data_draw_colorful_t* a = (series_data_draw_colorful_t*)d;
+  series_data_draw_colorful_t* b = (series_data_draw_colorful_t*)data;
   if (a->x > b->x) {
     a->x = b->x;
     a->c = b->c;
@@ -197,8 +198,8 @@ void* series_p_colorful_draw_data_min_x(void* d, const void* data) {
 }
 
 void* series_p_colorful_draw_data_min_y(void* d, const void* data) {
-  series_p_colorful_draw_data_t* a = (series_p_colorful_draw_data_t*)d;
-  series_p_colorful_draw_data_t* b = (series_p_colorful_draw_data_t*)data;
+  series_data_draw_colorful_t* a = (series_data_draw_colorful_t*)d;
+  series_data_draw_colorful_t* b = (series_data_draw_colorful_t*)data;
   if (a->y > b->y) {
     a->y = b->y;
     a->c = b->c;
@@ -207,8 +208,8 @@ void* series_p_colorful_draw_data_min_y(void* d, const void* data) {
 }
 
 void* series_p_colorful_draw_data_max_x(void* d, const void* data) {
-  series_p_colorful_draw_data_t* a = (series_p_colorful_draw_data_t*)d;
-  series_p_colorful_draw_data_t* b = (series_p_colorful_draw_data_t*)data;
+  series_data_draw_colorful_t* a = (series_data_draw_colorful_t*)d;
+  series_data_draw_colorful_t* b = (series_data_draw_colorful_t*)data;
   if (a->x < b->x) {
     a->x = b->x;
     a->c = b->c;
@@ -217,8 +218,8 @@ void* series_p_colorful_draw_data_max_x(void* d, const void* data) {
 }
 
 void* series_p_colorful_draw_data_max_y(void* d, const void* data) {
-  series_p_colorful_draw_data_t* a = (series_p_colorful_draw_data_t*)d;
-  series_p_colorful_draw_data_t* b = (series_p_colorful_draw_data_t*)data;
+  series_data_draw_colorful_t* a = (series_data_draw_colorful_t*)d;
+  series_data_draw_colorful_t* b = (series_data_draw_colorful_t*)data;
   if (a->y < b->y) {
     a->y = b->y;
     a->c = b->c;
@@ -226,11 +227,11 @@ void* series_p_colorful_draw_data_max_y(void* d, const void* data) {
   return a;
 }
 
-ret_t series_p_colorful_draw_data_set_yx(void* dst, float_t series, fifo_t* value,
+ret_t series_p_colorful_draw_data_set_yx(void* dst, float_t series, object_t* value,
                                          uint32_t value_index, float_t value_min,
                                          float_t value_range, float_t pixel_range, bool_t inverse) {
-  series_p_colorful_draw_data_t* d = (series_p_colorful_draw_data_t*)dst;
-  series_colorful_data_t* v = (series_colorful_data_t*)(fifo_at(value, value_index));
+  series_data_draw_colorful_t* d = (series_data_draw_colorful_t*)dst;
+  series_data_colorful_t* v = (series_data_colorful_t*)(series_fifo_get(value, value_index));
   d->x = (v->v - value_min) / value_range * pixel_range;
   d->x = inverse ? -d->x : d->x;
   d->y = series;
@@ -239,11 +240,11 @@ ret_t series_p_colorful_draw_data_set_yx(void* dst, float_t series, fifo_t* valu
   return RET_OK;
 }
 
-ret_t series_p_colorful_draw_data_set_xy(void* dst, float_t series, fifo_t* value,
+ret_t series_p_colorful_draw_data_set_xy(void* dst, float_t series, object_t* value,
                                          uint32_t value_index, float_t value_min,
                                          float_t value_range, float_t pixel_range, bool_t inverse) {
-  series_p_colorful_draw_data_t* d = (series_p_colorful_draw_data_t*)dst;
-  series_colorful_data_t* v = (series_colorful_data_t*)(fifo_at(value, value_index));
+  series_data_draw_colorful_t* d = (series_data_draw_colorful_t*)dst;
+  series_data_colorful_t* v = (series_data_colorful_t*)(series_fifo_get(value, value_index));
   d->y = (v->v - value_min) / value_range * pixel_range;
   d->y = inverse ? d->y : -d->y;
   d->x = series;
@@ -253,32 +254,32 @@ ret_t series_p_colorful_draw_data_set_xy(void* dst, float_t series, fifo_t* valu
 }
 
 float_t series_p_minmax_draw_data_get_x(const void* data) {
-  series_p_minmax_draw_data_t* d = (series_p_minmax_draw_data_t*)data;
+  series_data_draw_minmax_t* d = (series_data_draw_minmax_t*)data;
   return (d->xmin + d->xmax) / 2;
 }
 
 float_t series_p_minmax_draw_data_get_y(const void* data) {
-  series_p_minmax_draw_data_t* d = (series_p_minmax_draw_data_t*)data;
+  series_data_draw_minmax_t* d = (series_data_draw_minmax_t*)data;
   return (d->ymin + d->ymax) / 2;
 }
 
 int series_p_minmax_draw_data_compare_x(const void* a, const void* b) {
-  series_p_minmax_draw_data_t* da = (series_p_minmax_draw_data_t*)a;
-  series_p_minmax_draw_data_t* db = (series_p_minmax_draw_data_t*)b;
+  series_data_draw_minmax_t* da = (series_data_draw_minmax_t*)a;
+  series_data_draw_minmax_t* db = (series_data_draw_minmax_t*)b;
   return (da->xmin == db->xmin) ? (tk_roundi(da->xmax) - tk_roundi(db->xmax))
                                 : (tk_roundi(da->xmin) - tk_roundi(db->xmin));
 }
 
 int series_p_minmax_draw_data_compare_y(const void* a, const void* b) {
-  series_p_minmax_draw_data_t* da = (series_p_minmax_draw_data_t*)a;
-  series_p_minmax_draw_data_t* db = (series_p_minmax_draw_data_t*)b;
+  series_data_draw_minmax_t* da = (series_data_draw_minmax_t*)a;
+  series_data_draw_minmax_t* db = (series_data_draw_minmax_t*)b;
   return (da->ymin == db->ymin) ? (tk_roundi(da->ymax) - tk_roundi(db->ymax))
                                 : (tk_roundi(da->ymin) - tk_roundi(db->ymin));
 }
 
 void* series_p_minmax_draw_data_min_x(void* d, const void* data) {
-  series_p_minmax_draw_data_t* a = (series_p_minmax_draw_data_t*)d;
-  series_p_minmax_draw_data_t* b = (series_p_minmax_draw_data_t*)data;
+  series_data_draw_minmax_t* a = (series_data_draw_minmax_t*)d;
+  series_data_draw_minmax_t* b = (series_data_draw_minmax_t*)data;
   if (a->xmin > b->xmin) {
     a->xmin = b->xmin;
   }
@@ -286,8 +287,8 @@ void* series_p_minmax_draw_data_min_x(void* d, const void* data) {
 }
 
 void* series_p_minmax_draw_data_min_y(void* d, const void* data) {
-  series_p_minmax_draw_data_t* a = (series_p_minmax_draw_data_t*)d;
-  series_p_minmax_draw_data_t* b = (series_p_minmax_draw_data_t*)data;
+  series_data_draw_minmax_t* a = (series_data_draw_minmax_t*)d;
+  series_data_draw_minmax_t* b = (series_data_draw_minmax_t*)data;
   if (a->ymin > b->ymin) {
     a->ymin = b->ymin;
   }
@@ -295,8 +296,8 @@ void* series_p_minmax_draw_data_min_y(void* d, const void* data) {
 }
 
 void* series_p_minmax_draw_data_max_x(void* d, const void* data) {
-  series_p_minmax_draw_data_t* a = (series_p_minmax_draw_data_t*)d;
-  series_p_minmax_draw_data_t* b = (series_p_minmax_draw_data_t*)data;
+  series_data_draw_minmax_t* a = (series_data_draw_minmax_t*)d;
+  series_data_draw_minmax_t* b = (series_data_draw_minmax_t*)data;
   if (a->xmax < b->xmax) {
     a->xmax = b->xmax;
   }
@@ -304,19 +305,19 @@ void* series_p_minmax_draw_data_max_x(void* d, const void* data) {
 }
 
 void* series_p_minmax_draw_data_max_y(void* d, const void* data) {
-  series_p_minmax_draw_data_t* a = (series_p_minmax_draw_data_t*)d;
-  series_p_minmax_draw_data_t* b = (series_p_minmax_draw_data_t*)data;
+  series_data_draw_minmax_t* a = (series_data_draw_minmax_t*)d;
+  series_data_draw_minmax_t* b = (series_data_draw_minmax_t*)data;
   if (a->ymax < b->ymax) {
     a->ymax = b->ymax;
   }
   return a;
 }
 
-ret_t series_p_minmax_draw_data_set_yx(void* dst, float_t series, fifo_t* value,
+ret_t series_p_minmax_draw_data_set_yx(void* dst, float_t series, object_t* value,
                                        uint32_t value_index, float_t value_min, float_t value_range,
                                        float_t pixel_range, bool_t inverse) {
-  series_p_minmax_draw_data_t* d = (series_p_minmax_draw_data_t*)dst;
-  series_minmax_data_t* v = (series_minmax_data_t*)(fifo_at(value, value_index));
+  series_data_draw_minmax_t* d = (series_data_draw_minmax_t*)dst;
+  series_data_minmax_t* v = (series_data_minmax_t*)(series_fifo_get(value, value_index));
   d->xmin = (v->min - value_min) / value_range * pixel_range;
   d->xmin = inverse ? -d->xmin : d->xmin;
   d->xmax = (v->max - value_min) / value_range * pixel_range;
@@ -326,11 +327,11 @@ ret_t series_p_minmax_draw_data_set_yx(void* dst, float_t series, fifo_t* value,
   return RET_OK;
 }
 
-ret_t series_p_minmax_draw_data_set_xy(void* dst, float_t series, fifo_t* value,
+ret_t series_p_minmax_draw_data_set_xy(void* dst, float_t series, object_t* value,
                                        uint32_t value_index, float_t value_min, float_t value_range,
                                        float_t pixel_range, bool_t inverse) {
-  series_p_minmax_draw_data_t* d = (series_p_minmax_draw_data_t*)dst;
-  series_minmax_data_t* v = (series_minmax_data_t*)(fifo_at(value, value_index));
+  series_data_draw_minmax_t* d = (series_data_draw_minmax_t*)dst;
+  series_data_minmax_t* v = (series_data_minmax_t*)(series_fifo_get(value, value_index));
   d->ymin = (v->min - value_min) / value_range * pixel_range;
   d->ymin = inverse ? d->ymin : -d->ymin;
   d->ymax = (v->max - value_min) / value_range * pixel_range;
@@ -340,33 +341,35 @@ ret_t series_p_minmax_draw_data_set_xy(void* dst, float_t series, fifo_t* value,
 }
 
 ret_t series_p_draw_line(widget_t* widget, canvas_t* c, vgcanvas_t* vg, style_t* style, float_t ox,
-                         float_t oy, fifo_t* fifo, uint32_t index, uint32_t size) {
+                         float_t oy, object_t* fifo, uint32_t index, uint32_t size) {
   color_t trans = color_init(0, 0, 0, 0);
   color_t color;
   float_t border_width;
   int32_t i;
-  series_p_draw_data_t* d = NULL;
+  uint32_t fifo_size;
+  series_data_draw_normal_t* d = NULL;
   bool_t use_canvas =
       c->lcd->type != LCD_VGCANVAS;  // 非 OpenGL 下默认使用打点的形式画线，以提高效率
-
   assert(widget != NULL && style != NULL && fifo != NULL);
-  assert(index < fifo->size && index + size - 1 < fifo->size);
-  return_value_if_true(fifo->size == 0 || size == 0, RET_OK);
+
+  fifo_size = SERIES_FIFO_GET_SIZE(fifo);
+  assert(index < fifo_size && index + size - 1 < fifo_size);
+  return_value_if_true(fifo_size == 0 || size == 0, RET_OK);
 
   color = style_get_color(style, STYLE_ID_SERIES_LINE_BORDER_COLOR, trans);
   border_width = (float_t)style_get_int(style, STYLE_ID_SERIES_LINE_BORDER_WIDTH, 1);
 
   if (color.rgba.a) {
     if (use_canvas && border_width == 1) {
-      series_p_draw_data_t* dprev = NULL;
+      series_data_draw_normal_t* dprev = NULL;
       return_value_if_fail(c != NULL, RET_BAD_PARAMS);
 
-      d = (series_p_draw_data_t*)(fifo_at(fifo, index + size - 1));
+      d = (series_data_draw_normal_t*)(series_fifo_get(fifo, index + size - 1));
 
       canvas_set_stroke_color(c, color);
 
       for (i = index + size - 1; i > (int32_t)index; i--) {
-        dprev = (series_p_draw_data_t*)(fifo_at(fifo, i - 1));
+        dprev = (series_data_draw_normal_t*)(series_fifo_get(fifo, i - 1));
         _CANVAS_DRAW_LINE(c, ox + d->x, oy + d->y, ox + dprev->x, oy + dprev->y);
         d = dprev;
       }
@@ -374,7 +377,7 @@ ret_t series_p_draw_line(widget_t* widget, canvas_t* c, vgcanvas_t* vg, style_t*
       canvas_draw_vline(c, ox + d->x, oy + d->y, 1);
     } else {
       return_value_if_fail(vg != NULL, RET_BAD_PARAMS);
-      d = (series_p_draw_data_t*)(fifo_at(fifo, index + size - 1));
+      d = (series_data_draw_normal_t*)(series_fifo_get(fifo, index + size - 1));
 
       vgcanvas_set_line_width(vg, border_width);
       vgcanvas_set_stroke_color(vg, color);
@@ -382,7 +385,7 @@ ret_t series_p_draw_line(widget_t* widget, canvas_t* c, vgcanvas_t* vg, style_t*
       _VGCANVAS_MOVE_TO(vg, ox + d->x, oy + d->y);
 
       for (i = index + size - 1; i >= (int32_t)index; i--) {
-        d = (series_p_draw_data_t*)(fifo_at(fifo, i));
+        d = (series_data_draw_normal_t*)(series_fifo_get(fifo, i));
         _VGCANVAS_LINE_TO(vg, ox + d->x, oy + d->y);
       }
 
@@ -394,28 +397,30 @@ ret_t series_p_draw_line(widget_t* widget, canvas_t* c, vgcanvas_t* vg, style_t*
 }
 
 ret_t series_p_draw_line_colorful(widget_t* widget, canvas_t* c, vgcanvas_t* vg, style_t* style,
-                                  float_t ox, float_t oy, fifo_t* fifo, uint32_t index,
+                                  float_t ox, float_t oy, object_t* fifo, uint32_t index,
                                   uint32_t size) {
   float_t border_width;
   int32_t i;
-  series_p_colorful_draw_data_t* d = NULL;
-  series_p_colorful_draw_data_t* dprev = NULL;
+  uint32_t fifo_size;
+  series_data_draw_colorful_t* d = NULL;
+  series_data_draw_colorful_t* dprev = NULL;
   bool_t use_canvas =
       c->lcd->type != LCD_VGCANVAS;  // 非 OpenGL 下默认使用打点的形式画线，以提高效率
-
   assert(widget != NULL && style != NULL && fifo != NULL);
-  assert(index < fifo->size && index + size - 1 < fifo->size);
-  return_value_if_true(fifo->size == 0 || size == 0, RET_OK);
+
+  fifo_size = SERIES_FIFO_GET_SIZE(fifo);
+  assert(index < fifo_size && index + size - 1 < fifo_size);
+  return_value_if_true(fifo_size == 0 || size == 0, RET_OK);
 
   border_width = style_get_int(style, STYLE_ID_SERIES_LINE_BORDER_WIDTH, 1);
 
   if (use_canvas && border_width == 1) {
     return_value_if_fail(c != NULL, RET_BAD_PARAMS);
 
-    d = (series_p_colorful_draw_data_t*)(fifo_at(fifo, index + size - 1));
+    d = (series_data_draw_colorful_t*)(series_fifo_get(fifo, index + size - 1));
 
     for (i = index + size - 1; i > (int32_t)index; i--) {
-      dprev = (series_p_colorful_draw_data_t*)(fifo_at(fifo, i - 1));
+      dprev = (series_data_draw_colorful_t*)(series_fifo_get(fifo, i - 1));
       canvas_set_stroke_color(c, d->c);
       _CANVAS_DRAW_LINE(c, ox + d->x, oy + d->y, ox + dprev->x, oy + dprev->y);
       d = dprev;
@@ -428,7 +433,7 @@ ret_t series_p_draw_line_colorful(widget_t* widget, canvas_t* c, vgcanvas_t* vg,
 
     vgcanvas_set_line_width(vg, border_width);
 
-    dprev = d = (series_p_colorful_draw_data_t*)(fifo_at(fifo, index + size - 1));
+    dprev = d = (series_data_draw_colorful_t*)(series_fifo_get(fifo, index + size - 1));
     if (d->c.rgba.a) {
       vgcanvas_set_stroke_color(vg, d->c);
       vgcanvas_begin_path(vg);
@@ -436,7 +441,7 @@ ret_t series_p_draw_line_colorful(widget_t* widget, canvas_t* c, vgcanvas_t* vg,
     }
 
     for (i = index + size - 2; i >= (int32_t)index; i--) {
-      d = (series_p_colorful_draw_data_t*)(fifo_at(fifo, i));
+      d = (series_data_draw_colorful_t*)(series_fifo_get(fifo, i));
 
       if (dprev->c.rgba.a) {
         _VGCANVAS_LINE_TO(vg, ox + d->x, oy + d->y);
@@ -466,28 +471,31 @@ ret_t series_p_draw_line_colorful(widget_t* widget, canvas_t* c, vgcanvas_t* vg,
 }
 
 ret_t series_p_draw_line_area(widget_t* widget, vgcanvas_t* vg, style_t* style, float_t ox,
-                              float_t oy, fifo_t* fifo, uint32_t index, uint32_t size,
+                              float_t oy, object_t* fifo, uint32_t index, uint32_t size,
                               bool_t vertical) {
   color_t trans = color_init(0, 0, 0, 0);
   color_t color;
   int32_t i;
-  series_p_draw_data_t* d = NULL;
-  series_p_draw_data_t* d0 = NULL;
+  uint32_t fifo_size;
+  series_data_draw_normal_t* d = NULL;
+  series_data_draw_normal_t* d0 = NULL;
   assert(widget != NULL && style != NULL && fifo != NULL);
-  assert(index < fifo->size && index + size - 1 < fifo->size);
+
+  fifo_size = SERIES_FIFO_GET_SIZE(fifo);
+  assert(index < fifo_size && index + size - 1 < fifo_size);
   return_value_if_fail(vg != NULL, RET_BAD_PARAMS);
-  return_value_if_true(fifo->size == 0 || size == 0, RET_OK);
+  return_value_if_true(fifo_size == 0 || size == 0, RET_OK);
 
   color = style_get_color(style, STYLE_ID_SERIES_AREA_COLOR, trans);
 
   if (color.rgba.a) {
-    d0 = d = (series_p_draw_data_t*)(fifo_at(fifo, index + size - 1));
+    d0 = d = (series_data_draw_normal_t*)(series_fifo_get(fifo, index + size - 1));
     vgcanvas_set_fill_color(vg, color);
     vgcanvas_begin_path(vg);
     _VGCANVAS_MOVE_TO(vg, ox + d->x, oy + d->y);
 
     for (i = index + size - 1; i >= (int32_t)index; i--) {
-      d = (series_p_draw_data_t*)(fifo_at(fifo, i));
+      d = (series_data_draw_normal_t*)(series_fifo_get(fifo, i));
       _VGCANVAS_LINE_TO(vg, ox + d->x, oy + d->y);
     }
 
@@ -505,18 +513,21 @@ ret_t series_p_draw_line_area(widget_t* widget, vgcanvas_t* vg, style_t* style, 
 }
 
 ret_t series_p_draw_line_area_colorful(widget_t* widget, vgcanvas_t* vg, style_t* style, float_t ox,
-                                       float_t oy, fifo_t* fifo, uint32_t index, uint32_t size,
+                                       float_t oy, object_t* fifo, uint32_t index, uint32_t size,
                                        bool_t vertical) {
   int32_t i;
-  series_p_colorful_draw_data_t* d = NULL;
-  series_p_colorful_draw_data_t* d0 = NULL;
-  series_p_colorful_draw_data_t* dprev = NULL;
+  uint32_t fifo_size;
+  series_data_draw_colorful_t* d = NULL;
+  series_data_draw_colorful_t* d0 = NULL;
+  series_data_draw_colorful_t* dprev = NULL;
   assert(widget != NULL && style != NULL && fifo != NULL);
-  assert(index < fifo->size && index + size - 1 < fifo->size);
-  return_value_if_fail(vg != NULL, RET_BAD_PARAMS);
-  return_value_if_true(fifo->size == 0 || size == 0, RET_OK);
 
-  dprev = d0 = d = (series_p_colorful_draw_data_t*)(fifo_at(fifo, index + size - 1));
+  fifo_size = SERIES_FIFO_GET_SIZE(fifo);
+  assert(index < fifo_size && index + size - 1 < fifo_size);
+  return_value_if_fail(vg != NULL, RET_BAD_PARAMS);
+  return_value_if_true(fifo_size == 0 || size == 0, RET_OK);
+
+  dprev = d0 = d = (series_data_draw_colorful_t*)(series_fifo_get(fifo, index + size - 1));
   if (d->c.rgba.a) {
     vgcanvas_set_fill_color(vg, d->c);
     vgcanvas_begin_path(vg);
@@ -524,7 +535,7 @@ ret_t series_p_draw_line_area_colorful(widget_t* widget, vgcanvas_t* vg, style_t
   }
 
   for (i = index + size - 2; i >= (int32_t)index; i--) {
-    d = (series_p_colorful_draw_data_t*)(fifo_at(fifo, i));
+    d = (series_data_draw_colorful_t*)(series_fifo_get(fifo, i));
 
     if (dprev->c.rgba.a) {
       _VGCANVAS_LINE_TO(vg, ox + d->x, oy + d->y);
@@ -569,24 +580,27 @@ ret_t series_p_draw_line_area_colorful(widget_t* widget, vgcanvas_t* vg, style_t
 }
 
 ret_t series_p_draw_smooth_line(widget_t* widget, vgcanvas_t* vg, style_t* style, float_t ox,
-                                float_t oy, fifo_t* fifo, uint32_t index, uint32_t size,
+                                float_t oy, object_t* fifo, uint32_t index, uint32_t size,
                                 bool_t vertical) {
   color_t trans = color_init(0, 0, 0, 0);
   color_t color;
   float_t border_width;
   int32_t i;
-  series_p_draw_data_t* d = NULL;
-  series_p_draw_data_t* dprev = NULL;
+  uint32_t fifo_size;
+  series_data_draw_normal_t* d = NULL;
+  series_data_draw_normal_t* dprev = NULL;
   assert(widget != NULL && style != NULL && fifo != NULL);
-  assert(index < fifo->size && index + size - 1 < fifo->size);
+
+  fifo_size = SERIES_FIFO_GET_SIZE(fifo);
+  assert(index < fifo_size && index + size - 1 < fifo_size);
   return_value_if_fail(vg != NULL, RET_BAD_PARAMS);
-  return_value_if_true(fifo->size == 0 || size == 0, RET_OK);
+  return_value_if_true(fifo_size == 0 || size == 0, RET_OK);
 
   color = style_get_color(style, STYLE_ID_SERIES_LINE_BORDER_COLOR, trans);
   border_width = style_get_int(style, STYLE_ID_SERIES_LINE_BORDER_WIDTH, 1);
 
   if (color.rgba.a) {
-    dprev = d = (series_p_draw_data_t*)(fifo_at(fifo, index + size - 1));
+    dprev = d = (series_data_draw_normal_t*)(series_fifo_get(fifo, index + size - 1));
 
     vgcanvas_set_line_width(vg, border_width);
     vgcanvas_set_stroke_color(vg, color);
@@ -594,12 +608,13 @@ ret_t series_p_draw_smooth_line(widget_t* widget, vgcanvas_t* vg, style_t* style
     _VGCANVAS_MOVE_TO(vg, ox + d->x, oy + d->y);
 
     if (size == 2) {
-      d = (series_p_draw_data_t*)(fifo_at(fifo, index));
+      d = (series_data_draw_normal_t*)(series_fifo_get(fifo, index));
       _VGCANVAS_LINE_TO(vg, ox + d->x, oy + d->y);
     } else {
       for (i = index + size - 2; i >= (int32_t)index; i--) {
-        d = (series_p_draw_data_t*)(fifo_at(fifo, i));
-        _VACANVAS_BEZIER_FIFO_ONE(i, index, size, fifo, d, dprev, ox, oy, series_p_draw_data_t);
+        d = (series_data_draw_normal_t*)(series_fifo_get(fifo, i));
+        _VACANVAS_BEZIER_FIFO_ONE(i, index, size, fifo, d, dprev, ox, oy,
+                                  series_data_draw_normal_t);
         dprev = d;
       }
     }
@@ -611,22 +626,25 @@ ret_t series_p_draw_smooth_line(widget_t* widget, vgcanvas_t* vg, style_t* style
 }
 
 ret_t series_p_draw_smooth_line_colorful(widget_t* widget, vgcanvas_t* vg, style_t* style,
-                                         float_t ox, float_t oy, fifo_t* fifo, uint32_t index,
+                                         float_t ox, float_t oy, object_t* fifo, uint32_t index,
                                          uint32_t size, bool_t vertical) {
   float_t border_width;
   int32_t i;
-  series_p_colorful_draw_data_t* d = NULL;
-  series_p_colorful_draw_data_t* dprev = NULL;
+  uint32_t fifo_size;
+  series_data_draw_colorful_t* d = NULL;
+  series_data_draw_colorful_t* dprev = NULL;
   assert(widget != NULL && style != NULL && fifo != NULL);
-  assert(index < fifo->size && index + size - 1 < fifo->size);
+
+  fifo_size = SERIES_FIFO_GET_SIZE(fifo);
+  assert(index < fifo_size && index + size - 1 < fifo_size);
   return_value_if_fail(vg != NULL, RET_BAD_PARAMS);
-  return_value_if_true(fifo->size == 0 || size == 0, RET_OK);
+  return_value_if_true(fifo_size == 0 || size == 0, RET_OK);
 
   border_width = style_get_int(style, STYLE_ID_SERIES_LINE_BORDER_WIDTH, 1);
 
   vgcanvas_set_line_width(vg, border_width);
 
-  dprev = d = (series_p_colorful_draw_data_t*)(fifo_at(fifo, index + size - 1));
+  dprev = d = (series_data_draw_colorful_t*)(series_fifo_get(fifo, index + size - 1));
   if (d->c.rgba.a) {
     vgcanvas_set_stroke_color(vg, d->c);
     vgcanvas_begin_path(vg);
@@ -634,7 +652,7 @@ ret_t series_p_draw_smooth_line_colorful(widget_t* widget, vgcanvas_t* vg, style
   }
 
   if (size == 2) {
-    d = (series_p_colorful_draw_data_t*)(fifo_at(fifo, index));
+    d = (series_data_draw_colorful_t*)(series_fifo_get(fifo, index));
 
     if (dprev->c.rgba.a) {
       _VGCANVAS_LINE_TO(vg, ox + d->x, oy + d->y);
@@ -653,11 +671,11 @@ ret_t series_p_draw_smooth_line_colorful(widget_t* widget, vgcanvas_t* vg, style
     }
   } else {
     for (i = index + size - 2; i >= (int32_t)index; i--) {
-      d = (series_p_colorful_draw_data_t*)(fifo_at(fifo, i));
+      d = (series_data_draw_colorful_t*)(series_fifo_get(fifo, i));
 
       if (dprev->c.rgba.a) {
         _VACANVAS_BEZIER_FIFO_ONE(i, index, size, fifo, d, dprev, ox, oy,
-                                  series_p_colorful_draw_data_t);
+                                  series_data_draw_colorful_t);
       }
 
       if (d->c.color != dprev->c.color) {
@@ -684,34 +702,38 @@ ret_t series_p_draw_smooth_line_colorful(widget_t* widget, vgcanvas_t* vg, style
 }
 
 ret_t series_p_draw_smooth_line_area(widget_t* widget, vgcanvas_t* vg, style_t* style, float_t ox,
-                                     float_t oy, fifo_t* fifo, uint32_t index, uint32_t size,
+                                     float_t oy, object_t* fifo, uint32_t index, uint32_t size,
                                      bool_t vertical) {
   color_t trans = color_init(0, 0, 0, 0);
   color_t color;
   int32_t i;
-  series_p_draw_data_t* d = NULL;
-  series_p_draw_data_t* d0 = NULL;
-  series_p_draw_data_t* dprev = NULL;
+  uint32_t fifo_size;
+  series_data_draw_normal_t* d = NULL;
+  series_data_draw_normal_t* d0 = NULL;
+  series_data_draw_normal_t* dprev = NULL;
   assert(widget != NULL && style != NULL && fifo != NULL);
-  assert(index < fifo->size && index + size - 1 < fifo->size);
+
+  fifo_size = SERIES_FIFO_GET_SIZE(fifo);
+  assert(index < fifo_size && index + size - 1 < fifo_size);
   return_value_if_fail(vg != NULL, RET_BAD_PARAMS);
-  return_value_if_true(fifo->size == 0 || size == 0, RET_OK);
+  return_value_if_true(fifo_size == 0 || size == 0, RET_OK);
 
   color = style_get_color(style, STYLE_ID_SERIES_AREA_COLOR, trans);
 
   if (color.rgba.a) {
-    dprev = d0 = d = (series_p_draw_data_t*)(fifo_at(fifo, index + size - 1));
+    dprev = d0 = d = (series_data_draw_normal_t*)(series_fifo_get(fifo, index + size - 1));
     vgcanvas_set_fill_color(vg, color);
     vgcanvas_begin_path(vg);
     _VGCANVAS_MOVE_TO(vg, ox + d->x, oy + d->y);
 
     if (size == 2) {
-      d = (series_p_draw_data_t*)(fifo_at(fifo, index));
+      d = (series_data_draw_normal_t*)(series_fifo_get(fifo, index));
       _VGCANVAS_LINE_TO(vg, ox + d->x, oy + d->y);
     } else {
       for (i = index + size - 2; i >= (int32_t)index; i--) {
-        d = (series_p_draw_data_t*)(fifo_at(fifo, i));
-        _VACANVAS_BEZIER_FIFO_ONE(i, index, size, fifo, d, dprev, ox, oy, series_p_draw_data_t);
+        d = (series_data_draw_normal_t*)(series_fifo_get(fifo, i));
+        _VACANVAS_BEZIER_FIFO_ONE(i, index, size, fifo, d, dprev, ox, oy,
+                                  series_data_draw_normal_t);
         dprev = d;
       }
     }
@@ -730,18 +752,21 @@ ret_t series_p_draw_smooth_line_area(widget_t* widget, vgcanvas_t* vg, style_t* 
 }
 
 ret_t series_p_draw_smooth_line_area_colorful(widget_t* widget, vgcanvas_t* vg, style_t* style,
-                                              float_t ox, float_t oy, fifo_t* fifo, uint32_t index,
-                                              uint32_t size, bool_t vertical) {
+                                              float_t ox, float_t oy, object_t* fifo,
+                                              uint32_t index, uint32_t size, bool_t vertical) {
   int32_t i;
-  series_p_colorful_draw_data_t* d = NULL;
-  series_p_colorful_draw_data_t* d0 = NULL;
-  series_p_colorful_draw_data_t* dprev = NULL;
+  uint32_t fifo_size;
+  series_data_draw_colorful_t* d = NULL;
+  series_data_draw_colorful_t* d0 = NULL;
+  series_data_draw_colorful_t* dprev = NULL;
   assert(widget != NULL && style != NULL && fifo != NULL);
-  assert(index < fifo->size && index + size - 1 < fifo->size);
-  return_value_if_fail(vg != NULL, RET_BAD_PARAMS);
-  return_value_if_true(fifo->size == 0 || size == 0, RET_OK);
 
-  dprev = d0 = d = (series_p_colorful_draw_data_t*)(fifo_at(fifo, index + size - 1));
+  fifo_size = SERIES_FIFO_GET_SIZE(fifo);
+  assert(index < fifo_size && index + size - 1 < fifo_size);
+  return_value_if_fail(vg != NULL, RET_BAD_PARAMS);
+  return_value_if_true(fifo_size == 0 || size == 0, RET_OK);
+
+  dprev = d0 = d = (series_data_draw_colorful_t*)(series_fifo_get(fifo, index + size - 1));
   if (d->c.rgba.a) {
     vgcanvas_set_fill_color(vg, d->c);
     vgcanvas_begin_path(vg);
@@ -749,7 +774,7 @@ ret_t series_p_draw_smooth_line_area_colorful(widget_t* widget, vgcanvas_t* vg, 
   }
 
   if (size == 2) {
-    d = (series_p_colorful_draw_data_t*)(fifo_at(fifo, index));
+    d = (series_data_draw_colorful_t*)(series_fifo_get(fifo, index));
 
     if (dprev->c.rgba.a) {
       _VGCANVAS_LINE_TO(vg, ox + d->x, oy + d->y);
@@ -777,11 +802,11 @@ ret_t series_p_draw_smooth_line_area_colorful(widget_t* widget, vgcanvas_t* vg, 
     }
   } else {
     for (i = index + size - 2; i >= (int32_t)index; i--) {
-      d = (series_p_colorful_draw_data_t*)(fifo_at(fifo, i));
+      d = (series_data_draw_colorful_t*)(series_fifo_get(fifo, i));
 
       if (dprev->c.rgba.a) {
         _VACANVAS_BEZIER_FIFO_ONE(i, index, size, fifo, d, dprev, ox, oy,
-                                  series_p_colorful_draw_data_t);
+                                  series_data_draw_colorful_t);
       }
 
       if (d->c.color != dprev->c.color) {
@@ -824,7 +849,7 @@ ret_t series_p_draw_smooth_line_area_colorful(widget_t* widget, vgcanvas_t* vg, 
 }
 
 ret_t series_p_draw_symbol(widget_t* widget, canvas_t* c, style_t* style, float_t ox, float_t oy,
-                           fifo_t* fifo, uint32_t index, uint32_t size, float_t symbol_size) {
+                           object_t* fifo, uint32_t index, uint32_t size, float_t symbol_size) {
   rect_t r;
   color_t trans = color_init(0, 0, 0, 0);
   color_t bg_color, bd_color;
@@ -835,10 +860,13 @@ ret_t series_p_draw_symbol(widget_t* widget, canvas_t* c, style_t* style, float_
   const char* image_name;
   image_draw_type_t draw_type;
   int32_t i;
-  series_p_draw_data_t* d = NULL;
+  uint32_t fifo_size;
+  series_data_draw_normal_t* d = NULL;
   assert(widget != NULL && c != NULL && style != NULL && fifo != NULL);
-  assert(index < fifo->size && index + size - 1 < fifo->size);
-  return_value_if_true(fifo->size == 0 || size == 0 || symbol_size == 0, RET_OK);
+
+  fifo_size = SERIES_FIFO_GET_SIZE(fifo);
+  assert(index < fifo_size && index + size - 1 < fifo_size);
+  return_value_if_true(fifo_size == 0 || size == 0 || symbol_size == 0, RET_OK);
 
   bg_color = style_get_color(style, STYLE_ID_SERIES_SYMBOL_BG_COLOR, trans);
   bd_color = style_get_color(style, STYLE_ID_SERIES_SYMBOL_BORDER_COLOR, trans);
@@ -855,7 +883,7 @@ ret_t series_p_draw_symbol(widget_t* widget, canvas_t* c, style_t* style, float_
 
   if (bg_color.rgba.a || bd_color.rgba.a || pimg != NULL) {
     for (i = index; i < index + size; i++) {
-      d = (series_p_draw_data_t*)(fifo_at(fifo, i));
+      d = (series_data_draw_normal_t*)(series_fifo_get(fifo, i));
       r = rect_init(ox + d->x - symbol_size, oy + d->y - symbol_size, symbol_size * 2 + 1,
                     symbol_size * 2 + 1);
 
@@ -867,7 +895,7 @@ ret_t series_p_draw_symbol(widget_t* widget, canvas_t* c, style_t* style, float_
 }
 
 ret_t series_p_draw_symbol_colorful(widget_t* widget, canvas_t* c, style_t* style, float_t ox,
-                                    float_t oy, fifo_t* fifo, uint32_t index, uint32_t size,
+                                    float_t oy, object_t* fifo, uint32_t index, uint32_t size,
                                     float_t symbol_size) {
   rect_t r;
   color_t trans = color_init(0, 0, 0, 0);
@@ -879,11 +907,13 @@ ret_t series_p_draw_symbol_colorful(widget_t* widget, canvas_t* c, style_t* styl
   const char* image_name;
   image_draw_type_t draw_type;
   int32_t i;
-  series_p_colorful_draw_data_t* d = NULL;
-  assert(c != NULL);
-  assert(widget != NULL && style != NULL && fifo != NULL);
-  assert(index < fifo->size && index + size - 1 < fifo->size);
-  return_value_if_true(fifo->size == 0 || size == 0 || symbol_size == 0, RET_OK);
+  uint32_t fifo_size;
+  series_data_draw_colorful_t* d = NULL;
+  assert(widget != NULL && c != NULL && style != NULL && fifo != NULL);
+
+  fifo_size = SERIES_FIFO_GET_SIZE(fifo);
+  assert(index < fifo_size && index + size - 1 < fifo_size);
+  return_value_if_true(fifo_size == 0 || size == 0 || symbol_size == 0, RET_OK);
 
   bd_color = style_get_color(style, STYLE_ID_SERIES_SYMBOL_BORDER_COLOR, trans);
   border_width = style_get_int(style, STYLE_ID_SERIES_SYMBOL_BORDER_WIDTH, 1);
@@ -898,7 +928,7 @@ ret_t series_p_draw_symbol_colorful(widget_t* widget, canvas_t* c, style_t* styl
   }
 
   for (i = index; i < index + size; i++) {
-    d = (series_p_colorful_draw_data_t*)(fifo_at(fifo, i));
+    d = (series_data_draw_colorful_t*)(series_fifo_get(fifo, i));
     r = rect_init(ox + d->x - symbol_size, oy + d->y - symbol_size, symbol_size * 2 + 1,
                   symbol_size * 2 + 1);
 
@@ -908,9 +938,9 @@ ret_t series_p_draw_symbol_colorful(widget_t* widget, canvas_t* c, style_t* styl
   return RET_OK;
 }
 
-static ret_t series_p_draw_data_to_rect(void* data, float_t ox, float_t oy, uint32_t bar_width,
-                                        bool_t vertical, rect_t* r) {
-  series_p_draw_data_t* d = (series_p_draw_data_t*)(data);
+static ret_t series_data_draw_normal_to_rect(void* data, float_t ox, float_t oy, float_t bar_width,
+                                             bool_t vertical, rect_t* r) {
+  series_data_draw_normal_t* d = (series_data_draw_normal_t*)(data);
   assert(d != NULL && r != NULL);
   if (vertical) {
     xy_t y = oy;
@@ -924,9 +954,9 @@ static ret_t series_p_draw_data_to_rect(void* data, float_t ox, float_t oy, uint
   return RET_OK;
 }
 
-static ret_t series_p_minmax_draw_data_to_rect(void* data, float_t ox, float_t oy,
-                                               uint32_t bar_width, bool_t vertical, rect_t* r) {
-  series_p_minmax_draw_data_t* d = (series_p_minmax_draw_data_t*)(data);
+static ret_t series_data_draw_minmax_to_rect(void* data, float_t ox, float_t oy, float_t bar_width,
+                                             bool_t vertical, rect_t* r) {
+  series_data_draw_minmax_t* d = (series_data_draw_minmax_t*)(data);
   assert(d != NULL && r != NULL);
   if (vertical) {
     wh_t h = d->ymax >= d->ymin ? (d->ymax - d->ymin + 1) : -(d->ymin - d->ymax + 1);
@@ -938,12 +968,12 @@ static ret_t series_p_minmax_draw_data_to_rect(void* data, float_t ox, float_t o
   return RET_OK;
 }
 
-typedef ret_t (*series_p_draw_data_to_rect_t)(void* data, float_t ox, float_t oy,
-                                              uint32_t bar_width, bool_t vertical, rect_t* r);
+typedef ret_t (*series_data_draw_normal_to_rect_t)(void* data, float_t ox, float_t oy,
+                                                   float_t bar_width, bool_t vertical, rect_t* r);
 
 ret_t series_p_draw_bar(widget_t* widget, canvas_t* c, vgcanvas_t* vg, style_t* style, float_t ox,
-                        float_t oy, fifo_t* fifo, uint32_t index, uint32_t size, float_t bar_width,
-                        bool_t vertical, bool_t minmax) {
+                        float_t oy, object_t* fifo, uint32_t index, uint32_t size,
+                        float_t bar_width, bool_t vertical, bool_t minmax) {
   color_t trans = color_init(0, 0, 0, 0);
   color_t fg_color, bd_color;
   uint32_t radius;
@@ -953,11 +983,14 @@ ret_t series_p_draw_bar(widget_t* widget, canvas_t* c, vgcanvas_t* vg, style_t* 
   image_draw_type_t draw_type;
   rect_t r;
   uint32_t i;
-  series_p_draw_data_to_rect_t draw_data_to_rect =
-      minmax ? series_p_minmax_draw_data_to_rect : series_p_draw_data_to_rect;
+  uint32_t fifo_size;
+  series_data_draw_normal_to_rect_t draw_data_to_rect =
+      minmax ? series_data_draw_minmax_to_rect : series_data_draw_normal_to_rect;
   assert(widget != NULL && c != NULL && style != NULL && fifo != NULL);
-  assert(index < fifo->size && index + size - 1 < fifo->size);
-  return_value_if_true(fifo->size == 0 || size == 0, RET_OK);
+
+  fifo_size = SERIES_FIFO_GET_SIZE(fifo);
+  assert(index < fifo_size && index + size - 1 < fifo_size);
+  return_value_if_true(fifo_size == 0 || size == 0, RET_OK);
 
   fg_color = style_get_color(style, STYLE_ID_FG_COLOR, trans);
   bd_color = style_get_color(style, STYLE_ID_BORDER_COLOR, trans);
@@ -986,7 +1019,7 @@ ret_t series_p_draw_bar(widget_t* widget, canvas_t* c, vgcanvas_t* vg, style_t* 
     }
 
     for (i = index; i < index + size; i++) {
-      draw_data_to_rect(fifo_at(fifo, i), ox, oy, bar_width, vertical, &r);
+      draw_data_to_rect(series_fifo_get(fifo, i), ox, oy, bar_width, vertical, &r);
 
       if (use_vg) {
         vgcanvas_translate(vg, c->ox, c->oy);
@@ -1024,52 +1057,18 @@ ret_t series_p_draw_bar(widget_t* widget, canvas_t* c, vgcanvas_t* vg, style_t* 
   return RET_OK;
 }
 
-ret_t series_p_reset_fifo(widget_t* widget) {
+static ret_t series_p_on_fifo_will_set(void* ctx, event_t* e) {
+  widget_t* widget = WIDGET(ctx);
   series_t* series = SERIES(widget);
-  return_value_if_fail(series != NULL, RET_BAD_PARAMS);
+  widget_t* axis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS_OBJ);
 
-  if (series->need_reset_fifo) {
-    if (series->fifo != NULL) {
-      fifo_destroy(series->fifo);
-    }
-    assert(series->capacity > 0 && series->unit_size > 0);
-    series->fifo = fifo_create(series->capacity, series->unit_size, NULL, NULL);
-    series->need_reset_fifo = FALSE;
-  }
+  series_fifo_set_event_t* evt = series_fifo_set_event_cast(e);
+  uint32_t index = evt->index;
+  uint32_t nr = evt->nr;
+  const void* data = evt->data;
+  object_t* fifo = series->fifo;
 
-  return RET_OK;
-}
-
-uint32_t series_p_count(widget_t* widget) {
-  series_t* series = SERIES(widget);
-  return_value_if_fail(series != NULL && series->fifo != NULL, 0);
-  return series->fifo->size;
-}
-
-ret_t series_p_set_with_animator(widget_t* widget, uint32_t index, const void* data, uint32_t nr,
-                                 series_animator_create_t create_animator) {
-  widget_t* axis;
-  fifo_t* fifo;
-  series_t* series = SERIES(widget);
-  return_value_if_fail(series != NULL && data != NULL && nr > 0, RET_BAD_PARAMS);
-
-  series_p_reset_fifo(widget);
-  fifo = series->fifo;
-  return_value_if_fail(fifo != NULL && fifo->capacity > 0, RET_BAD_PARAMS);
-
-  axis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS);
-
-  if (index + nr > fifo->size) {
-    fifo_npush(fifo, NULL, index + nr - fifo->size);
-    if (nr >= fifo->capacity) {
-      index = 0;
-      nr = fifo->capacity;
-      data = (void*)((uint8_t*)data + fifo->unit_size * (nr - fifo->capacity));
-    }
-  }
-
-  if (axis == NULL || series->value_animation == 0 || create_animator == NULL) {
-    fifo_set(fifo, index, data, nr);
+  if (axis == NULL || series->value_animation == 0 || series->animator_create == NULL) {
     widget_invalidate(widget, NULL);
   } else {
     widget_animator_t* wa = NULL;
@@ -1078,13 +1077,14 @@ ret_t series_p_set_with_animator(widget_t* widget, uint32_t index, const void* d
 
     widget_destroy_animator(widget, NULL);
 
-    if (index + nr > fifo->size) {
-      series->new_period = (series->new_period + index + nr - fifo->size) % range;
+    if (index + nr > SERIES_FIFO_GET_SIZE(fifo)) {
+      series->new_period = (series->new_period + index + nr - SERIES_FIFO_GET_SIZE(fifo)) % range;
     }
     series->clip_range = 0;
 
-    wa = create_animator(widget, series->value_animation, 0, SERIES_ANIMATION_EASING);
+    wa = series->animator_create(widget, series->value_animation, 0, SERIES_ANIMATION_EASING);
     assert(wa != NULL);
+
     chart_animator_fifo_value_set_params(wa, fifo, index, data, nr, range);
 
     if (series->inited) {
@@ -1092,41 +1092,18 @@ ret_t series_p_set_with_animator(widget_t* widget, uint32_t index, const void* d
     }
   }
 
-  return RET_OK;
+  return RET_STOP;
 }
 
-ret_t series_p_set_default(widget_t* widget, uint32_t index, const void* data, uint32_t nr) {
-  return series_p_set_with_animator(widget, index, data, nr,
-                                    chart_animator_fifo_float_value_create);
-}
+static ret_t series_p_on_fifo_push(void* ctx, event_t* e) {
+  object_t* fifo = OBJECT(e->target);
+  widget_t* widget = WIDGET(ctx);
+  widget_t* axis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS_OBJ);
+  series_fifo_push_event_t* evt = series_fifo_push_event_cast(e);
 
-ret_t series_p_rset(widget_t* widget, uint32_t index, const void* data, uint32_t nr) {
-  fifo_t* fifo;
   series_t* series = SERIES(widget);
-  return_value_if_fail(series != NULL && data != NULL && nr > 0, RET_BAD_PARAMS);
-
-  series_p_reset_fifo(widget);
-  fifo = series->fifo;
-  return_value_if_fail(fifo != NULL && fifo->capacity > 0, RET_BAD_PARAMS);
-
-  index = fifo->size >= index + 1 ? (fifo->size - index - 1) : 0;
-  return series_set(widget, index, data, nr);
-}
-
-ret_t series_p_push(widget_t* widget, const void* data, uint32_t nr) {
-  fifo_t* fifo;
-  widget_t* axis;
-  series_t* series = SERIES(widget);
-  return_value_if_fail(series != NULL && data != NULL && nr > 0, RET_BAD_PARAMS);
-
-  series_p_reset_fifo(widget);
-  fifo = series->fifo;
-  return_value_if_fail(fifo != NULL && fifo->capacity > 0, RET_BAD_PARAMS);
-
-  axis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS);
-  return_value_if_fail(axis != NULL, RET_BAD_PARAMS);
-
-  fifo_npush(fifo, data, nr);
+  uint32_t capacity = SERIES_FIFO_GET_CAPACITY(fifo);
+  uint32_t nr = evt->nr;
 
   if (axis != NULL) {
     uint32_t range = (uint32_t)(axis_get_range(axis, TRUE));
@@ -1141,12 +1118,12 @@ ret_t series_p_push(widget_t* widget, const void* data, uint32_t nr) {
       AXIS(axis)->need_update_data = TRUE;
     }
 
-    if (series->value_animation != 0 && fifo->size > 1) {
+    if (series->value_animation != 0 && SERIES_FIFO_GET_SIZE(fifo) > 1) {
       widget_animator_t* wa = NULL;
 
       widget_destroy_animator(widget, NULL);
 
-      series->clip_range = tk_min(series->new_period, tk_min(range, tk_min(nr, fifo->capacity)));
+      series->clip_range = tk_min(series->new_period, tk_min(range, tk_min(nr, capacity)));
 
       wa = widget_animator_prop_create(widget, series->value_animation, 100,
                                        SERIES_ANIMATION_EASING, SERIES_PROP_CLIP_RANGE);
@@ -1172,32 +1149,128 @@ ret_t series_p_push(widget_t* widget, const void* data, uint32_t nr) {
   return RET_OK;
 }
 
-ret_t series_p_pop(widget_t* widget, uint32_t nr) {
-  fifo_t* fifo;
+static ret_t series_p_on_fifo_pop(void* ctx, event_t* e) {
+  widget_t* widget = WIDGET(ctx);
+  widget_t* axis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS_OBJ);
+
+  return widget_invalidate(widget, NULL);
+}
+
+static ret_t series_p_fifo_emitter_on(widget_t* widget) {
   series_t* series = SERIES(widget);
-  return_value_if_fail(series != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(series != NULL && series->fifo != NULL, RET_BAD_PARAMS);
 
-  fifo = series->fifo;
-  return_value_if_fail(fifo != NULL && fifo->capacity > 0, RET_BAD_PARAMS);
-
-  fifo_npop(fifo, nr == 0 ? fifo->size : nr);
-
-  widget_invalidate(widget, NULL);
+  emitter_on(EMITTER(series->fifo), EVT_SERIES_FIFO_WILL_SET, series_p_on_fifo_will_set, widget);
+  emitter_on(EMITTER(series->fifo), EVT_SERIES_FIFO_PUSH, series_p_on_fifo_push, widget);
+  emitter_on(EMITTER(series->fifo), EVT_SERIES_FIFO_POP, series_p_on_fifo_pop, widget);
 
   return RET_OK;
 }
 
+static ret_t series_p_fifo_emitter_off(widget_t* widget) {
+  series_t* series = SERIES(widget);
+  return_value_if_fail(series != NULL && series->fifo != NULL, RET_BAD_PARAMS);
+
+  emitter_off_by_func(EMITTER(series->fifo), EVT_SERIES_FIFO_WILL_SET, series_p_on_fifo_will_set,
+                      widget);
+  emitter_off_by_func(EMITTER(series->fifo), EVT_SERIES_FIFO_PUSH, series_p_on_fifo_push, widget);
+  emitter_off_by_func(EMITTER(series->fifo), EVT_SERIES_FIFO_POP, series_p_on_fifo_pop, widget);
+
+  return RET_OK;
+}
+
+static ret_t series_p_fifo_deinit(widget_t* widget) {
+  series_t* series = SERIES(widget);
+  return_value_if_fail(series != NULL, RET_BAD_PARAMS);
+
+  if (series->fifo != NULL) {
+    series_p_fifo_emitter_off(widget);
+    OBJECT_UNREF(series->fifo);
+    series->fifo = NULL;
+  }
+
+  return RET_OK;
+}
+
+ret_t series_p_set_fifo(widget_t* widget, object_t* fifo) {
+  series_t* series = SERIES(widget);
+  return_value_if_fail(series != NULL && fifo != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(tk_str_start_with(object_get_type(fifo), "series_fifo"), RET_BAD_PARAMS);
+
+  if (series->fifo != fifo) {
+    series_p_fifo_deinit(widget);
+  }
+
+  if (series->fifo == NULL) {
+    series->fifo = fifo;
+    series_p_fifo_emitter_on(widget);
+  }
+
+  return RET_OK;
+}
+
+ret_t series_p_set_capacity(widget_t* widget, uint32_t capacity) {
+  series_t* series = SERIES(widget);
+  return_value_if_fail(series != NULL && series->fifo != NULL && capacity > 0, RET_BAD_PARAMS);
+
+  return series_fifo_set_capacity(series->fifo, capacity);
+}
+
+uint32_t series_p_count(widget_t* widget) {
+  series_t* series = SERIES(widget);
+  return_value_if_fail(series != NULL && series->fifo != NULL, 0);
+
+  return SERIES_FIFO_GET_SIZE(series->fifo);
+}
+
+ret_t series_p_set(widget_t* widget, uint32_t index, const void* data, uint32_t nr) {
+  series_t* series = SERIES(widget);
+  return_value_if_fail(series != NULL && series->fifo != NULL && data != NULL && nr > 0,
+                       RET_BAD_PARAMS);
+
+  return series_fifo_set(series->fifo, index, data, nr);
+}
+
+ret_t series_p_rset(widget_t* widget, uint32_t index, const void* data, uint32_t nr) {
+  series_t* series = SERIES(widget);
+  return_value_if_fail(series != NULL && series->fifo != NULL && data != NULL, RET_BAD_PARAMS);
+
+  return series_fifo_set_reverse(series->fifo, index, data, nr);
+}
+
+ret_t series_p_push(widget_t* widget, const void* data, uint32_t nr) {
+  series_t* series = SERIES(widget);
+  return_value_if_fail(series != NULL && series->fifo != NULL && data != NULL && nr > 0,
+                       RET_BAD_PARAMS);
+
+  return series_fifo_npush(series->fifo, data, nr);
+}
+
+ret_t series_p_clear(widget_t* widget) {
+  series_t* series = SERIES(widget);
+  return_value_if_fail(series != NULL && series->fifo != NULL, RET_BAD_PARAMS);
+
+  return series_fifo_clear(series->fifo);
+}
+
+ret_t series_p_pop(widget_t* widget, uint32_t nr) {
+  series_t* series = SERIES(widget);
+  return_value_if_fail(series != NULL && series->fifo != NULL, RET_BAD_PARAMS);
+
+  uint32_t size = SERIES_FIFO_GET_SIZE(series->fifo);
+  return series_fifo_npop(series->fifo, nr == 0 ? size : nr);
+}
+
 void* series_p_at(widget_t* widget, uint32_t index) {
-  fifo_t* fifo;
   series_t* series = SERIES(widget);
   return_value_if_fail(series != NULL && series->fifo != NULL, NULL);
 
-  fifo = series->fifo;
-  return fifo_at(fifo, index);
+  return series_fifo_get(series->fifo, index);
 }
 
 ret_t series_p_get_current(widget_t* widget, uint32_t* begin, uint32_t* end, uint32_t* middle) {
-  fifo_t* fifo;
+  object_t* fifo;
+  uint32_t size;
   uint32_t b, e, m;
   uint32_t srange;
   widget_t* saxis;
@@ -1205,20 +1278,23 @@ ret_t series_p_get_current(widget_t* widget, uint32_t* begin, uint32_t* end, uin
   return_value_if_fail(series != NULL, RET_BAD_PARAMS);
 
   fifo = series->fifo;
-  return_value_if_fail(fifo != NULL && fifo->size > 0, RET_BAD_PARAMS);
+  return_value_if_fail(fifo != NULL, RET_BAD_PARAMS);
 
-  saxis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS);
+  size = SERIES_FIFO_GET_SIZE(fifo);
+  return_value_if_fail(size > 0, RET_BAD_PARAMS);
+
+  saxis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS_OBJ);
   return_value_if_fail(saxis != NULL, RET_BAD_PARAMS);
 
   srange = axis_get_range(saxis, TRUE);
 
   if (series->display_mode == SERIES_DISPLAY_COVER) {
-    e = fifo->size - series->offset - 1;
-    m = fifo->size - series->offset - series->new_period;
-    b = fifo->size <= srange ? m : (e - srange + 1);
+    e = size - series->offset - 1;
+    m = size - series->offset - series->new_period;
+    b = size <= srange ? m : (e - srange + 1);
   } else {
-    e = fifo->size - series->offset - 1;
-    m = e - tk_min(fifo->size, srange) + 1;
+    e = size - series->offset - 1;
+    m = e - tk_min(size, srange) + 1;
     b = m;
   }
 
@@ -1233,13 +1309,15 @@ bool_t series_p_is_point_in(widget_t* widget, xy_t x, xy_t y, bool_t is_local) {
   point_t p = {x, y};
   rect_t r;
   float_t sinterval, srange;
+  uint32_t size;
   axis_t* saxis;
   axis_t* vaxis;
   series_t* series = SERIES(widget);
   return_value_if_fail(series != NULL && series->fifo != NULL, FALSE);
 
-  saxis = AXIS(widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS));
-  vaxis = AXIS(widget_get_prop_pointer(widget, SERIES_PROP_VALUE_AXIS));
+  size = SERIES_FIFO_GET_SIZE(series->fifo);
+  saxis = AXIS(widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS_OBJ));
+  vaxis = AXIS(widget_get_prop_pointer(widget, SERIES_PROP_VALUE_AXIS_OBJ));
   return_value_if_fail(saxis != NULL && vaxis != NULL, FALSE);
 
   if (!is_local) {
@@ -1253,10 +1331,10 @@ bool_t series_p_is_point_in(widget_t* widget, xy_t x, xy_t y, bool_t is_local) {
     if (saxis->inverse) {
       sinterval = -sinterval;
       r.x = saxis->draw_rect.x + saxis->draw_rect.w - 1 - sinterval / 2;
-      r.w = sinterval * (tk_min(srange, series->fifo->size) + 1) + 1;
+      r.w = sinterval * (tk_min(srange, size) + 1) + 1;
     } else {
       r.x = saxis->draw_rect.x - sinterval / 2;
-      r.w = sinterval * (tk_min(srange, series->fifo->size) + 1) - 1;
+      r.w = sinterval * (tk_min(srange, size) + 1) - 1;
     }
 
     if (r.w < 0) {
@@ -1268,11 +1346,11 @@ bool_t series_p_is_point_in(widget_t* widget, xy_t x, xy_t y, bool_t is_local) {
   } else {
     if (saxis->inverse) {
       r.y = saxis->draw_rect.y - sinterval / 2;
-      r.h = sinterval * (tk_min(srange, series->fifo->size) + 1) - 1;
+      r.h = sinterval * (tk_min(srange, size) + 1) - 1;
     } else {
       sinterval = -sinterval;
       r.y = saxis->draw_rect.y + saxis->draw_rect.h - 1 - sinterval / 2;
-      r.h = sinterval * (tk_min(srange, series->fifo->size) + 1) + 1;
+      r.h = sinterval * (tk_min(srange, size) + 1) + 1;
     }
 
     if (r.h < 0) {
@@ -1295,8 +1373,8 @@ int32_t series_p_relative_index_of_point_in(widget_t* widget, xy_t x, xy_t y, bo
   series_t* series = SERIES(widget);
   return_value_if_fail(series != NULL, -1);
 
-  saxis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS);
-  vaxis = widget_get_prop_pointer(widget, SERIES_PROP_VALUE_AXIS);
+  saxis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS_OBJ);
+  vaxis = widget_get_prop_pointer(widget, SERIES_PROP_VALUE_AXIS_OBJ);
   return_value_if_fail(saxis != NULL && vaxis != NULL, -1);
 
   if (!is_local) {
@@ -1304,7 +1382,7 @@ int32_t series_p_relative_index_of_point_in(widget_t* widget, xy_t x, xy_t y, bo
   }
 
   sinterval = axis_measure_series_interval(saxis);
-  if (AXIS(saxis)->axis_type == AXIS_TYPE_VALUE) {
+  if (AXIS(saxis)->axis_type != AXIS_TYPE_CATEGORY) {
     soffset = sinterval / 2;
   }
 
@@ -1322,11 +1400,13 @@ int32_t series_p_relative_index_of_point_in(widget_t* widget, xy_t x, xy_t y, bo
 }
 
 int32_t series_p_index_of_point_in(widget_t* widget, xy_t x, xy_t y, bool_t is_local) {
-  uint32_t begin, end, middle;
+  uint32_t begin, end, middle, size;
   int32_t index = -1;
   series_t* series = SERIES(widget);
   return_value_if_fail(series != NULL && series->fifo != NULL, -1);
-  return_value_if_true(series->fifo->size == 0, -1);
+
+  size = SERIES_FIFO_GET_SIZE(series->fifo);
+  return_value_if_true(size == 0, -1);
 
   series_get_current(widget, &begin, &end, &middle);
   index = series_p_relative_index_of_point_in(widget, x, y, is_local);
@@ -1355,6 +1435,7 @@ ret_t series_p_to_local(widget_t* widget, uint32_t index, point_t* p) {
   axis_t* s;
   axis_t* v;
   void* draw_data;
+  uint32_t data_size;
   float_t soffset = 0;
   float_t sinterval, vrange, vmin;
   series_t* series = SERIES(widget);
@@ -1365,13 +1446,13 @@ ret_t series_p_to_local(widget_t* widget, uint32_t index, point_t* p) {
 
   offset = index >= middle ? (index - middle) : (index - begin + end - middle + 1);
 
-  saxis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS);
-  vaxis = widget_get_prop_pointer(widget, SERIES_PROP_VALUE_AXIS);
+  saxis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS_OBJ);
+  vaxis = widget_get_prop_pointer(widget, SERIES_PROP_VALUE_AXIS_OBJ);
   s = AXIS(saxis);
   v = AXIS(vaxis);
   return_value_if_fail(s != NULL && v != NULL, RET_BAD_PARAMS);
 
-  draw_data = (void*)TKMEM_ALLOC(series->vt->draw_data_info->size);
+  draw_data = (void*)TKMEM_ALLOC(series->vt->draw_data_info->unit_size);
   return_value_if_fail(draw_data != NULL, RET_BAD_PARAMS);
 
   sinterval = axis_measure_series_interval(saxis);
@@ -1401,24 +1482,23 @@ ret_t series_p_to_local(widget_t* widget, uint32_t index, point_t* p) {
 }
 
 uint32_t series_p_get_offset_max(widget_t* widget) {
-  uint32_t range;
+  uint32_t range, size;
   widget_t* axis;
-  fifo_t* fifo;
   series_t* series = SERIES(widget);
-  return_value_if_fail(series != NULL, 0);
+  return_value_if_fail(series != NULL && series->fifo != NULL, 0);
 
-  fifo = (fifo_t*)(series->fifo);
-  return_value_if_true(fifo == NULL || fifo->size == 0, 0);
+  size = SERIES_FIFO_GET_SIZE(series->fifo);
+  return_value_if_true(size == 0, 0);
 
-  axis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS);
+  axis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS_OBJ);
   return_value_if_fail(axis != NULL, 0);
   range = axis_get_range(axis, TRUE);
 
-  if (fifo->size > range) {
+  if (size > range) {
     if (series->display_mode == SERIES_DISPLAY_COVER) {
-      return fifo->size - range - tk_roundi(series->clip_range);
+      return size - range - tk_roundi(series->clip_range);
     } else {
-      return fifo->size - range;
+      return size - range;
     }
   }
 
@@ -1437,16 +1517,16 @@ ret_t series_p_set_offset(widget_t* widget, uint32_t offset) {
 }
 
 static ret_t series_p_set_new_period_internal(widget_t* widget, uint32_t period, bool_t animat) {
-  uint32_t range;
-  fifo_t* fifo;
+  uint32_t range, capacity, size;
   widget_t* axis;
   series_t* series = SERIES(widget);
-  return_value_if_fail(series != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(series != NULL && series->fifo != NULL, RET_BAD_PARAMS);
 
-  fifo = series->fifo;
-  return_value_if_fail(fifo != NULL && fifo->capacity > 0 && period <= fifo->size, RET_BAD_PARAMS);
+  capacity = SERIES_FIFO_GET_CAPACITY(series->fifo);
+  size = SERIES_FIFO_GET_SIZE(series->fifo);
+  return_value_if_fail(capacity > 0 && period <= size, RET_BAD_PARAMS);
 
-  axis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS);
+  axis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS_OBJ);
   return_value_if_fail(axis != NULL, RET_BAD_PARAMS);
 
   range = (uint32_t)(axis_get_range(axis, TRUE));
@@ -1491,10 +1571,7 @@ ret_t series_p_get_prop(widget_t* widget, const char* name, value_t* v) {
     value_set_uint32(v, series_p_get_offset_max(widget));
     return RET_OK;
   } else if (tk_str_eq(name, SERIES_PROP_CAPACITY)) {
-    value_set_uint32(v, series->capacity);
-    return RET_OK;
-  } else if (tk_str_eq(name, SERIES_PROP_UNIT_SIZE)) {
-    value_set_uint32(v, series->unit_size);
+    value_set_uint32(v, SERIES_FIFO_GET_CAPACITY(series->fifo));
     return RET_OK;
   } else if (tk_str_eq(name, SERIES_PROP_COVERAGE)) {
     value_set_uint32(v, series->coverage);
@@ -1510,6 +1587,9 @@ ret_t series_p_get_prop(widget_t* widget, const char* name, value_t* v) {
     return RET_OK;
   } else if (tk_str_eq(name, SERIES_PROP_TITLE)) {
     value_set_wstr(v, series_get_title(widget));
+    return RET_OK;
+  } else if (tk_str_eq(name, SERIES_PROP_FIFO)) {
+    value_set_object(v, series->fifo);
     return RET_OK;
   }
 
@@ -1527,8 +1607,6 @@ ret_t series_p_set_prop(widget_t* widget, const char* name, const value_t* v) {
     return RET_OK;
   } else if (tk_str_eq(name, SERIES_PROP_CAPACITY)) {
     return series_set_capacity(widget, value_uint32(v));
-  } else if (tk_str_eq(name, SERIES_PROP_UNIT_SIZE)) {
-    return series_set_unit_size(widget, value_uint32(v));
   } else if (tk_str_eq(name, SERIES_PROP_COVERAGE)) {
     series->coverage = value_uint32(v);
     return RET_OK;
@@ -1546,6 +1624,8 @@ ret_t series_p_set_prop(widget_t* widget, const char* name, const value_t* v) {
     return series_p_set_new_period_internal(widget, value_uint32(v), FALSE);
   } else if (tk_str_eq(name, SERIES_PROP_TITLE)) {
     return series_set_title(widget, value_str(v));
+  } else if (tk_str_eq(name, SERIES_PROP_FIFO)) {
+    return series_set_fifo(widget, (object_t*)value_object(v));
   }
 
   return RET_NOT_FOUND;
@@ -1584,7 +1664,7 @@ ret_t series_p_get_origin_point(widget_t* widget, widget_t* saxis, widget_t* vax
   sruler = &(s->draw_rect);
   inverse = s->inverse ^ inverse;
 
-  if (v->axis_type == AXIS_TYPE_VALUE && v->max * v->min < 0) {
+  if (v->axis_type != AXIS_TYPE_CATEGORY && v->max * v->min < 0) {
     voffset = -v->min / axis_get_range(vaxis, FALSE);
   }
 
@@ -1602,12 +1682,12 @@ ret_t series_p_get_origin_point(widget_t* widget, widget_t* saxis, widget_t* vax
 }
 
 float_t series_p_get_series_interval(widget_t* widget) {
-  widget_t* axis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS);
+  widget_t* axis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS_OBJ);
   return axis_measure_series_interval(axis);
 }
 
 bool_t series_p_is_vertical(widget_t* widget) {
-  widget_t* axis = widget_get_prop_pointer(widget, SERIES_PROP_VALUE_AXIS);
+  widget_t* axis = widget_get_prop_pointer(widget, SERIES_PROP_VALUE_AXIS_OBJ);
   return (axis && tk_str_eq(widget_get_type(axis), WIDGET_TYPE_Y_AXIS));
 }
 
@@ -1633,7 +1713,7 @@ ret_t series_p_start_animator_when_inited(widget_t* widget) {
 }
 
 static ret_t series_p_measure_draw_data(series_t* series, widget_t* saxis, widget_t* vaxis,
-                                        fifo_t* fifo, uint32_t index_of_fold, bool_t vertical) {
+                                        object_t* fifo, uint32_t index_of_fold, bool_t vertical) {
   axis_measure_series_params_t params = {0};
   assert(series != NULL && saxis != NULL && vaxis != NULL && fifo != NULL);
 
@@ -1654,13 +1734,15 @@ static ret_t series_p_measure_draw_data(series_t* series, widget_t* saxis, widge
 }
 
 static ret_t series_p_calc_clip_rect(series_t* series, widget_t* saxis, canvas_t* c, point_t* o,
-                                     float_t interval, bool_t vertical, fifo_t* fifo, rect_t* r) {
+                                     float_t interval, bool_t vertical, object_t* fifo, rect_t* r) {
   void* d;
   float_t w, h;
+  uint32_t size;
   int32_t offset = tk_roundi(interval / 2);
   assert(series != NULL && saxis != NULL && fifo != NULL && c != NULL && o != NULL && r != NULL);
 
-  d = fifo_at(fifo, fifo->size - 1);
+  size = SERIES_FIFO_GET_SIZE(fifo);
+  d = series_fifo_get(fifo, size - 1);
 
   if (vertical) {
     assert(series->vt != NULL && series->vt->draw_data_info->get_axis1 != NULL);
@@ -1696,7 +1778,7 @@ static ret_t series_p_calc_coverd_clip_rect(series_t* series, canvas_t* c, point
 
 ret_t series_p_on_paint_self_push(widget_t* widget, canvas_t* c) {
   point_t o = {0};
-  fifo_t* fifo;
+  object_t* fifo;
   uint32_t nr;
   float_t interval;
   widget_t* saxis;
@@ -1707,10 +1789,10 @@ ret_t series_p_on_paint_self_push(widget_t* widget, canvas_t* c) {
   series_t* series = SERIES(widget);
 
   return_value_if_fail(series != NULL && series->vt->on_paint != NULL, RET_BAD_PARAMS);
-  return_value_if_true(series->fifo->size == 0, RET_OK);
+  return_value_if_true(SERIES_FIFO_GET_SIZE(series->fifo) == 0, RET_OK);
 
-  saxis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS);
-  vaxis = widget_get_prop_pointer(widget, SERIES_PROP_VALUE_AXIS);
+  saxis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS_OBJ);
+  vaxis = widget_get_prop_pointer(widget, SERIES_PROP_VALUE_AXIS_OBJ);
   return_value_if_fail(saxis != NULL && vaxis != NULL, RET_BAD_PARAMS);
 
   vertical = tk_str_eq(widget_get_type(vaxis), WIDGET_TYPE_Y_AXIS);
@@ -1719,26 +1801,26 @@ ret_t series_p_on_paint_self_push(widget_t* widget, canvas_t* c) {
   nr = axis_get_range(saxis, TRUE);
   return_value_if_fail(nr > 0, RET_BAD_PARAMS);
 
-  fifo = fifo_create(nr, series->vt->draw_data_info->size, NULL, NULL);
+  fifo = series_fifo_default_create(nr, series->vt->draw_data_info->unit_size);
   return_value_if_fail(fifo != NULL, RET_OOM);
 
   series_p_measure_draw_data(series, saxis, vaxis, fifo, 0, vertical);
 
-  if (fifo->size > 0) {
+  if (SERIES_FIFO_GET_SIZE(fifo) > 0) {
     series_p_get_origin_point(widget, saxis, vaxis, FALSE, &o);
     series_p_calc_clip_rect(series, saxis, c, &o, interval, vertical, fifo, &clip_rect);
-    series->vt->on_paint(widget, c, o.x, o.y, fifo, 0, fifo->size, &clip_rect);
+    series->vt->on_paint(widget, c, o.x, o.y, fifo, 0, SERIES_FIFO_GET_SIZE(fifo), &clip_rect);
   }
 
-  fifo_destroy(fifo);
+  OBJECT_UNREF(fifo);
 
   return RET_OK;
 }
 
 ret_t series_p_on_paint_self_cover(widget_t* widget, canvas_t* c) {
   point_t o = {0};
-  fifo_t* fifo;
-  uint32_t nr;
+  object_t* fifo;
+  uint32_t nr, size;
   float_t range;
   float_t interval;
   widget_t* saxis;
@@ -1749,10 +1831,12 @@ ret_t series_p_on_paint_self_cover(widget_t* widget, canvas_t* c) {
   series_t* series = SERIES(widget);
 
   return_value_if_fail(series != NULL && series->vt->on_paint != NULL, RET_BAD_PARAMS);
-  return_value_if_true(series->fifo->size == 0, RET_OK);
 
-  saxis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS);
-  vaxis = widget_get_prop_pointer(widget, SERIES_PROP_VALUE_AXIS);
+  size = SERIES_FIFO_GET_SIZE(series->fifo);
+  return_value_if_true(size == 0, RET_OK);
+
+  saxis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS_OBJ);
+  vaxis = widget_get_prop_pointer(widget, SERIES_PROP_VALUE_AXIS_OBJ);
   return_value_if_fail(saxis != NULL && vaxis != NULL, RET_BAD_PARAMS);
 
   vertical = tk_str_eq(widget_get_type(vaxis), WIDGET_TYPE_Y_AXIS);
@@ -1761,25 +1845,24 @@ ret_t series_p_on_paint_self_cover(widget_t* widget, canvas_t* c) {
   nr = range = axis_get_range(saxis, TRUE);
   return_value_if_fail(nr > 0, RET_BAD_PARAMS);
 
-  if (series->fifo->size > range) {
+  if (size > range) {
     if (series->offset == 0 || series->new_period < range) {
       // offset之前还有点, 则多取一个，以便bezier时保持一致
-      nr += tk_max(series->offset + range == series->fifo->size ? 0 : 1,
-                   tk_roundi(series->clip_range));
+      nr += tk_max(series->offset + range == size ? 0 : 1, tk_roundi(series->clip_range));
       index_of_fold = nr - series->new_period;
     }
   }
 
-  fifo = fifo_create(nr, series->vt->draw_data_info->size, NULL, NULL);
+  fifo = series_fifo_default_create(nr, series->vt->draw_data_info->unit_size);
   return_value_if_fail(fifo != NULL, RET_OOM);
 
   series_p_measure_draw_data(series, saxis, vaxis, fifo, index_of_fold, vertical);
   series_p_get_origin_point(widget, saxis, vaxis, FALSE, &o);
 
-  if (fifo->size - index_of_fold > 0) {
+  if (SERIES_FIFO_GET_SIZE(fifo) - index_of_fold > 0) {
     series_p_calc_clip_rect(series, saxis, c, &o, interval, vertical, fifo, &clip_rect);
-    series->vt->on_paint(widget, c, o.x, o.y, fifo, index_of_fold, fifo->size - index_of_fold,
-                         &clip_rect);
+    series->vt->on_paint(widget, c, o.x, o.y, fifo, index_of_fold,
+                         SERIES_FIFO_GET_SIZE(fifo) - index_of_fold, &clip_rect);
   } else {
     if (vertical) {
       clip_rect.x = c->ox + o.x;
@@ -1797,7 +1880,16 @@ ret_t series_p_on_paint_self_cover(widget_t* widget, canvas_t* c) {
     series->vt->on_paint(widget, c, o.x, o.y, fifo, 0, index_of_fold, &clip_rect);
   }
 
-  fifo_destroy(fifo);
+  OBJECT_UNREF(fifo);
+
+  return RET_OK;
+}
+
+ret_t series_p_on_destroy(widget_t* widget) {
+  series_t* series = SERIES(widget);
+  return_value_if_fail(series != NULL, RET_BAD_PARAMS);
+
+  series_p_fifo_deinit(widget);
 
   return RET_OK;
 }

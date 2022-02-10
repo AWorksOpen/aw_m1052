@@ -30,6 +30,7 @@ BEGIN_C_DECLS
 
 typedef ret_t (*table_client_on_load_data_t)(void* ctx, uint32_t row_index, widget_t* row);
 typedef ret_t (*table_client_on_create_row_t)(void* ctx, uint32_t row_index, widget_t* row);
+typedef ret_t (*table_client_on_prepare_row_t)(void* ctx, widget_t* client, uint32_t prepare_cnt);
 
 /**
  * @class table_client_t
@@ -118,6 +119,10 @@ typedef struct _table_client_t {
   /*创建行时的回调函数，可以注册事件处理函数*/
   void* on_create_row_ctx;
   table_client_on_create_row_t on_create_row;
+
+  /*预处理行（创建行）的回调函数，可以注册事件处理函数*/
+  void* on_prepare_row_ctx;
+  table_client_on_prepare_row_t on_prepare_row;
 } table_client_t;
 
 /**
@@ -230,13 +235,25 @@ ret_t table_client_set_on_load_data(widget_t* widget, table_client_on_load_data_
  * @method table_client_set_on_create_row
  * 设置 创建行时的回调函数，在回调函数中可以注册控件的事件。
  * @param {widget_t*} widget widget对象。
- * @param {table_client_on_create_row_t} on_create_row 回调函数，在回调函数加载数据。
+ * @param {table_client_on_create_row_t} on_create_row 回调函数。
  * @param {void*} ctx 回调函数的上下文。 
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t table_client_set_on_create_row(widget_t* widget, table_client_on_create_row_t on_create_row,
                                      void* ctx);
+
+/**
+ * @method table_client_set_on_prepare_row
+ * 设置 预处理行（创建行）的回调函数，在回调函数中可以创建行控件。
+ * @param {widget_t*} widget widget对象。
+ * @param {table_client_on_prepare_row_t} on_prepare_row 回调函数。
+ * @param {void*} ctx 回调函数的上下文。 
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t table_client_set_on_prepare_row(widget_t* widget,
+                                      table_client_on_prepare_row_t on_prepare_row, void* ctx);
 
 /**
  * @method table_client_get_virtual_h

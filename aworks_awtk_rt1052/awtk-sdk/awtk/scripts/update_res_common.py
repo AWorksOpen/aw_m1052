@@ -6,7 +6,6 @@ import copy
 import glob
 import shutil
 import platform
-from PIL import Image
 
 ###########################
 DPI = 'x1'
@@ -30,6 +29,7 @@ IS_EXCLUDED_FILE_HANDLER = None
 IS_GENERATE_RAW = True
 IS_GENERATE_INC_RES = True
 IS_GENERATE_INC_BITMAP = True
+ASSETS_SUBNAME = '__assets_'
 ###########################
 
 
@@ -39,6 +39,29 @@ OS_NAME = platform.system()
 def get_action():
     return ACTION
 
+def set_action(action):
+    global ACTION
+    ACTION = action
+
+def get_assets_subname():
+    return ASSETS_SUBNAME
+
+def set_assets_subname(subname):
+    global ASSETS_SUBNAME
+    ASSETS_SUBNAME = subname
+
+def get_asset_c():
+    return ASSET_C
+
+def set_asset_c(asset_c):
+    global ASSET_C
+    ASSET_C = asset_c
+
+def get_output_root():
+    return OUTPUT_ROOT
+
+def get_assets_root():
+    return ASSETS_ROOT
 
 def on_generate_res_before(handler):
     global ON_GENERATE_RES_BEFORE
@@ -295,6 +318,7 @@ def to_asset_const_name(filename, root):
     basename = basename.replace('/images/', '/image/')
     basename = basename.replace('/styles/', '/style/')
     basename = basename.replace('/scripts/', '/script/')
+    basename = basename.replace('/flows/', '/flow/')
     basename = basename.replace('./', '')
     basename = re.sub(r'[^a-zA-Z0-9]', '_', basename)
     return basename
@@ -499,6 +523,30 @@ def gen_res_all_data():
 
     emit_generate_res_after('data')
 
+def gen_res_all_flows():
+    if not THEME_PACKAGED and THEME != 'default':
+        return
+
+    raw = join_path(INPUT_DIR, 'flows')
+    if not os.path.exists(raw):
+        return
+
+    emit_generate_res_before('flows')
+
+    if IS_GENERATE_RAW:
+        if INPUT_DIR != join_path(OUTPUT_DIR, 'raw'):
+            dst = join_path(OUTPUT_DIR, 'raw/flows')
+            if os.path.exists(dst):
+                remove_dir(dst)
+            copy_dir(raw, dst)
+
+    if IS_GENERATE_INC_RES or IS_GENERATE_INC_BITMAP:
+        inc = join_path(OUTPUT_DIR, 'inc/flows')
+        make_dirs(inc)
+        resgen(raw, inc, THEME, '.flows')
+
+    emit_generate_res_after('flows')
+
 
 def gen_res_all_xml():
     if not THEME_PACKAGED and THEME != 'default':
@@ -673,6 +721,7 @@ def gen_res_all():
     gen_res_all_ui()
     gen_res_all_style()
     gen_res_all_data()
+    gen_res_all_flows()
     gen_res_all_xml()
     emit_generate_res_after('all')
     print('=========================================================')
@@ -769,7 +818,7 @@ def gen_assets_c_of_one_theme(with_multi_theme = True):
         return
 
     if with_multi_theme:
-        filename = join_path(OUTPUT_ROOT, '__assets_'+THEME+'.inc')
+        filename = join_path(OUTPUT_ROOT, ASSETS_SUBNAME+THEME+'.inc')
     else:
         filename, extname = os.path.splitext(ASSET_C)
         filename = filename + '_' + THEME + extname
@@ -787,6 +836,7 @@ def gen_assets_c_of_one_theme(with_multi_theme = True):
     result += gen_assets_includes(join_path(OUTPUT_DIR, 'inc/ui/*.data'), join_path(OUTPUT_ROOT, 'default/inc/ui/*.data'), with_multi_theme)
     result += gen_assets_includes(join_path(OUTPUT_DIR, 'inc/xml/*.data'), join_path(OUTPUT_ROOT, 'default/inc/xml/*.data'), with_multi_theme)
     result += gen_assets_includes(join_path(OUTPUT_DIR, 'inc/data/*.data'), join_path(OUTPUT_ROOT, 'default/inc/data/*.data'), with_multi_theme)
+    result += gen_assets_includes(join_path(OUTPUT_DIR, 'inc/flows/*.flows'), join_path(OUTPUT_ROOT, 'default/inc/flows/*.flows'), with_multi_theme)
     result += "#ifdef WITH_STB_IMAGE\n"
     result += gen_assets_includes(join_path(OUTPUT_DIR, 'inc/images/*.res'), join_path(OUTPUT_ROOT, 'default/inc/images/*.res'), with_multi_theme)
     result += "#else\n"
@@ -805,11 +855,11 @@ def gen_assets_c_of_one_theme(with_multi_theme = True):
     result += '\n'
 
     result += 'ret_t ' + func_name + '(void) {\n'
-    result += '  assets_manager_t* am = assets_manager();\n\n'
-    result += ''
+    result += '  assets_manager_t* am = assets_manager();\n'
+    result += '  assets_manager_set_theme(am, "' + THEME + '");\n'
+    result += '\n'
 
     result += '#ifdef WITH_FS_RES\n'
-    result += '  assets_manager_preload(am, ASSET_TYPE_FONT, "default");\n'
     result += '  assets_manager_preload(am, ASSET_TYPE_STYLE, "default");\n'
     result += '#else\n'
     result += gen_assets_adds(join_path(OUTPUT_DIR, 'inc/strings/*.data'), join_path(OUTPUT_ROOT, 'default/inc/strings/*.data'))
@@ -817,6 +867,7 @@ def gen_assets_c_of_one_theme(with_multi_theme = True):
     result += gen_assets_adds(join_path(OUTPUT_DIR, 'inc/ui/*.data'), join_path(OUTPUT_ROOT, 'default/inc/ui/*.data'))
     result += gen_assets_adds(join_path(OUTPUT_DIR, 'inc/xml/*.data'), join_path(OUTPUT_ROOT, 'default/inc/xml/*.data'))
     result += gen_assets_adds(join_path(OUTPUT_DIR, 'inc/data/*.data'), join_path(OUTPUT_ROOT, 'default/inc/data/*.data'))
+    result += gen_assets_adds(join_path(OUTPUT_DIR, 'inc/flows/*.flows'), join_path(OUTPUT_ROOT, 'default/inc/flows/*.flows'))
     if IS_GENERATE_INC_RES:
         result += gen_assets_adds(join_path(OUTPUT_DIR, 'inc/images/*.res'), join_path(OUTPUT_ROOT, 'default/inc/images/*.res'))
     else:
@@ -848,7 +899,144 @@ def gen_asset_c_entry_with_multi_theme():
     for i in range(len(THEMES)):
         set_current_theme(i)
         if THEME_PACKAGED:
-            result += '#include "'+assets_root+'/__assets_'+THEME+'.inc"\n'
+            result += '#include "'+assets_root+'/'+ASSETS_SUBNAME+THEME+'.inc"\n'
+
+    result += '\n'
+    result += '#ifndef APP_THEME\n'
+    result += '#define APP_THEME "' + APP_THEME + '"\n'
+    result += '#endif /*APP_THEME*/\n\n'
+
+    result += 'bool_t assets_has_theme(const char* name) {\n'
+    result += '  return_value_if_fail(name != NULL, FALSE);\n\n'
+    result += '  '
+    for i in range(len(THEMES)):
+        set_current_theme(i)
+        if THEME_PACKAGED:
+            result +=   'if (tk_str_eq(name, "'+THEME+'")) {\n'
+            result += '    return TRUE;\n'
+            result += '  } else '
+    result += '{\n'
+    result += '    return FALSE;\n  }\n}\n\n'
+
+    result += 'static ret_t assets_init_internal(const char* theme) {\n'
+    result += '  assets_manager_t* am = assets_manager();\n'
+    result += '  return_value_if_fail(theme != NULL && am != NULL, RET_BAD_PARAMS);\n\n'
+    result += '  assets_manager_set_theme(am, theme);\n\n'
+    result += '  '
+    for i in range(len(THEMES)):
+        set_current_theme(i)
+        if THEME_PACKAGED:
+            result +=   'if (tk_str_eq(theme, "'+THEME+'")) {\n'
+            result += '    return assets_init_'+THEME+'();\n'
+            result += '  } else '
+    result += '{\n'
+    result += '    log_debug(\"%s not support.\\n\", theme);\n'
+    result += '    return RET_NOT_IMPL;\n  }\n}\n\n'
+
+    result += '#ifndef WITH_FS_RES\n'
+    result += 'static ret_t widget_set_theme_without_file_system(widget_t* widget, const char* name) {\n'
+    result += '  const asset_info_t* info = NULL;\n'
+    result += '  event_t e = event_init(EVT_THEME_CHANGED, NULL);\n'
+    result += '  widget_t* wm = widget_get_window_manager(widget);\n'
+    result += '  font_manager_t* fm = widget_get_font_manager(widget);\n'
+    result += '  image_manager_t* imm = widget_get_image_manager(widget);\n'
+    result += '  assets_manager_t* am = widget_get_assets_manager(widget);\n'
+    result += '  locale_info_t* locale_info = widget_get_locale_info(widget);\n\n'
+    result += '  return_value_if_fail(am != NULL && name != NULL, RET_BAD_PARAMS);\n'
+    result += '  return_value_if_fail(assets_has_theme(name), RET_BAD_PARAMS);\n\n'
+    result += '  font_manager_unload_all(fm);\n'
+    result += '  image_manager_unload_all(imm);\n'
+    result += '  assets_manager_clear_all(am);\n'
+    result += '  widget_reset_canvas(widget);\n\n'
+    result += '  assets_init_internal(name);\n'
+    result += '  locale_info_reload(locale_info);\n\n'
+    result += '  info = assets_manager_ref(am, ASSET_TYPE_STYLE, "default");\n'
+    result += '  theme_set_theme_data(theme(), info->data);\n'
+    result += '  assets_manager_unref(assets_manager(), info);\n\n'
+    result += '  widget_dispatch(wm, &e);\n'
+    result += '  widget_invalidate_force(wm, NULL);\n\n'
+    result += '  log_debug("theme changed: %s\\n", name);\n\n'
+    result += '  return RET_OK;\n'
+    result += '}\n\n'
+    result += 'static ret_t on_set_theme_without_file_system(void* ctx, event_t* e) {\n'
+    result += '  theme_change_event_t* evt = theme_change_event_cast(e);\n'
+    result += '  widget_set_theme_without_file_system(window_manager(), evt->name);\n'
+    result += '  return RET_OK;\n'
+    result += '}\n'
+    result += '#endif /*WITH_FS_RES*/\n\n'
+
+    result += 'ret_t assets_init(void) {\n'
+    result += '#ifndef WITH_FS_RES\n'
+    result += '  widget_on(window_manager(), EVT_THEME_WILL_CHANGE, on_set_theme_without_file_system, NULL);\n'
+    result += '#endif /*WITH_FS_RES*/\n'
+    result += '  return assets_init_internal(APP_THEME);\n}\n\n'
+
+    result += 'ret_t assets_set_global_theme(const char* name) {\n'
+    result += '  return widget_set_theme(window_manager(), name);\n'
+    result += '}\n'
+
+    write_file(ASSET_C, result)
+
+def gen_res_c(with_multi_theme = True):
+    theme_foreach(gen_assets_c_of_one_theme, with_multi_theme)
+
+    if with_multi_theme:
+        gen_asset_c_entry_with_multi_theme()
+
+def gen_assets_web_c_of_one_theme(with_multi_theme = True):
+    if not THEME_PACKAGED:
+        return
+
+    if with_multi_theme:
+        filename = join_path(OUTPUT_ROOT, ASSETS_SUBNAME+THEME+'.inc')
+    else:
+        filename, extname = os.path.splitext(ASSET_C.replace('.inc', '_web.inc'))
+        filename = filename + '_' + THEME + extname
+
+    func_name = 'assets_init'
+    if with_multi_theme:
+        func_name = 'assets_init_'+THEME
+
+    result = '#include "awtk.h"\n'
+    result += '#include "base/assets_manager.h"\n'
+
+    result += gen_assets_includes(join_path(OUTPUT_DIR, 'inc/images/*.bsvg'), join_path(OUTPUT_ROOT, 'default/inc/images/*.bsvg'), with_multi_theme)
+    result += gen_assets_includes(join_path(OUTPUT_DIR, 'inc/strings/*.data'), join_path(OUTPUT_ROOT, 'default/inc/strings/*.data'), with_multi_theme)
+    result += gen_assets_includes(join_path(OUTPUT_DIR, 'inc/styles/*.data'), join_path(OUTPUT_ROOT, 'default/inc/styles/*.data'), with_multi_theme)
+    result += gen_assets_includes(join_path(OUTPUT_DIR, 'inc/ui/*.data'), join_path(OUTPUT_ROOT, 'default/inc/ui/*.data'), with_multi_theme)
+    result += gen_assets_includes(join_path(OUTPUT_DIR, 'inc/xml/*.data'), join_path(OUTPUT_ROOT, 'default/inc/xml/*.data'), with_multi_theme)
+    result += gen_assets_includes(join_path(OUTPUT_DIR, 'inc/data/*.data'), join_path(OUTPUT_ROOT, 'default/inc/data/*.data'), with_multi_theme)
+    result += gen_assets_includes(join_path(OUTPUT_DIR, 'inc/flows/*.flows'), join_path(OUTPUT_ROOT, 'default/inc/flows/*.flows'), with_multi_theme)
+    result += '\n'
+
+    result += 'ret_t ' + func_name + '(void) {\n'
+    result += '  assets_manager_t* am = assets_manager();\n'
+    result += '  assets_manager_set_theme(am, "' + THEME + '");\n'
+    result += '\n'
+
+    result += gen_assets_adds(join_path(OUTPUT_DIR, 'inc/images/*.bsvg'), join_path(OUTPUT_ROOT, 'default/inc/images/*.bsvg'))
+    result += gen_assets_adds(join_path(OUTPUT_DIR, 'inc/strings/*.data'), join_path(OUTPUT_ROOT, 'default/inc/strings/*.data'))
+    result += gen_assets_adds(join_path(OUTPUT_DIR, 'inc/styles/*.data'), join_path(OUTPUT_ROOT, 'default/inc/styles/*.data'))
+    result += gen_assets_adds(join_path(OUTPUT_DIR, 'inc/ui/*.data'), join_path(OUTPUT_ROOT, 'default/inc/ui/*.data'))
+    result += gen_assets_adds(join_path(OUTPUT_DIR, 'inc/xml/*.data'), join_path(OUTPUT_ROOT, 'default/inc/xml/*.data'))
+    result += gen_assets_adds(join_path(OUTPUT_DIR, 'inc/data/*.data'), join_path(OUTPUT_ROOT, 'default/inc/data/*.data'))
+    result += gen_assets_adds(join_path(OUTPUT_DIR, 'inc/flows/*.flows'), join_path(OUTPUT_ROOT, 'default/inc/flows/*.flows'))
+
+    result += '  tk_init_assets();\n'
+    result += '  return RET_OK;\n'
+    result += '}\n'
+
+    write_file(filename.replace('.inc', '_web.inc'), result)
+
+def gen_asset_web_c_entry_with_multi_theme():
+    result = '#include "awtk.h"\n'
+    result += '#include "base/assets_manager.h"\n'
+
+    assets_root = os.path.relpath(OUTPUT_ROOT, os.path.dirname(ASSET_C)).replace('\\', '/')
+    for i in range(len(THEMES)):
+        set_current_theme(i)
+        if THEME_PACKAGED:
+            result += '#include "'+assets_root+'/'+ASSETS_SUBNAME+THEME+'_web.inc"\n'
 
     result += '\n'
     result += '#ifndef APP_THEME\n'
@@ -885,8 +1073,7 @@ def gen_asset_c_entry_with_multi_theme():
     result += 'ret_t assets_init(void) {\n'
     result += '  return assets_init_internal(APP_THEME);\n}\n\n'
 
-    result += '#ifndef WITH_FS_RES\n'
-    result += 'static ret_t widget_set_theme_without_file_system(widget_t* widget, const char* name) {\n'
+    result += 'static ret_t widget_set_theme_web(widget_t* widget, const char* name) {\n'
     result += '  const asset_info_t* info = NULL;\n'
     result += '  event_t e = event_init(EVT_THEME_CHANGED, NULL);\n'
     result += '  widget_t* wm = widget_get_window_manager(widget);\n'
@@ -903,79 +1090,27 @@ def gen_asset_c_entry_with_multi_theme():
     result += '  assets_init_internal(name);\n'
     result += '  locale_info_reload(locale_info);\n\n'
     result += '  info = assets_manager_ref(am, ASSET_TYPE_STYLE, "default");\n'
-    result += '  theme_init(theme(), info->data);\n'
+    result += '  theme_set_theme_data(theme(), info->data);\n'
     result += '  assets_manager_unref(assets_manager(), info);\n\n'
     result += '  widget_dispatch(wm, &e);\n'
     result += '  widget_invalidate_force(wm, NULL);\n\n'
     result += '  log_debug("theme changed: %s\\n", name);\n\n'
     result += '  return RET_OK;\n'
-    result += '}\n'
-    result += '#endif /*WITH_FS_RES*/\n\n'
-
-    result += 'ret_t assets_set_global_theme(const char* name) {\n'
-    result += '#ifdef WITH_FS_RES\n'
-    result += '  return widget_set_theme(window_manager(), name);\n'
-    result += '#else  /*WITH_FS_RES*/\n'
-    result += '  return widget_set_theme_without_file_system(window_manager(), name);\n'
-    result += '#endif /*WITH_FS_RES*/\n'
-    result += '}\n'
-
-    write_file(ASSET_C, result)
-
-
-def gen_res_c(with_multi_theme = True):
-    theme_foreach(gen_assets_c_of_one_theme, with_multi_theme)
-
-    if with_multi_theme:
-        gen_asset_c_entry_with_multi_theme()
-
-
-def gen_res_web_c():
-    result = '#include "awtk.h"\n'
-    result += '#include "base/assets_manager.h"\n'
-
-    result += gen_assets_includes(join_path(OUTPUT_DIR, 'inc/images/*.bsvg'), None, False)
-    result += gen_assets_includes(join_path(OUTPUT_DIR, 'inc/strings/*.data'), None, False)
-    result += gen_assets_includes(join_path(OUTPUT_DIR, 'inc/styles/*.data'), None, False)
-    result += gen_assets_includes(join_path(OUTPUT_DIR, 'inc/ui/*.data'), None, False)
-    result += gen_assets_includes(join_path(OUTPUT_DIR, 'inc/xml/*.data'), None, False)
-    result += gen_assets_includes(join_path(OUTPUT_DIR, 'inc/data/*.data'), None, False)
-
-    result += '\n'
-    result += 'ret_t assets_init(void) {\n'
-    result += '  assets_manager_t* am = assets_manager();\n\n'
-    result += ''
-
-    result += gen_assets_adds(join_path(OUTPUT_DIR, 'inc/images/*.bsvg'))
-    result += gen_assets_adds(join_path(OUTPUT_DIR, 'inc/strings/*.data'))
-    result += gen_assets_adds(join_path(OUTPUT_DIR, 'inc/styles/*.data'))
-    result += gen_assets_adds(join_path(OUTPUT_DIR, 'inc/ui/*.data'))
-    result += gen_assets_adds(join_path(OUTPUT_DIR, 'inc/xml/*.data'))
-    result += gen_assets_adds(join_path(OUTPUT_DIR, 'inc/data/*.data'))
-
-    result += '\n'
-    result += '  tk_init_assets();\n'
-    result += '  return RET_OK;\n'
     result += '}\n\n'
 
-    result += 'bool_t assets_has_theme(const char* name) {\n'
-    result += '  return_value_if_fail(name != NULL, FALSE);\n\n'
-    result += '  if (tk_str_eq(name, "default")) {\n'
-    result += '    return TRUE;\n'
-    result += '  } else {\n'
-    result += '    return FALSE;\n'
-    result += '  }\n}\n\n'
-
     result += 'ret_t assets_set_global_theme(const char* name) {\n'
-    result += '  log_debug(\"not support to change theme.\\n\");\n'
-    result += '  return RET_NOT_IMPL;\n'
-    result += '}\n'
+    result += '  return widget_set_theme_web(window_manager(), name);\n}\n'
 
-    write_file(ASSET_C.replace('.c', '_web.c'), result)
+    write_file(ASSET_C.replace('.inc', '_web.inc'), result)
 
+def gen_res_web_c(with_multi_theme = True):
+    theme_foreach(gen_assets_web_c_of_one_theme, with_multi_theme)
+
+    if with_multi_theme:
+        gen_asset_web_c_entry_with_multi_theme()
 
 def gen_res_json_one(res_type, files):
-    result = "\n  " + res_type + ': [\n'
+    result = ''
     for f in files:
         uri = f.replace(os.getcwd(), "")[1:]
         uri = uri.replace('\\', '/')
@@ -983,26 +1118,35 @@ def gen_res_json_one(res_type, files):
         basename = os.path.basename(filename)
         result = result + '    {name:"' + basename + '\", uri:"' + uri
         if res_type == 'image' and extname != '.svg' and extname != '.bsvg':
+            from PIL import Image
             img = Image.open(f)
             w, h = img.size
             result = result + '", w:' + str(w) + ', h:' + str(h) + '},\n'
         else:
             result = result + '"},\n'
-    result = result + '  ],'
 
     return result
 
+def gen_res_json_all_theme(res_type, sub_filepath):
+    result = "\n  " + res_type + ': [\n'
+    for i in range(len(THEMES)):
+        set_current_theme(i)
+        files = glob.glob(join_path(INPUT_DIR, sub_filepath))
+        result += gen_res_json_one(res_type, files)
+    result += '  ],'
+
+    return result
 
 def gen_res_json():
     result = 'const g_awtk_assets = {'
-    result += gen_res_json_one("image", glob.glob(join_path(INPUT_DIR, 'images/*/*.*')))
-    result += gen_res_json_one("ui", glob.glob(join_path(INPUT_DIR, 'ui/*.bin')))
-    result += gen_res_json_one("style", glob.glob(join_path(INPUT_DIR, 'styles/*.bin')))
-    result += gen_res_json_one("string", glob.glob(join_path(INPUT_DIR, 'strings/*.bin')))
-    result += gen_res_json_one("xml", glob.glob(join_path(INPUT_DIR, 'xml/*.xml')))
-    result += gen_res_json_one("data", glob.glob(join_path(INPUT_DIR, 'data/*.*')))
-    result += gen_res_json_one("script", glob.glob(join_path(INPUT_DIR, 'scripts/*.*')))
-    result += gen_res_json_one("font", glob.glob(join_path(INPUT_DIR, 'fonts/*.ttf')))
+    result += gen_res_json_all_theme("image", 'images/*/*.*')
+    result += gen_res_json_all_theme("ui", 'ui/*.bin')
+    result += gen_res_json_all_theme("style",'styles/*.bin')
+    result += gen_res_json_all_theme("string", 'strings/*.bin')
+    result += gen_res_json_all_theme("xml", 'xml/*.xml')
+    result += gen_res_json_all_theme("data", 'data/*.*')
+    result += gen_res_json_all_theme("script", 'scripts/*.*')
+    result += gen_res_json_all_theme("font", 'fonts/*.ttf')
     result += '\n};\n'
 
     write_file(ASSET_C.replace('.c', '_web.js'), result)
@@ -1051,6 +1195,9 @@ def update_res():
         clean_res()
         theme_foreach(gen_res_all)
         gen_res_c()
+    elif ACTION == 'res':
+        clean_res()
+        theme_foreach(gen_res_all)
     elif ACTION == 'clean':
         clean_res()
     elif ACTION == 'web':
@@ -1077,6 +1224,9 @@ def update_res():
         gen_res_c()
     elif ACTION == 'data':
         theme_foreach(gen_res_all_data)
+        gen_res_c()
+    elif ACTION == 'flows':
+        theme_foreach(gen_res_all_flows)
         gen_res_c()
     elif ACTION == 'xml':
         theme_foreach(gen_res_all_xml)
@@ -1107,7 +1257,7 @@ def clean_res_of_one_theme():
     clean_res_bin(join_path(OUTPUT_DIR, 'raw/strings'))
     clean_res_bin(join_path(OUTPUT_DIR, 'raw/styles'))
     remove_dir(join_path(OUTPUT_DIR, 'inc'))
-    remove_dir(join_path(OUTPUT_ROOT, '__assets_'+THEME+'.inc'))
+    remove_dir(join_path(OUTPUT_ROOT, ASSETS_SUBNAME+THEME+'.inc'))
 
 def clean_res():
     print('=========================================================')
@@ -1120,30 +1270,33 @@ def clean_res():
         remove_dir(ASSET_C)
     print('=========================================================')
 
+def get_args(args) :
+    list_args = []
+    for arg in args:
+        if arg.startswith('--') :
+            continue
+        list_args.append(arg)
+    return list_args
+
+def show_usage_imlp():
+    args = ' action[clean|web|json|all|font|image|ui|style|string|script|data|xml|assets.c] dpi[x1|x2] image_options[rgba|bgra+bgr565|mono] awtk_root[--awtk_root=XXXXX]'
+    print('=========================================================')
+    print('Usage: python '+sys.argv[0] + args)
+    print('Example:')
+    print('python ' + sys.argv[0] + ' all')
+    print('python ' + sys.argv[0] + ' clean')
+    print('python ' + sys.argv[0] + ' style --awtk_root=XXXXX ')
+    print('python ' + sys.argv[0] + ' all x1 bgra+bgr565')
+    print('python ' + sys.argv[0] + ' all x1 bgra+bgr565 --awtk_root=XXXXX')
+    print('=========================================================')
+    sys.exit(0)
 
 def show_usage():
-    global DPI
-    global ACTION
-    global IMAGEGEN_OPTIONS
-    args = ' action[clean|web|json|all|font|image|ui|style|string|script|data|xml|assets.c] dpi[x1|x2] image_options[rgba|bgra+bgr565|mono]'
     if len(sys.argv) == 1:
-        print('=========================================================')
-        print('Usage: python '+sys.argv[0] + args)
-        print('Example:')
-        print('python ' + sys.argv[0] + ' all')
-        print('python ' + sys.argv[0] + ' clean')
-        print('python ' + sys.argv[0] + ' style')
-        print('python ' + sys.argv[0] + ' all x1 bgra+bgr565')
-        print('=========================================================')
-        sys.exit(0)
+        show_usage_imlp();
     else:
-        ACTION = sys.argv[1]
-
-        if len(sys.argv) > 2:
-            DPI = sys.argv[2]
-
-        if len(sys.argv) > 3:
-            IMAGEGEN_OPTIONS = sys.argv[3]
-
+        sys_args = get_args(sys.argv[1:])
+        if len(sys_args) == 0 :
+            show_usage_imlp()
 
 show_usage()

@@ -36,7 +36,7 @@ BEGIN_C_DECLS
  *
  * ```xml
  * <!-- ui -->
- * <qr x="c" y="m" w="240" h="240" value="https://github.com/zlgopen/awtk" />
+ * <qr x="c" y="m" w="240" h="240" value="https://github.com/zlgopen/awtk"/>
  * ```
  * 在c代码中使用函数qr\_create创建数值文本控件。如：
  *
@@ -49,7 +49,7 @@ BEGIN_C_DECLS
  * <!-- style -->
  * <qr>
  *   <style name="default" >
- *     <normal fg_color="black" bg_color="white"/>
+ *     <normal fg_color="black" bg_color="white" bg_image="message"/>
  *     <disable fg_color="gray" bg_color="#f0f0f0"/>
  *   </style>
  * </qr>
@@ -98,14 +98,13 @@ widget_t* qr_cast(widget_t* widget);
  * 设置要转成二维码的字符串。
  * @annotation ["scriptable"]
  * @param {widget_t*} widget widget对象。
- * @param {const char*} value 格式字符串。。
+ * @param {const char*} value 格式字符串。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t qr_set_value(widget_t* widget, const char* value);
 
 #define WIDGET_TYPE_QR "qr"
-#define QR_STATE_SCANED "scanned"
 #define QR(widget) ((qr_t*)(qr_cast(WIDGET(widget))))
 
 /*public for subclass and runtime type check*/

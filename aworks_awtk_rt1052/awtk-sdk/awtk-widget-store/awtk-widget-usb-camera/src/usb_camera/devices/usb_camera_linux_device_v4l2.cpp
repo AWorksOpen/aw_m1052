@@ -326,9 +326,6 @@ usb_camera_auto_setup_mode_v4l2(usb_camera_device_t *usb_camera_device) {
     }
 #endif
   else {
-    printf("HIGHGUI ERROR: V4L2: Pixel format of incoming image is unsupported "
-           "by OpenCV\n");
-    usb_camera_close_device(usb_camera_device);
     return RET_FAIL;
   }
   return RET_OK;

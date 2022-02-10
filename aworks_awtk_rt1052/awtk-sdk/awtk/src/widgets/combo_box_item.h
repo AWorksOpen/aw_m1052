@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  combo_box_item
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -56,12 +56,17 @@ typedef struct _combo_box_item_t {
 } combo_box_item_t;
 
 /**
- * @event {event_t} EVT_VALUE_WILL_CHANGE
+ * @event {pointer_event_t} EVT_CLICK
+ * 点击事件。
+ */
+
+/**
+ * @event {value_change_event_t} EVT_VALUE_WILL_CHANGE
  * 值(勾选状态)即将改变事件。
  */
 
 /**
- * @event {event_t} EVT_VALUE_CHANGED
+ * @event {value_change_event_t} EVT_VALUE_CHANGED
  * 值(勾选状态)改变事件。
  */
 

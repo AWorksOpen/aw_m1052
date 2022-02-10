@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  simple memory manager
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,6 +19,7 @@
  *
  */
 
+#include <stdarg.h>
 #include "tkc/mem.h"
 #include "tkc/time_now.h"
 #include "tkc/mem_allocator_oom.h"
@@ -44,11 +45,11 @@ static mem_allocator_lock_t s_lock;
 #endif /*ENABLE_MEM_LEAK_CHECK*/
 
 bool_t tk_mem_is_valid_addr(void* addr) {
-  return ((uint64_t)addr > 0x10000);
+  return ((uintptr_t)addr > 0x10000);
 }
 
 static mem_allocator_t* mem_allocator_get(void) {
-  static mem_allocator_t std;
+  static mem_allocator_std_t std;
   if (s_allocator != NULL) {
     return s_allocator;
   }
@@ -69,40 +70,43 @@ ret_t tk_mem_init_stage2(void) {
 
 #else /*non std memory manager*/
 #include "tkc/mem_allocator_lock.h"
-#include "tkc/mem_allocator_simple.h"
+#include "tkc/mem_allocator_composite.h"
 
 static mem_allocator_lock_t s_lock;
 
-static void* s_heap_start = NULL;
-static uint32_t s_heap_size = 0;
+static mem_allocator_pool_t pool;
+static mem_allocator_composite_t composite;
 
 bool_t tk_mem_is_valid_addr(void* addr) {
-  uint64_t start = (uint64_t)s_heap_start;
-  uint64_t end = start + s_heap_size;
-
-  return (((uint64_t)addr >= (uint64_t)start) && ((uint64_t)addr < end));
+  return mem_allocator_composite_is_valid_addr(MEM_ALLOCATOR(&composite), addr);
 }
 
-ret_t tk_mem_init(void* buffer, uint32_t size) {
-  static mem_allocator_simple_t simple;
-  static mem_allocator_pool_t pool;
+ret_t tk_mem_init_ex(void* buffer, uint32_t size, ...) {
+  va_list va;
+  va_start(va, size);
+  s_allocator = mem_allocator_composite_init_va(&composite, buffer, size, va);
+  va_end(va);
 
-  s_heap_size = size;
-  s_heap_start = buffer;
+  return_value_if_fail(s_allocator != NULL, RET_BAD_PARAMS);
 
-  s_allocator = mem_allocator_simple_init(&simple, buffer, size);
-  if (size < 100 * 1024) {
-    s_allocator = mem_allocator_pool_init(&pool, s_allocator, 100, 100, 80, 80, 32);
-  } else if (size < 1000 * 1024) {
-    s_allocator = mem_allocator_pool_init(&pool, s_allocator, 500, 500, 500, 200, 200);
-  } else {
-    s_allocator = mem_allocator_pool_init(&pool, s_allocator, 1000, 1000, 1000, 500, 500);
+  if (size > 32 * 1024) {
+    if (size < 100 * 1024) {
+      s_allocator = mem_allocator_pool_init(&pool, s_allocator, 100, 100, 80, 80, 32);
+    } else if (size < 1000 * 1024) {
+      s_allocator = mem_allocator_pool_init(&pool, s_allocator, 500, 500, 500, 200, 200);
+    } else {
+      s_allocator = mem_allocator_pool_init(&pool, s_allocator, 1000, 1000, 1000, 500, 500);
+    }
   }
 #ifdef ENABLE_MEM_LEAK_CHECK
   s_allocator = mem_allocator_debug_init(&s_debug, s_allocator);
 #endif /*ENABLE_MEM_LEAK_CHECK*/
 
   return s_allocator != NULL ? RET_OK : RET_FAIL;
+}
+
+ret_t tk_mem_init(void* buffer, uint32_t size) {
+  return tk_mem_init_ex(buffer, size, NULL, 0);
 }
 
 ret_t tk_mem_init_stage2(void) {
@@ -117,7 +121,11 @@ static mem_allocator_t* mem_allocator_get(void) {
   return s_allocator;
 }
 
-#ifndef WITH_SDL
+#if (!defined(WITH_SDL) && !defined(LINUX))
+#define EXPORT_STD_MALLOC 1
+#endif
+
+#if defined(EXPORT_STD_MALLOC)
 /*export std malloc*/
 void* calloc(size_t count, size_t size) {
   return tk_calloc(count, size, __FUNCTION__, __LINE__);

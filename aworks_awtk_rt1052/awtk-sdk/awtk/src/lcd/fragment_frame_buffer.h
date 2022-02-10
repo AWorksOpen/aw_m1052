@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  fragment_frame_buffer
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * this program is distributed in the hope that it will be useful,
  * but without any warranty; without even the implied warranty of
@@ -170,7 +170,7 @@ static inline ret_t fragment_frame_buffer_image_copy(fragment_frame_buffer_t* ff
   data = (pixel_t*)bitmap_lock_buffer_for_read(img);
   src_p = data + img->w * src->y + src->x;
 
-  for (i = 0; i < dst->h; i++) {
+  for (i = 0; i < (uint32_t)dst->h; i++) {
     fragment_frame_buffer_copy_pixel(ffb, x, y + i, img->w, src_p);
     src_p += img->w;
   }
@@ -192,7 +192,7 @@ static inline ret_t fragment_frame_buffer_write_data_fill(fragment_frame_buffer_
   uint32_t x = ffb->win.x + ffb->cursor_x;
   uint32_t y = ffb->win.y + ffb->cursor_y;
 
-  for (i = 0; i < ffb->win.h; i++) {
+  for (i = 0; i < (uint32_t)ffb->win.h; i++) {
     fragment_frame_buffer_set_pixel_fill(ffb, x, y + i, ffb->win.w, pixel);
   }
 

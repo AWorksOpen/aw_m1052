@@ -1,6 +1,8 @@
 ﻿#include <string>
 #include "tkc/mem.h"
 #include "tkc/utils.h"
+#include "tkc/object_default.h"
+#include "tkc/object_array.h"
 #include "gtest/gtest.h"
 
 using std::string;
@@ -8,12 +10,22 @@ using std::string;
 TEST(Utils, basic) {
   char str[32];
 
+  ASSERT_EQ(tk_atoi("0015"), 15);
   ASSERT_EQ(tk_atoi("100"), 100);
+  ASSERT_EQ(tk_atoi("0xff"), 0xff);
+  ASSERT_EQ(tk_atoi("0x1"), 0x1);
+  ASSERT_EQ(tk_atoi("0xf"), 0xf);
+  ASSERT_EQ(tk_atoi("0Xf"), 0xf);
+  ASSERT_EQ(tk_atoi("0b11"), 3);
+  ASSERT_EQ(tk_atoi("0B101"), 5);
   ASSERT_EQ(tk_watoi(L"100"), 100);
   ASSERT_EQ(tk_atof("100"), 100);
   ASSERT_EQ(tk_atof("1e2"), 100);
   ASSERT_EQ(tk_watof(L"100"), 100);
 
+  ASSERT_EQ(tk_atol("0x1122334455667788"), 0x1122334455667788);
+  ASSERT_EQ(tk_atol("1122334455667788"), 1122334455667788);
+  ASSERT_EQ(tk_atol("-1122334455667788"), -1122334455667788);
   ASSERT_EQ(strcmp(tk_itoa(str, sizeof(str), tk_atoi("100")), "100"), 0);
 }
 
@@ -164,6 +176,17 @@ TEST(Utils, tk_strncpy) {
   ASSERT_EQ(string(tk_strncpy(dst, str, strlen(str) + 1)), string(str));
 }
 
+TEST(Utils, tk_strncpy_s) {
+  char dst[32];
+  const char* str = "hello world";
+
+  ASSERT_EQ(tk_strncpy_s(dst, 0, str, 4), (const char*)NULL);
+  ASSERT_EQ(string(tk_strncpy_s(dst, 1, str, 4)), string(""));
+  ASSERT_EQ(string(tk_strncpy_s(dst, 2, str, 4)), string("h"));
+  ASSERT_EQ(string(tk_strncpy_s(dst, 3, str, strlen(str))), string("he"));
+  ASSERT_EQ(string(tk_strncpy_s(dst, sizeof(dst), str, strlen(str) + 1)), string(str));
+}
+
 TEST(Utils, filename_to_name) {
   char name[TK_NAME_LEN + 1];
 
@@ -206,6 +229,52 @@ TEST(Utils, sscanf) {
   ASSERT_EQ(r, 0x12);
   ASSERT_EQ(g, 0x34);
   ASSERT_EQ(b, 0x56);
+}
+
+TEST(Utils, xml_file_expand) {
+  str_t s;
+  str_init(&s, 0);
+  const char* filename = "./tests/testdata/main.xml";
+  const char* xml_string =
+      "<window><?include filename=\"button.xml\"?><?include filename=\"label.xml\"?></window>";
+  const char* xml_string_1 =
+      "<window><mledit text=\"<?include filename=\"button.xml\"?>\"/><?include "
+      "filename=\"label.xml\"?></window>";
+  const char* xml_string_2 =
+      "<window><mledit text=\"<?include filename=\"button.xml\"?>\"/><?include "
+      "filename=\"label.xml\"?><mledit text=\"<?include filename=\"button.xml\"?>\"/></window>";
+  const char* xml_string_3 =
+      "<window><mledit><property name=\"text\"><?include "
+      "filename=\"button.xml\"?></property></mledit><?include filename=\"label.xml\"?></window>";
+
+  ASSERT_EQ(xml_file_expand(filename, &s, xml_string), RET_OK);
+  str_replace(&s, "\r\n", "\n");
+  ASSERT_EQ(string(s.str), "<window><button />\n<label />\n</window>");
+  str_reset(&s);
+
+  str_init(&s, 0);
+  ASSERT_EQ(xml_file_expand(filename, &s, xml_string_1), RET_OK);
+  str_replace(&s, "\r\n", "\n");
+  ASSERT_EQ(string(s.str),
+            "<window><mledit text=\"<?include filename=\"button.xml\"?>\"/><label />\n</window>");
+  str_reset(&s);
+
+  str_init(&s, 0);
+  ASSERT_EQ(xml_file_expand(filename, &s, xml_string_2), RET_OK);
+  str_replace(&s, "\r\n", "\n");
+  ASSERT_EQ(string(s.str),
+            "<window><mledit text=\"<?include filename=\"button.xml\"?>\"/><label />\n<mledit "
+            "text=\"<?include filename=\"button.xml\"?>\"/></window>");
+  str_reset(&s);
+
+  str_init(&s, 0);
+  ASSERT_EQ(xml_file_expand(filename, &s, xml_string_3), RET_OK);
+  str_replace(&s, "\r\n", "\n");
+  ASSERT_EQ(string(s.str),
+            "<window><mledit><property name=\"text\"><?include "
+            "filename=\"button.xml\"?></property></mledit><label />\n</window>");
+
+  str_reset(&s);
 }
 
 TEST(Utils, xml_file_expand_read) {
@@ -292,10 +361,20 @@ TEST(Utils, tk_str_start_with) {
   ASSERT_EQ(tk_str_start_with("abc123", "b"), FALSE);
 }
 
+TEST(Utils, tk_str_end_with) {
+  ASSERT_EQ(tk_str_end_with("abc123", "3"), TRUE);
+  ASSERT_EQ(tk_str_end_with("abc123", "23"), TRUE);
+  ASSERT_EQ(tk_str_end_with("abc123", "123"), TRUE);
+  ASSERT_EQ(tk_str_end_with("abc123", ""), TRUE);
+  ASSERT_EQ(tk_str_end_with("abc123", "abc123"), TRUE);
+  ASSERT_EQ(tk_str_end_with("abc123", "a"), FALSE);
+  ASSERT_EQ(tk_str_end_with("abc123", "aabc123"), FALSE);
+}
+
 TEST(Utils, ieq) {
   ASSERT_EQ(strcasecmp("Trigger", "trigger"), 0);
-  ASSERT_EQ(tk_str_ieq("Trigger", "trigger"), TRUE);
-  ASSERT_EQ(tk_str_ieq("Trigger", "Trigger"), TRUE);
+  ASSERT_EQ(tk_str_ieq("Trigger", "trigger"), true);
+  ASSERT_EQ(tk_str_ieq("Trigger", "Trigger"), true);
 }
 
 TEST(Utils, tk_under_score_to_camel) {
@@ -357,9 +436,9 @@ TEST(Utils, tk_str_tolower) {
 }
 
 TEST(Utils, tk_wstr_count_c) {
-  ASSERT_EQ(tk_wstr_count_c(L"", 'a'), 0);
-  ASSERT_EQ(tk_wstr_count_c(L"a", 'a'), 1);
-  ASSERT_EQ(tk_wstr_count_c(L"abcaba", 'a'), 3);
+  ASSERT_EQ(tk_wstr_count_c(L"", 'a'), 0u);
+  ASSERT_EQ(tk_wstr_count_c(L"a", 'a'), 1u);
+  ASSERT_EQ(tk_wstr_count_c(L"abcaba", 'a'), 3u);
 }
 
 TEST(Utils, tk_watoi_n) {
@@ -406,4 +485,104 @@ TEST(Utils, image_region_parse) {
   ASSERT_EQ(r.y, 75);
   ASSERT_EQ(r.w, 25);
   ASSERT_EQ(r.h, 25);
+}
+
+TEST(Utils, to_json) {
+  str_t str;
+  value_t v;
+  tk_object_t* obj = object_default_create();
+  tk_object_t* addr = object_default_create();
+  tk_object_t* arr = object_array_create();
+  tk_object_set_prop_str(obj, "name", "jim");
+  tk_object_set_prop_int(obj, "age", 100);
+
+  tk_object_set_prop_int(arr, "-1", 1);
+  tk_object_set_prop_int(arr, "-1", 2);
+  tk_object_set_prop_str(arr, "-1", "abc");
+  value_set_wstr(&v, L"hello");
+  tk_object_set_prop(arr, "-1", &v);
+
+  tk_object_set_prop_str(addr, "country", "zh");
+  tk_object_set_prop_str(addr, "city", "sz");
+
+  tk_object_set_prop_object(obj, "addr", addr);
+  tk_object_set_prop_object(obj, "arr", arr);
+
+  str_init(&str, 1000);
+  ASSERT_EQ(object_to_json(obj, &str), RET_OK);
+  ASSERT_STREQ(str.str,
+               "{\"addr\":{\"city\":\"sz\",\"country\":\"zh\"},\"age\":100,\"arr\":[1,2,\"abc\","
+               "\"hello\"],\"name\":\"jim\"}");
+
+  str_reset(&str);
+  TK_OBJECT_UNREF(obj);
+  TK_OBJECT_UNREF(arr);
+  TK_OBJECT_UNREF(addr);
+}
+
+TEST(Utils, strrstr) {
+  ASSERT_STREQ(tk_strrstr("abc", "abc"), "abc");
+  ASSERT_STREQ(tk_strrstr("1abc", "abc"), "abc");
+  ASSERT_STREQ(tk_strrstr("1abc2", "abc"), "abc2");
+  ASSERT_STREQ(tk_strrstr("abc abc", "abc"), "abc");
+  ASSERT_STREQ(tk_strrstr("abc abc123", "abc"), "abc123");
+  ASSERT_STREQ(tk_strrstr("abc abc123aaabc", "abc"), "abc");
+
+  ASSERT_EQ(tk_strrstr("bc", "abc") == NULL, true);
+  ASSERT_EQ(tk_strrstr("bc", "123") == NULL, true);
+}
+
+TEST(Utils, totitle) {
+  char str[] = "it is nice!";
+  ASSERT_STREQ(tk_str_totitle(str), "It Is Nice!");
+}
+
+TEST(Utils, isspace) {
+  uint32_t i = 0;
+  const char* str = "（１）这；这个。（２）他（她，它）”，在“，它）";
+  size_t n = strlen(str);
+
+  for (i = 0; i < n; i++) {
+    tk_isspace(str[i]);
+    tk_isdigit(str[i]);
+    tk_isalpha(str[i]);
+    tk_isprint(str[i]);
+    tk_isxdigit(str[i]);
+  }
+
+  bool_t is_s = tk_isspace(' ');
+  ASSERT_EQ(is_s, TRUE);
+  is_s = tk_isspace('\t');
+  ASSERT_EQ(is_s, TRUE);
+  is_s = tk_isspace('\r');
+  ASSERT_EQ(is_s, TRUE);
+  is_s = tk_isspace('\n');
+  ASSERT_EQ(is_s, TRUE);
+  is_s = tk_isdigit('1');
+  ASSERT_EQ(is_s, TRUE);
+  is_s = tk_isdigit('a');
+  ASSERT_EQ(is_s, FALSE);
+  is_s = tk_isxdigit('a');
+  ASSERT_EQ(is_s, TRUE);
+  is_s = tk_isprint('a');
+  ASSERT_EQ(is_s, TRUE);
+  is_s = tk_isalpha('a');
+  ASSERT_EQ(is_s, TRUE);
+}
+
+TEST(Utils, is_in_array) {
+  const char* arr1[] = {"abc"};
+  const char* arr2[] = {"abc", "xyz"};
+  const char* arr3[] = {"abc", "xyz", "123"};
+  ASSERT_EQ(tk_str_is_in_array("abc", arr1, ARRAY_SIZE(arr1)), TRUE);
+  ASSERT_EQ(tk_str_is_in_array("abc", arr2, ARRAY_SIZE(arr2)), TRUE);
+  ASSERT_EQ(tk_str_is_in_array("abc", arr3, ARRAY_SIZE(arr3)), TRUE);
+
+  ASSERT_EQ(tk_str_is_in_array("xyz", arr1, ARRAY_SIZE(arr1)), FALSE);
+  ASSERT_EQ(tk_str_is_in_array("xyz", arr2, ARRAY_SIZE(arr2)), TRUE);
+  ASSERT_EQ(tk_str_is_in_array("xyz", arr3, ARRAY_SIZE(arr3)), TRUE);
+
+  ASSERT_EQ(tk_str_is_in_array("123", arr1, ARRAY_SIZE(arr1)), FALSE);
+  ASSERT_EQ(tk_str_is_in_array("123", arr2, ARRAY_SIZE(arr2)), FALSE);
+  ASSERT_EQ(tk_str_is_in_array("123", arr3, ARRAY_SIZE(arr3)), TRUE);
 }

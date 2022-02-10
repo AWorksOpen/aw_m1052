@@ -1,0 +1,8 @@
+{
+    "version": "1.0.2+sha.483ed9a",
+    "frameworks": [
+        "awtk@>=1.6",
+        "jerryscript@>=3.0"
+    ],
+    "name": "awtk-mvvm"
+}

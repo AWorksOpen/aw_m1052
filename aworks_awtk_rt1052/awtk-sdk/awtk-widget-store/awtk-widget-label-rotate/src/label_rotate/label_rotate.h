@@ -113,7 +113,7 @@ widget_t* label_rotate_create(widget_t* parent, xy_t x, xy_t y, wh_t w, wh_t h);
 
 /**
  * @method label_rotate_set_length
- * 设置显示字符的个数(小余0时全部显示)。。（该功能暂时没有效果）
+ * 设置显示字符的个数(小余0时全部显示)。（该功能暂时没有效果）
  * @annotation ["scriptable"]
  * @param {widget_t*} widget 控件对象。
  * @param {int32_t}  length 最大可显示字符个数。

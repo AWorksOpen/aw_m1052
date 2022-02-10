@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  builtins window animator
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -33,7 +33,7 @@
 #include "window_animators/window_animator_slide_right.h"
 
 ret_t window_animator_register_builtins(void) {
-#ifdef WITH_WINDOW_ANIMATORS
+#ifndef WITHOUT_WINDOW_ANIMATORS
   window_animator_factory_t* factory = window_animator_factory();
 
   window_animator_factory_register(factory, WINDOW_ANIMATOR_HTRANSLATE,
@@ -59,7 +59,7 @@ ret_t window_animator_register_builtins(void) {
                                    window_animator_slide_left_create);
   window_animator_factory_register(factory, WINDOW_ANIMATOR_SLIDE_RIGHT,
                                    window_animator_slide_right_create);
-#endif /*WITH_WINDOW_ANIMATORS*/
+#endif /*WITHOUT_WINDOW_ANIMATORS*/
 
   return RET_OK;
 }

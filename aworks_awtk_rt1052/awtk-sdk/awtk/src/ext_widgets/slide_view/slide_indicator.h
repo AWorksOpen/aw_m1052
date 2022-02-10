@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  slide_indicator
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -22,6 +22,7 @@
 #ifndef TK_SLIDE_INDICATOR_H
 #define TK_SLIDE_INDICATOR_H
 
+#include "tkc/darray.h"
 #include "base/widget.h"
 
 BEGIN_C_DECLS
@@ -167,18 +168,56 @@ typedef struct _slide_indicator_t {
   /**
    * @property {char*} indicated_target
    * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 指示器指示的目标。
+   * 指示器指示的目标控件的名称。
    */
   char* indicated_target;
 
+  /**
+   * @property {bool_t} transition
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 是否启用过渡效果。
+   */
+  bool_t transition;
+
   /*private*/
-  uint8_t inited : 1;
+  uint8_t pressed : 1;
   uint8_t anchor_x_fixed : 1;
   uint8_t anchor_y_fixed : 1;
   uint8_t chilren_indicated : 1;
+  bool_t reset_icon_rect_list;
+  bool_t loop;
+  bool_t is_value_changing;
   widget_animator_t* wa_opactiy;
   widget_t* indicated_widget;
+  uint64_t last_move_point_time;
+  point_t last_move_point;
+  uint32_t check_hide_idle;
+  darray_t icon_rect_list;
+
+  float_t icon_rect_spacing;
+  int32_t curr_value;
+  float_t value_offset;
 } slide_indicator_t;
+
+/**
+ * @event {value_change_event_t} EVT_VALUE_WILL_CHANGE
+ * 值(当前页的序号)即将改变事件。
+ */
+
+/**
+ * @event {value_change_event_t} EVT_VALUE_CHANGED
+ * 值(当前页的序号)改变事件。
+ */
+
+/**
+ * @event {event_t} EVT_PAGE_CHANGED
+ * 页面改变事件。
+ */
+
+/**
+ * @event {event_t} EVT_PAGE_CHANGING
+ * 页面正在改变。
+ */
 
 /**
  * @method slide_indicator_create
@@ -326,17 +365,29 @@ ret_t slide_indicator_set_anchor(widget_t* widget, const char* anchor_x, const c
  * 设置指示器指示的目标。
  * @annotation ["scriptable"]
  * @param {widget_t*} widget slide_indicator对象。
- * @param {const char*} indicated_target 指示器指示的目标
+ * @param {const char*} target_name 指示器指示的目标控件的名称
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t slide_indicator_set_indicated_target(widget_t* widget, const char* indicated_target);
+ret_t slide_indicator_set_indicated_target(widget_t* widget, const char* target_name);
+
+/**
+ * @method slide_indicator_set_transition
+ * 设置是否启用过渡效果。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget slide_indicator对象。
+ * @param {bool_t} transition 是否启用过渡效果
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t slide_indicator_set_transition(widget_t* widget, bool_t transition);
 
 #define SLIDE_INDICATOR(widget) ((slide_indicator_t*)(slide_indicator_cast(WIDGET(widget))))
 #define SLIDE_INDICATOR_PROP_DEFAULT_PAINT "default_paint"
 #define SLIDE_INDICATOR_PROP_AUTO_HIDE "auto_hide"
 #define SLIDE_INDICATOR_PROP_INDICATED_TARGET "indicated_target"
 #define SLIDE_INDICATOR_PROP_SIZE "size"
+#define SLIDE_INDICATOR_PROP_transition "transition"
 
 /*public for subclass and runtime type check*/
 TK_EXTERN_VTABLE(slide_indicator_linear);

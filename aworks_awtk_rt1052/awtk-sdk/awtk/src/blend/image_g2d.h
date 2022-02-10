@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  image 2d operations.
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -80,13 +80,13 @@ ret_t image_rotate(bitmap_t* dst, bitmap_t* src, const rect_t* src_r, lcd_orient
  *
  * @param {bitmap_t*} dst 目标图片对象。
  * @param {bitmap_t*} src 源图片对象。
- * @param {const rect_t*} dst_r 目的区域。
- * @param {const rect_t*} src_r 源区域。
+ * @param {const rectf_t*} dst_r 目的区域。
+ * @param {const rectf_t*} src_r 源区域。
  * @param {uint8_t} global_alpha 全局alpha。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败，返回失败则上层用软件实现。
  */
-ret_t image_blend(bitmap_t* dst, bitmap_t* src, const rect_t* dst_r, const rect_t* src_r,
+ret_t image_blend(bitmap_t* dst, bitmap_t* src, const rectf_t* dst_r, const rectf_t* src_r,
                   uint8_t global_alpha);
 
 END_C_DECLS

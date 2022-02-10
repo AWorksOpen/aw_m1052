@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  font manager
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -183,6 +183,15 @@ ret_t font_manager_deinit(font_manager_t* fm);
 ret_t font_manager_destroy(font_manager_t* fm);
 
 /*public for test*/
+/**
+ * @method font_manager_lookup
+ * 查找字体。    
+ * @param {font_manager_t*} fm 字体管理器对象。
+ * @param {const char*} name 字体名称。
+ * @param {int32_t} size 字体大小。
+ *
+ * @return {font_t*} 返回字体对象。
+ */
 font_t* font_manager_lookup(font_manager_t* fm, const char* name, font_size_t size);
 
 END_C_DECLS

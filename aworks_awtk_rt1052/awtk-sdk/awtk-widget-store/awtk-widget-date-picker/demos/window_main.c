@@ -1,6 +1,6 @@
 ﻿#include "awtk.h"
-#include "date_picker_register.h"
-#include "date_picker/date_edit.h"
+#include "../src/date_picker_register.h"
+#include "../src/date_picker/date_edit.h"
 
 static ret_t on_close(void* ctx, event_t* e) {
   tk_quit();

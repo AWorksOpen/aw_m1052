@@ -375,7 +375,7 @@
           },
           {
             "type": "bitmap_format_t",
-            "name": "data",
+            "name": "format",
             "desc": "输出图像格式"
           },
           {
@@ -421,6 +421,34 @@
         "params": [
           {
             "type": "void*",
+            "name": "ctx",
+            "desc": "USB摄像头句柄"
+          },
+          {
+            "type": "bitmap_format_t",
+            "name": "format",
+            "desc": "lcd 格式"
+          },
+          {
+            "type": "bitmap_t*",
+            "name": "old_image",
+            "desc": "输出图像"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "创建 bitmap 的回调函数",
+        "name": "usb_camera_prepare_image_create_image_fun",
+        "return": {
+          "type": "bitmap_t*",
+          "desc": "成功返回 bitmap，失败返回 NULL。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "void*",
             "name": "data",
             "desc": "USB摄像头设备类型"
           }
@@ -438,12 +466,12 @@
       {
         "params": [
           {
-            "type": "void*",
+            "type": "const void*",
             "name": "a",
             "desc": "USB摄像头设备类型"
           },
           {
-            "type": "void*",
+            "type": "const void*",
             "name": "b",
             "desc": "USB摄像头设备类型"
           }
@@ -454,7 +482,7 @@
         "desc": "USB摄像头设备类型比较函数，给slist对象使用的",
         "name": "usb_camera_devices_info_list_compare",
         "return": {
-          "type": "ret_t",
+          "type": "int",
           "desc": "成功返回0，失败返回1。"
         }
       },
@@ -479,12 +507,12 @@
       {
         "params": [
           {
-            "type": "void*",
+            "type": "const void*",
             "name": "a",
             "desc": "USB摄像头分辨率类型"
           },
           {
-            "type": "void*",
+            "type": "const void*",
             "name": "b",
             "desc": "USB摄像头分辨率类型"
           }
@@ -495,7 +523,7 @@
         "desc": "USB摄像头分辨率类型比较函数，给slist对象使用的",
         "name": "usb_camera_device_ratio_list_compare",
         "return": {
-          "type": "ret_t",
+          "type": "int",
           "desc": "成功返回0，失败返回1。"
         }
       }
@@ -802,7 +830,7 @@
         "desc": "获取当前摄像头设备列表",
         "name": "usb_camera_enum_all_devices",
         "return": {
-          "type": "ret_t",
+          "type": "slist_t*",
           "desc": "成功返回列表，失败返回NULL。"
         }
       },
@@ -820,7 +848,7 @@
         "desc": "获取当前摄像头设备的支持的摄像头分辨率列表",
         "name": "usb_camera_enum_device_all_ratio",
         "return": {
-          "type": "ret_t",
+          "type": "slist_t*",
           "desc": "成功返回列表，失败返回NULL。"
         }
       },
@@ -838,8 +866,8 @@
         "desc": "获取当前摄像头是否已经播放",
         "name": "usb_cemera_is_play",
         "return": {
-          "type": "ret_t",
-          "desc": "成功返回列表，失败返回NULL。"
+          "type": "bool_t",
+          "desc": "成功返回TRUE，失败返回FALSE。"
         }
       },
       {
@@ -856,8 +884,8 @@
         "desc": "获取当前摄像头是否已经打开",
         "name": "usb_cemera_is_open",
         "return": {
-          "type": "ret_t",
-          "desc": "成功返回列表，失败返回NULL。"
+          "type": "bool_t",
+          "desc": "成功返回TRUE，失败返回FALSE。"
         }
       }
     ],

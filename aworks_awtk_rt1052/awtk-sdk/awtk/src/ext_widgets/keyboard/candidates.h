@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  input method text candidates
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -105,7 +105,7 @@ typedef struct _candidates_t {
 /**
  * @method candidates_create
  * 创建candidates对象
- * @annotation ["constructor"]
+ * @annotation ["constructor", "scriptable"]
  * @param {widget_t*} parent 父控件
  * @param {xy_t} x x坐标
  * @param {xy_t} y y坐标

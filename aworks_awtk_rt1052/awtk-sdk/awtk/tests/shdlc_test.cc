@@ -8,7 +8,7 @@ TEST(SHDLC, header) {
   header.s.seqno = 3;
   header.s.reserve = 0;
   ASSERT_EQ(header.data, 0x19);
-  ASSERT_EQ(sizeof(header), 1);
+  ASSERT_EQ(sizeof(header), 1u);
 }
 
 TEST(SHDLC, ack) {
@@ -20,7 +20,7 @@ TEST(SHDLC, ack) {
   wbuffer_t* wb_r = wbuffer_init_extendable(&wbuff_r);
 
   ASSERT_EQ(shdlc_write_ack(wb, 1), RET_OK);
-  ASSERT_EQ(wb->cursor, 5);
+  ASSERT_EQ(wb->cursor, 5u);
   ASSERT_EQ(wb->data[0], SHDLC_FLAG);
 
   header.data = wb->data[1];
@@ -35,14 +35,14 @@ TEST(SHDLC, ack) {
   istream = tk_istream_mem_create(wb->data, wb->cursor, 0, FALSE);
 
   ASSERT_EQ(shdlc_read_data(istream, wb_r, 1000), RET_OK);
-  ASSERT_EQ(wb_r->cursor, 1);
+  ASSERT_EQ(wb_r->cursor, 1u);
 
   header.data = wb_r->data[0];
   ASSERT_EQ(header.s.type, SHDLC_ACK);
   ASSERT_EQ(header.s.seqno, 1);
   ASSERT_EQ(header.s.reserve, 0);
 
-  OBJECT_UNREF(istream);
+  TK_OBJECT_UNREF(istream);
   wbuffer_deinit(wb);
   wbuffer_deinit(wb_r);
 }
@@ -56,7 +56,7 @@ TEST(SHDLC, nack) {
   wbuffer_t* wb_r = wbuffer_init_extendable(&wbuff_r);
 
   ASSERT_EQ(shdlc_write_nack(wb, 1), RET_OK);
-  ASSERT_EQ(wb->cursor, 5);
+  ASSERT_EQ(wb->cursor, 5u);
   ASSERT_EQ(wb->data[0], SHDLC_FLAG);
 
   header.data = wb->data[1];
@@ -71,14 +71,14 @@ TEST(SHDLC, nack) {
   istream = tk_istream_mem_create(wb->data, wb->cursor, 0, FALSE);
 
   ASSERT_EQ(shdlc_read_data(istream, wb_r, 1000), RET_OK);
-  ASSERT_EQ(wb_r->cursor, 1);
+  ASSERT_EQ(wb_r->cursor, 1u);
 
   header.data = wb_r->data[0];
   ASSERT_EQ(header.s.type, SHDLC_NACK);
   ASSERT_EQ(header.s.seqno, 1);
   ASSERT_EQ(header.s.reserve, 0);
 
-  OBJECT_UNREF(istream);
+  TK_OBJECT_UNREF(istream);
   wbuffer_deinit(wb);
   wbuffer_deinit(wb_r);
 }
@@ -92,7 +92,7 @@ TEST(SHDLC, data_ok) {
   wbuffer_t* wb_r = wbuffer_init_extendable(&wbuff_r);
 
   ASSERT_EQ(shdlc_write_data(wb, 1, FALSE, "abc", 3), RET_OK);
-  ASSERT_EQ(wb->cursor, 8);
+  ASSERT_EQ(wb->cursor, 8u);
   ASSERT_EQ(wb->data[0], SHDLC_FLAG);
 
   header.data = wb->data[1];
@@ -111,7 +111,7 @@ TEST(SHDLC, data_ok) {
   istream = tk_istream_mem_create(wb->data, wb->cursor, 0, FALSE);
 
   ASSERT_EQ(shdlc_read_data(istream, wb_r, 1000), RET_OK);
-  ASSERT_EQ(wb_r->cursor, 4);
+  ASSERT_EQ(wb_r->cursor, 4u);
 
   header.data = wb_r->data[0];
   ASSERT_EQ(header.s.type, SHDLC_DATA);
@@ -122,7 +122,7 @@ TEST(SHDLC, data_ok) {
   ASSERT_EQ(wb_r->data[2], 'b');
   ASSERT_EQ(wb_r->data[3], 'c');
 
-  OBJECT_UNREF(istream);
+  TK_OBJECT_UNREF(istream);
   wbuffer_deinit(wb);
   wbuffer_deinit(wb_r);
 }
@@ -136,7 +136,7 @@ TEST(SHDLC, data_crc_error) {
   wbuffer_t* wb_r = wbuffer_init_extendable(&wbuff_r);
 
   ASSERT_EQ(shdlc_write_data(wb, 3, TRUE, "abc", 3), RET_OK);
-  ASSERT_EQ(wb->cursor, 8);
+  ASSERT_EQ(wb->cursor, 8u);
   ASSERT_EQ(wb->data[0], SHDLC_FLAG);
 
   header.data = wb->data[1];
@@ -156,7 +156,7 @@ TEST(SHDLC, data_crc_error) {
   istream = tk_istream_mem_create(wb->data, wb->cursor, 0, FALSE);
 
   ASSERT_EQ(shdlc_read_data(istream, wb_r, 1000), RET_CRC);
-  ASSERT_EQ(wb_r->cursor, 4);
+  ASSERT_EQ(wb_r->cursor, 4u);
 
   header.data = wb_r->data[0];
   ASSERT_EQ(header.s.type, SHDLC_DATA);
@@ -167,7 +167,7 @@ TEST(SHDLC, data_crc_error) {
   ASSERT_EQ(wb_r->data[2], 'b');
   ASSERT_EQ(wb_r->data[3], 'd');
 
-  OBJECT_UNREF(istream);
+  TK_OBJECT_UNREF(istream);
   wbuffer_deinit(wb);
   wbuffer_deinit(wb_r);
 }
@@ -181,7 +181,7 @@ TEST(SHDLC, data_error) {
   wbuffer_t* wb_r = wbuffer_init_extendable(&wbuff_r);
 
   ASSERT_EQ(shdlc_write_data(wb, 5, FALSE, "abc", 3), RET_OK);
-  ASSERT_EQ(wb->cursor, 8);
+  ASSERT_EQ(wb->cursor, 8u);
   ASSERT_EQ(wb->data[0], SHDLC_FLAG);
 
   header.data = wb->data[1];
@@ -202,7 +202,7 @@ TEST(SHDLC, data_error) {
 
   ASSERT_EQ(shdlc_read_data(istream, wb_r, 1000), RET_TIMEOUT);
 
-  OBJECT_UNREF(istream);
+  TK_OBJECT_UNREF(istream);
   wbuffer_deinit(wb);
   wbuffer_deinit(wb_r);
 }
@@ -216,7 +216,7 @@ TEST(SHDLC, data_escape) {
   wbuffer_t* wb_r = wbuffer_init_extendable(&wbuff_r);
 
   ASSERT_EQ(shdlc_write_data(wb, 1, FALSE, "x\x7dy", 3), RET_OK);
-  ASSERT_EQ(wb->cursor, 9);
+  ASSERT_EQ(wb->cursor, 9u);
   ASSERT_EQ(wb->data[0], SHDLC_FLAG);
 
   header.data = wb->data[1];
@@ -236,7 +236,7 @@ TEST(SHDLC, data_escape) {
   istream = tk_istream_mem_create(wb->data, wb->cursor, 0, FALSE);
 
   ASSERT_EQ(shdlc_read_data(istream, wb_r, 1000), RET_OK);
-  ASSERT_EQ(wb_r->cursor, 4);
+  ASSERT_EQ(wb_r->cursor, 4u);
 
   header.data = wb_r->data[0];
   ASSERT_EQ(header.s.type, SHDLC_DATA);
@@ -247,7 +247,7 @@ TEST(SHDLC, data_escape) {
   ASSERT_EQ(wb_r->data[2], '\x7d');
   ASSERT_EQ(wb_r->data[3], 'y');
 
-  OBJECT_UNREF(istream);
+  TK_OBJECT_UNREF(istream);
   wbuffer_deinit(wb);
   wbuffer_deinit(wb_r);
 }

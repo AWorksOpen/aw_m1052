@@ -10,7 +10,7 @@ env=DefaultEnvironment().Clone()
 SOURCES=Glob('lz4/*.c')+Glob('diff_image_to_video/*.c')+Glob('video_image/*.c')+Glob('*.c')
 
 EXPORT_DEF=''
-if OS_NAME == 'Windows':
+if OS_NAME == 'Windows' and os.environ['TOOLS_NAME'] == '':
   EXPORT_DEF = ' /DEF:"src/video_image.def" '
 
 if os.environ['BUILD_SHARED'] == 'True':

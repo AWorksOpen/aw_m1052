@@ -1,0 +1,25 @@
+<window v-model="app_conf">
+  <view w="100%" h="-40" children_layout="default(c=2,h=40,s=10,m=5)">
+    <label text="Background Color" />
+    <edit text="#f0f0f0" v-data:value="{color.bg}"/>
+    <label text="Foreground Color" />
+    <edit text="#f0f0f0" v-data:value="{color.fg}"/>
+    <label text="Text Color" />
+    <edit text="black" v-data:value="{color.text}"/>
+    <label text="Border Color" />
+    <edit text="black" v-data:value="{color.border}"/>
+    <label text="Font Name" />
+    <edit text="default" v-data:value="{font.name}"/>
+    <label text="Font Size" />
+    <edit text="20" v-data:value="{font.size}"/>
+    <check_button text="Bold" v-data:value="{font.bold}"/>
+    <check_button text="Italic" v-data:value="{font.italic}"/>
+  </view>
+
+  <button text="Save" floating="true" self_layout="default(x=20, y=b:10, w=80, h=30)" 
+    v-on:click="{save}"/>
+  <button text="Reload" floating="true" self_layout="default(x=c, y=b:10, w=80, h=30)" 
+    v-on:click="{reload}"/>
+  <button text="Close" floating="true" self_layout="default(x=r:20, y=b:10, w=80, h=30)" 
+        v-on:click="{nothing, QuitApp=true}"/>
+</window>

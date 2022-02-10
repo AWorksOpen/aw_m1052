@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  ui_builder default
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -37,16 +37,16 @@ BEGIN_C_DECLS
  */
 
 /**
- * @method ui_builder_default
+ * @method ui_builder_default_create
  * @annotation ["constructor"]
  *
- * 获取缺省的ui\_builder对象。
+ * 创建缺省的ui\_builder对象。
  *
  * @param {const char*} name 窗口的缺省名称。
  *
  * @return {ui_builder_t*} 返回ui\_builder对象。
  */
-ui_builder_t* ui_builder_default(const char* name);
+ui_builder_t* ui_builder_default_create(const char* name);
 
 widget_t* window_open(const char* name);
 widget_t* dialog_open(const char* name);

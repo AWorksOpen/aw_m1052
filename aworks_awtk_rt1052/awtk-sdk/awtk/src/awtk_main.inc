@@ -60,18 +60,30 @@ END_C_DECLS
 #include "base/asset_loader_zip.h"
 
 #ifdef USE_GUI_MAIN
+int gui_app_start_ex(int lcd_w, int lcd_h, const char* res_root);
+
 int gui_app_start(int lcd_w, int lcd_h) {
-  tk_init(lcd_w, lcd_h, APP_MOBILE, APP_NAME, APP_RES_ROOT);
+  return gui_app_start_ex(lcd_w, lcd_h, APP_RES_ROOT);
+}
+
+int gui_app_start_ex(int lcd_w, int lcd_h, const char* res_root) {
+  bool_t is_reboot = FALSE;
+  do {
+    tk_init(lcd_w, lcd_h, APP_MOBILE, APP_NAME, res_root);
 #elif defined(MOBILE_APP) && defined(WITH_SDL)
 int SDL_main(int argc, char* argv[]) {
+  bool_t is_reboot = FALSE;
   int32_t lcd_w = 0;
   int32_t lcd_h = 0;
-
-  tk_init(lcd_w, lcd_h, APP_MOBILE, APP_NAME, APP_RES_ROOT);
+  do {
+    tk_init(lcd_w, lcd_h, APP_MOBILE, APP_NAME, APP_RES_ROOT);
 
 #elif defined(WIN32) && !defined(MINGW)
 #include <windows.h>
+#include <combaseapi.h>
+#ifndef MAX_ARGV
 #define MAX_ARGV 7
+#endif
 
 static void command_line_to_argv(char* lpcmdline, char* argv[MAX_ARGV], int32_t* argc) {
   int32_t i = 1;
@@ -112,9 +124,12 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hprevinstance, LPWSTR lpcmdli
   str_t str;
   int argc = 1;
   char* argv[MAX_ARGV];
+  bool_t is_reboot = FALSE;
+  bool_t enable_console = TRUE;
   int32_t lcd_w = LCD_WIDTH;
   int32_t lcd_h = LCD_HEIGHT;
   char buff[1024];
+
   str_init(&str, 0);
   str.str = buff;
   str.size = 0;
@@ -123,7 +138,7 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hprevinstance, LPWSTR lpcmdli
   command_line_to_argv(str.str, argv, &argc);
   str.str = NULL;
 
-  TK_ENABLE_CONSOLE();
+  CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
 #ifdef ON_CMD_LINE
   ON_CMD_LINE(argc, argv);
@@ -134,13 +149,23 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hprevinstance, LPWSTR lpcmdli
   if (argc >= 3) {
     lcd_h = tk_atoi(argv[2]);
   }
+  if (argc >= 4) {
+    enable_console = tk_atob(argv[3]);
+  }
 #endif /*ON_CMD_LINE*/
 
-  tk_init(lcd_w, lcd_h, APP_TYPE, APP_NAME, APP_RES_ROOT);
+  if (enable_console) {
+    TK_ENABLE_CONSOLE();
+  }
+
+  do {
+    tk_init(lcd_w, lcd_h, APP_TYPE, APP_NAME, APP_RES_ROOT);
 #else
 int main(int argc, char* argv[]) {
+  bool_t is_reboot = FALSE;
   int32_t lcd_w = LCD_WIDTH;
   int32_t lcd_h = LCD_HEIGHT;
+
 #ifdef ON_CMD_LINE
   ON_CMD_LINE(argc, argv);
 #else
@@ -151,63 +176,70 @@ int main(int argc, char* argv[]) {
     lcd_h = tk_atoi(argv[2]);
   }
 #endif /*ON_CMD_LINE*/
-
-  tk_init(lcd_w, lcd_h, APP_TYPE, APP_NAME, APP_RES_ROOT);
+  do {
+    tk_init(lcd_w, lcd_h, APP_TYPE, APP_NAME, APP_RES_ROOT);
 #endif
 
 #ifdef ASSETS_ZIP
-  assets_manager_set_loader(assets_manager(), asset_loader_zip_create(ASSETS_ZIP));
+    assets_manager_set_res_root(assets_manager(), "");
+    log_debug("Load assets from zip: %s\n", ASSETS_ZIP);
+    assets_manager_set_loader(assets_manager(), asset_loader_zip_create(ASSETS_ZIP));
 #endif /*ASSETS_ZIP*/
 
 #if defined(WITH_LCD_PORTRAIT)
-  if (lcd_w > lcd_h) {
-    tk_set_lcd_orientation(LCD_ORIENTATION_90);
-  }
+    if (lcd_w > lcd_h) {
+      tk_set_lcd_orientation(LCD_ORIENTATION_90);
+    }
 #endif /*WITH_LCD_PORTRAIT*/
 
 #ifdef WITH_LCD_LANDSCAPE
-  if (lcd_w < lcd_h) {
-    tk_set_lcd_orientation(LCD_ORIENTATION_90);
-  }
+    if (lcd_w < lcd_h) {
+      tk_set_lcd_orientation(LCD_ORIENTATION_90);
+    }
 #endif /*WITH_LCD_PORTRAIT*/
 
-  system_info_set_default_font(system_info(), APP_DEFAULT_FONT);
-  assets_init();
+    system_info_set_default_font(system_info(), APP_DEFAULT_FONT);
+    assets_init();
+#ifndef WITH_FS_RES
+    locale_info_reload(locale_info());
+#endif
 
 #ifndef WITHOUT_EXT_WIDGETS
-  tk_ext_widgets_init();
+    tk_ext_widgets_init();
 #endif /*WITHOUT_EXT_WIDGETS*/
 
 #ifdef NDEBUG
-  log_set_log_level(LOG_LEVEL_INFO);
+    log_set_log_level(LOG_LEVEL_INFO);
 #else
-  log_set_log_level(LOG_LEVEL_DEBUG);
+    log_set_log_level(LOG_LEVEL_DEBUG);
 #endif /*NDEBUG*/
-  log_info("Build at: %s %s\n", __DATE__, __TIME__);
+    log_info("Build at: %s %s\n", __DATE__, __TIME__);
 
 #ifdef ENABLE_CURSOR
-  window_manager_set_cursor(window_manager(), "cursor");
+    window_manager_set_cursor(window_manager(), "cursor");
 #endif /*ENABLE_CURSOR*/
 
-  GLOBAL_INIT();
+    GLOBAL_INIT();
 #if defined(APP_DEFAULT_LANGUAGE) && defined(APP_DEFAULT_COUNTRY)
-  locale_info_change(locale_info(), APP_DEFAULT_LANGUAGE, APP_DEFAULT_COUNTRY);
+    locale_info_change(locale_info(), APP_DEFAULT_LANGUAGE, APP_DEFAULT_COUNTRY);
 #endif /*APP_DEFAULT_LANGUAGE and APP_DEFAULT_LANGUAGE*/
-  application_init();
-  tk_run();
-  application_exit();
-  GLOBAL_EXIT();
+    application_init();
+    tk_run();
+    is_reboot = application_exit() == RET_REPEAT;
+    GLOBAL_EXIT();
+
+#ifdef HAS_STDIO
+    fflush(stdout);
+#endif /*HAS_STDIO*/
+  } while (is_reboot);
 
 #if defined(WIN32) && !defined(MINGW)
   str_reset(&str);
 #endif /*WIN32*/
 
-#ifdef HAS_STDIO
-  fflush(stdout);
-#endif /*HAS_STDIO*/
-
-#ifdef IOS
+#if defined(IOS) || defined(ANDROID)
   exit(0);
-#endif /*IOS*/
+#endif /*IOS | ANDROID*/
+
   return 0;
 }

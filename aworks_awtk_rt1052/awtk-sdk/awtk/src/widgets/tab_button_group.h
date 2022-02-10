@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  tab_button_group
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -81,7 +81,15 @@ typedef struct _tab_button_group_t {
    */
   bool_t scrollable;
 
+  /**
+   * @property {bool_t} enable_hscroll_animator
+   * @annotation ["set_prop","get_prop","readable","persitent","design","fake"]
+   * 是否开启 tab_button 的左右滚动动画(缺省TRUE)。
+   *
+   */
+
   /*private*/
+  uint32_t active;
   hscrollable_t* hscrollable;
 } tab_button_group_t;
 

@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  slide_view
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -111,26 +111,47 @@ typedef struct _slide_view_t {
    */
   char* anim_hint;
 
-  /*private*/
+  /* private */
+  velocity_t velocity;
   point_t down;
   int32_t xoffset;
   int32_t yoffset;
   uint32_t active;
-  bool_t animating;
   uint32_t timer_id;
   bool_t dragged;
   bool_t pressed;
-  velocity_t velocity;
+  bool_t animating;
+  bool_t remove_when_anim_done;
+
+  /* for save focused child */
+  str_t str_target;
+  uint32_t init_idle_id;
+  uint32_t focused_idle_id;
+
+  /* for animation */
+  widget_t* prev;
+  widget_t* next;
+
 } slide_view_t;
 
 /**
- * @event {event_t} EVT_VALUE_WILL_CHANGE
+ * @event {value_change_event_t} EVT_VALUE_WILL_CHANGE
  * 值(当前页)即将改变事件。
  */
 
 /**
- * @event {event_t} EVT_VALUE_CHANGED
+ * @event {value_change_event_t} EVT_VALUE_CHANGED
  * 值(当前页)改变事件。
+ */
+
+/**
+ * @event {event_t} EVT_PAGE_CHANGED
+ * 页面改变事件。
+ */
+
+/**
+ * @event {event_t} EVT_PAGE_CHANGING
+ * 页面正在改变。
  */
 
 /**
@@ -170,7 +191,7 @@ ret_t slide_view_set_auto_play(widget_t* widget, uint16_t auto_play);
 
 /**
  * @method slide_view_set_active
- * 设置当前页的序号。
+ * 设置当前页的序号(默认启用动画)。
  * @annotation ["scriptable"]
  * @param {widget_t*} widget slide_view对象。
  * @param {uint32_t} index 当前页的序号。
@@ -178,6 +199,18 @@ ret_t slide_view_set_auto_play(widget_t* widget, uint16_t auto_play);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t slide_view_set_active(widget_t* widget, uint32_t index);
+
+/**
+ * @method slide_view_set_active_ex
+ * 设置当前页的序号。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget slide_view对象。
+ * @param {uint32_t} index 当前页的序号。
+ * @param {bool_t} animate 是否启用动画。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t slide_view_set_active_ex(widget_t* widget, uint32_t index, bool_t animate);
 
 /**
  * @method slide_view_set_vertical
@@ -223,6 +256,17 @@ ret_t slide_view_set_anim_hint(widget_t* widget, const char* anim_hint);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t slide_view_set_loop(widget_t* widget, bool_t loop);
+
+/**
+ * @method slide_view_remove_index
+ * 删除指定序号页面。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget slide_view对象。
+ * @param {uint32_t} index 删除页面的序号。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t slide_view_remove_index(widget_t* widget, uint32_t index);
 
 /*public for test only*/
 widget_t* slide_view_get_prev(slide_view_t* slide_view);

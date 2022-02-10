@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  glyph cache
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,7 +27,7 @@
 BEGIN_C_DECLS
 
 typedef struct _glyph_cache_item_t {
-  uint32_t last_access_time;
+  uint64_t last_access_time;
   font_size_t size;
   wchar_t code;
   glyph_t* g;

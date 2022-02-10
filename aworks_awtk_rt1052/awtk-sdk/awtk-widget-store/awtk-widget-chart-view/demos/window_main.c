@@ -1,5 +1,10 @@
 ﻿#include "awtk.h"
+#include "../src/chart_view_register.h"
+
 extern ret_t application_init(void);
+extern ret_t open_line_series_window(const char* name);
+extern ret_t open_bar_series_window(const char* name);
+extern ret_t open_pie_window(void);
 
 static ret_t on_graph(void* ctx, event_t* e) {
   widget_t* widget = WIDGET(e->target);
@@ -55,7 +60,6 @@ ret_t application_init() {
   chart_view_register();
 
   widget_t* system_bar = window_open("system_bar");
-  widget_t* system_bar_b = window_open("system_bar_b");
   widget_t* win = window_open("home_page");
   if (win) {
     init_children_widget(win);

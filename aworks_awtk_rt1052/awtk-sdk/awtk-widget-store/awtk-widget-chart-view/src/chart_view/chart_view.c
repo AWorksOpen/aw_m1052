@@ -23,6 +23,8 @@
 #include "axis.h"
 #include "series.h"
 #include "tooltip.h"
+#include "series_p.h"
+#include "base/layout.h"
 
 static widget_t* chart_view_get_series(widget_t* widget, uint32_t index) {
   uint32_t cnt = 0;
@@ -292,7 +294,7 @@ static ret_t chart_view_on_pointer_move(widget_t* widget, pointer_event_t* evt) 
 
   WIDGET_FOR_EACH_CHILD_BEGIN(widget, iter, i)
   if (widget_is_series(iter)) {
-    saxis = widget_get_prop_pointer(iter, SERIES_PROP_SERIES_AXIS);
+    saxis = widget_get_prop_pointer(iter, SERIES_PROP_SERIES_AXIS_OBJ);
     return_value_if_fail(saxis != NULL, RET_BAD_PARAMS);
 
     interval = axis_measure_series_interval(saxis);

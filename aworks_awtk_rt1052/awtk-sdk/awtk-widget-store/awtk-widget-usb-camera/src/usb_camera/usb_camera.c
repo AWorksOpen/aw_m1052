@@ -19,6 +19,8 @@
  *
  */
 
+#undef WITH_WIDGET_TYPE_CHECK
+
 #include "tkc/mem.h"
 #include "tkc/utils.h"
 #include "usb_camera.h"
@@ -152,17 +154,28 @@ const char *s_usb_camera_properties[] = {
     USB_CAMERA_PROP_CAMERA_ID, USB_CAMERA_PROP_CAMERA_WIDTH,
     USB_CAMERA_PROP_CAMERA_HEIGHT, USB_CAMERA_PROP_MIRROR, NULL};
 
-TK_DECL_VTABLE(usb_camera) = {.size = sizeof(usb_camera_t),
-                              .type = WIDGET_TYPE_USB_CAMERA,
-                              .clone_properties = s_usb_camera_properties,
-                              .persistent_properties = s_usb_camera_properties,
-                              .parent = TK_PARENT_VTABLE(mutable_image),
-                              .create = usb_camera_create,
-                              .on_paint_self = usb_camera_on_paint_self,
-                              .set_prop = usb_camera_set_prop,
-                              .get_prop = usb_camera_get_prop,
-                              .on_event = usb_camera_on_event,
-                              .on_destroy = usb_camera_on_destroy};
+static widget_vtable_t s_usb_camera_vtable = {.size = sizeof(usb_camera_t),
+                                              .type = WIDGET_TYPE_USB_CAMERA,
+                                              .clone_properties = s_usb_camera_properties,
+                                              .persistent_properties = s_usb_camera_properties,
+                                              .parent = NULL,
+                                              .create = usb_camera_create,
+                                              .on_paint_self = usb_camera_on_paint_self,
+                                              .set_prop = usb_camera_set_prop,
+                                              .get_prop = usb_camera_get_prop,
+                                              .on_event = usb_camera_on_event,
+                                              .on_destroy = usb_camera_on_destroy};
+
+ret_t usb_camerat_register_from_base_class() {
+  if (s_usb_camera_vtable.parent == NULL) {
+    /* 获取和继承父类的函数表 */
+    widget_t* base_widget = widget_factory_create_widget(widget_factory(), WIDGET_TYPE_MUTABLE_IMAGE, NULL, 0, 0, 0, 0);
+    return_value_if_fail(base_widget != NULL, RET_OOM);
+    s_usb_camera_vtable.parent = base_widget->vt;
+    return widget_destroy(base_widget);
+  }
+  return RET_OK;
+}
 
 widget_t *usb_camera_create(widget_t *parent, xy_t x, xy_t y, wh_t w, wh_t h) {
   widget_t *widget =
@@ -228,6 +241,18 @@ ret_t usb_camera_set_camera_width_and_height(widget_t *widget, uint32_t width,
                            &usb_camera->camera_height) == RET_OK,
       RET_FAIL);
 
+  widget_resize(widget, usb_camera->camera_width, usb_camera->camera_height);
+
+  return_value_if_fail(
+      mutable_image_set_prepare_image(widget, usb_camera_prepare_image_fun,
+                                      usb_camera->p_device) == RET_OK,
+      RET_FAIL);
+
+  return_value_if_fail(
+      mutable_image_set_create_image(widget, usb_camera_prepare_image_create_image_fun,
+                                      usb_camera->p_device) == RET_OK,
+      RET_FAIL);
+
   return RET_OK;
 }
 
@@ -254,20 +279,24 @@ ret_t usb_cemera_open(widget_t *widget) {
                                       usb_camera->p_device) == RET_OK,
       RET_FAIL);
 
+  return_value_if_fail(
+      mutable_image_set_create_image(widget, usb_camera_prepare_image_create_image_fun,
+                                      usb_camera->p_device) == RET_OK,
+      RET_FAIL);
   usb_camera->is_open = TRUE;
   return RET_OK;
 }
 
 bool_t usb_cemera_is_open(widget_t *widget) {
   usb_camera_t *usb_camera = USB_CAMERA(widget);
-  return_value_if_fail(usb_camera != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(usb_camera != NULL, FALSE);
 
   return usb_camera->is_open;
 }
 
 bool_t usb_cemera_is_play(widget_t *widget) {
   usb_camera_t *usb_camera = USB_CAMERA(widget);
-  return_value_if_fail(usb_camera != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(usb_camera != NULL, FALSE);
 
   return usb_camera->is_play;
 }

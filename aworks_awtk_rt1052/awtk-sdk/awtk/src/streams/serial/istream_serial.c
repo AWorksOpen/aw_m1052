@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  input stream base on serial
  *
- * Copyright (c) 2019 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2019 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,17 +24,21 @@
 #include "streams/serial/istream_serial.h"
 
 static int32_t tk_istream_serial_read(tk_istream_t* stream, uint8_t* buff, uint32_t max_size) {
+  int32_t ret = 0;
   tk_istream_serial_t* istream_serial = TK_ISTREAM_SERIAL(stream);
-  int32_t ret = serial_read(istream_serial->fd, buff, max_size);
 
+  errno = 0;
+  ret = serial_read(istream_serial->fd, buff, max_size);
   if (ret < 0) {
-    istream_serial->is_broken = TRUE;
+    if (errno != EAGAIN) {
+      istream_serial->is_broken = TRUE;
+    }
   }
 
   return ret;
 }
 
-static ret_t tk_istream_serial_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t tk_istream_serial_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   tk_istream_serial_t* istream_serial = TK_ISTREAM_SERIAL(obj);
   if (tk_str_eq(name, TK_STREAM_PROP_FD)) {
     value_set_int(v, (int)(serial_handle_get_fd(istream_serial->fd)));
@@ -54,7 +58,7 @@ static ret_t tk_istream_serial_flush(tk_istream_t* stream) {
   return serial_iflush(s->fd);
 }
 
-static ret_t tk_istream_serial_exec(object_t* obj, const char* name, const char* args) {
+static ret_t tk_istream_serial_exec(tk_object_t* obj, const char* name, const char* args) {
   if (tk_str_eq(name, TK_STREAM_CMD_IFLUSH)) {
     return tk_istream_serial_flush(TK_ISTREAM(obj));
   }
@@ -75,11 +79,11 @@ ret_t tk_istream_serial_wait_for_data(tk_istream_t* stream, uint32_t timeout_ms)
 }
 
 tk_istream_t* tk_istream_serial_create(serial_handle_t fd) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   tk_istream_serial_t* istream_serial = NULL;
   return_value_if_fail(fd >= 0, NULL);
 
-  obj = object_create(&s_tk_istream_serial_vtable);
+  obj = tk_object_create(&s_tk_istream_serial_vtable);
   istream_serial = TK_ISTREAM_SERIAL(obj);
   return_value_if_fail(istream_serial != NULL, NULL);
 

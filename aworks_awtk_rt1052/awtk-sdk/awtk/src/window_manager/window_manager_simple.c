@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  default window manager
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -325,7 +325,7 @@ static ret_t window_manager_simple_set_prop(widget_t* widget, const char* name, 
 
 static ret_t window_manager_simple_on_destroy(widget_t* widget) {
   window_manager_simple_t* wm = WINDOW_MANAGER_SIMPLE(widget);
-  object_unref(OBJECT(wm->native_window));
+  tk_object_unref(TK_OBJECT(wm->native_window));
 
   return RET_OK;
 }
@@ -500,7 +500,6 @@ static ret_t window_manager_native_native_window_resized(widget_t* widget, void*
   }
 
   window_manager_simple_resize(widget, w, h);
-  native_window_on_resized(nw, w, h);
 
   return RET_OK;
 }

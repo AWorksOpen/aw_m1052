@@ -9,6 +9,7 @@
 | -------- | ------------ | 
 | <a href="#canvas_t_canvas_begin_frame">canvas\_begin\_frame</a> | 绘制开始。 |
 | <a href="#canvas_t_canvas_cast">canvas\_cast</a> | 转换为canvas对象(供脚本语言使用)。 |
+| <a href="#canvas_t_canvas_clear_rect">canvas\_clear\_rect</a> | 用填充颜色填充指定矩形。 |
 | <a href="#canvas_t_canvas_draw_hline">canvas\_draw\_hline</a> | 画水平线。 |
 | <a href="#canvas_t_canvas_draw_icon">canvas\_draw\_icon</a> | 绘制图标。 |
 | <a href="#canvas_t_canvas_draw_image">canvas\_draw\_image</a> | 绘制图片。 |
@@ -24,9 +25,12 @@
 | <a href="#canvas_t_canvas_draw_utf8_in_rect">canvas\_draw\_utf8\_in\_rect</a> | 绘制文本。 |
 | <a href="#canvas_t_canvas_draw_vline">canvas\_draw\_vline</a> | 画垂直线。 |
 | <a href="#canvas_t_canvas_end_frame">canvas\_end\_frame</a> | 绘制结束。 |
-| <a href="#canvas_t_canvas_fill_rect">canvas\_fill\_rect</a> | 填充矩形。 |
+| <a href="#canvas_t_canvas_fill_rect">canvas\_fill\_rect</a> | 绘制矩形。 |
+| <a href="#canvas_t_canvas_fill_rect_gradient">canvas\_fill\_rect\_gradient</a> | 绘制矩形。 |
 | <a href="#canvas_t_canvas_fill_rounded_rect">canvas\_fill\_rounded\_rect</a> | 填充区域。 |
-| <a href="#canvas_t_canvas_fill_rounded_rect_ex">canvas\_fill\_rounded\_rect\_ex</a> | 填充区域。 |
+| <a href="#canvas_t_canvas_fill_rounded_rect_ex">canvas\_fill\_rounded\_rect\_ex</a> | 填充圆角矩形区域。 |
+| <a href="#canvas_t_canvas_fill_rounded_rect_gradient">canvas\_fill\_rounded\_rect\_gradient</a> | 填充圆角矩形区域。 |
+| <a href="#canvas_t_canvas_fill_rounded_rect_gradient_ex">canvas\_fill\_rounded\_rect\_gradient\_ex</a> | 填充圆角矩形区域。 |
 | <a href="#canvas_t_canvas_get_clip_rect">canvas\_get\_clip\_rect</a> | 获取裁剪区。 |
 | <a href="#canvas_t_canvas_get_font_height">canvas\_get\_font\_height</a> | 获取字体的高度。 |
 | <a href="#canvas_t_canvas_get_height">canvas\_get\_height</a> | 获取画布的高度。 |
@@ -44,6 +48,7 @@
 | <a href="#canvas_t_canvas_set_fill_color_str">canvas\_set\_fill\_color\_str</a> | 设置填充颜色。 |
 | <a href="#canvas_t_canvas_set_font">canvas\_set\_font</a> | 设置字体。 |
 | <a href="#canvas_t_canvas_set_font_manager">canvas\_set\_font\_manager</a> | 设置canvas的font_manager对象。 |
+| <a href="#canvas_t_canvas_set_fps">canvas\_set\_fps</a> | 设置FPS。 |
 | <a href="#canvas_t_canvas_set_global_alpha">canvas\_set\_global\_alpha</a> | 设置全局alpha值。 |
 | <a href="#canvas_t_canvas_set_stroke_color">canvas\_set\_stroke\_color</a> | 设置线条颜色。 |
 | <a href="#canvas_t_canvas_set_stroke_color_str">canvas\_set\_stroke\_color\_str</a> | 设置线条颜色。 |
@@ -87,7 +92,7 @@
 * 函数原型：
 
 ```
-ret_t canvas_begin_frame (canvas_t* c, const rect_t* dirty_rect, lcd_draw_mode_t draw_mode);
+ret_t canvas_begin_frame (canvas_t* c, const dirty_rects_t* dirty_rects, lcd_draw_mode_t draw_mode);
 ```
 
 * 参数说明：
@@ -96,7 +101,7 @@ ret_t canvas_begin_frame (canvas_t* c, const rect_t* dirty_rect, lcd_draw_mode_t
 | -------- | ----- | --------- |
 | 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
 | c | canvas\_t* | canvas对象。 |
-| dirty\_rect | const rect\_t* | 脏矩形。 |
+| dirty\_rects | const dirty\_rects\_t* | 脏矩形。 |
 | draw\_mode | lcd\_draw\_mode\_t | 绘制模式。 |
 #### canvas\_cast 函数
 -----------------------
@@ -117,6 +122,31 @@ canvas_t* canvas_cast (canvas_t* c);
 | -------- | ----- | --------- |
 | 返回值 | canvas\_t* | canvas对象。 |
 | c | canvas\_t* | canvas对象。 |
+#### canvas\_clear\_rect 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="canvas_t_canvas_clear_rect">用填充颜色填充指定矩形。
+
+> 如果lcd的颜色格式带alpha通道，连同alpha的值一起修改。
+
+* 函数原型：
+
+```
+ret_t canvas_clear_rect (canvas_t* c, xy_t x, xy_t y, wh_t w, wh_t h);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
+| c | canvas\_t* | canvas对象。 |
+| x | xy\_t | x坐标。 |
+| y | xy\_t | y坐标。 |
+| w | wh\_t | 宽度。 |
+| h | wh\_t | 高度。 |
 #### canvas\_draw\_hline 函数
 -----------------------
 
@@ -456,7 +486,7 @@ ret_t canvas_end_frame (canvas_t* c);
 
 * 函数功能：
 
-> <p id="canvas_t_canvas_fill_rect">填充矩形。
+> <p id="canvas_t_canvas_fill_rect">绘制矩形。
 
 * 函数原型：
 
@@ -474,6 +504,30 @@ ret_t canvas_fill_rect (canvas_t* c, xy_t x, xy_t y, wh_t w, wh_t h);
 | y | xy\_t | y坐标。 |
 | w | wh\_t | 宽度。 |
 | h | wh\_t | 高度。 |
+#### canvas\_fill\_rect\_gradient 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="canvas_t_canvas_fill_rect_gradient">绘制矩形。
+
+* 函数原型：
+
+```
+ret_t canvas_fill_rect_gradient (canvas_t* c, xy_t x, xy_t y, wh_t w, wh_t h, gradient_t* gradient);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
+| c | canvas\_t* | canvas对象。 |
+| x | xy\_t | x坐标。 |
+| y | xy\_t | y坐标。 |
+| w | wh\_t | 宽度。 |
+| h | wh\_t | 高度。 |
+| gradient | gradient\_t* | 渐变颜色。 |
 #### canvas\_fill\_rounded\_rect 函数
 -----------------------
 
@@ -501,14 +555,14 @@ ret_t canvas_fill_rounded_rect (canvas_t* c, const rect_t* r, const color_t* col
 
 * 函数功能：
 
-> <p id="canvas_t_canvas_fill_rounded_rect_ex">填充区域。
+> <p id="canvas_t_canvas_fill_rounded_rect_ex">填充圆角矩形区域。
 半径半径小于等于2，则表示该角为直角，如果全部角都为直角则返回RET_FAIL。（如果全是直角，该函数效率没有canvas_fill_rect函数快）
 如果各个半径都不一样的话，就是会使用vg，如果不支持vg就会返回RET_FAIL（直角的情况除外）。
 
 * 函数原型：
 
 ```
-ret_t canvas_fill_rounded_rect_ex (canvas_t* c, const rect_t* r, const color_t* color, uint32_t radius_tl, uint32_t radius_tr, uint32_t radius_bl, uint32_t radius_br);
+ret_t canvas_fill_rounded_rect_ex (canvas_t* c, const rect_t* r, const rect_t* bg_r, const color_t* color, uint32_t radius_tl, uint32_t radius_tr, uint32_t radius_bl, uint32_t radius_br);
 ```
 
 * 参数说明：
@@ -518,7 +572,58 @@ ret_t canvas_fill_rounded_rect_ex (canvas_t* c, const rect_t* r, const color_t* 
 | 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
 | c | canvas\_t* | canvas对象。 |
 | r | const rect\_t* | 矩形。 |
+| bg\_r | const rect\_t* | 矩形。（默认为 NULL，当圆角直径大于 r 矩形的宽高后，会根据 bg\_r 矩形来决定是否需要缩小圆角半径） |
 | color | const color\_t* | 颜色。 |
+| radius\_tl | uint32\_t | 左上角圆角半径。 |
+| radius\_tr | uint32\_t | 右上角圆角半径。 |
+| radius\_bl | uint32\_t | 左下角圆角半径。 |
+| radius\_br | uint32\_t | 右下角圆角半径。 |
+#### canvas\_fill\_rounded\_rect\_gradient 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="canvas_t_canvas_fill_rounded_rect_gradient">填充圆角矩形区域。
+
+* 函数原型：
+
+```
+ret_t canvas_fill_rounded_rect_gradient (canvas_t* c, const rect_t* r, const gradient_t* gradient, uint32_t radius);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
+| c | canvas\_t* | canvas对象。 |
+| r | const rect\_t* | 矩形。 |
+| gradient | const gradient\_t* | 渐变颜色。 |
+| radius | uint32\_t | 圆角半径。 |
+#### canvas\_fill\_rounded\_rect\_gradient\_ex 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="canvas_t_canvas_fill_rounded_rect_gradient_ex">填充圆角矩形区域。
+半径半径小于等于2，则表示该角为直角，如果全部角都为直角则返回RET_FAIL。（如果全是直角，该函数效率没有canvas_fill_rect函数快）
+如果各个半径都不一样的话，就是会使用vg，如果不支持vg就会返回RET_FAIL（直角的情况除外）。
+
+* 函数原型：
+
+```
+ret_t canvas_fill_rounded_rect_gradient_ex (canvas_t* c, const rect_t* r, const rect_t* bg_r, const gradient_t* gradient, uint32_t radius_tl, uint32_t radius_tr, uint32_t radius_bl, uint32_t radius_br);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
+| c | canvas\_t* | canvas对象。 |
+| r | const rect\_t* | 矩形。 |
+| bg\_r | const rect\_t* | 矩形。（默认为 NULL，当圆角直径大于 r 矩形的宽高后，会根据 bg\_r 矩形来决定是否需要缩小圆角半径） |
+| gradient | const gradient\_t* | 渐变颜色。 |
 | radius\_tl | uint32\_t | 左上角圆角半径。 |
 | radius\_tr | uint32\_t | 右上角圆角半径。 |
 | radius\_bl | uint32\_t | 左下角圆角半径。 |
@@ -868,6 +973,27 @@ ret_t canvas_set_font_manager (canvas_t* c, font_manager_t* font_manager);
 | 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
 | c | canvas\_t* | canvas对象。 |
 | font\_manager | font\_manager\_t* | font\_manager对象。 |
+#### canvas\_set\_fps 函数
+-----------------------
+
+* 函数功能：
+
+> <p id="canvas_t_canvas_set_fps">设置FPS。
+
+* 函数原型：
+
+```
+ret_t canvas_set_fps (canvas_t* c, bool_t show_fps, uint32_t fps);
+```
+
+* 参数说明：
+
+| 参数 | 类型 | 说明 |
+| -------- | ----- | --------- |
+| 返回值 | ret\_t | 返回RET\_OK表示成功，否则表示失败。 |
+| c | canvas\_t* | canvas对象。 |
+| show\_fps | bool\_t | 是否显示fps。 |
+| fps | uint32\_t | FPS。 |
 #### canvas\_set\_global\_alpha 函数
 -----------------------
 

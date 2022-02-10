@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  hscrollable
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -110,18 +110,20 @@ ret_t hscrollable_scroll_to(hscrollable_t* hscrollable, int32_t xoffset_end, int
   }
 
 #ifndef WITHOUT_WIDGET_ANIMATORS
-  hscrollable->xoffset_end = xoffset_end;
-  xoffset_end = hscrollable->xoffset_end;
+  if (hscrollable->enable_hscroll_animator) {
+    hscrollable->xoffset_end = xoffset_end;
+    xoffset_end = hscrollable->xoffset_end;
 
-  hscrollable->wa = widget_animator_scroll_create(widget, TK_ANIMATING_TIME, 0, EASING_SIN_INOUT);
-  return_value_if_fail(hscrollable->wa != NULL, RET_OOM);
+    hscrollable->wa = widget_animator_scroll_create(widget, TK_ANIMATING_TIME, 0, EASING_SIN_INOUT);
+    return_value_if_fail(hscrollable->wa != NULL, RET_OOM);
 
-  widget_animator_scroll_set_params(hscrollable->wa, xoffset, 0, xoffset_end, 0);
-  widget_animator_on(hscrollable->wa, EVT_ANIM_END, hscrollable_on_scroll_done, hscrollable);
-  widget_animator_start(hscrollable->wa);
-#else
-  hscrollable->xoffset = xoffset_end;
+    widget_animator_scroll_set_params(hscrollable->wa, xoffset, 0, xoffset_end, 0);
+    widget_animator_on(hscrollable->wa, EVT_ANIM_END, hscrollable_on_scroll_done, hscrollable);
+    widget_animator_start(hscrollable->wa);
+    return RET_OK;
+  }
 #endif /*WITHOUT_WIDGET_ANIMATORS*/
+  hscrollable->xoffset = xoffset_end;
 
   return RET_OK;
 }
@@ -242,7 +244,7 @@ ret_t hscrollable_get_prop(hscrollable_t* hscrollable, const char* name, value_t
   return_value_if_fail(widget != NULL && hscrollable != NULL && name != NULL && v != NULL,
                        RET_BAD_PARAMS);
 
-  if (tk_str_eq(name, WIDGET_PROP_VIRTUAL_W) || tk_str_eq(name, WIDGET_PROP_LAYOUT_W)) {
+  if (tk_str_eq(name, WIDGET_PROP_VIRTUAL_W)) {
     value_set_int(v, tk_max(widget->w, hscrollable->virtual_w));
     return RET_OK;
   } else if (tk_str_eq(name, WIDGET_PROP_VIRTUAL_H) || tk_str_eq(name, WIDGET_PROP_LAYOUT_H)) {
@@ -274,11 +276,18 @@ ret_t hscrollable_set_prop(hscrollable_t* hscrollable, const char* name, const v
   } else if (tk_str_eq(name, WIDGET_PROP_XSLIDABLE)) {
     return RET_OK;
   } else if (tk_str_eq(name, WIDGET_PROP_XOFFSET)) {
-    hscrollable->xoffset = value_int(v);
-    widget_invalidate_force(hscrollable_get_widget(hscrollable), NULL);
+    if (hscrollable->wa != NULL) {
+      hscrollable->xoffset = value_int(v);
+      widget_invalidate_force(hscrollable_get_widget(hscrollable), NULL);
+    } else {
+      hscrollable->xoffset_end = value_int(v);
+      hscrollable_scroll_to(hscrollable, hscrollable->xoffset_end, 300);
+    }
     return RET_OK;
   } else if (tk_str_eq(name, WIDGET_PROP_YOFFSET)) {
     return RET_OK;
+  } else if (tk_str_eq(name, HSCROLLABLE_PROP_ENABLE_HSCROLL_ANIMATOR)) {
+    return hscrollable_set_enable_hscroll_animator(hscrollable, value_bool(v));
   }
 
   return RET_NOT_FOUND;
@@ -292,6 +301,7 @@ hscrollable_t* hscrollable_create(widget_t* widget) {
   return_value_if_fail(hscrollable != NULL, NULL);
 
   hscrollable->widget = widget;
+  hscrollable->enable_hscroll_animator = TRUE;
 
   return hscrollable;
 }
@@ -313,6 +323,14 @@ ret_t hscrollable_set_xoffset(hscrollable_t* hscrollable, int32_t xoffset) {
 ret_t hscrollable_set_virtual_w(hscrollable_t* hscrollable, int32_t virtual_w) {
   return_value_if_fail(hscrollable != NULL, RET_BAD_PARAMS);
   hscrollable->virtual_w = virtual_w;
+
+  return RET_OK;
+}
+
+ret_t hscrollable_set_enable_hscroll_animator(hscrollable_t* hscrollable,
+                                              bool_t enable_hscroll_animator) {
+  return_value_if_fail(hscrollable != NULL, RET_BAD_PARAMS);
+  hscrollable->enable_hscroll_animator = enable_hscroll_animator;
 
   return RET_OK;
 }

@@ -20,15 +20,15 @@
  */
 
 #include "tkc/utils.h"
-#include "chart_animator.h"
 #include "axis.h"
 #include "series_p.h"
 #include "line_series_colorful.h"
+#include "chart_animator.h"
 
 extern ret_t line_series_get_prop(widget_t* widget, const char* name, value_t* v);
 extern ret_t line_series_set_prop_internal(widget_t* widget, const char* name, const value_t* v);
 extern ret_t line_series_draw_one_series(widget_t* widget, canvas_t* c, float_t ox, float_t oy,
-                                         fifo_t* fifo, uint32_t index, uint32_t size,
+                                         object_t* fifo, uint32_t index, uint32_t size,
                                          rect_t* clip_rect, series_p_draw_line_t draw_line,
                                          series_p_draw_line_area_t draw_area,
                                          series_p_draw_smooth_line_t draw_smooth_line,
@@ -43,30 +43,32 @@ extern widget_t* line_series_create_internal(widget_t* parent, xy_t x, xy_t y, w
 static ret_t line_series_colorful_set_value(widget_t* widget, const char* value) {
   const char* token = NULL;
   tokenizer_t tokenizer;
-  series_colorful_data_t v;
-  fifo_t* fifo;
+  series_data_colorful_t v;
+  object_t* fifo;
+  uint32_t capacity;
   series_t* series = SERIES(widget);
   return_value_if_fail(series != NULL && value != NULL, RET_BAD_PARAMS);
 
   v.c = color_init(0, 0, 0, 0xff);
-  fifo = fifo_create(series->capacity, series->unit_size, NULL, NULL);
+  capacity = widget_get_prop_int(widget, SERIES_PROP_CAPACITY, 0);
+  fifo = series_fifo_default_create(capacity, sizeof(series_data_colorful_t));
   return_value_if_fail(fifo != NULL, RET_OOM);
 
   tokenizer_init(&tokenizer, value, strlen(value), ",");
 
-  while (tokenizer_has_more(&tokenizer) && fifo->size < fifo->capacity) {
+  while (tokenizer_has_more(&tokenizer) && SERIES_FIFO_GET_SIZE(fifo) < capacity) {
     token = tokenizer_next(&tokenizer);
     if (token[0] == '#') {
       v.c = color_parse(token);
     } else {
       v.v = tk_atof(token);
-      fifo_push(fifo, &v);
+      series_fifo_push(fifo, &v);
     }
   }
 
-  series_set(widget, 0, fifo->buffer, fifo->size);
+  series_set(widget, 0, SERIES_FIFO_DEFAULT(fifo)->buffer, SERIES_FIFO_GET_SIZE(fifo));
 
-  fifo_destroy(fifo);
+  OBJECT_UNREF(fifo);
   tokenizer_deinit(&tokenizer);
 
   return RET_OK;
@@ -85,7 +87,7 @@ static ret_t line_series_colorful_set_prop(widget_t* widget, const char* name, c
 }
 
 static ret_t line_series_colorful_on_paint(widget_t* widget, canvas_t* c, float_t ox, float_t oy,
-                                           fifo_t* fifo, uint32_t index, uint32_t size,
+                                           object_t* fifo, uint32_t index, uint32_t size,
                                            rect_t* clip_rect) {
   return line_series_draw_one_series(
       widget, c, ox, oy, fifo, index, size, clip_rect, series_p_draw_line_colorful,
@@ -93,20 +95,20 @@ static ret_t line_series_colorful_on_paint(widget_t* widget, canvas_t* c, float_
       series_p_draw_smooth_line_area_colorful, series_p_draw_symbol_colorful);
 }
 
-static ret_t line_series_colorful_set(widget_t* widget, uint32_t index, const void* data,
-                                      uint32_t nr) {
-  return series_p_set_with_animator(widget, index, data, nr,
-                                    chart_animator_fifo_colorful_value_create);
-}
-
-static const char* s_line_series_colorful_properties[] = {
-    SERIES_PROP_CAPACITY,     SERIES_PROP_UNIT_SIZE,       SERIES_PROP_COVERAGE,
-    SERIES_PROP_DISPLAY_MODE, SERIES_PROP_VALUE_ANIMATION, SERIES_PROP_TITLE,
-    SERIES_PROP_LINE_SHOW,    SERIES_PROP_LINE_SMOOTH,     SERIES_PROP_LINE_AREA_SHOW,
-    SERIES_PROP_SYMBOL_SIZE,  SERIES_PROP_SYMBOL_SHOW,     NULL};
+static const char* s_line_series_colorful_properties[] = {SERIES_PROP_FIFO,
+                                                          SERIES_PROP_COVERAGE,
+                                                          SERIES_PROP_DISPLAY_MODE,
+                                                          SERIES_PROP_VALUE_ANIMATION,
+                                                          SERIES_PROP_TITLE,
+                                                          SERIES_PROP_LINE_SHOW,
+                                                          SERIES_PROP_LINE_SMOOTH,
+                                                          SERIES_PROP_LINE_AREA_SHOW,
+                                                          SERIES_PROP_SYMBOL_SIZE,
+                                                          SERIES_PROP_SYMBOL_SHOW,
+                                                          NULL};
 
 static const series_draw_data_info_t s_series_p_colorful_draw_data_info = {
-    .size = sizeof(series_p_colorful_draw_data_t),
+    .unit_size = sizeof(series_data_draw_colorful_t),
     .compare_in_axis1 = series_p_colorful_draw_data_compare_x,
     .compare_in_axis2 = series_p_colorful_draw_data_compare_y,
     .min_axis1 = series_p_colorful_draw_data_min_x,
@@ -123,17 +125,17 @@ static const series_vtable_t s_line_series_colorful_internal_vtable = {
     .rset = series_p_rset,
     .push = series_p_push,
     .at = series_p_at,
+    .clear = series_p_clear,
     .get_current = series_p_get_current,
     .is_point_in = series_p_is_point_in,
     .index_of_point_in = series_p_index_of_point_in,
     .to_local = series_p_to_local,
-    .set = line_series_colorful_set,
+    .set = series_p_set,
     .on_paint = line_series_colorful_on_paint,
     .draw_data_info = &s_series_p_colorful_draw_data_info};
 
 TK_DECL_VTABLE(line_series_colorful) = {.size = sizeof(line_series_t),
                                         .type = WIDGET_TYPE_LINE_SERIES_COLORFUL,
-                                        .enable_pool = TRUE,
                                         .parent = TK_PARENT_VTABLE(series),
                                         .clone_properties = s_line_series_colorful_properties,
                                         .persistent_properties = s_line_series_colorful_properties,
@@ -150,7 +152,10 @@ widget_t* line_series_colorful_create(widget_t* parent, xy_t x, xy_t y, wh_t w, 
   series_t* series = SERIES(widget);
   return_value_if_fail(series != NULL, NULL);
 
-  series->unit_size = sizeof(series_colorful_data_t);
+  object_t* fifo = series_fifo_default_create(10, sizeof(series_data_colorful_t));
+  series_p_set_fifo(widget, fifo);
+
+  series->animator_create = chart_animator_fifo_colorful_value_create;
 
   return widget;
 }

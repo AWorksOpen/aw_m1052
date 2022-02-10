@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  dragger
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -70,6 +70,21 @@ typedef struct _dragger_t {
   bool_t dragging;
   bool_t moving;
 } dragger_t;
+
+/**
+ * @event {event_t} EVT_DRAG_START
+ * 开始拖动事件。
+ */
+
+/**
+ * @event {event_t} EVT_DRAG
+ * 拖动事件。
+ */
+
+/**
+ * @event {event_t} EVT_DRAG_END
+ * 结束拖动事件。
+ */
 
 /**
  * @method dragger_create

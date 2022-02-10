@@ -235,7 +235,7 @@ static void awbl_group_init (void)
 #endif
 
 #ifdef AW_DRV_IMX1050_WDT
-    awbl_imx1050_wdt_drv_register();
+    awbl_imx10xx_wdt_drv_register();
 #endif /* AW_DRV_IMX1050_WDT */
 
 #ifdef AW_DRV_IMX1050_RTWDT

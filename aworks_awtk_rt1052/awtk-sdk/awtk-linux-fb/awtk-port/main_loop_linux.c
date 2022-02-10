@@ -31,6 +31,7 @@
 #include "mouse_thread.h"
 #include "lcd_linux_fb.h"
 #include "lcd_linux_drm.h"
+#include "lcd_linux_egl.h"
 #include "main_loop_linux.h"
 
 #ifndef FB_DEVICE_FILENAME
@@ -53,21 +54,26 @@
 #define MICE_DEVICE_FILENAME "/dev/input/mouse0"
 #endif /*MICE_DEVICE_FILENAME*/
 
+
 static ret_t main_loop_linux_destroy(main_loop_t* l) {
   main_loop_simple_t* loop = (main_loop_simple_t*)l;
 
   main_loop_simple_reset(loop);
+
+#ifdef WITH_LINUX_EGL
+#else
   native_window_raw_deinit();
+#endif
 
   return RET_OK;
 }
 
 ret_t input_dispatch_to_main_loop(void* ctx, const event_queue_req_t* evt, const char* msg) {
-  main_loop_t* l = (main_loop_t*)ctx;
+  main_loop_simple_t* l = (main_loop_simple_t*)ctx;
   event_queue_req_t event = *evt;
   event_queue_req_t* e = &event;
 
-  if (l != NULL && l->queue_event != NULL) {
+  if (l != NULL && l->base.queue_event != NULL) {
     switch (e->event.type) {
       case EVT_KEY_DOWN:
       case EVT_KEY_UP:
@@ -75,9 +81,24 @@ ret_t input_dispatch_to_main_loop(void* ctx, const event_queue_req_t* evt, const
         e->event.size = sizeof(e->key_event);
         break;
       }
-      case EVT_POINTER_DOWN:
-      case EVT_POINTER_MOVE:
+      case EVT_CONTEXT_MENU: {
+        e->event.size = sizeof(e->pointer_event);
+        break;
+      }
+      case EVT_POINTER_DOWN: {
+        l->pressed = TRUE;
+        e->pointer_event.pressed = l->pressed;
+        e->event.size = sizeof(e->pointer_event);
+        break;
+      }
+      case EVT_POINTER_MOVE: {
+        e->pointer_event.pressed = l->pressed;
+        e->event.size = sizeof(e->pointer_event);
+        break;
+      }
       case EVT_POINTER_UP: {
+        e->pointer_event.pressed = l->pressed;
+        l->pressed = FALSE;
         e->event.size = sizeof(e->pointer_event);
         break;
       }
@@ -89,7 +110,7 @@ ret_t input_dispatch_to_main_loop(void* ctx, const event_queue_req_t* evt, const
         break;
     }
 
-    main_loop_queue_event(l, e);
+    main_loop_queue_event(&(l->base), e);
     input_dispatch_print(ctx, e, msg);
   } else {
     return RET_BAD_PARAMS;
@@ -97,7 +118,6 @@ ret_t input_dispatch_to_main_loop(void* ctx, const event_queue_req_t* evt, const
   return RET_OK;
 }
 
-static lcd_t* s_lcd = NULL;
 static tk_thread_t* s_kb_thread = NULL;
 static tk_thread_t* s_mice_thread = NULL;
 static tk_thread_t* s_ts_thread = NULL;
@@ -116,15 +136,21 @@ static void on_app_exit(void) {
 
 main_loop_t* main_loop_init(int w, int h) {
   main_loop_simple_t* loop = NULL;
-#ifdef WITH_LINUX_DRM
+#ifdef WITH_LINUX_EGL
+  lcd_egl_context_t* lcd = lcd_linux_egl_create(FB_DEVICE_FILENAME);
+#elif WITH_LINUX_DRM
   lcd_t* lcd = lcd_linux_drm_create(DRM_DEVICE_FILENAME);
 #else
   lcd_t* lcd = lcd_linux_fb_create(FB_DEVICE_FILENAME);
-#endif /*WITH_LINUX_DRM*/
+#endif
 
   return_value_if_fail(lcd != NULL, NULL);
 
+#ifdef WITH_LINUX_EGL
+#else
   native_window_raw_init(lcd);
+#endif
+
   loop = main_loop_simple_init(lcd->w, lcd->h, NULL, NULL);
   loop->base.destroy = main_loop_linux_destroy;
 
@@ -138,7 +164,6 @@ main_loop_t* main_loop_init(int w, int h) {
   s_mice_thread =
       mouse_thread_run(MICE_DEVICE_FILENAME, input_dispatch_to_main_loop, loop, lcd->w, lcd->h);
 
-  s_lcd = lcd;
 
   atexit(on_app_exit);
 

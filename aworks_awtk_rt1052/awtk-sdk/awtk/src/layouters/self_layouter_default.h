@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  self layouter default
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -42,10 +42,10 @@ typedef struct _self_layouter_default_t {
   uint8_t y_attr;
   uint8_t w_attr;
   uint8_t h_attr;
-  xy_t x;
-  xy_t y;
-  wh_t w;
-  wh_t h;
+  double x;
+  double y;
+  double w;
+  double h;
 } self_layouter_default_t;
 
 /**

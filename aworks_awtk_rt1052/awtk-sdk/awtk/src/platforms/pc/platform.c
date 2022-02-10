@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  default platform
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,7 +21,6 @@
 
 #include <time.h>
 #include <stdio.h>
-#include "base/timer.h"
 #include "tkc/platform.h"
 #include "tkc/date_time.h"
 #include "tkc/mem.h"
@@ -84,24 +83,6 @@ static ret_t date_time_set_now_impl(date_time_t* dt) {
   }
 }
 
-static ret_t date_time_from_time_impl(date_time_t* dt, uint64_t timeval) {
-  time_t tm = timeval;
-  struct tm* t = localtime(&tm);
-  return_value_if_fail(dt != NULL, RET_BAD_PARAMS);
-
-  memset(dt, 0x00, sizeof(date_time_t));
-
-  dt->second = t->tm_sec;
-  dt->minute = t->tm_min;
-  dt->hour = t->tm_hour;
-  dt->day = t->tm_mday;
-  dt->month = t->tm_mon + 1;
-  dt->year = t->tm_year + 1900;
-  dt->wday = t->tm_wday;
-
-  return RET_OK;
-}
-
 #else
 #include <sys/time.h>
 #include <unistd.h>
@@ -148,6 +129,8 @@ static ret_t date_time_set_now_impl(date_time_t* dt) {
   return RET_OK;
 }
 
+#endif
+
 static ret_t date_time_from_time_impl(date_time_t* dt, uint64_t timeval) {
   time_t tm = timeval;
   struct tm* t = localtime(&tm);
@@ -166,17 +149,40 @@ static ret_t date_time_from_time_impl(date_time_t* dt, uint64_t timeval) {
   return RET_OK;
 }
 
-#endif
+static uint64_t date_time_to_time_impl(date_time_t* dt) {
+  time_t tm = 0;
+  struct tm* t = localtime(&tm);
+  return_value_if_fail(dt != NULL, RET_BAD_PARAMS);
+
+  t->tm_sec = dt->second;
+  t->tm_min = dt->minute;
+  t->tm_hour = dt->hour;
+  t->tm_mday = dt->day;
+  t->tm_mon = dt->month - 1;
+  t->tm_year = dt->year - 1900;
+  t->tm_wday = dt->wday;
+
+  return (uint64_t)mktime(t);
+}
 
 uint64_t stm_now_ms();
+uint64_t stm_now_us();
 void stm_time_init(void);
 
 uint64_t get_time_ms64() {
   return stm_now_ms();
 }
 
+uint64_t get_time_us64() {
+  return stm_now_us();
+}
+
 static const date_time_vtable_t s_date_time_vtable = {
-    date_time_get_now_impl, date_time_set_now_impl, date_time_from_time_impl};
+    date_time_get_now_impl,
+    date_time_set_now_impl,
+    date_time_from_time_impl,
+    date_time_to_time_impl,
+};
 
 void sleep_ms(uint32_t ms) {
 #ifdef WIN32
@@ -186,18 +192,20 @@ void sleep_ms(uint32_t ms) {
 #endif
 }
 
-#ifndef HAS_STD_MALLOC
-static uint32_t s_heap_mem[3 * 1024 * 1024];
-#endif /*HAS_STD_MALLOC*/
-
 ret_t platform_prepare(void) {
   stm_time_init();
 
 #ifndef HAS_STD_MALLOC
+#ifndef TK_HEAP_MEM_SIZE
+#define TK_HEAP_MEM_SIZE 12 * 1024 * 1024
+#endif /*TK_HEAP_MEM_SIZE*/
+
+  static uint32_t s_heap_mem[TK_HEAP_MEM_SIZE / 4];
   tk_mem_init(s_heap_mem, sizeof(s_heap_mem));
 #endif /*HAS_STD_MALLOC*/
 
   date_time_global_init_ex(&s_date_time_vtable);
+  srandom(time(0));
 
   return RET_OK;
 }

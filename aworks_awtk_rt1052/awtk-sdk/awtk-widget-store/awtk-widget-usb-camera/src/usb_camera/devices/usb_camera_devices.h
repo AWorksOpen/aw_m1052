@@ -250,7 +250,7 @@ ret_t usb_camera_close_device(void *p_usb_camera_device);
  * 获取USB摄像头图像数据
  * @param {void*} p_usb_camera_device USB摄像头句柄
  * @param {unsigned char*} data 输出图像字节数组
- * @param {bitmap_format_t} data 输出图像格式
+ * @param {bitmap_format_t} format 输出图像格式
  * @param {uint32_t} data_len data参数的字节的长度
  *
  * @return {ret_t} 成功返回RET_OK，返回其他表示失败。
@@ -272,6 +272,19 @@ ret_t usb_camera_get_video_image_data(void *p_usb_camera_device,
 ret_t usb_camera_prepare_image_fun(void *ctx, bitmap_t *image);
 
 /**
+ * @method usb_camera_prepare_image_create_image_fun
+ * @annotation ["constructor"]
+ * 创建 bitmap 的回调函数
+ * @param {void*} ctx USB摄像头句柄
+ * @param {bitmap_format_t} format lcd 格式
+ * @param {bitmap_t*} old_image 输出图像
+ *
+ * @return {bitmap_t*} 成功返回 bitmap，失败返回 NULL。
+ */
+bitmap_t* usb_camera_prepare_image_create_image_fun(void* ctx, bitmap_format_t format,
+                                                  bitmap_t* old_image);
+
+/**
  * @method usb_camera_devices_info_list_destroy
  * @annotation ["constructor"]
  * USB摄像头设备类型释放函数，给slist对象使用的
@@ -285,10 +298,10 @@ ret_t usb_camera_devices_info_list_destroy(void *data);
  * @method usb_camera_devices_info_list_compare
  * @annotation ["constructor"]
  * USB摄像头设备类型比较函数，给slist对象使用的
- * @param {void*} a USB摄像头设备类型
- * @param {void*} b USB摄像头设备类型
+ * @param {const void*} a USB摄像头设备类型
+ * @param {const void*} b USB摄像头设备类型
  *
- * @return {ret_t} 成功返回0，失败返回1。
+ * @return {int} 成功返回0，失败返回1。
  */
 int usb_camera_devices_info_list_compare(const void *a, const void *b);
 
@@ -306,10 +319,10 @@ ret_t usb_camera_device_ratio_list_destroy(void *data);
  * @method usb_camera_device_ratio_list_compare
  * @annotation ["constructor"]
  * USB摄像头分辨率类型比较函数，给slist对象使用的
- * @param {void*} a USB摄像头分辨率类型
- * @param {void*} b USB摄像头分辨率类型
+ * @param {const void*} a USB摄像头分辨率类型
+ * @param {const void*} b USB摄像头分辨率类型
  *
- * @return {ret_t} 成功返回0，失败返回1。
+ * @return {int} 成功返回0，失败返回1。
  */
 int usb_camera_device_ratio_list_compare(const void *a, const void *b);
 

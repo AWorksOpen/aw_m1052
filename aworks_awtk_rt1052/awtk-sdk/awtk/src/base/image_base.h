@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  image base
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -109,7 +109,15 @@ typedef struct _image_base_t {
    * 当前是否被选中。
    */
   bool_t selected;
+
+  /*private*/
+  bool_t pressed;
 } image_base_t;
+
+/**
+ * @event {pointer_event_t} EVT_CLICK
+ * 点击事件。
+ */
 
 /**
  * @method image_base_set_image

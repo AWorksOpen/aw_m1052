@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  color_component
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -55,9 +55,14 @@ typedef struct _color_component_t {
 } color_component_t;
 
 /**
+ * @event {value_change_event_t} EVT_VALUE_CHANGING
+ * 颜色正在改变事件。
+ */
+
+/**
  * @method color_component_create
  * 创建color_component对象
- * @annotation ["constructor"]
+ * @annotation ["constructor", "scriptable"]
  * @param {widget_t*} parent 父控件
  * @param {xy_t} x x坐标
  * @param {xy_t} y y坐标

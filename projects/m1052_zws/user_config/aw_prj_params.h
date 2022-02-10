@@ -100,6 +100,7 @@
 //#define AW_DEV_GPIO_KEY                 /**< \brief 按键 */
 #define AW_DEV_PWM_BUZZER               /**< \brief PWM Buzzer(蜂鸣器，需要配套PWM) */
 #define AW_DEV_GPIO_WDT                 /**< \brief GPIO看门狗 */
+//#define AW_DEV_IMX1050_WDT1             /**< \brief 软件看门狗 */
 //#define AW_DEV_GPIO_I2C_0               /**< \brief GPIO 模拟 I2C */
 
 //#define AW_CFG_SPI_FLASH_MTD           /* SPI flash 使能 标准 SPI FLASH MTD 接口操作 */

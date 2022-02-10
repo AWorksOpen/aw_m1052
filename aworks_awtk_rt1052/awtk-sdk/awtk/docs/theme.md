@@ -1,9 +1,9 @@
-## AWTK 中的主题
+## AWTK 中的窗体样式
 
-设计漂亮的界面并非程序员的强项，AWTK 通过主题提供这样一种机制，让设计漂亮的界面变得非常容易。通过主题，可以改变控件的背景颜色、边框颜色、字体颜色、字体、字体大小、背景图片、背景图片的显示方式和图标等属性。同时 AWTK 也提供了一些主题重用的机制，让主题文件的开发和维护变得容易。
+设计漂亮的界面并非程序员的强项，AWTK 通过窗体样式提供这样一种机制，让设计漂亮的界面变得非常容易。通过窗体样式，可以改变控件的背景颜色、边框颜色、字体颜色、字体、字体大小、背景图片、背景图片的显示方式和图标等属性。同时 AWTK 也提供了一些窗体样式重用的机制，让窗体样式文件的开发和维护变得容易。
 
-### 一、主题的结构
-AWTK 的主题按控件进行分类，每种控件可以有多种不同的风格，每种风格下又有不同状态下的配置。比如：
+### 一、窗体样式的结构
+AWTK 的窗体样式按控件进行分类，每种控件可以有多种不同的风格，每种风格下又有不同状态下的配置。比如：
 
 ```
 <button bg_image_draw_type="3patch_x" text_color="blue">
@@ -27,13 +27,13 @@ AWTK 的主题按控件进行分类，每种控件可以有多种不同的风格
 </button>
 ```
 
-上面是按钮的主题配置（你可以自由增加自己需要的），其中定义了三种不同的按钮风格：
+上面是按钮的样式配置（你可以自由增加自己需要的），其中定义了三种不同的按钮样式：
 
-* default 为缺省的按钮风格。
+* default 为缺省的按钮样式。
 * green_btn 是用图片实现的绿色系按钮。
 * red_btn 是用图片实现的红色系按钮。
 
-> 主题的各个属性，如果出现在控件中，则为该控件下各个 style 的缺省值。如果出现在 style 中，则为该 style 的下各种状态的缺省值。这样可以实现类似继承的重用机制。
+> 窗体样式的各个属性，如果出现在控件中，则为该控件下各个 style 的缺省值。如果出现在 style 中，则为该 style 的下各种状态的缺省值。这样可以实现类似继承的重用机制。
 >
 > 同一控件可以出现多次（如上面的 button 出现了两次），有利于实现配置共享，让维护工作更简单。 
 
@@ -43,7 +43,7 @@ AWTK 的主题按控件进行分类，每种控件可以有多种不同的风格
 
 * [控件状态定义](manual/widget_state_t.md)
 
-### 二、主题的属性
+### 二、窗体样式的属性
 
 #### 基本属性
 
@@ -64,7 +64,7 @@ AWTK 的主题按控件进行分类，每种控件可以有多种不同的风格
 * fg\_image\_draw\_type 前景图片的 [绘制方式](image_draw_type.md)。
 * icon 图标。用途视具体控件而定，如 check\_button 的图标，按钮上的图标，对话框标题上的图标。
 * active\_icon active 图标。用途视具体控件而定，目前 slideview 的页面指示器会用到。
-* icon\_at 图标的位置，取值为 left/right/top/bottom。
+* icon\_at 图标的位置，取值为 left/right/top/bottom/center。
 * x\_offset 在 X 坐标方向上的偏移（可用来实现按下的效果）。 
 * y\_offset 在 Y 坐标方向上的偏移（可用来实现按下的效果）。
 * margin 边距（边距目前只影响 icon/text，不影响子控件，子控件的边距由布局算法参数决定）。
@@ -81,13 +81,15 @@ AWTK 的主题按控件进行分类，每种控件可以有多种不同的风格
 * border\_width 边框线宽（仅在定义 WITH\_VGCANVAS 时有效）。
 * self\_layout 自身布局参数。请参考 [控件布局参数文档](layout.md)
 * children\_layout 子控件布局参数。请参考 [控件布局参数文档](layout.md)
+* focusable 是否支持焦点停留。
+* feedback 是否支持 feedback。
 
 > 颜色可使用标准名称，#开头的 16 进制值和 rgba 合成的值。
 
 参考： 
 
 * [AWTK 中图片的绘制方式](image_draw_type.md)
-* [如何在主题文件中写控件布局参数](how_to_write_layout_params_in_style.md)
+* [如何在窗体样式文件中写控件布局参数](how_to_write_layout_params_in_style.md)
 
 #### 扩展属性
 
@@ -98,9 +100,9 @@ AWTK 的主题按控件进行分类，每种控件可以有多种不同的风格
 * 名称带有 name/image 视为字符串格式的值。
 * 其它视为整数格式的值。
 
-### 三、编译主题
+### 三、编译窗体样式
 
-主题用 XML 文件编写，然后用 themegen 生成 C 常量数据，并加入资源管理器，才能在程序中使用。
+窗体样式用 XML 文件编写，然后用 themegen 生成 C 常量数据，并加入资源管理器，才能在程序中使用。
 
 * 生成 C 常量数据
 
@@ -141,47 +143,47 @@ resource_manager_add(theme_default);
 </dialog>
 ```
 
-### 五、每个窗口支持独立的主题
+### 五、每个窗口支持独立的窗体样式
 
-像微信小程序那样，AWTK 中每个窗口（包括对话框和其它窗口）可以有自己的主题文件。
+像微信小程序那样，AWTK 中每个窗口（包括对话框和其它窗口）可以有自己的窗体样式文件。
 
-* 通过窗口的 theme 属性来指定窗口的主题文件名（方便多个窗口共用一个主题文件）。
+* 通过窗口的 theme 属性来指定窗口的窗体样式文件名（方便多个窗口共用一个窗体样式文件）。
 
-* 如果没有指定 theme 属性，以窗口的 name 属性作为窗口的主题文件名。
+* 如果没有指定 theme 属性，以窗口的 name 属性作为窗口的窗体样式文件名。
 
-* 以窗口自己的主题文件优先，其次为缺省的主题文件。
+* 以窗口自己的窗体样式文件优先，其次为缺省的窗体样式文件。
 
 > 参考：dialog1.xml
 
 ### 六、inline style
 
-主题数据是只读的，它的好处是速度快，占用内存少。但在一些特殊情况下，我们希望通过函数直接修改控件的 style，或者在 UI 描述的 XML 文件中直接写 style。我们把这类 style 称为 inline style，具体用法如下：
+窗体样式数据是只读的，它的好处是速度快，占用内存少。但在一些特殊情况下，我们希望通过函数直接修改控件的 style，或者在 UI 描述的 XML 文件中直接写 style。我们把这类 style 称为 inline style，具体用法如下：
 
 * 在 XML UI 描述文件中使用 inline style。
 
-控件的属性名以『style:』开头表示这是一个 inline 属性：
+控件的属性名以『style.』开头表示这是一个 inline 属性：
 
 ```
-style: 状态：名称
+style.状态.名称
 ```
 
 下面表示设置正常状态的字体大小为 16：
 
 ```
-style:normal:font_size="16"
+style.normal.font_size="16"
 ```
 
 状态可以省略，如果省略，表示正常状态 (normal)，下面这个和上面的功能一样：
 
 ```
-style:font_size="16"
+style.font_size="16"
 ```
 
 完整示例：
 
 ```
-<label x="0" y="0" w="100%" h="100%" text="Basic Controls" style:font_size="24" style:text_color="green"/>
-<button name="dec_value" text="Dec" focusable="true" style:focused:text_color="red"/>
+<label x="0" y="0" w="100%" h="100%" text="Basic Controls" style.font_size="24" style.text_color="green"/>
+<button name="dec_value" text="Dec" focusable="true" style.focused.text_color="red"/>
 
 ```
 
@@ -229,7 +231,7 @@ ret_t widget_set_style_str(widget_t* widget, const char* state_and_name, const c
  * 在下面这个例子中，R=0x11 G=0x22 B=0x33 A=0xFF
  * 
  * ```c
- *  widget_set_style_color(label, "normal:bg_color", 0xFF332211);
+ *  widget_set_style_color(label, "normal.bg_color", 0xFF332211);
  * ```
  *
  * @return {ret_t} 返回 RET_OK 表示成功，否则表示失败。
@@ -240,13 +242,14 @@ ret_t widget_set_style_color(widget_t* widget, const char* state_and_name, uint3
 示例：
 
 ```
-  widget_set_style_int(label,  "normal:font_size", 24);
-  widget_set_style_str(label, "normal:text_color", "red");
-  widget_set_style_str(label, "normal:border_color", "#FF0000");
-  widget_set_style_color(label, "normal:bg_color", 0xFF00FF00);
+  widget_set_style_int(label,  "normal.font_size", 24);
+  widget_set_style_str(label, "normal.text_color", "red");
+  widget_set_style_str(label, "normal.border_color", "#FF0000");
+  widget_set_style_color(label, "normal.bg_color", 0xFF00FF00);
 ```
 
-> inline style 会消耗更多内存，而且不方便切换主题，一般应该尽量避免使用。
+> inline style 会消耗更多内存，而且不方便切换窗体样式，一般应该尽量避免使用。
+> 注意，以前的版本使用:分隔，由于不合XML规范，改为用.分隔，仍然保持对:的兼容。
 
 #### 注意：
 

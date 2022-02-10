@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  pthread implemented thread related functions.
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -201,6 +201,12 @@ ret_t tk_cond_wait(tk_cond_t* cond, tk_mutex_t* mutex) {
 #include "tkc/semaphore.h"
 #endif
 
+#if defined(APPLE) || defined(__APPLE__) || defined(IOS) || defined(MACOS)
+#undef HAVE_SEM_TIMEDWAIT
+#else
+#define HAVE_SEM_TIMEDWAIT
+#endif
+
 struct _tk_semaphore_t {
   sem_t* sem;
   char name[TK_NAME_LEN + 1];
@@ -231,6 +237,53 @@ tk_semaphore_t* tk_semaphore_create(uint32_t value, const char* name) {
 }
 
 ret_t tk_semaphore_wait(tk_semaphore_t* semaphore, uint32_t timeout_ms) {
+#ifdef HAVE_SEM_TIMEDWAIT
+  struct timespec abstime;
+  struct timeval delta;
+#endif /*HAVE_SEM_TIMEDWAIT*/
+  return_value_if_fail(semaphore != NULL, RET_BAD_PARAMS);
+
+  if (timeout_ms == -1) {
+    int retval;
+    do {
+      retval = sem_wait(semaphore->sem);
+    } while (retval < 0 && errno == EINTR);
+
+    return_value_if_fail(retval == 0, RET_FAIL);
+    return RET_OK;
+  }
+
+#ifdef HAVE_SEM_TIMEDWAIT
+
+#ifdef HAVE_CLOCK_GETTIME
+  clock_gettime(CLOCK_REALTIME, &abstime);
+  abstime.tv_nsec += (timeout_ms % 1000) * 1000000;
+  abstime.tv_sec += timeout_ms / 1000;
+#else
+  gettimeofday(&delta, NULL);
+  abstime.tv_sec = delta.tv_sec + (timeout_ms / 1000);
+  abstime.tv_nsec = (delta.tv_usec + (timeout_ms % 1000) * 1000) * 1000;
+#endif
+
+  if (abstime.tv_nsec > 1000000000) {
+    abstime.tv_sec += 1;
+    abstime.tv_nsec -= 1000000000;
+  }
+
+tryagain:
+  if (sem_timedwait(semaphore->sem, &abstime) == 0) {
+    return RET_OK;
+  } else {
+    switch (errno) {
+      case EINTR:
+        goto tryagain;
+      case ETIMEDOUT:
+        return RET_TIMEOUT;
+    }
+    return RET_FAIL;
+  }
+#else  // HAVE_SEM_TIMEDWAIT
+
   uint32_t start = time_now_ms();
   return_value_if_fail(semaphore != NULL, RET_BAD_PARAMS);
 
@@ -243,10 +296,11 @@ ret_t tk_semaphore_wait(tk_semaphore_t* semaphore, uint32_t timeout_ms) {
       return RET_TIMEOUT;
     }
 
-    sleep_ms(10);
+    sleep_ms(1);
   } while (TRUE);
 
   return RET_FAIL;
+#endif  // HAVE_SEM_TIMEDWAIT
 }
 
 ret_t tk_semaphore_post(tk_semaphore_t* semaphore) {
@@ -282,7 +336,7 @@ struct _tk_thread_t {
   tk_thread_entry_t entry;
   char name[TK_NAME_LEN + 1];
   uint32_t stack_size;
-  uint32_t priority;
+  int32_t priority;
 };
 
 ret_t tk_thread_set_name(tk_thread_t* thread, const char* name) {
@@ -301,10 +355,14 @@ ret_t tk_thread_set_stack_size(tk_thread_t* thread, uint32_t stack_size) {
   return RET_OK;
 }
 
-ret_t tk_thread_set_priority(tk_thread_t* thread, uint32_t priority) {
+int32_t tk_thread_get_priority_from_platform(tk_thread_priority_t priority) {
+  return 0;
+}
+
+ret_t tk_thread_set_priority(tk_thread_t* thread, tk_thread_priority_t priority) {
   return_value_if_fail(thread != NULL, RET_BAD_PARAMS);
 
-  thread->priority = priority;
+  thread->priority = tk_thread_get_priority_from_platform(priority);
 
   return RET_OK;
 }

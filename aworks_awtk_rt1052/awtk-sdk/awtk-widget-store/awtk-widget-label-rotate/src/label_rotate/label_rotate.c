@@ -215,18 +215,8 @@ static ret_t label_rotate_text_in_rect(widget_t *widget, canvas_t *c,
   rect_t *r = label_rotate_canvas_fix_rect(r_in, &r_fix);
   return_value_if_fail(c != NULL && str != NULL && r != NULL, RET_BAD_PARAMS);
 
-  switch (label_rotate->orientation) {
-  case LABEL_ROTATE_ORIENTATION_90:
-  case LABEL_ROTATE_ORIENTATION_270:
-    height = label_rotate_text_max_width(c, str, nr);
-    text_w = label_rotate_measure_text_height(c, str, nr);
-    break;
-  case LABEL_ROTATE_ORIENTATION_180:
-  default:
-    height = canvas_get_font_height(c);
-    text_w = canvas_measure_text(c, str, nr);
-    break;
-  }
+  height = canvas_get_font_height(c);
+  text_w = canvas_measure_text(c, str, nr);
 
   switch (c->text_align_v) {
   case ALIGN_V_TOP:

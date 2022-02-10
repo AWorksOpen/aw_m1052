@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  awtk entry.
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,6 +21,8 @@
 
 #ifndef TK_AWTK_H
 #define TK_AWTK_H
+
+#include "awtk_version.h"
 
 #include "awtk_tkc.h"
 #include "awtk_base.h"

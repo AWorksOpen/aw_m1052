@@ -21,9 +21,10 @@
 | ---------- | ---------------------------------------------------- |
 | video_name | 需要播放的视频文件名称（该文件是放在 data 文件夹中） |
 | auto_play  | 是否自动播放（默认为自动播放）                       |
-| delay_paly | 是否延迟播放（默认不延迟播放）                       |
+| delay_play | 是否延迟播放（默认不延迟播放）                       |
+| loop       | 是否循环播放                                         |
 
-​	在使用上，video_image 控件只需要配置 video_name 属性就可以播放序列帧了，所以是非常方便的，同时播放完成后，会触发 EVT_ANIM_END 事件，可以通过 widget_on  函数注册对应事件的回调函数。
+​	在使用上，video_image 控件只需要配置 video_name 属性就可以播放序列帧了，所以是非常方便的，同时播放结束后（非循环播放状态下），会触发 EVT_ANIM_END 事件，如果是循环播放状态下，完成一次播放会触发 EVT_ANIM_ONCE 事件，可以通过 widget_on  函数注册对应事件的回调函数。
 
 ### 二，video_image 控件特殊用法
 
@@ -58,23 +59,23 @@ ret_t video_image_dispose_image(void* ctx, bitmap_t* bitmap) {
   return RET_OK;
 }
 /* 这个是 pc 的 AGGE 模式下才是这样设置 offline buffer ，其他模式慎用 */
-ret_t video_image_init_image(void* ctx, bitmap_t* init_bitmap, uint32_t w, uint32_t h, uint32_t channels, bitmap_format_t format) {
+ret_t video_image_init_image(void* ctx, bitmap_t* bitmap, uint32_t w, uint32_t h, uint32_t channels, uint32_t line_length, bitmap_format_t format) {
   canvas_t* c = widget_get_canvas(window_manager());
   lcd_t* lcd = c->lcd;
   lcd_mem_special_t* special = (lcd_mem_special_t*)lcd;
   bitmap_format_t lcd_format = lcd_get_desired_bitmap_format(lcd);
   uint32_t lcd_channels = bitmap_get_bpp_of_format(lcd_format);
-  if (lcd->w != w || lcd->h != h || lcd_channels != channels || lcd_format != format) {
-    assert(!" lcd->w != w || lcd->h != h || lcd_channels != channels || lcd_format != format ");
+  if (lcd->w != w || lcd->h != h || lcd_channels != channels || lcd_format != format || line_length != special->lcd_mem->line_length) {
+    assert(!"lcd->w != w || lcd->h != h || lcd_channels != channels || lcd_format != format || line_length != lcd_line_length");
     return RET_FAIL;
   }
   /* 把 offline buffer 设置到 bitmap 上面，让序列帧的位图数据保持到 offline buffer 上面。 */
-  init_bitmap->w = lcd->w;
-  init_bitmap->h = lcd->h;
-  init_bitmap->format = special->lcd_mem->format;
-  init_bitmap->buffer = special->lcd_mem->offline_gb;
+  bitmap->w = lcd->w;
+  bitmap->h = lcd->h;
+  bitmap->format = special->lcd_mem->format;
+  bitmap->buffer = special->lcd_mem->offline_gb;
   graphic_buffer_attach(special->lcd_mem->offline_gb, special->lcd_mem->offline_fb, w, h);
-  bitmap_set_line_length(init_bitmap, tk_max(lcd_channels * w, special->lcd_mem->line_length));
+  bitmap_set_line_length(bitmap, tk_max(lcd_channels * w, special->lcd_mem->line_length));
 
   return RET_OK;
 }
@@ -108,19 +109,51 @@ ret_t application_init(void) {
 
 ​	由于 video_image 控件只负责播放显示序列帧而已，真是把序列帧压缩是通过 diff_image_to_video_gen 工具来完成，该工具可以在 window 和 linux 上面运行。
 
-​	diff_image_to_video_gen 工具的用法：diff_image_to_video_gen.exe [空格] image_dir [空格] image_name_format [空格] save_file_path [空格] frame_image_type [空格] delays
+​	diff_image_to_video_gen 工具的用法：diff_image_to_video_gen.exe [空格] image_dir [空格] image_name_format [空格] save_file_path [空格] frame_image_type [空格] delays [空格] line_length_model
 
-| 参数              | 说明                   | 备注                                             |
-| ----------------- | ---------------------- | ------------------------------------------------ |
-| image_dir         | 序列帧的文件夹路径     |                                                  |
-| image_name_format | 序列帧的文件名格式     | 例如：本例子中 s01.jpg 文件，则文件名格式为 s%2d |
-| save_file_path    | 视频文件保存路径       |                                                  |
-| frame_image_type  | 视频文件保存的颜色格式 | 需要对应 LCD 的类型                              |
-| delays            | 序列帧的帧间延迟时间   | 每一帧的时间间隔，单位为毫秒                     |
+| 参数              | 说明                                  | 备注                                                 |
+| ----------------- | ------------------------------------- | ---------------------------------------------------- |
+| image_dir         | 序列帧的文件夹路径                    |                                                      |
+| image_name_format | 序列帧的文件名格式                    | 例如：本例子中 s01.jpg 文件，则文件名格式为 s%2d     |
+| save_file_path    | 视频文件保存路径                      |                                                      |
+| frame_image_type  | 视频文件保存的颜色格式                | 需要对应 LCD 的类型                                  |
+| delays            | 序列帧的帧间延迟时间                  | 每一帧的时间间隔，单位为毫秒                         |
+| line_length_model | 解决解压后贴图的 line_length 对齐问题 | 可以缺省，缺省则 line_length 为图片 w * 图片的 bpp。 |
 
-> 备注：
->
-> 本例子的序列帧放在 .\design\default\images\video\video_12 文件夹中，序列帧的文件名格式为 s%2d。
+> 备注：本例子的序列帧放在 .\design\default\images\video\video_12 文件夹中，序列帧的文件名格式为 s%2d。
+
+```c
+/* 
+ * line_length_model 参数写法为： line_length_model_t + ":" + 数据，
+ * 例如 line_length 长度为贴图宽度为 16 对齐，则 line_length_model 参数为 "0:16" 。
+ * 例如 line_length 长度为 2 字节对齐，则 line_length_model 参数为 "1:2" 。
+ * 例如 line_length 长度一定是 1024，则 line_length_model 参数为 "2:1024" 。
+ */
+
+/**
+ * @enum line_length_model_t
+ * @annotation ["scriptable"]
+ * @prefix line_length_model_
+ * 图片的 line_length 长度对齐模式。
+ */
+typedef enum _line_length_model_t {
+  /**
+   * @const line_length_model_w_align
+   * 图片的 line_length 长度会根据图片的 w 对齐后 * 图片的 bpp，数据为对齐个数。
+   */
+  line_length_model_w_align = 0x0,
+  /**
+   * @const line_length_model_line_length_align
+   * 图片的 line_length 长度会根据图片的 w * 图片的 bpp 后对齐，数据为对齐字节数。
+   */
+  line_length_model_line_length_align,
+  /**
+   * @const line_length_model_set_line_length
+   *  图片的 line_length 长度为数据长度。
+   */
+  line_length_model_set_line_length,
+} line_length_model_t;
+```
 
 ​	而本例子中是统一通过调用 update_res.py 脚本或者 designer 来生成资源的，如下：
 
@@ -131,22 +164,44 @@ python scripts/update_res.py all
 ​	同时需要注意的是，虽然是可以通过 update_res.py 脚本或者 designer 来生成资源，但是其生成资源的路径或者序列帧的文件名格式等参数都是被写死了，所以用户如果需要修改的话，请打开 .\scripts\update_res_generate_res_handler.py，如下根据注释来修改：
 
 ```python
+
 # 序列帧的文件名格式
 video_image_format="s%02d"
 
 # 视频文件保存的颜色格式，需要对应 LCD 的类型
-if os.environ['NANOVG_BACKEND'] == 'AGGE' or os.environ['NANOVG_BACKEND'] == 'AGG' or os.environ['VGCANVAS'] == 'CAIRO':
-  video_image_bitmap_format="BGR565"
-else :
-  video_image_bitmap_format="RGBA8888"
+video_image_bitmap_format="BGRA8888"
 
 # 序列帧的帧间延迟时间（每一帧的时间间隔，单位为毫秒）
 video_image_delay=80
+
+# 由于部分板子的贴图需要对齐，所以这里是需要设置 line_length 对齐模式，具体的请看文档
+# video_image_line_length_model="0:16"
+
+def getAwtkRoot(ctx):
+  if 'awtk_root' in ctx:
+    return ctx['awtk_root']
+  else:
+    import awtk_locator as locator
+    locator.init()
+    return locator.AWTK_ROOT
+
+# 根据平台来自定选择 LCD 的类型，但是实际情况有可能不一样，所以用户可以自行修改下面的函数。
+def updateVideoImageBitmapFormat(awtk_root):
+  global video_image_bitmap_format
+
+  sys.path.insert(0, awtk_root)
+  import awtk_config as awtk
+  # 这里的判读是为了兼容 awtk 的默认 LCD 类型而设计的，所以用户如果实际情况不一样，请手动修改。
+  if os.environ['NANOVG_BACKEND'] == 'AGGE' or os.environ['NANOVG_BACKEND'] == 'AGG' or os.environ['VGCANVAS'] == 'CAIRO':
+    video_image_bitmap_format="BGR565"
+
+  print("video_image_bitmap_format:", video_image_bitmap_format);
 
 def joinPath(root, subdir):
   return os.path.normpath(os.path.join(root, subdir))
 
 def genVideoImageGen(src_dir):
+  global video_image_line_length_model
   data_dir = joinPath(src_dir, 'data')
   if os.path.exists(data_dir):
     image_dir = joinPath(src_dir, 'images/video')
@@ -156,7 +211,11 @@ def genVideoImageGen(src_dir):
         tool_path += ".exe"
       if os.path.exists(tool_path):
         for video_image_dir in os.listdir(image_dir) :
-          os.system(tool_path + " " + os.path.abspath(joinPath(image_dir, video_image_dir)) + " " + video_image_format + " " + joinPath(data_dir, video_image_dir)  + " " + video_image_bitmap_format +" " + str(video_image_delay))
+          cmd = tool_path + " " + os.path.abspath(joinPath(image_dir, video_image_dir)) + " " + video_image_format + " " + joinPath(data_dir, video_image_dir)  + " " + video_image_bitmap_format + " " + str(video_image_delay)
+          if "video_image_line_length_model" in globals().keys() :
+            cmd += (" " + video_image_line_length_model)
+          os.system(cmd)
       else :
         print(" not find diff_image_to_video_gen.exe")
+
 ```

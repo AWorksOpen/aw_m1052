@@ -17,12 +17,14 @@
 | -------- | ----- | ------------ | 
 | <a href="#timer_info_t_ctx">ctx</a> | void* | 定时器回调函数的上下文 |
 | <a href="#timer_info_t_duration">duration</a> | uint32\_t | 时间间隔(单位为毫秒)。 |
+| <a href="#timer_info_t_extra_ctx">extra\_ctx</a> | void* | 定时器回调函数的上下文 |
 | <a href="#timer_info_t_id">id</a> | uint32\_t | 定时器的ID |
 | <a href="#timer_info_t_now">now</a> | uint64\_t | 当前时间(相对时间，单位为毫秒)。 |
 | <a href="#timer_info_t_on_destroy">on\_destroy</a> | tk\_destroy\_t | 定时器销毁时的回调函数。 |
 | <a href="#timer_info_t_on_destroy_ctx">on\_destroy\_ctx</a> | void* | 定时器销毁时的回调函数上下文。 |
 | <a href="#timer_info_t_on_timer">on\_timer</a> | timer\_func\_t | 定时器回调函数。 |
 | <a href="#timer_info_t_start">start</a> | uint64\_t | 起始时间(相对时间，单位为毫秒)。 |
+| <a href="#timer_info_t_suspend">suspend</a> | bool\_t | 定时器是否为挂起状态。 |
 #### timer\_info\_cast 函数
 -----------------------
 
@@ -63,6 +65,17 @@ timer_info_t* timer_info_cast (timer_info_t* timer);
 | -------- | ----- |
 | 可直接读取 | 是 |
 | 可直接修改 | 否 |
+#### extra\_ctx 属性
+-----------------------
+> <p id="timer_info_t_extra_ctx">定时器回调函数的上下文
+
+* 类型：void*
+
+| 特性 | 是否支持 |
+| -------- | ----- |
+| 可直接读取 | 是 |
+| 可直接修改 | 否 |
+| 可脚本化   | 是 |
 #### id 属性
 -----------------------
 > <p id="timer_info_t_id">定时器的ID
@@ -122,6 +135,16 @@ timer_info_t* timer_info_cast (timer_info_t* timer);
 > <p id="timer_info_t_start">起始时间(相对时间，单位为毫秒)。
 
 * 类型：uint64\_t
+
+| 特性 | 是否支持 |
+| -------- | ----- |
+| 可直接读取 | 是 |
+| 可直接修改 | 否 |
+#### suspend 属性
+-----------------------
+> <p id="timer_info_t_suspend">定时器是否为挂起状态。
+
+* 类型：bool\_t
 
 | 特性 | 是否支持 |
 | -------- | ----- |

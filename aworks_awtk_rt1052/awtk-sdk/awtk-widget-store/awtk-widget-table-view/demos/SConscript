@@ -5,4 +5,4 @@ env=DefaultEnvironment().Clone()
 BIN_DIR=os.environ['BIN_DIR'];
 
 env.Program(os.path.join(BIN_DIR, 'demo'), ['app_main.c','window_main.c']);
-env.Program(os.path.join(BIN_DIR, 'csv_view'), ['app_main.c','csv_view.c', 'csv_file.c']);
+env.Program(os.path.join(BIN_DIR, 'csv_view'), ['app_main.c','window_csv_view.c']);

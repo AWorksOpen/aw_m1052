@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  edit
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -100,6 +100,68 @@ typedef struct _edit_t {
   widget_t widget;
 
   /**
+   * @property {char*} tips
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 输入提示。
+   */
+  char* tips;
+
+  /**
+   * @property {char*} tr_tips
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 保存用于翻译的提示信息。
+   */
+  char* tr_tips;
+
+  /**
+   * @property {char*} action_text
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 软键盘上action按钮的文本。内置取值有：
+   * 
+   * * next 将焦点切换到下一个控件。
+   * * done 完成，关闭软键盘。
+   * 
+   * 也可以使用其它文本，比如send表示发送。这个需要自己实现相应的功能，处理EVT\_IM\_ACTION事件即可。
+   * 
+   */
+  char* action_text;
+
+  /**
+   * @property {char*} keyboard
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 自定义软键盘名称。AWTK优先查找keyboard属性设置的键盘文件名（该键盘的XML文件需要在default\raw\ui目录下存在），如果没有指定keyboard，就找input_type设置的键盘类型。如果指定为空字符串，则表示不需要软键盘。
+   */
+  char* keyboard;
+
+  /**
+   * @property {double} min
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 最小值或最小长度。
+   */
+  double min;
+
+  /**
+   * @property {double} max
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 最大值或最大长度。
+   */
+  double max;
+
+  /**
+   * @property {double} step
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 步长。
+   * 作为数值型编辑器时，一次增加和减少时的数值。
+   */
+  double step;
+
+  /**
+   * @property {input_type_t} input_type
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 输入类型。
+   */
+  input_type_t input_type;
+  /**
    * @property {bool_t} readonly
    * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
    * 编辑器是否为只读。
@@ -142,93 +204,6 @@ typedef struct _edit_t {
    */
   bool_t close_im_when_blured;
   /**
-   * @property {uint8_t} top_margin
-   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 上边距。
-   */
-  uint8_t top_margin;
-  /**
-   * @property {uint8_t} bottom_margin
-   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 下边距。
-   */
-  uint8_t bottom_margin;
-  /**
-   * @property {uint8_t} left_margin
-   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 左边距。
-   */
-  uint8_t left_margin;
-  /**
-   * @property {uint8_t} right_margin
-   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 右边距。
-   */
-  uint8_t right_margin;
-
-  /**
-   * @property {char*} tips
-   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 输入提示。
-   */
-  char* tips;
-
-  /**
-   * @property {char*} tr_tips
-   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 保存用于翻译的提示信息。
-   */
-  char* tr_tips;
-
-  /**
-   * @property {char*} action_text
-   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 软键盘上action按钮的文本。内置取值有：
-   * 
-   * * next 将焦点切换到下一个控件。
-   * * done 完成，关闭软键盘。
-   * 
-   * 也可以使用其它文本，比如send表示发送。这个需要自己实现相应的功能，处理EVT\_IM\_ACTION事件即可。
-   * 
-   */
-  char* action_text;
-
-  /**
-   * @property {char*} keyboard
-   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 自定义软键盘名称。AWTK优先查找keyboard属性设置的键盘文件名（该键盘的XML文件需要在default\raw\ui目录下存在），如果keyboard为空就找input_type设置的键盘类型
-   */
-  char* keyboard;
-
-  /**
-   * @property {input_type_t} input_type
-   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 输入类型。
-   */
-  input_type_t input_type;
-
-  /**
-   * @property {double} min
-   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 最小值或最小长度。
-   */
-  double min;
-
-  /**
-   * @property {double} max
-   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 最大值或最大长度。
-   */
-  double max;
-
-  /**
-   * @property {double} step
-   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 步长。
-   * 作为数值型编辑器时，一次增加和减少时的数值。
-   */
-  double step;
-  /**
    * @property {bool_t} cancelable
    * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
    * 是否支持撤销编辑。如果为TRUE，在失去焦点之前可以撤销所有修改(恢复获得焦点之前的内容)。
@@ -239,6 +214,14 @@ typedef struct _edit_t {
   bool_t cancelable;
 
   /*private*/
+  uint8_t margin;
+  uint8_t top_margin;
+  uint8_t bottom_margin;
+  uint8_t left_margin;
+  uint8_t right_margin;
+
+  bool_t is_key_inputing;
+
   uint32_t idle_id;
   uint32_t timer_id;
   text_edit_t* model;
@@ -249,17 +232,21 @@ typedef struct _edit_t {
   edit_pre_input_t pre_input;
   edit_is_valid_char_t is_valid_char;
   edit_is_valid_value_t is_valid_value;
-  uint64_t last_user_action_time;
 } edit_t;
 
 /**
- * @event {event_t} EVT_VALUE_CHANGING
+ * @event {value_change_event_t} EVT_VALUE_CHANGING
  * 文本正在改变事件(编辑中)。
  */
 
 /**
- * @event {event_t} EVT_VALUE_CHANGED
+ * @event {value_change_event_t} EVT_VALUE_CHANGED
  * 文本改变事件。
+ */
+
+/**
+ * @event {event_t} EVT_IM_ACTION
+ * 软键盘Action点击事件。
  */
 
 /**
@@ -327,6 +314,18 @@ ret_t edit_set_int(widget_t* widget, int32_t value);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t edit_set_double(widget_t* widget, double value);
+
+/**
+ * @method edit_set_double_ex
+ * 设置double类型的值。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget widget对象。
+ * @param {const char*} format 格式(缺省为"%2.2lf")。
+ * @param {double} value 值。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t edit_set_double_ex(widget_t* widget, const char* format, double value);
 
 /**
  * @method edit_set_text_limit
@@ -517,14 +516,24 @@ ret_t edit_set_focus(widget_t* widget, bool_t focus);
 
 /**
  * @method edit_set_cursor
- * 设置输入框的光标坐标。
+ * 设置输入框的光标位置。
  * @annotation ["scriptable"]
  * @param {widget_t*} widget widget对象。
- * @param {uint32_t} cursor 是否为焦点。
+ * @param {uint32_t} cursor 光标位置。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t edit_set_cursor(widget_t* widget, uint32_t cursor);
+
+/**
+ * @method edit_get_cursor
+ * 获取输入框的光标位置。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget widget对象。
+ *
+ * @return {uint32_t} 返回光标位置。
+ */
+uint32_t edit_get_cursor(widget_t* widget);
 
 /**
  * @method edit_set_is_valid_char
@@ -597,6 +606,29 @@ ret_t edit_set_dec_value(widget_t* widget, edit_dec_value_t dec_value);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t edit_set_pre_input(widget_t* widget, edit_pre_input_t pre_input);
+
+/**
+ * @method edit_set_select
+ * 选择指定范围的文本。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget widget对象。
+ * @param {uint32_t} start 起始偏移。
+ * @param {uint32_t} end 结束偏移。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t edit_set_select(widget_t* widget, uint32_t start, uint32_t end);
+
+/**
+ * @method edit_get_selected_text
+ * 获取选中的文本。
+ * 使用完后需调用 TKMEM_FREE() 进行释放文本占有内存。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget widget对象。
+ *
+ * @return {char*} 返回选中文本。
+ */
+char* edit_get_selected_text(widget_t* widget);
 
 #define EDIT(widget) ((edit_t*)(edit_cast(WIDGET(widget))))
 

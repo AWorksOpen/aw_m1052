@@ -1207,11 +1207,6 @@
               <FilePath>..\..\aworks_awtk_rt1052\awtk-port\main_loop_aworks.c</FilePath>
             </File>
             <File>
-              <FileName>mutex_null.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\aworks_awtk_rt1052\awtk-port\mutex_null.c</FilePath>
-            </File>
-            <File>
               <FileName>platform.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\aworks_awtk_rt1052\awtk-port\platform.c</FilePath>
@@ -1225,6 +1220,21 @@
               <FileName>thread.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\aworks_awtk_rt1052\awtk-port\thread.c</FilePath>
+            </File>
+            <File>
+              <FileName>mutex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\aworks_awtk_rt1052\awtk-port\mutex.c</FilePath>
+            </File>
+            <File>
+              <FileName>semaphore.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\aworks_awtk_rt1052\awtk-port\semaphore.c</FilePath>
+            </File>
+            <File>
+              <FileName>cond.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\aworks_awtk_rt1052\awtk-port\cond.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2446,11 +2456,6 @@
               <FilePath>..\..\aworks_awtk_rt1052\awtk-port\main_loop_aworks.c</FilePath>
             </File>
             <File>
-              <FileName>mutex_null.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\aworks_awtk_rt1052\awtk-port\mutex_null.c</FilePath>
-            </File>
-            <File>
               <FileName>platform.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\aworks_awtk_rt1052\awtk-port\platform.c</FilePath>
@@ -2464,6 +2469,21 @@
               <FileName>thread.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\aworks_awtk_rt1052\awtk-port\thread.c</FilePath>
+            </File>
+            <File>
+              <FileName>mutex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\aworks_awtk_rt1052\awtk-port\mutex.c</FilePath>
+            </File>
+            <File>
+              <FileName>semaphore.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\aworks_awtk_rt1052\awtk-port\semaphore.c</FilePath>
+            </File>
+            <File>
+              <FileName>cond.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\aworks_awtk_rt1052\awtk-port\cond.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3685,11 +3705,6 @@
               <FilePath>..\..\aworks_awtk_rt1052\awtk-port\main_loop_aworks.c</FilePath>
             </File>
             <File>
-              <FileName>mutex_null.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\aworks_awtk_rt1052\awtk-port\mutex_null.c</FilePath>
-            </File>
-            <File>
               <FileName>platform.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\aworks_awtk_rt1052\awtk-port\platform.c</FilePath>
@@ -3703,6 +3718,21 @@
               <FileName>thread.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\aworks_awtk_rt1052\awtk-port\thread.c</FilePath>
+            </File>
+            <File>
+              <FileName>mutex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\aworks_awtk_rt1052\awtk-port\mutex.c</FilePath>
+            </File>
+            <File>
+              <FileName>semaphore.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\aworks_awtk_rt1052\awtk-port\semaphore.c</FilePath>
+            </File>
+            <File>
+              <FileName>cond.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\aworks_awtk_rt1052\awtk-port\cond.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -4924,11 +4954,6 @@
               <FilePath>..\..\aworks_awtk_rt1052\awtk-port\main_loop_aworks.c</FilePath>
             </File>
             <File>
-              <FileName>mutex_null.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\aworks_awtk_rt1052\awtk-port\mutex_null.c</FilePath>
-            </File>
-            <File>
               <FileName>platform.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\aworks_awtk_rt1052\awtk-port\platform.c</FilePath>
@@ -4942,6 +4967,21 @@
               <FileName>thread.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\aworks_awtk_rt1052\awtk-port\thread.c</FilePath>
+            </File>
+            <File>
+              <FileName>mutex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\aworks_awtk_rt1052\awtk-port\mutex.c</FilePath>
+            </File>
+            <File>
+              <FileName>semaphore.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\aworks_awtk_rt1052\awtk-port\semaphore.c</FilePath>
+            </File>
+            <File>
+              <FileName>cond.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\aworks_awtk_rt1052\awtk-port\cond.c</FilePath>
             </File>
           </Files>
         </Group>

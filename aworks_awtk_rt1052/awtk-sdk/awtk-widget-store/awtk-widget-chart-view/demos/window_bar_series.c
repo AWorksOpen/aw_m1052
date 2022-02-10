@@ -20,8 +20,8 @@
  */
 
 #include "awtk.h"
-#include "chart_view/chart_view.h"
-#include "chart_view/bar_series.h"
+#include "../src/chart_view/chart_view.h"
+#include "../src/chart_view/bar_series.h"
 
 #define SERIES_TIMER_UPDATE 1
 
@@ -35,6 +35,7 @@ extern ret_t on_series_push_rand_minmax_data(const timer_info_t* timer);
 extern ret_t on_series_typeie_visible_changed(void* ctx, event_t* e);
 extern ret_t on_series_dayas_visible_changed(void* ctx, event_t* e);
 extern ret_t on_series_drean_visible_changed(void* ctx, event_t* e);
+extern ret_t axis_time_init(widget_t* widget);
 
 static ret_t on_close(void* ctx, event_t* e) {
   widget_t* win = (widget_t*)ctx;

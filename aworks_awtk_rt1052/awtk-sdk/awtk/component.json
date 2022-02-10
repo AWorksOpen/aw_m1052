@@ -1,5 +1,6 @@
 {
-    "release_id": "20100", 
-    "version": "1.5+sha.4163176", 
+    "version": "1.7.0+sha.b80e28c",
+    "release_id": "2112",
+    "patch_id": "1",
     "name": "awtk"
 }

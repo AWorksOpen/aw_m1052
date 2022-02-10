@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  width char
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -31,6 +31,19 @@ const wchar_t* wcs_chr(const wchar_t* s, wchar_t c) {
   while (*p && *p != c) p++;
 
   return *p ? p : NULL;
+}
+
+wchar_t* wcs_ncpy(wchar_t* s1, const wchar_t* s2, uint32_t n) {
+  wchar_t* d = s1;
+  const wchar_t* s = s2;
+  return_value_if_fail(s1 != NULL && s2 != NULL, NULL);
+
+  while (*s && n-- > 0) {
+    *d++ = *s++;
+  }
+  *d = '\0';
+
+  return s1;
 }
 
 wchar_t* wcs_cpy(wchar_t* s1, const wchar_t* s2) {
@@ -91,6 +104,10 @@ wchar_t* wcscpy(wchar_t* s1, const wchar_t* s2) {
   return wcs_cpy(s1, s2);
 }
 
+wchar_t* wcsncpy(wchar_t* s1, const wchar_t* s2, uint32_t n) {
+  return wcs_ncpy(s1, s2, n);
+}
+
 wchar_t* wcschr(const wchar_t* s, wchar_t c) {
   return (wchar_t*)wcs_chr(s, c);
 }
@@ -131,14 +148,21 @@ wstr_t* wstr_init(wstr_t* str, uint32_t capacity) {
 }
 
 ret_t wstr_set(wstr_t* str, const wchar_t* text) {
-  uint32_t size = 0;
   return_value_if_fail(str != NULL && text != NULL, RET_BAD_PARAMS);
 
+  return wstr_set_with_len(str, text, 0xffffffff);
+}
+
+ret_t wstr_set_with_len(wstr_t* str, const wchar_t* text, uint32_t len) {
+  uint32_t size = 0;
+  return_value_if_fail(str != NULL && text != NULL, RET_BAD_PARAMS);
   size = wcslen(text);
+  size = tk_min(size, len);
   return_value_if_fail(wstr_extend(str, size + 1) == RET_OK, RET_BAD_PARAMS);
 
-  wcscpy(str->str, text);
+  wcsncpy(str->str, text, size);
   str->size = size;
+  str->str[size] = 0;
 
   return RET_OK;
 }
@@ -149,6 +173,16 @@ ret_t wstr_clear(wstr_t* str) {
   if (str->str != NULL) {
     str->str[0] = '\0';
   }
+
+  return RET_OK;
+}
+
+ret_t wstr_set_utf8_with_len(wstr_t* str, const char* text, uint32_t len) {
+  return_value_if_fail(str != NULL && text != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(wstr_extend(str, len + 2) == RET_OK, RET_OOM);
+
+  tk_utf8_to_utf16_ex(text, len, str->str, str->capacity - 1);
+  str->size = wcslen(str->str);
 
   return RET_OK;
 }
@@ -311,10 +345,13 @@ ret_t wstr_from_value(wstr_t* str, const value_t* v) {
 }
 
 ret_t wstr_to_int(wstr_t* str, int32_t* v) {
-  char buff[TK_NUM_MAX_LEN + 1];
   return_value_if_fail(str != NULL && v != NULL, RET_BAD_PARAMS);
   if (str->size > 0) {
-    wstr_get_utf8(str, buff, sizeof(buff));
+    char buff[TK_NUM_MAX_LEN + 1] = {0};
+    wchar_t wbuff[TK_NUM_MAX_LEN] = {0};
+    uint32_t size = tk_min(str->size, TK_NUM_MAX_LEN) * sizeof(wchar_t);
+    memcpy(wbuff, str->str, size);
+    tk_utf8_from_utf16_ex(wbuff, ARRAY_SIZE(wbuff), buff, ARRAY_SIZE(buff));
     *v = tk_atoi(buff);
   } else {
     *v = 0;
@@ -324,10 +361,14 @@ ret_t wstr_to_int(wstr_t* str, int32_t* v) {
 }
 
 ret_t wstr_to_float(wstr_t* str, double* v) {
-  char buff[TK_NUM_MAX_LEN + 1];
   return_value_if_fail(str != NULL && v != NULL, RET_BAD_PARAMS);
   if (str->size > 0) {
-    wstr_get_utf8(str, buff, sizeof(buff));
+    char buff[TK_NUM_MAX_LEN + 1] = {0};
+    wchar_t wbuff[TK_NUM_MAX_LEN] = {0};
+    uint32_t size = tk_min(str->size, TK_NUM_MAX_LEN) * sizeof(wchar_t);
+
+    memcpy(wbuff, str->str, size);
+    tk_utf8_from_utf16_ex(wbuff, ARRAY_SIZE(wbuff), buff, ARRAY_SIZE(buff));
     *v = tk_atof(buff);
   } else {
     *v = 0.0f;

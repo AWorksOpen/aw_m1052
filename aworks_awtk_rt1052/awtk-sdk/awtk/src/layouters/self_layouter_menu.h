@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  self layouter menu
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -47,6 +47,8 @@ typedef struct _self_layouter_menu_t {
   uint8_t x_attr;
   uint8_t y_attr;
   uint8_t position;
+
+  bool_t inited;
   point_t pressed;
   rect_t trigger_widget_rect;
 } self_layouter_menu_t;

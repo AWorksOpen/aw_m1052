@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  combo_box
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -33,6 +33,7 @@ typedef struct _combo_box_option_t {
 } combo_box_option_t;
 
 typedef widget_t* (*combo_box_custom_open_popup_t)(widget_t* combobox);
+typedef ret_t (*combo_box_custom_on_layout_combobox_popup_t)(widget_t* combobox);
 
 /**
  * @class combo_box_t
@@ -124,7 +125,7 @@ typedef widget_t* (*combo_box_custom_open_popup_t)(widget_t* combobox);
  * </combo_box>
  * ```
  *
- * * 1.combobox的下拉按钮的style名称为combobox_down，可以在主题文件中设置。
+ * * 1.combobox的下拉按钮的style名称为combobox_down，可以在窗体样式文件中设置。
  * 
  * ```xml
  * <button>
@@ -136,7 +137,7 @@ typedef widget_t* (*combo_box_custom_open_popup_t)(widget_t* combobox);
  * </button>
  * ```
  *
- *  * 2.combobox的弹出popup窗口的style名称为combobox_popup，可以在主题文件中设置。
+ *  * 2.combobox的弹出popup窗口的style名称为combobox_popup，可以在窗体样式文件中设置。
  * 
  * ```xml
  * <popup>
@@ -198,17 +199,19 @@ typedef struct _combo_box_t {
   /*private*/
   str_t text;
   bool_t pressed;
+  widget_t* combobox_popup;
   combo_box_option_t* option_items;
   combo_box_custom_open_popup_t open_popup;
+  combo_box_custom_on_layout_combobox_popup_t on_layout_combobox_popup;
 } combo_box_t;
 
 /**
- * @event {event_t} EVT_VALUE_WILL_CHANGE
+ * @event {value_change_event_t} EVT_VALUE_WILL_CHANGE
  * 值即将改变事件。
  */
 
 /**
- * @event {event_t} EVT_VALUE_CHANGED
+ * @event {value_change_event_t} EVT_VALUE_CHANGED
  * 值改变事件。
  */
 
@@ -324,6 +327,17 @@ ret_t combo_box_set_item_height(widget_t* widget, uint32_t item_height);
 ret_t combo_box_append_option(widget_t* widget, int32_t value, const char* text);
 
 /**
+ * @method combo_box_remove_option
+ * 删除选项。
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget combo_box对象。
+ * @param {int32_t} value 值。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t combo_box_remove_option(widget_t* widget, int32_t value);
+
+/**
  * @method combo_box_set_options
  * 设置选项。
  * @annotation ["scriptable"]
@@ -339,10 +353,13 @@ ret_t combo_box_set_options(widget_t* widget, const char* options);
  * 设置自定义的打开弹出窗口的函数。
  * @param {widget_t*} widget combo_box对象。
  * @param {combo_box_custom_open_popup_t} open_popup 回调函数。
+ * @param {combo_box_custom_on_layout_combobox_popup_t} on_layout_combobox_popup layout 的回调函数。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t combo_box_set_custom_open_popup(widget_t* widget, combo_box_custom_open_popup_t open_popup);
+ret_t combo_box_set_custom_open_popup(
+    widget_t* widget, combo_box_custom_open_popup_t open_popup,
+    combo_box_custom_on_layout_combobox_popup_t on_layout_combobox_popup);
 
 /**
  * @method combo_box_get_option
@@ -357,6 +374,7 @@ combo_box_option_t* combo_box_get_option(widget_t* widget, uint32_t index);
 /**
  * @method combo_box_get_value
  * 获取combo_box的值。
+ * @alias combo_box_get_value_int
  * @annotation ["scriptable"]
  * @param {widget_t*} widget combo_box对象。
  *
@@ -382,6 +400,10 @@ TK_EXTERN_VTABLE(combo_box);
 
 /*public for test*/
 ret_t combo_box_parse_options(widget_t* widget, const char* str);
+
+/*private*/
+ret_t combo_box_combobox_popup_on_close_func(void* ctx, event_t* e);
+ret_t combo_box_combobox_popup_calc_position(widget_t* widget, wh_t popup_h, point_t* p);
 
 END_C_DECLS
 

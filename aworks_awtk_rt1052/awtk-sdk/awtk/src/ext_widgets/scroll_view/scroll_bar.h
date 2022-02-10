@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  scroll_bar
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -90,17 +90,39 @@ typedef struct _scroll_bar_t {
    */
   int32_t row;
   /**
+   * @property {uint32_t} animator_time
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 翻页滚动动画时间。
+   */
+  uint32_t animator_time;
+  /**
    * @property {bool_t} animatable
    * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
    * 滚动时是否启用动画。
    */
   bool_t animatable;
+  /**
+   * @property {bool_t} auto_hide
+   * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
+   * 是否自动隐藏(仅对mobile风格的滚动条有效)。
+   */
+  bool_t auto_hide;
 
   /*private*/
   widget_t* dragger;
   widget_animator_t* wa_value;
   widget_animator_t* wa_opactiy;
 } scroll_bar_t;
+
+/**
+ * @event {value_change_event_t} EVT_VALUE_WILL_CHANGE
+ * 值(滚动值)即将改变事件。
+ */
+
+/**
+ * @event {value_change_event_t} EVT_VALUE_CHANGED
+ * 值(滚动值)改变事件。
+ */
 
 /**
  * @method scroll_bar_create
@@ -226,6 +248,20 @@ ret_t scroll_bar_scroll_delta(widget_t* widget, int32_t delta);
 ret_t scroll_bar_set_value_only(widget_t* widget, int32_t value);
 
 /**
+ * @method scroll_bar_set_auto_hide
+ * 设置auto_hide属性。
+ *
+ *>仅对mobile风格的滚动条有效
+ *
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget scroll_bar控件。
+ * @param {bool_t} auto_hide 值。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t scroll_bar_set_auto_hide(widget_t* widget, bool_t auto_hide);
+
+/**
  * @method scroll_bar_is_mobile
  * 判断是否是mobile风格的滚动条。
  * @annotation ["scriptable"]
@@ -235,8 +271,24 @@ ret_t scroll_bar_set_value_only(widget_t* widget, int32_t value);
  */
 bool_t scroll_bar_is_mobile(widget_t* widget);
 
-ret_t scroll_bar_hide_by_opacity_animation(widget_t* widget, int32_t duration);
+/**
+ * @method scroll_bar_set_animator_time
+ * 设置翻页滚动动画时间。
+ *
+ * @annotation ["scriptable"]
+ * @param {widget_t*} widget scroll_bar控件。
+ * @param {uint32_t} animator_time 时间。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t scroll_bar_set_animator_time(widget_t* widget, uint32_t animator_time);
 
+/* private */
+ret_t scroll_bar_hide_by_opacity_animation(widget_t* widget, int32_t duration, int32_t delay);
+ret_t scroll_bar_show_by_opacity_animation(widget_t* widget, int32_t duration, int32_t delay);
+
+#define SCROLL_BAR_PROP_IS_MOBILE "is_mobile"
+#define SCROLL_BAR_PROP_ANIMATOR_TIME "animator_time"
 #define SCROLL_BAR(widget) ((scroll_bar_t*)(scroll_bar_cast(WIDGET(widget))))
 
 /*public for subclass and runtime type check*/

@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  event manager manager
  *
- * Copyright (c) 2019 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2019 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,8 +24,8 @@
 ret_t event_source_manager_init(event_source_manager_t* manager) {
   return_value_if_fail(manager != NULL, RET_BAD_PARAMS);
 
-  darray_init(&(manager->sources), 5, (tk_destroy_t)(object_unref), NULL);
-  darray_init(&(manager->dispatching_sources), 5, (tk_destroy_t)(object_unref), NULL);
+  darray_init(&(manager->sources), 5, (tk_destroy_t)(tk_object_unref), NULL);
+  darray_init(&(manager->dispatching_sources), 5, (tk_destroy_t)(tk_object_unref), NULL);
 
   return RET_OK;
 }
@@ -50,7 +50,7 @@ static ret_t event_source_manager_prepare(event_source_manager_t* manager) {
 
   for (i = 0; i < n; i++) {
     event_source_t* iter = sources[i];
-    object_ref(OBJECT(iter));
+    tk_object_ref(TK_OBJECT(iter));
     darray_push(&(manager->dispatching_sources), iter);
   }
 
@@ -68,7 +68,7 @@ ret_t event_source_manager_dispatch(event_source_manager_t* manager) {
 
 ret_t event_source_manager_add(event_source_manager_t* manager, event_source_t* source) {
   return_value_if_fail(manager != NULL && source != NULL, RET_BAD_PARAMS);
-  object_ref(OBJECT(source));
+  tk_object_ref(TK_OBJECT(source));
   source->manager = manager;
 
   return darray_push(&(manager->sources), source);
@@ -126,8 +126,8 @@ uint32_t event_source_manager_get_wakeup_time(event_source_manager_t* manager) {
       }
     }
   } else {
-    wakeup_time = 16;
+    wakeup_time = TK_DEFAULT_WAIT_TIME;
   }
 
-  return tk_min(16, wakeup_time);
+  return tk_min(TK_DEFAULT_WAIT_TIME, wakeup_time);
 }

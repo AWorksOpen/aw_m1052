@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  ui_builder
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -61,6 +61,16 @@ ret_t ui_builder_on_end(ui_builder_t* b) {
 
   if (b->on_end) {
     return b->on_end(b);
+  } else {
+    return RET_OK;
+  }
+}
+
+ret_t ui_builder_destroy(ui_builder_t* b) {
+  return_value_if_fail(b != NULL, RET_BAD_PARAMS);
+
+  if (b->destroy) {
+    return b->destroy(b);
   } else {
     return RET_OK;
   }

@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  bitmap interface
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -203,6 +203,29 @@ ret_t bitmap_set_line_length(bitmap_t* bitmap, uint32_t line_length);
  */
 uint32_t bitmap_get_line_length(bitmap_t* bitmap);
 
+typedef ret_t (*bitmap_transform_t)(void* ctx, bitmap_t* bitmap, uint32_t x, uint32_t y,
+                                    rgba_t* pixel);
+
+/**
+ * @method bitmap_clone
+ * Clone图片。
+ * @param {bitmap_t*} bitmap bitmap对象。
+ *
+ * @return {bitmap_t*} 返回新的bitmap对象。
+ */
+bitmap_t* bitmap_clone(bitmap_t* bitmap);
+
+/**
+ * @method bitmap_transform
+ * 对图片每个像素进行变换。
+ * @param {bitmap_t*} bitmap bitmap对象。
+ * @param {bitmap_transform_t} transform 回调函数。
+ * @param {void*} ctx 回调函数的上下文。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t bitmap_transform(bitmap_t* bitmap, bitmap_transform_t transform, void* ctx);
+
 /**
  * @method bitmap_init_from_rgba
  * 初始化图片。
@@ -217,6 +240,22 @@ uint32_t bitmap_get_line_length(bitmap_t* bitmap);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t bitmap_init_from_rgba(bitmap_t* bitmap, uint32_t w, uint32_t h, bitmap_format_t format,
+                            const uint8_t* data, uint32_t comp);
+
+/**
+ * @method bitmap_init_from_bgra
+ * 初始化图片。
+ * @param {bitmap_t*} bitmap bitmap对象。
+ * @param {uint32_t} w 宽度。
+ * @param {uint32_t} h 高度。
+ * @param {bitmap_format_t} format 格式。
+ * @param {const uint8_t*} data
+ * 数据。3通道时为BGR888格式，4通道时为BGRA888格式(内部拷贝该数据，不会引用，调用者自行释放)。
+ * @param {uint32_t} comp 颜色通道数(目前支持3(bgr)和4(bgra))。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t bitmap_init_from_bgra(bitmap_t* bitmap, uint32_t w, uint32_t h, bitmap_format_t format,
                             const uint8_t* data, uint32_t comp);
 
 /**
@@ -261,9 +300,19 @@ bool_t bitmap_save_png(bitmap_t* bitmap, const char* filename);
 ret_t bitmap_mono_dump(const uint8_t* buff, uint32_t w, uint32_t h);
 
 /**
+ * @method bitmap_destroy_with_self
+ * 销毁图片(for script only)。
+ * @alias bitmap_destroy
+ * @annotation ["deconstructor", "scriptable", "gc"]
+ * @param {bitmap_t*} bitmap bitmap对象。
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t bitmap_destroy_with_self(bitmap_t* bitmap);
+
+/**
  * @method bitmap_destroy
  * 销毁图片。
- * @annotation ["deconstructor", "scriptable", "gc"]
+ * @annotation ["deconstructor"]
  * @param {bitmap_t*} bitmap bitmap对象。
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
@@ -424,7 +473,6 @@ typedef enum _image_draw_type_t {
 ret_t bitmap_alloc_data(bitmap_t* bitmap);
 bool_t rgba_data_is_opaque(const uint8_t* data, uint32_t w, uint32_t h, uint8_t comp);
 
-bitmap_t* bitmap_clone(bitmap_t* bitmap);
 ret_t bitmap_premulti_alpha(bitmap_t* bitmap);
 
 #define TK_BITMAP_MONO_LINE_LENGTH(w) (((w + 15) >> 4) << 1)
@@ -433,6 +481,7 @@ uint8_t* bitmap_mono_create_data(uint32_t w, uint32_t h);
 bool_t bitmap_mono_get_pixel(const uint8_t* buff, uint32_t w, uint32_t h, uint32_t x, uint32_t y);
 ret_t bitmap_mono_set_pixel(uint8_t* buff, uint32_t w, uint32_t h, uint32_t x, uint32_t y,
                             bool_t pixel);
+uint32_t bitmap_get_mem_size(bitmap_t* bitmap);
 END_C_DECLS
 
 #endif /*TK_BITMAP_H*/

@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  vertical translate window animator
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -40,10 +40,16 @@ static ret_t window_animator_vtranslate_draw_prev(window_animator_t* wa) {
   float_t y = tk_roundi(curr_win->h * percent);
   float_t h = win->h - y;
 
-  rect_t src = rect_init(win->x, y + win->y, win->w, h);
-  rect_t dst = rect_init(win->x, win->y, win->w, h);
-
-  return lcd_draw_image(c->lcd, &(wa->prev_img), rect_scale(&src, wa->ratio), &dst);
+#ifndef WITHOUT_WINDOW_ANIMATOR_CACHE
+  rectf_t src = rectf_init(win->x, y + win->y, win->w, h);
+  rectf_t dst = rectf_init(win->x, win->y, win->w, h);
+  return lcd_draw_image(c->lcd, &(wa->prev_img), rectf_scale(&src, wa->ratio), &dst);
+#else
+  canvas_translate(c, 0, -y);
+  widget_paint(win, c);
+  canvas_untranslate(c, 0, -y);
+  return RET_OK;
+#endif /*WITHOUT_WINDOW_ANIMATOR_CACHE*/
 }
 
 static ret_t window_animator_vtranslate_draw_curr(window_animator_t* wa) {
@@ -53,10 +59,18 @@ static ret_t window_animator_vtranslate_draw_curr(window_animator_t* wa) {
   float_t h = tk_roundi(win->h * percent);
   float_t y = win->parent->h - h;
 
-  rect_t src = rect_init(win->x, win->y, win->w, h);
-  rect_t dst = rect_init(win->x, y, win->w, h);
+#ifndef WITHOUT_WINDOW_ANIMATOR_CACHE
+  rectf_t src = rectf_init(win->x, win->y, win->w, h);
+  rectf_t dst = rectf_init(win->x, y, win->w, h);
+  return lcd_draw_image(c->lcd, &(wa->curr_img), rectf_scale(&src, wa->ratio), &dst);
+#else
+  y = win->h * (1 - percent);
+  canvas_translate(c, 0, y);
+  widget_paint(win, c);
+  canvas_untranslate(c, 0, y);
 
-  return lcd_draw_image(c->lcd, &(wa->curr_img), rect_scale(&src, wa->ratio), &dst);
+  return RET_OK;
+#endif /*WITHOUT_WINDOW_ANIMATOR_CACHE*/
 }
 
 static const window_animator_vtable_t s_window_animator_vtranslate_vt = {
@@ -68,6 +82,6 @@ static const window_animator_vtable_t s_window_animator_vtranslate_vt = {
     .draw_prev_window = window_animator_vtranslate_draw_prev,
     .draw_curr_window = window_animator_vtranslate_draw_curr};
 
-window_animator_t* window_animator_vtranslate_create(bool_t open, object_t* args) {
+window_animator_t* window_animator_vtranslate_create(bool_t open, tk_object_t* args) {
   return window_animator_create(open, &s_window_animator_vtranslate_vt);
 }

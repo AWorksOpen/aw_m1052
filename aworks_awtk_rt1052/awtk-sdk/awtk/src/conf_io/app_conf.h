@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  config for application
  *
- * Copyright (c) 2020 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2020 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -35,6 +35,12 @@ BEGIN_C_DECLS
  * 底层实现可以是任何格式，比如INI，XML，JSON和UBJSON。
  *
  * 对于树状的文档，key可以是多级的，用.分隔。如network.ip。
+ *
+ * conf-io是可选组件，需要自己包含头文件，否则64位数据类型会被截断成32位的数据。
+ *
+ * ```c
+ * #include "conf_io/app_conf.h"
+ * ```
  * 
  */
 
@@ -44,11 +50,11 @@ BEGIN_C_DECLS
  *
  * @annotation ["static"]
  * 
- * @param {object_t*} 配置对象。由app_conf_deinit释放。
+ * @param {tk_object_t*} 配置对象。由app_conf_deinit释放。
  * 
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t app_conf_set_instance(object_t* obj);
+ret_t app_conf_set_instance(tk_object_t* obj);
 
 /**
  * @method app_conf_get_instance
@@ -56,9 +62,9 @@ ret_t app_conf_set_instance(object_t* obj);
  *
  * @annotation ["static"]
  * 
- * @return {object_t*} 返回app_conf实例。
+ * @return {tk_object_t*} 返回app_conf实例。
  */
-object_t* app_conf_get_instance(void);
+tk_object_t* app_conf_get_instance(void);
 
 /**
  * @method app_conf_save

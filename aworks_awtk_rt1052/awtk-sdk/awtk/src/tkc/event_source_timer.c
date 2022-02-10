@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  event source timer
  *
- * Copyright (c) 2019 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2019 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -48,12 +48,12 @@ uint32_t event_source_timer_get_wakeup_time(event_source_t* source) {
 }
 
 event_source_t* event_source_timer_create(timer_manager_t* timer_manager) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   event_source_t* event_source = NULL;
   event_source_timer_t* event_source_timer = NULL;
   return_value_if_fail(timer_manager != NULL, NULL);
 
-  obj = object_create(&s_event_source_timer_vtable);
+  obj = tk_object_create(&s_event_source_timer_vtable);
   event_source = EVENT_SOURCE(obj);
   event_source_timer = EVENT_SOURCE_TIMER(obj);
   return_value_if_fail(event_source_timer != NULL, NULL);

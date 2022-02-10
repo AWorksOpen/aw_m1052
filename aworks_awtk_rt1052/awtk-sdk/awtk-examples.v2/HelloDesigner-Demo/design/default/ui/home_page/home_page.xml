@@ -1,5 +1,0 @@
-<window name="home_page">
-  <button name="basic" x="20%" y="m" w="25%" h="20%" style:normal:font_size="30" style:pressed:font_size="30" style:over:font_size="30" text="Basic"/>
-  <button name="animation" x="r:20%" y="m" w="25%" h="20%" style:normal:font_size="30" style:pressed:font_size="30" style:over:font_size="30" text="Animation"/>
-  <image name="image" x="670" y="10" w="120" h="48" image="awtk_logo"/>
-</window>

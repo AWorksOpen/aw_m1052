@@ -1,4 +1,4 @@
 <window anim_hint="htranslate" style:normal:bg_color="#00000000" >
-  <video_image x="0" y="0" w="800" h="480" video_name="image_138" />
+  <video_image x="0" y="0" w="800" h="480" video_name="video_12" />
   <label x="c" y="m" w="200" h="100" visible="false" style:normal:font_size="80" style:normal:text_color="#ff0000" text="the end" />
 </window>

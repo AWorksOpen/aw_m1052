@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  awtk
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,6 +21,7 @@
 
 #include "awtk.h"
 #include "tkc/mem.h"
+#include "tkc/fscript.h"
 #include "base/idle.h"
 #include "base/timer.h"
 #include "tkc/thread.h"
@@ -34,12 +35,28 @@
 #include "base/window_manager.h"
 #include "base/widget_factory.h"
 #include "base/assets_manager.h"
+#include "fscript_ext/fscript_ext.h"
+#ifdef FSCRIPT_WITH_WIDGET
+#include "fscript_ext/fscript_widget.h"
+#endif /*FSCRIPT_WITH_WIDGET*/
+
+#ifdef WITH_VGCANVAS
+#include "base/vgcanvas_asset_manager.h"
+#endif
+
+#ifdef WITH_FSCRIPT_EXT
+#ifndef WITH_DATA_READER_WRITER
+#define WITH_DATA_READER_WRITER
+#endif /*WITH_DATA_READER_WRITER*/
+#endif /*WITH_FSCRIPT_EXT*/
 
 #ifdef WITH_DATA_READER_WRITER
 #include "tkc/data_reader_factory.h"
 #include "tkc/data_writer_factory.h"
 #include "tkc/data_writer_file.h"
+#include "tkc/data_writer_wbuffer.h"
 #include "tkc/data_reader_file.h"
+#include "tkc/data_reader_mem.h"
 #include "base/data_reader_asset.h"
 #endif /*WITH_DATA_READER_WRITER*/
 
@@ -61,9 +78,9 @@
 #include "window_animators/window_animator_builtins.h"
 #endif /*WITHOUT_WINDOW_ANIMATORS*/
 
-#ifndef WITHOUT_WIDGET_ANIMATORS
+#ifndef WITHOUT_DIALOG_HIGHLIGHTER
 #include "dialog_highlighters/dialog_highlighter_builtins.h"
-#endif /*WITHOUT_WIDGET_ANIMATORS*/
+#endif /*WITHOUT_DIALOG_HIGHLIGHTER*/
 
 #ifndef WITHOUT_CLIPBOARD
 #ifdef WITH_SDL
@@ -117,7 +134,7 @@ ret_t tk_init_assets(void) {
         break;
       case ASSET_TYPE_STYLE:
         if (theme()->data == NULL && strcmp(iter->name, "default") == 0) {
-          theme_init(theme(), iter->data);
+          theme_set_theme_data(theme(), iter->data);
         }
         break;
     }
@@ -126,7 +143,7 @@ ret_t tk_init_assets(void) {
   return RET_OK;
 }
 
-static ret_t awtk_mem_on_out_of_memory(void* ctx, uint32_t tried_times, uint32_t need_size) {
+static ret_t tk_clear_cache_when_oom(uint32_t tried_times) {
   if (tried_times == 1) {
     image_manager_unload_unused(image_manager(), 10);
     font_manager_shrink_cache(font_manager(), 10);
@@ -145,16 +162,60 @@ static ret_t awtk_mem_on_out_of_memory(void* ctx, uint32_t tried_times, uint32_t
   return RET_OK;
 }
 
+static tk_semaphore_t* s_clear_cache_semaphore = NULL;
+
+static ret_t exec_clear_cache(exec_info_t* info) {
+  uint32_t tried_times = (uint32_t)tk_pointer_to_int(info->ctx);
+
+  tk_clear_cache_when_oom(tried_times);
+  tk_semaphore_post(s_clear_cache_semaphore);
+  log_debug("clear cache: %u\n", tried_times);
+
+  return RET_REMOVE;
+}
+
+static ret_t awtk_mem_on_out_of_memory(void* ctx, uint32_t tried_times, uint32_t need_size) {
+  if (tk_is_ui_thread()) {
+    tk_clear_cache_when_oom(tried_times);
+  } else {
+    event_queue_req_t req;
+    memset(&req, 0x00, sizeof(req));
+    req.exec_in_ui.e.type = REQ_EXEC_IN_UI;
+    req.exec_in_ui.info.func = exec_clear_cache;
+    req.exec_in_ui.info.ctx = tk_pointer_from_int(tried_times);
+
+    log_debug("req clear cache begin: %u\n", tried_times);
+    main_loop_queue_event(main_loop(), &req);
+    tk_semaphore_wait(s_clear_cache_semaphore, 10000);
+    log_debug("req clear cache done: %u\n", tried_times);
+  }
+
+  return RET_OK;
+}
+
 ret_t tk_init_internal(void) {
   font_loader_t* font_loader = NULL;
 
   s_ui_thread_id = tk_thread_self();
+#ifndef WITHOUT_FSCRIPT
+  fscript_global_init();
+#endif
+#ifdef WITH_FSCRIPT_EXT
+  fscript_ext_init();
+#ifdef FSCRIPT_WITH_WIDGET
+  fscript_widget_register();
+#endif /*FSCRIPT_WITH_WIDGET*/
+
+#endif /*WITH_FSCRIPT_EXT*/
+
 #ifdef WITH_DATA_READER_WRITER
   data_writer_factory_set(data_writer_factory_create());
   data_reader_factory_set(data_reader_factory_create());
   data_writer_factory_register(data_writer_factory(), "file", data_writer_file_create);
   data_reader_factory_register(data_reader_factory(), "file", data_reader_file_create);
   data_reader_factory_register(data_reader_factory(), "asset", data_reader_asset_create);
+  data_reader_factory_register(data_reader_factory(), "mem", data_reader_mem_create);
+  data_writer_factory_register(data_writer_factory(), "wbuffer", data_writer_wbuffer_create);
 #endif /*WITH_DATA_READER_WRITER*/
 
 #ifdef WITH_STB_IMAGE
@@ -174,13 +235,19 @@ ret_t tk_init_internal(void) {
   return_value_if_fail(timer_prepare(time_now_ms) == RET_OK, RET_FAIL);
   return_value_if_fail(idle_manager_set(idle_manager_create()) == RET_OK, RET_FAIL);
   return_value_if_fail(widget_factory_set(widget_factory_create()) == RET_OK, RET_FAIL);
-  return_value_if_fail(theme_set(theme_create(NULL)) == RET_OK, RET_FAIL);
+  return_value_if_fail(theme_set(theme_default_create(NULL)) == RET_OK, RET_FAIL);
   return_value_if_fail(assets_manager_set(assets_manager_create(30)) == RET_OK, RET_FAIL);
 #ifndef WITHOUT_INPUT_METHOD
   return_value_if_fail(input_method_set(input_method_create()) == RET_OK, RET_FAIL);
 #endif /*WITHOUT_INPUT_METHOD*/
+#ifdef WITH_VGCANVAS
+  return_value_if_fail(vgcanvas_asset_manager_set(vgcanvas_asset_manager_create()) == RET_OK,
+                       RET_FAIL);
+#endif
   return_value_if_fail(locale_info_set(locale_info_create(NULL, NULL)) == RET_OK, RET_FAIL);
   return_value_if_fail(font_manager_set(font_manager_create(font_loader)) == RET_OK, RET_FAIL);
+  return_value_if_fail(font_manager_set_assets_manager(font_manager(), assets_manager()) == RET_OK,
+                       RET_FAIL);
   return_value_if_fail(image_manager_set(image_manager_create()) == RET_OK, RET_FAIL);
 #ifndef WITHOUT_WINDOW_ANIMATORS
   return_value_if_fail(window_animator_factory_set(window_animator_factory_create()) == RET_OK,
@@ -220,6 +287,7 @@ ret_t tk_init_internal(void) {
 
   tk_widgets_init();
   tk_mem_set_on_out_of_memory(awtk_mem_on_out_of_memory, NULL);
+  s_clear_cache_semaphore = tk_semaphore_create(0, "clear_cache");
 
   return RET_OK;
 }
@@ -255,13 +323,14 @@ ret_t tk_deinit_internal(void) {
   image_manager_destroy(image_manager());
   image_manager_set(NULL);
 
+  window_manager_close_all(window_manager());
   widget_destroy(window_manager());
-  window_manager_set(NULL);
 
   widget_factory_destroy(widget_factory());
   widget_factory_set(NULL);
 
   idle_manager_dispatch(idle_manager());
+  window_manager_set(NULL);
 #ifndef WITHOUT_INPUT_METHOD
   input_method_destroy(input_method());
   input_method_set(NULL);
@@ -272,12 +341,6 @@ ret_t tk_deinit_internal(void) {
   dialog_highlighter_factory_set(NULL);
 #endif /*WITHOUT_DIALOG_HIGHLIGHTER*/
 
-  timer_manager_destroy(timer_manager());
-  timer_manager_set(NULL);
-
-  idle_manager_destroy(idle_manager());
-  idle_manager_set(NULL);
-
 #ifndef WITHOUT_WINDOW_ANIMATORS
   window_animator_factory_destroy(window_animator_factory());
   window_animator_factory_set(NULL);
@@ -287,6 +350,12 @@ ret_t tk_deinit_internal(void) {
   widget_animator_manager_destroy(widget_animator_manager());
   widget_animator_manager_set(NULL);
 #endif /*WITHOUT_WIDGET_ANIMATORS*/
+
+  timer_manager_destroy(timer_manager());
+  timer_manager_set(NULL);
+
+  idle_manager_destroy(idle_manager());
+  idle_manager_set(NULL);
 
   theme_destroy(theme());
   theme_set(NULL);
@@ -300,6 +369,11 @@ ret_t tk_deinit_internal(void) {
   assets_manager_destroy(assets_manager());
   assets_manager_set(NULL);
 
+#ifdef WITH_VGCANVAS
+  vgcanvas_asset_manager_destroy(vgcanvas_asset_manager());
+  vgcanvas_asset_manager_set(NULL);
+#endif
+
 #ifdef WITH_DATA_READER_WRITER
   data_writer_factory_destroy(data_writer_factory());
   data_reader_factory_destroy(data_reader_factory());
@@ -308,6 +382,10 @@ ret_t tk_deinit_internal(void) {
 #endif /*WITH_DATA_READER_WRITER*/
 
   system_info_deinit();
+#ifndef WITHOUT_FSCRIPT
+  fscript_global_deinit();
+#endif
+  tk_semaphore_destroy(s_clear_cache_semaphore);
 
   return RET_OK;
 }
@@ -340,15 +418,16 @@ ret_t tk_quit() {
 
 ret_t tk_set_lcd_orientation(lcd_orientation_t orientation) {
   main_loop_t* loop = main_loop();
+  lcd_orientation_t old_orientation;
   system_info_t* info = system_info();
   return_value_if_fail(loop != NULL && info != NULL, RET_OK);
 
   if (info->lcd_orientation != orientation) {
     orientation_event_t e;
-
+    old_orientation = info->lcd_orientation;
     system_info_set_lcd_orientation(info, orientation);
 
-    orientation_event_init(&e, EVT_ORIENTATION_WILL_CHANGED, NULL, orientation);
+    orientation_event_init(&e, EVT_ORIENTATION_WILL_CHANGED, NULL, old_orientation, orientation);
     widget_dispatch(window_manager(), (event_t*)&e);
   }
 

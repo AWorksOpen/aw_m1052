@@ -161,7 +161,7 @@ static void *memcpy_tiny(void *dst, const void *src, uint32_t len) {
   return NULL;
 }
 
-#define DIFF_IMAGE_TO_VIDEO_CREATE_IMAGE_DATA_FOR_ALIG(data_for_image_diff_data_list_lz4_dec, image_data_length, image_data, image_width, channels, is_su, memcpy_fun, ptr, bit) {           \
+#define DIFF_IMAGE_TO_VIDEO_CREATE_IMAGE_DATA_FOR_ALIG(data_for_image_diff_data_list_lz4_dec, image_data_length, image_data, line_length, is_su, memcpy_fun, ptr) {                          \
   unsigned int y = 0;                                                                                                                                                                        \
   unsigned int data_length = 0;                                                                                                                                                              \
   unsigned int width_length = 0;                                                                                                                                                             \
@@ -175,10 +175,10 @@ static void *memcpy_tiny(void *dst, const void *src, uint32_t len) {
     diff_rect = (image_diff_rect_t*)(data_for_image_diff_data_list_lz4_dec + image_data_list_point);                                                                                         \
     image_data_list_point += sizeof(image_diff_rect_t);                                                                                                                                      \
                                                                                                                                                                                              \
-    width_length = image_width << bit;                                                                                                                                                       \
-    image_x_point = diff_rect->x << bit;                                                                                                                                                     \
+    width_length = line_length;                                                                                                                                                              \
+    image_x_point = diff_rect->x << (sizeof(ptr) / 2);                                                                                                                                       \
     image_y_point = diff_rect->y * width_length;                                                                                                                                             \
-    data_width_length = diff_rect->width << bit;                                                                                                                                             \
+    data_width_length = diff_rect->width << (sizeof(ptr) / 2);                                                                                                                               \
     data_length = diff_rect->line_length * diff_rect->height;                                                                                                                                \
                                                                                                                                                                                              \
     for (y = 0; y < diff_rect->height; y++) {                                                                                                                                                \
@@ -197,26 +197,24 @@ static void *memcpy_tiny(void *dst, const void *src, uint32_t len) {
 
 static int diff_image_to_video_create_image_data_for_align32bit(
     unsigned char *data_for_image_diff_data_list_lz4_dec,
-    unsigned int image_data_length, unsigned char *image_data,
-    unsigned int image_width, unsigned int channels) {
+    unsigned int image_data_length, unsigned char *image_data, unsigned int line_length) {
   int is_su = -1;
-  DIFF_IMAGE_TO_VIDEO_CREATE_IMAGE_DATA_FOR_ALIG(data_for_image_diff_data_list_lz4_dec, image_data_length, image_data, image_width, channels, is_su, tk_memcpy32, uint32_t, 2);
+	DIFF_IMAGE_TO_VIDEO_CREATE_IMAGE_DATA_FOR_ALIG(data_for_image_diff_data_list_lz4_dec, image_data_length, image_data, line_length, is_su, tk_memcpy32, uint32_t);
   return is_su;
 }
 
 static int diff_image_to_video_create_image_data_for_align16bit(
     unsigned char *data_for_image_diff_data_list_lz4_dec,
-    unsigned int image_data_length, unsigned char *image_data,
-    unsigned int image_width, unsigned int channels) {
+    unsigned int image_data_length, unsigned char *image_data, unsigned int line_length) {
   int is_su = -1;
-  DIFF_IMAGE_TO_VIDEO_CREATE_IMAGE_DATA_FOR_ALIG(data_for_image_diff_data_list_lz4_dec, image_data_length, image_data, image_width, channels, is_su, tk_memcpy16, uint16_t, 1);
+  DIFF_IMAGE_TO_VIDEO_CREATE_IMAGE_DATA_FOR_ALIG(data_for_image_diff_data_list_lz4_dec, image_data_length, image_data, line_length, is_su, tk_memcpy16, uint16_t);
   return is_su;
 }
 
 static int diff_image_to_video_create_image_data_for_noalign(
     unsigned char *data_for_image_diff_data_list_lz4_dec,
     unsigned int image_data_length, unsigned char *image_data,
-    unsigned int image_width, unsigned int channels) {
+    unsigned int image_width, unsigned int channels, unsigned int line_length) {
   int is_su = -1;
   unsigned int y = 0;
   unsigned int data_length = 0;
@@ -236,7 +234,7 @@ static int diff_image_to_video_create_image_data_for_noalign(
 
     data_length = diff_rect->width * diff_rect->height * channels;
 
-    width_length = channels * image_width;
+    width_length = line_length;
     image_x_point = diff_rect->x * channels;
     image_y_point = diff_rect->y * width_length;
     data_width_length = channels * diff_rect->width;
@@ -262,7 +260,7 @@ static int diff_image_to_video_create_image_data_for_noalign(
 static int diff_image_to_video_get_lz4_data_to_diff_image_data(
     unsigned char *lz4_data, unsigned int lz4_length,
     unsigned int image_data_length, unsigned char *image_data,
-    unsigned int image_width, unsigned int channels) {
+    unsigned int image_width, unsigned int channels, unsigned int line_length) {
 
   int is_su = -1;
 
@@ -277,15 +275,15 @@ static int diff_image_to_video_get_lz4_data_to_diff_image_data(
     if (channels == 2) {
       is_su = diff_image_to_video_create_image_data_for_align16bit(
           g_max_data_decompress, image_data_length, image_data,
-          image_width, channels);
+          line_length);
     } else if (channels == 4) {
       is_su = diff_image_to_video_create_image_data_for_align32bit(
           g_max_data_decompress, image_data_length, image_data,
-          image_width, channels);
+          line_length);
     } else {
       is_su = diff_image_to_video_create_image_data_for_noalign(
           g_max_data_decompress, image_data_length, image_data,
-          image_width, channels);
+          image_width, channels, line_length);
     }
   }
 
@@ -295,7 +293,7 @@ static int diff_image_to_video_get_lz4_data_to_diff_image_data(
 static int diff_image_to_video_read_frame_image(
     const unsigned char *file_data, unsigned int file_data_length,
     video_info_t *video_info, frame_info_t *frame_info,
-    unsigned char *last_image_data) {
+    unsigned char *last_image_data, unsigned int line_length) {
   int is_su = -1;
   unsigned char *data_com = NULL;
 
@@ -309,14 +307,14 @@ static int diff_image_to_video_read_frame_image(
     switch (frame_info->compress_type) {
     case compress_type_lz4:
       lz4_decompress_doubleBufferr_buffer(last_image_data,
-                                          width * height * channels,
+                                          height * line_length,
                                           data_com, frame_info->data_length);
 
       break;
     case compress_type_diff_lz4:
       is_su = diff_image_to_video_get_lz4_data_to_diff_image_data(
           data_com, frame_info->data_length, frame_info->data_decompress_length,
-          last_image_data, width, channels);
+          last_image_data, width, channels, line_length);
 
       break;
     case compress_type_no_change:
@@ -355,7 +353,7 @@ static int diff_image_to_video_read_video_info_and_frame_info(
 
 int diff_image_to_video_read_image_data(
     const unsigned char *file_data, unsigned int file_data_length,
-    unsigned int frame_number, unsigned char *last_image_data,
+    unsigned int frame_number, unsigned char *last_image_data, unsigned int line_length,
     unsigned int width, unsigned int height, unsigned int channels) {
   int is_su = -1;
   video_info_t *video_info;
@@ -370,10 +368,13 @@ int diff_image_to_video_read_image_data(
           frame_number) == 0) {
     if (width != video_info->width || height != video_info->height || channels != video_info->channels) {
       assert(!"bitmap's width != video's width or bitmap's height != video's height or bitmap's channels != video's channels");
+    } else if (line_length != video_info->line_length) {
+      assert(!"line_length != video_info->line_length");
+    } else {
+      is_su = diff_image_to_video_read_frame_image(
+          file_data, file_data_length, video_info, frame_info_list,
+          last_image_data, line_length);
     }
-    is_su = diff_image_to_video_read_frame_image(
-        file_data, file_data_length, video_info, frame_info_list,
-        last_image_data);
   }
   return is_su;
 }

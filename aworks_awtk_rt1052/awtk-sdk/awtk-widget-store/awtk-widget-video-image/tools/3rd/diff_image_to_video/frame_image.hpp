@@ -9,16 +9,17 @@ namespace diff_image_video
 	{
 	public:
 		frame_image() { data = NULL; };
-		frame_image(unsigned int width, unsigned int height, unsigned int channels, unsigned char* data)
+		frame_image(unsigned int width, unsigned int height, unsigned int channels, unsigned int line_length, unsigned char* data)
 		{
-			if (width > 0 && height > 0 && channels > 0 && data != NULL)
+			if (width > 0 && height > 0 && channels > 0 && line_length > 0 && data != NULL)
 			{
 				this->width = width;
 				this->height = height;
 				this->channels = channels;
+				this->line_length = line_length;
 
-				this->data = new unsigned char[width * height * channels];
-				memcpy(this->data, data, width * height * channels);
+				this->data = new unsigned char[height * line_length];
+				memcpy(this->data, data, height * channels);
 			}
 		}
 
@@ -62,6 +63,7 @@ namespace diff_image_video
 		unsigned int width;
 		unsigned int height;
 		unsigned int channels;
+		unsigned int line_length;
 	};
 }
 

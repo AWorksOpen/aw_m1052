@@ -23,7 +23,7 @@
 #define TK_SERIES_TYPES_H
 
 #include "base/widget.h"
-#include "../base/fifo.h"
+#include "../base/series_fifo_default.h"
 #include "chart_utils.h"
 
 /**
@@ -102,22 +102,6 @@ typedef struct _series_bar_params_t {
 } series_bar_params_t;
 
 /**
- * 彩色series的数据
- */
-typedef struct _series_colorful_data_t {
-  float_t v;
-  color_t c;
-} series_colorful_data_t;
-
-/**
- * 最大最小值series的数据
- */
-typedef struct _series_minmax_data_t {
-  float_t min;
-  float_t max;
-} series_minmax_data_t;
-
-/**
  * 取series的绘图数据的最大或最小值。
  * @param {void*} d 绘图数据。
  * @param {const void*} data 比较的数据。
@@ -138,7 +122,7 @@ typedef float_t (*series_draw_data_get_t)(const void* data);
  * 设置series的绘图数据。
  * @param {void*} dst 绘图数据。
  * @param {float_t} series 序列点的位置。
- * @param {fifo_t*} value 序列点的值fifo。
+ * @param {object_t*} value 序列点的值fifo。
  * @param {uint32_t} value_index 序列点的值在fifo中的位置。
  * @param {float_t} value_min 序列点的最小值。
  * @param {float_t} value_range 序列点的值范围。
@@ -147,14 +131,14 @@ typedef float_t (*series_draw_data_get_t)(const void* data);
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-typedef ret_t (*series_draw_data_set_t)(void* dst, float_t series, fifo_t* value,
+typedef ret_t (*series_draw_data_set_t)(void* dst, float_t series, object_t* value,
                                         uint32_t value_index, float_t value_min,
                                         float_t value_range, float_t pixel_range, bool_t inverse);
 /**
  * series绘图数据的信息
  */
 typedef struct _series_draw_data_info_t {
-  uint32_t size;
+  uint32_t unit_size;
   tk_compare_t compare_in_axis1;
   tk_compare_t compare_in_axis2;
   series_draw_data_minmax_t min_axis1;
@@ -167,10 +151,13 @@ typedef struct _series_draw_data_info_t {
   series_draw_data_set_t set_as_axis21;
 } series_draw_data_info_t;
 
+typedef widget_animator_t* (*series_animator_create_t)(widget_t* widget, uint32_t duration,
+                                                       uint32_t delay, easing_type_t easing);
 typedef uint32_t (*series_count_t)(widget_t* widget);
 typedef ret_t (*series_set_t)(widget_t* widget, uint32_t index, const void* data, uint32_t nr);
 typedef ret_t (*series_rset_t)(widget_t* widget, uint32_t index, const void* data, uint32_t nr);
 typedef ret_t (*series_push_t)(widget_t* widget, const void* data, uint32_t nr);
+typedef ret_t (*series_clear_t)(widget_t* widget);
 typedef ret_t (*series_pop_t)(widget_t* widget, uint32_t nr);
 typedef void* (*series_at_t)(widget_t* widget, uint32_t index);
 typedef ret_t (*series_get_current_t)(widget_t* widget, uint32_t* begin, uint32_t* end,
@@ -179,8 +166,10 @@ typedef int32_t (*series_index_of_point_in_t)(widget_t* widget, xy_t x, xy_t y, 
 typedef ret_t (*series_to_local_t)(widget_t* widget, uint32_t index, point_t* p);
 typedef bool_t (*series_is_point_in_t)(widget_t* widget, xy_t x, xy_t y, bool_t is_local);
 typedef ret_t (*series_on_paint_t)(widget_t* widget, canvas_t* c, float_t ox, float_t oy,
-                                   fifo_t* fifo, uint32_t index, uint32_t size, rect_t* clip_rect);
+                                   object_t* fifo, uint32_t index, uint32_t size,
+                                   rect_t* clip_rect);
 typedef ret_t (*series_tooltip_format_t)(void* ctx, const void* data, wstr_t* str);
+typedef object_t* (*series_prepare_fifo_t)(widget_t* widget, void* ctx, object_t* obj);
 
 /**
  * series控件的虚函数表。
@@ -190,6 +179,7 @@ typedef struct _series_vtable_t {
   series_set_t set;
   series_rset_t rset;
   series_push_t push;
+  series_clear_t clear;
   series_pop_t pop;
   series_at_t at;
   series_get_current_t get_current;
@@ -209,16 +199,16 @@ typedef struct _series_vtable_t {
  */
 
 /**
+ * @const SERIES_PROP_FIFO
+ * 序列object对象
+ */
+#define SERIES_PROP_FIFO "fifo"
+
+/**
  * @const SERIES_PROP_CAPACITY
  * 序列的容量
  */
 #define SERIES_PROP_CAPACITY "capacity"
-
-/**
- * @const SERIES_PROP_UNIT_SIZE
- * 序列元素的大小
- */
-#define SERIES_PROP_UNIT_SIZE "unit_size"
 
 /**
  * @const SERIES_PROP_OFFSET
@@ -251,10 +241,22 @@ typedef struct _series_vtable_t {
 #define SERIES_PROP_SERIES_AXIS "series_axis"
 
 /**
+ * @const SERIES_PROP_SERIES_AXIS_OBJ
+ * 指示序列位置的轴对象
+ */
+#define SERIES_PROP_SERIES_AXIS_OBJ "series_axis_obj"
+
+/**
  * @const SERIES_PROP_VALUE_AXIS
  * 指示序列值的轴
  */
 #define SERIES_PROP_VALUE_AXIS "value_axis"
+
+/**
+ * @const SERIES_PROP_VALUE_AXIS_OBJ
+ * 指示序列值的轴对象
+ */
+#define SERIES_PROP_VALUE_AXIS_OBJ "value_axis_obj"
 
 /**
  * @const SERIES_PROP_DISPLAY_MODE

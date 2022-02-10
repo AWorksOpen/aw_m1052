@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  plugin manager
  *
- * Copyright (c) 2020 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2020 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -50,7 +50,7 @@ static ret_t plugin_destroy(plugin_t* plugin) {
 
   if (plugin->plugin_manager != NULL && plugin->handle != NULL) {
     char name[MAX_PATH + 1];
-    char func[TK_NAME_LEN + 1];
+    char func[TK_FUNC_NAME_LEN + 1];
     tk_dl_t* handle = plugin->handle;
     const char* lib_name = plugin->lib_name;
     plugin_manager_t* plugin_manager = plugin->plugin_manager;
@@ -61,7 +61,7 @@ static ret_t plugin_destroy(plugin_t* plugin) {
         plugin_manager->get_deinit(func, name_from_lib_name(name, lib_name)) == RET_OK) {
       log_debug("deinit func:%s\n", func);
     } else {
-      tk_strncpy(func, TK_PLUGIN_DEINIT, TK_NAME_LEN);
+      tk_strncpy(func, TK_PLUGIN_DEINIT, TK_FUNC_NAME_LEN);
     }
     plugin_deinit_func_t deinit = (plugin_deinit_func_t)tk_dl_sym(handle, func);
     if (deinit != NULL) {
@@ -93,6 +93,10 @@ static plugin_t* plugin_create(const char* path, const char* lib_name,
 
   path_build(filename, MAX_PATH, path, lib_name, NULL);
   handle = tk_dl_open(filename);
+
+  if (handle == NULL) {
+    log_debug("dlopen %s failed: %s\n", filename, tk_dl_error());
+  }
   return_value_if_fail(handle != NULL, NULL);
 
   plugin = TKMEM_ZALLOC(plugin_t);
@@ -110,7 +114,7 @@ static plugin_t* plugin_create(const char* path, const char* lib_name,
 
   if (plugin != NULL) {
     char name[MAX_PATH + 1];
-    char func[TK_NAME_LEN + 1];
+    char func[TK_FUNC_NAME_LEN + 1];
 
     memset(name, 0x00, sizeof(name));
     memset(func, 0x00, sizeof(func));
@@ -118,7 +122,7 @@ static plugin_t* plugin_create(const char* path, const char* lib_name,
         plugin_manager->get_init(func, name_from_lib_name(name, lib_name)) == RET_OK) {
       log_debug("init func:%s\n", func);
     } else {
-      tk_strncpy(func, TK_PLUGIN_INIT, TK_NAME_LEN);
+      tk_strncpy(func, TK_PLUGIN_INIT, TK_FUNC_NAME_LEN);
     }
     plugin_init_func_t init = (plugin_init_func_t)tk_dl_sym(handle, func);
     if (init != NULL) {

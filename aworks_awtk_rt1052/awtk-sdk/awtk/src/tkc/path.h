@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  path
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -37,7 +37,7 @@ BEGIN_C_DECLS
  *
  * 返回文件名。
  *
- * @param {const char* path*} path 路径。
+ * @param {const char*} path 路径。
  * @param {char*} result 用于返回文件名。
  * @param {uint32_t} size 缓冲区大小。
  *
@@ -50,7 +50,7 @@ ret_t path_basename(const char* path, char* result, int32_t size);
  *
  * 返回文件扩展名。
  *
- * @param {const char* path*} path 路径。
+ * @param {const char*} path 路径。
  * @param {char*} result 用于返回文件扩展名。
  * @param {uint32_t} size 缓冲区大小。
  *
@@ -59,11 +59,27 @@ ret_t path_basename(const char* path, char* result, int32_t size);
 ret_t path_extname(const char* path, char* result, int32_t size);
 
 /**
+ * @method path_extname_is
+ *
+ * ```c
+ * assert(path_extname_is("test.jpg", ".jpg"));
+ * assert(path_extname_is("test.JPG", ".jpg"));
+ * ```
+ * 检查是否是指定的扩展名。
+ *
+ * @param {const char*} path 路径。
+ * @param {const char*} extname 扩展名。
+ *
+ * @return {bool_t} 返回TRUE表示是，否则表示不是。
+ */
+bool_t path_extname_is(const char* path, const char* extname);
+
+/**
  * @method path_dirname
  *
  * 返回目录。
  *
- * @param {const char* path*} path 路径。
+ * @param {const char*} path 路径。
  * @param {char*} result 用于返回目录。
  * @param {uint32_t} size 缓冲区大小。
  *
@@ -76,7 +92,7 @@ ret_t path_dirname(const char* path, char* result, int32_t size);
  *
  * 规范路径字符形式。
  *
- * @param {const char* path*} path 路径。
+ * @param {const char*} path 路径。
  * @param {char*} result 用于返回规范后的路径。
  * @param {uint32_t} size 缓冲区大小。
  *
@@ -89,7 +105,7 @@ ret_t path_normalize(const char* path, char* result, int32_t size);
  *
  * 返回绝对路径。
  *
- * @param {const char* path*} path 路径。
+ * @param {const char*} path 路径。
  * @param {char*} result 用于返回绝对路径。
  * @param {uint32_t} size 缓冲区大小。
  *
@@ -102,7 +118,7 @@ ret_t path_abs(const char* path, char* result, int32_t size);
  *
  * 判断路径是否为绝对路径。
  *
- * @param {const char* path*} path 路径。
+ * @param {const char*} path 路径。
  *
  * @return {ret_t} 返回FALSE表示不是绝对路径，否则表示是绝对路径。
  */
@@ -193,6 +209,17 @@ ret_t path_app_root(char path[MAX_PATH + 1]);
  * @return {ret_t} 返回TRUE表示成功，否则表示失败。
  */
 bool_t path_exist(const char* path);
+
+/**
+ * @method path_remove_last_slash
+ *
+ * 去掉后面的/和\\字符。
+ *
+ * @param {const char*} path 目录。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t path_remove_last_slash(char* path);
 
 END_C_DECLS
 

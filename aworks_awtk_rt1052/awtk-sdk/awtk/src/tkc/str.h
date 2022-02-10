@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  string
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -82,7 +82,6 @@ str_t* str_init(str_t* str, uint32_t capacity);
 /**
  * @method str_extend
  * 扩展字符串到指定的容量。
- * @annotation ["constructor"]
  * @param {str_t*} str str对象。
  * @param {uint32_t} capacity 初始容量。
  *
@@ -218,6 +217,17 @@ ret_t str_remove(str_t* str, uint32_t offset, uint32_t len);
 ret_t str_append_char(str_t* str, char c);
 
 /**
+ * @method str_append_n_chars
+ * 同一个字符追加n次。
+ * @param {str_t*} str str对象。
+ * @param {char} c 要追加的字符。
+ * @param {uint32_t} n 字符的个数。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t str_append_n_chars(str_t* str, char c, uint32_t n);
+
+/**
  * @method str_append_int
  * 追加一个整数。
  * @param {str_t*} str str对象。
@@ -226,6 +236,26 @@ ret_t str_append_char(str_t* str, char c);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t str_append_int(str_t* str, int32_t value);
+
+/**
+ * @method str_append_int64
+ * 追加一个int64整数。
+ * @param {str_t*} str str对象。
+ * @param {int64_t} value 要追加的整数。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t str_append_int64(str_t* str, int64_t value);
+
+/**
+ * @method str_append_uint64
+ * 追加一个uint64整数。
+ * @param {str_t*} str str对象。
+ * @param {uint64_t} value 要追加的整数。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t str_append_uint64(str_t* str, uint64_t value);
 
 /**
  * @method str_append_double
@@ -403,6 +433,29 @@ ret_t str_to_int(str_t* str, int32_t* v);
 ret_t str_to_float(str_t* str, double* v);
 
 /**
+ * @method str_encode_hex
+ * 把二进制的数据编码成16进制格式的字符串。
+ * @param {str_t*} str str对象。
+ * @param {const uint8_t*} data 数据。
+ * @param {uint32_t} size 数据长度。
+ * @param {const char*} format 格式(如:"%02x" 表示生成小写)
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t str_encode_hex(str_t* str, const uint8_t* data, uint32_t size, const char* format);
+
+/**
+ * @method str_encode_hex
+ * 把16进制格式的字符串解码成字符串。
+ * @param {str_t*} str str对象。
+ * @param {uint8_t*} data 数据缓存区(返回)。
+ * @param {uint32_t} size 数据最大长度。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t str_decode_hex(str_t* str, uint8_t* data, uint32_t size);
+
+/**
  * @method str_end_with
  * 判断字符串是否以指定的子串结尾。
  * @param {str_t*} str str对象。
@@ -495,7 +548,17 @@ ret_t str_to_upper(str_t* str);
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t str_expand_vars(str_t* str, const char* src, const object_t* obj);
+ret_t str_expand_vars(str_t* str, const char* src, const tk_object_t* obj);
+
+/**
+ * @method str_common_prefix
+ * 计算str和other的共同前缀，并设置到str中。
+ * @param {str_t*} str str对象。
+ * @param {const char*} other 另外一个字符串。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t str_common_prefix(str_t* str, const char* other);
 
 /**
  * @method str_reset
@@ -505,6 +568,25 @@ ret_t str_expand_vars(str_t* str, const char* src, const object_t* obj);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t str_reset(str_t* str);
+
+/**
+ * @method str_reverse
+ * 前后颠倒字符串。
+ * @param {str_t*} str str对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t str_reverse(str_t* str);
+
+/**
+ * @method str_count
+ * 统计字串出现的次数。
+ * @param {str_t*} str str对象。
+ * @param {const char*} substr 字串。
+ *
+ * @return {uint32_t} 返回字符串出现的次数。
+ */
+uint32_t str_count(str_t* str, const char* substr);
 
 END_C_DECLS
 

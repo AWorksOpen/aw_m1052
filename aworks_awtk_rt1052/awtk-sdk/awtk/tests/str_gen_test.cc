@@ -6,7 +6,7 @@
 
 static void TestStrGen(const char* strs[]) {
   StrGen sg;
-  size_t nr = 0;
+  uint16_t nr = 0;
   uint8_t buff[1024 * 4];
   vector<string> vstrs;
   for (size_t i = 0; strs[i]; i++) {
@@ -23,7 +23,7 @@ static void TestStrGen(const char* strs[]) {
 
   vector<string> languages = sg.GetLanguages();
 
-  ASSERT_EQ(languages.size(), 3);
+  ASSERT_EQ(languages.size(), (size_t)3);
   for (size_t k = 0; k < languages.size(); k++) {
     string lang = languages[k];
     str_table_t* table = (str_table_t*)buff;
@@ -82,6 +82,10 @@ TEST(StrGen, xml1) {
     <language name=\"en_US\">en:&quot;&lt;&gt;'</language> \
     <language name=\"zh_CN\">zh:&quot;&lt;&gt;'</language> \
     </string> \
+    <string name=\"with_space\"> \
+    <language name=\"en_US\">  abc  </language> \
+    <language name=\"zh_CN\">  保留空格  </language> \
+    </string> \
     <string name=\"cancel\"> \
     <language name=\"en_US\">Cancel</language> \
     <language name=\"zh_CN\">取消</language> \
@@ -90,7 +94,7 @@ TEST(StrGen, xml1) {
   xml_buff_to_str_gen(xml, &sg);
   vector<string> languages = sg.GetLanguages();
 
-  ASSERT_EQ(languages.size(), 2);
+  ASSERT_EQ(languages.size(), (size_t)2);
   str_table_t* table = (str_table_t*)buff;
   wbuffer_t wbuffer;
   wbuffer_t* b = wbuffer_init(&wbuffer, buff, sizeof(buff));
@@ -99,11 +103,13 @@ TEST(StrGen, xml1) {
   ASSERT_EQ(string("Cancel"), str_table_lookup(table, "cancel"));
   ASSERT_EQ(string("a<b>c"), str_table_lookup(table, "abc"));
   ASSERT_EQ(string("en:\"<>'"), str_table_lookup(table, "\"<>'"));
+  ASSERT_EQ(string("  abc  "), str_table_lookup(table, "with_space"));
 
   sg.Output("zh_CN", b);
   assert_str_eq(L"确定", str_table_lookup(table, "ok"));
   assert_str_eq(L"取消", str_table_lookup(table, "cancel"));
   assert_str_eq(L"zh:\"<>'", str_table_lookup(table, "\"<>'"));
+  assert_str_eq(L"  保留空格  ", str_table_lookup(table, "with_space"));
 
   ASSERT_EQ(string("a\"b&c"), str_table_lookup(table, "abc"));
   ASSERT_EQ(NULL, str_table_lookup(table, "not exist"));

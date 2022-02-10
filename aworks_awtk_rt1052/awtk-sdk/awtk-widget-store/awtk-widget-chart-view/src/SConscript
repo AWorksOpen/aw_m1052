@@ -14,7 +14,7 @@ SOURCES += Glob('chart_view/*.c')
 SOURCES += Glob('pie_slice/*.c')
 
 EXPORT_DEF=''
-if OS_NAME == 'Windows':
+if OS_NAME == 'Windows' and os.environ['TOOLS_NAME'] == '':
   EXPORT_DEF = ' /DEF:"src/chart_view.def" '
 
 if os.environ['BUILD_SHARED'] == 'True':

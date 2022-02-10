@@ -69,4 +69,6 @@ scons LINUX_FB=true
 
 ## 文档
 
+[如何使用 qr 控件](docs/how_to_use_qr.md)
+
 [完善自定义控件](https://github.com/zlgopen/awtk-widget-generator/blob/master/docs/improve_generated_widget.md)

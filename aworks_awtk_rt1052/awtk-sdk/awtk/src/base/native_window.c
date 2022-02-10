@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  native window
  *
- * Copyright (c) 2019 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2019 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -46,6 +46,17 @@ ret_t native_window_resize(native_window_t* win, wh_t w, wh_t h, bool_t force) {
   return RET_OK;
 }
 
+ret_t native_window_set_orientation(native_window_t* win, lcd_orientation_t old_orientation,
+                                    lcd_orientation_t new_orientation) {
+  return_value_if_fail(win != NULL && win->vt != NULL, RET_BAD_PARAMS);
+
+  if (win->vt->set_orientation != NULL) {
+    return win->vt->set_orientation(win, old_orientation, new_orientation);
+  }
+
+  return RET_OK;
+}
+
 canvas_t* native_window_get_canvas(native_window_t* win) {
   return_value_if_fail(win != NULL && win->vt != NULL, NULL);
 
@@ -59,52 +70,24 @@ canvas_t* native_window_get_canvas(native_window_t* win) {
 ret_t native_window_update_last_dirty_rect(native_window_t* win) {
   return_value_if_fail(win != NULL, RET_BAD_PARAMS);
 
-  win->last_dirty_rect = win->dirty_rect;
-
   return RET_OK;
 }
 
 rect_t native_window_calc_dirty_rect(native_window_t* win) {
-  rect_t* ldr = NULL;
   rect_t r = rect_init(0, 0, 0, 0);
   return_value_if_fail(win != NULL, r);
 
-  r = win->dirty_rect;
-  ldr = &(win->last_dirty_rect);
-
-  rect_merge(&r, ldr);
+  r = win->dirty_rects.max;
 
   return rect_fix(&r, win->rect.w, win->rect.h);
 }
 
 ret_t native_window_invalidate(native_window_t* win, const rect_t* r) {
-  rect_t* dr = NULL;
+  rect_t arect;
   return_value_if_fail(win != NULL, RET_BAD_PARAMS);
+  arect = rect_fix((rect_t*)r, win->rect.w, win->rect.h);
 
-  dr = &(win->dirty_rect);
-
-  if (r != NULL) {
-    rect_merge(dr, r);
-  } else {
-    dr->x = 0;
-    dr->y = 0;
-    dr->w = win->rect.w;
-    dr->h = win->rect.h;
-  }
-
-  return RET_OK;
-}
-
-ret_t native_window_on_resized(native_window_t* win, wh_t w, wh_t h) {
-  lcd_t* lcd = NULL;
-  return_value_if_fail(win != NULL, RET_BAD_PARAMS);
-
-  lcd = native_window_get_canvas(win)->lcd;
-  return_value_if_fail(lcd != NULL, RET_BAD_PARAMS);
-
-  lcd_resize(lcd, w, h, 0);
-
-  return RET_OK;
+  return dirty_rects_add(&(win->dirty_rects), &arect);
 }
 
 ret_t native_window_gl_make_current(native_window_t* win) {
@@ -129,41 +112,28 @@ ret_t native_window_get_info(native_window_t* win, native_window_info_t* info) {
 }
 
 ret_t native_window_begin_frame(native_window_t* win, lcd_draw_mode_t mode) {
+  canvas_t* c = NULL;
+  const dirty_rects_t* dr = NULL;
   return_value_if_fail(win != NULL, RET_BAD_PARAMS);
 
-  if (win->dirty_rect.w > 0 && win->dirty_rect.h > 0) {
-    rect_t r = native_window_calc_dirty_rect(win);
-    if (r.w > 0 && r.h > 0) {
-      canvas_t* c = native_window_get_canvas(win);
-      canvas_begin_frame(c, &r, mode);
-      win->dirty = TRUE;
-
-      return RET_OK;
-    }
+  dr = &(win->dirty_rects);
+  if (dr->nr == 0) {
+    return RET_FAIL;
   }
 
-  return RET_FAIL;
-}
-
-ret_t native_window_paint(native_window_t* win, widget_t* widget) {
-  return_value_if_fail(win != NULL && widget != NULL, RET_BAD_PARAMS);
-
-  if (win->dirty && widget->visible) {
-    canvas_t* c = native_window_get_canvas(win);
-    widget_paint(widget, c);
-  }
+  c = native_window_get_canvas(win);
+  canvas_begin_frame(c, dr, mode);
 
   return RET_OK;
 }
 
 ret_t native_window_end_frame(native_window_t* win) {
+  canvas_t* c = NULL;
   return_value_if_fail(win != NULL, RET_BAD_PARAMS);
 
-  if (win->dirty) {
-    canvas_t* c = native_window_get_canvas(win);
-    canvas_end_frame(c);
-    native_window_update_last_dirty_rect(win);
-  }
+  c = native_window_get_canvas(win);
+  canvas_end_frame(c);
+  native_window_update_last_dirty_rect(win);
   native_window_clear_dirty_rect(win);
 
   return RET_OK;
@@ -172,8 +142,7 @@ ret_t native_window_end_frame(native_window_t* win) {
 ret_t native_window_clear_dirty_rect(native_window_t* win) {
   return_value_if_fail(win != NULL, RET_BAD_PARAMS);
 
-  win->dirty = FALSE;
-  win->dirty_rect = rect_init(win->rect.w, win->rect.h, 0, 0);
+  dirty_rects_reset(&(win->dirty_rects));
 
   return RET_OK;
 }
@@ -256,4 +225,8 @@ ret_t native_window_set_cursor(native_window_t* win, const char* name, bitmap_t*
   }
 
   return RET_NOT_IMPL;
+}
+
+ret_t native_window_set_title(native_window_t* win, const char* app_name) {
+  return tk_object_set_prop_str(TK_OBJECT(win), NATIVE_WINDOW_PROP_TITLE, app_name);
 }

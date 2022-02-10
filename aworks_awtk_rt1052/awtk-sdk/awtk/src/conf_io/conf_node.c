@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  conf node
  *
- * Copyright (c) 2020 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2020 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -455,7 +455,9 @@ ret_t conf_node_set_value(conf_node_t* node, const value_t* v) {
       }
       break;
     }
-    default: { return RET_NOT_IMPL; }
+    default: {
+      return RET_NOT_IMPL;
+    }
   }
   node->node_type = CONF_NODE_SIMPLE;
 
@@ -519,7 +521,9 @@ ret_t conf_node_get_value(conf_node_t* node, value_t* v) {
       value_set_str(v, node->value.small_str);
       break;
     }
-    default: { return RET_NOT_IMPL; }
+    default: {
+      return RET_NOT_IMPL;
+    }
   }
 
   return RET_OK;
@@ -536,12 +540,22 @@ static tokenizer_t* conf_doc_get_tokenizer(conf_doc_t* doc, const char* path) {
 
 static conf_node_t* conf_doc_get_node(conf_doc_t* doc, const char* path,
                                       bool_t create_if_not_exist) {
+  return_value_if_fail(doc != NULL && path != NULL, NULL);
+
+  return conf_doc_find_node(doc, doc->root, path, create_if_not_exist);
+}
+
+conf_node_t* conf_doc_find_node(conf_doc_t* doc, conf_node_t* node, const char* path,
+                                bool_t create_if_not_exist) {
   uint32_t deep = 1;
   const char* token = NULL;
   conf_node_t* iter = NULL;
-  conf_node_t* node = doc->root;
   tokenizer_t* t = conf_doc_get_tokenizer(doc, path);
-  return_value_if_fail(doc->root != NULL, NULL);
+  return_value_if_fail(t != NULL, NULL);
+  if (node == NULL) {
+    node = doc->root;
+  }
+  return_value_if_fail(node != NULL, NULL);
 
   while (tokenizer_has_more(t)) {
     if (deep < doc->max_deep_level) {
@@ -616,10 +630,15 @@ ret_t conf_doc_set(conf_doc_t* doc, const char* path, const value_t* v) {
 }
 
 ret_t conf_doc_get(conf_doc_t* doc, const char* path, value_t* v) {
-  conf_node_t* node = NULL;
   return_value_if_fail(doc != NULL && path != NULL && v != NULL, RET_BAD_PARAMS);
 
-  node = conf_doc_get_node(doc, path, FALSE);
+  return conf_doc_get_ex(doc, doc->root, path, v);
+}
+
+ret_t conf_doc_get_ex(conf_doc_t* doc, conf_node_t* node, const char* path, value_t* v) {
+  return_value_if_fail(doc != NULL && path != NULL && v != NULL, RET_BAD_PARAMS);
+
+  node = conf_doc_find_node(doc, node, path, FALSE);
 
   if (node != NULL) {
     const char* special = strchr(path, '#');
@@ -672,7 +691,7 @@ static conf_node_t* conf_node_get_prev(conf_node_t* node) {
   return_value_if_fail(node != NULL && node->parent != NULL, NULL);
   iter = conf_node_get_first_child(node->parent);
 
-  if (iter == node) {
+  if (iter == node || iter == NULL) {
     return NULL;
   }
 

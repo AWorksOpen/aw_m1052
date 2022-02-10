@@ -1,11 +1,11 @@
 {
   "name": "number_label",
   "version": "1.0.0",
-  "date":"2020-05-31",
-  "team":"AWTK Develop Team",
-  "author":"Li XianJing <xianjimli@hotmail.com>",
-  "desc":"用于显示数值的文本控件。",
-  "copyright":"Guangzhou ZHIYUAN Electronics Co.,Ltd.",
+  "date": "2020-05-31",
+  "team": "AWTK Develop Team",
+  "author": "Li XianJing <xianjimli@hotmail.com>",
+  "desc": "用于显示数值的文本控件。",
+  "copyright": "Guangzhou ZHIYUAN Electronics Co.,Ltd.",
   "type": "PROJECT_CUSTOM_WIDGET",
   "entry": "main",
   "assets": {

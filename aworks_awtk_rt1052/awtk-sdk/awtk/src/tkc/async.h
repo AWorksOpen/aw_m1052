@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  async
  *
- * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2019 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -31,7 +31,7 @@ typedef ret_t (*async_on_result_t)(void* ctx, ret_t result);
 
 /**
  * @class async_t
- * 异步请求。
+ * 在后台线程执行指定函数，不会阻塞UI线程。
  *
  * @annotation ["fake"]
  *
@@ -53,15 +53,19 @@ typedef ret_t (*async_on_result_t)(void* ctx, ret_t result);
 ret_t async_call(async_exec_t exec, async_on_result_t on_result, void* ctx);
 
 /**
- * @method async_call_init
+ * @method async_call_init_ex
  * 全局初始化。
  *
  * @annotation ["static"]
+ * @param {uint32_t} max_threads 最大线程数。
+ * @param {uint32_t} min_threads 最小线程数。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  *
  */
-ret_t async_call_init(void);
+ret_t async_call_init_ex(uint32_t max_threads, uint32_t min_threads);
+
+#define async_call_init() async_call_init_ex(5, 1)
 
 /**
  * @method async_call_deinit

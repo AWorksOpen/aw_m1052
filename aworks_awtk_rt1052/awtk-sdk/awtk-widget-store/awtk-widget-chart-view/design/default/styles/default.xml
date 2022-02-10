@@ -37,7 +37,13 @@
     <normal margin_bottom="3" margin_left="2" margin_right="20" margin_top="1" fg_color="#327AD3"/>
   </style>
   <style name="overlap">
+    <normal margin_bottom="10" margin_left="20" margin_right="20" margin_top="10" fg_color="#69CF5C"/>
+  </style>
+  <style name="overlap2">
     <normal margin_bottom="10" margin_left="20" margin_right="20" margin_top="10" fg_color="#36B3C3"/>
+  </style>
+  <style name="overlap3">
+    <normal margin_bottom="10" margin_left="20" margin_right="20" margin_top="10" fg_color="#327AD4"/>
   </style>
   <style name="overlap_small">
     <normal margin_bottom="2" margin_left="5" margin_right="5" margin_top="2" fg_color="#36B3C3"/>
@@ -57,7 +63,7 @@
     <normal margin_bottom="10" margin_left="20" margin_right="20" margin_top="10" fg_color="#36B3C3"/>
   </style>
   <style name="overlap_small">
-    <normal margin_bottom="2" margin_left="2" margin_right="2" margin_top="2" fg_color="#36B3C3"/>
+    <normal margin_bottom="2" margin_left="2" margin_right="2" margin_top="2" fg_color="#69CF5C"/>
   </style>
   <style name="spacing">
     <normal margin_bottom="1" margin_left="2" margin_right="2" margin_top="1" fg_color="#36B3C3"/>
@@ -227,7 +233,7 @@
 </calibration_win>
 <chart_view>
   <style name="default">
-    <normal margin_bottom="20" margin_left="55" margin_right="55" margin_top="20"/>
+    <normal margin_bottom="20" margin_left="60" margin_right="60" margin_top="20"/>
   </style>
 </chart_view>
 <check_button>

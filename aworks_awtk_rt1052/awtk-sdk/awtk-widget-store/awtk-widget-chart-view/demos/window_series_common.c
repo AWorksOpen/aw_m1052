@@ -1,14 +1,13 @@
-#include "awtk.h"
-#include "chart_view/chart_view.h"
-#include "chart_view/axis.h"
-#include "chart_view/line_series.h"
-#include "chart_view/bar_series.h"
+﻿#include "awtk.h"
+#include "tkc/date_time.h"
+#include "../src/chart_view/chart_view.h"
+#include "../src/chart_view/axis.h"
+#include "../src/chart_view/line_series.h"
+#include "../src/chart_view/bar_series.h"
 
 #include <math.h>
 #include <stdlib.h>
 
-#define PROP_NEWEST_INDEX "newest"
-#define PROP_TIME_NOW "now"
 #define PROP_UPDATED "updated"
 #define TIME_PER_DIV 2000        //每个DIV的持续时间
 #define SAMPLE_COUNT_PER_DIV 10  //每个DIV的采样点数
@@ -149,7 +148,7 @@ static void generate_float_data(void* buffer, uint32_t size) {
 
 static void generate_colorful_data(void* buffer, uint32_t size) {
   uint32_t i;
-  series_colorful_data_t* b = (series_colorful_data_t*)buffer;
+  series_data_colorful_t* b = (series_data_colorful_t*)buffer;
   for (i = 0; i < size; i++) {
     b[i].v = (float_t)(rand() % 120 + 10);
     b[i].c.color = rand();
@@ -159,7 +158,7 @@ static void generate_colorful_data(void* buffer, uint32_t size) {
 
 static void generate_minmax_data(void* buffer, uint32_t size) {
   uint32_t i;
-  series_minmax_data_t* b = (series_minmax_data_t*)buffer;
+  series_data_minmax_t* b = (series_data_minmax_t*)buffer;
   for (i = 0; i < size; i++) {
     b[i].min = (float_t)(rand() % 280 - 140);
     b[i].max = b[i].min + rand() % 200;
@@ -169,9 +168,10 @@ static void generate_minmax_data(void* buffer, uint32_t size) {
 typedef void (*_generate_data_t)(void* buffer, uint32_t size);
 static void on_series_push_data(widget_t* widget, uint32_t count, uint32_t unit_size,
                                 _generate_data_t gen) {
+  value_t v;
+  uint64_t recent_time = 0;
   uint32_t tdiv = TIME_PER_DIV;
   uint32_t sdiv = SAMPLE_COUNT_PER_DIV;
-  uint32_t now;
   bool_t updated = FALSE;
   widget_t* axis;
   void* buffer = TKMEM_CALLOC(count, unit_size);
@@ -181,13 +181,13 @@ static void on_series_push_data(widget_t* widget, uint32_t count, uint32_t unit_
     gen(buffer, count);
     series_push(iter, buffer, count);
 
-    axis = widget_get_prop_pointer(iter, SERIES_PROP_SERIES_AXIS);
+    axis = widget_get_prop_pointer(iter, SERIES_PROP_SERIES_AXIS_OBJ);
     if (axis) {
       updated = widget_get_prop_bool(axis, PROP_UPDATED, FALSE);
       if (!updated) {
-        now = widget_get_prop_int(axis, PROP_TIME_NOW, 0);
-        widget_set_prop_int(axis, PROP_TIME_NOW, now + count * tdiv / sdiv);
-        widget_set_prop_int(axis, PROP_NEWEST_INDEX, series_count(iter) - 1);
+        widget_get_prop(axis, AXIS_PROP_TIME_RECENT_TIME, &v);
+        recent_time = value_uint64(&v) + count * tdiv / sdiv / 1000;
+        widget_set_prop_int(axis, AXIS_PROP_TIME_RECENT_TIME, recent_time);
         widget_set_prop_bool(axis, PROP_UPDATED, TRUE);
       }
     }
@@ -212,11 +212,11 @@ void on_series_push_float_data(widget_t* widget, uint32_t count) {
 }
 
 void on_series_push_colorful_data(widget_t* widget, uint32_t count) {
-  on_series_push_data(widget, count, sizeof(series_colorful_data_t), generate_colorful_data);
+  on_series_push_data(widget, count, sizeof(series_data_colorful_t), generate_colorful_data);
 }
 
 void on_series_push_minmax_data(widget_t* widget, uint32_t count) {
-  on_series_push_data(widget, count, sizeof(series_minmax_data_t), generate_minmax_data);
+  on_series_push_data(widget, count, sizeof(series_data_minmax_t), generate_minmax_data);
 }
 
 static void on_series_rset_data(widget_t* widget, uint32_t count, uint32_t unit_size,
@@ -242,11 +242,11 @@ void on_series_rset_float_data(widget_t* widget, uint32_t count) {
 }
 
 void on_series_rset_colorful_data(widget_t* widget, uint32_t count) {
-  on_series_rset_data(widget, count, sizeof(series_colorful_data_t), generate_colorful_data);
+  on_series_rset_data(widget, count, sizeof(series_data_colorful_t), generate_colorful_data);
 }
 
 void on_series_rset_minmax_data(widget_t* widget, uint32_t count) {
-  on_series_rset_data(widget, count, sizeof(series_minmax_data_t), generate_minmax_data);
+  on_series_rset_data(widget, count, sizeof(series_data_minmax_t), generate_minmax_data);
 }
 
 static uint32_t get_series_capacity_min(widget_t* widget) {
@@ -254,7 +254,7 @@ static uint32_t get_series_capacity_min(widget_t* widget) {
 
   WIDGET_FOR_EACH_CHILD_BEGIN(widget, iter, i)
   if (widget_is_series(iter)) {
-    ret = tk_min(ret, SERIES(iter)->capacity);
+    ret = tk_min(ret, widget_get_prop_int(iter, SERIES_PROP_CAPACITY, 0));
   }
   WIDGET_FOR_EACH_CHILD_END()
 
@@ -312,7 +312,7 @@ ret_t on_series_push_rand_colorful_data(const timer_info_t* timer) {
   widget_t* win = WIDGET(timer->ctx);
   widget_t* chart_view = widget_lookup(win, "chartview", TRUE);
   if (chart_view) {
-    on_series_push_colorful_data(chart_view, 1);
+    on_series_push_colorful_data(chart_view, SAMPLE_COUNT_PER_DIV * 1000 / TIME_PER_DIV);
   }
   return RET_REPEAT;
 }
@@ -335,73 +335,21 @@ ret_t on_series_push_rand_minmax_data(const timer_info_t* timer) {
   return RET_REPEAT;
 }
 
-static const char* time_format(char* str, uint32_t size, uint32_t t) {
-  uint32_t h = t / 1000 / 60 / 60 % 24;
-  uint32_t m = t / 1000 / 60 % 60;
-  uint32_t s = t / 1000 % 60;
-  tk_snprintf(str, size, "%02d:%02d:%02d", h, m, s);
-  return str;
-}
-
-ret_t axis_time_generate(void* ctx, uint32_t begin, uint32_t end, uint32_t middle, float_t interval,
-                         darray_t* v) {
-  widget_t* axis = WIDGET(ctx);
-  axis_data_t* d;
-  uint32_t tdiv = TIME_PER_DIV;
-  uint32_t sdiv = SAMPLE_COUNT_PER_DIV;
-  uint32_t offset = 0;
-  uint32_t index = 0;
-  uint32_t nr;
-  uint32_t t;
-  uint32_t i = 0;
-  uint32_t cnt = 0;
-  uint32_t newest = widget_get_prop_int(axis, PROP_NEWEST_INDEX, 0);
-  uint32_t now = widget_get_prop_int(axis, PROP_TIME_NOW, 0);
-  char str[64] = {0};
-
-  t = now - (newest - middle) * tdiv / sdiv;
-  offset = (tdiv - t % tdiv) * sdiv / tdiv;
-  nr = end - middle + 1;
-
-  for (i = 0; i < 2; i++) {
-    if (i == 0) {
-      t = now - (newest - middle) * tdiv / sdiv;
-      offset = (tdiv - t % tdiv) * sdiv / tdiv;
-      nr = end - middle + 1;
-    } else {
-      t = now - (newest - begin) * tdiv / sdiv;
-      offset = (tdiv - t % tdiv) * sdiv / tdiv + nr;
-      nr = end - begin + 1;
-      index = cnt = 0;
-    }
-
-    while ((index = cnt * sdiv + offset) < nr) {
-      d = axis_data_create(index * interval, NULL);
-      time_format(str, sizeof(str), (t / tdiv + cnt + 1) * tdiv);
-      wstr_set_utf8(&(d->text), str);
-      darray_push(v, d);
-      cnt++;
-    }
-  }
-
-  return RET_OK;
-}
-
 ret_t axis_time_init(widget_t* widget) {
-  uint32_t t;
-  date_time_t dt;
+  value_t v;
   widget_t* chart_view = widget_lookup(widget, "chartview", TRUE);
   return_value_if_fail(chart_view != NULL, RET_BAD_PARAMS);
 
+  date_time_t dt;
   date_time_init(&dt);
-  t = dt.hour * 60 * 60 * 1000 + dt.minute * 60 * 1000 + dt.second * 1000;
 
   WIDGET_FOR_EACH_CHILD_BEGIN(chart_view, iter, i)
   if (widget_is_axis(iter) && strstr(iter->name, "from_series") != NULL) {
-    widget_set_prop_int(iter, PROP_NEWEST_INDEX, 0);
-    widget_set_prop_int(iter, PROP_TIME_NOW, t);
+    value_set_uint64(&v, date_time_to_time(&dt));
+    widget_set_prop(iter, AXIS_PROP_TIME_RECENT_TIME, &v);
+    widget_set_prop_int(iter, AXIS_PROP_TIME_DIV, TIME_PER_DIV);
+    widget_set_prop_int(iter, AXIS_PROP_TIME_SAMPLING_RATE, TIME_PER_DIV / SAMPLE_COUNT_PER_DIV);
     widget_set_prop_bool(iter, PROP_UPDATED, FALSE);
-    axis_set_data_from_series(iter, axis_time_generate, iter);
   }
   WIDGET_FOR_EACH_CHILD_END()
 

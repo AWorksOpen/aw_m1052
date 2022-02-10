@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  events structs
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -291,6 +291,16 @@ typedef enum _event_type_t {
    */
   EVT_TOP_WINDOW_CHANGED,
   /**
+   * @const EVT_IM_START
+   * 输入法启动(event_t)。
+   */
+  EVT_IM_START,
+  /**
+   * @const EVT_IM_STOP
+   * 输入法停止(event_t)。
+   */
+  EVT_IM_STOP,
+  /**
    * @const EVT_IM_COMMIT
    * 输入法提交输入的文本事件(im_commit_event_t)。
    */
@@ -406,6 +416,11 @@ typedef enum _event_type_t {
    */
   EVT_REQUEST_QUIT_APP,
   /**
+   * @const EVT_THEME_WILL_CHANGE
+   * 即将改变主题(event_t)。
+   */
+  EVT_THEME_WILL_CHANGE,
+  /**
    * @const EVT_THEME_CHANGED
    * 主题变化(event_t)。
    */
@@ -435,13 +450,41 @@ typedef enum _event_type_t {
    * scroll view结束滚动(event_t)。
    */
   EVT_SCROLL_END,
-
   /**
    * @const EVT_MULTI_GESTURE
    * 多点触摸手势(multi_gesture_event_t)。
    */
   EVT_MULTI_GESTURE,
-
+  /**
+   * @const EVT_PAGE_CHANGED
+   * 页面改变了(event_t)。
+   */
+  EVT_PAGE_CHANGED,
+  /**
+   * @const EVT_PAGE_CHANGING
+   * 页面正在改变(offset_change_event_t)。
+   */
+  EVT_PAGE_CHANGING,
+  /**
+   * @const EVT_ASSET_MANAGER_LOAD_ASSET
+   * 资源管理加载某个资源(assets_event_t)。
+   */
+  EVT_ASSET_MANAGER_LOAD_ASSET,
+  /**
+   * @const EVT_ASSET_MANAGER_UNLOAD_ASSET
+   * 资源管理卸载某个资源(assets_event_t)。
+   */
+  EVT_ASSET_MANAGER_UNLOAD_ASSET,
+  /**
+   * @const EVT_ASSET_MANAGER_CLEAR_CACHE
+   * 资源管理移除同种资源缓存(assets_event_t)。
+   */
+  EVT_ASSET_MANAGER_CLEAR_CACHE,
+  /**
+   * @const EVT_TIMER
+   * 定时器(event_t)。
+   */
+  EVT_TIMER,
   /**
    * @const EVT_REQ_START
    * event queue其它请求编号起始值。
@@ -473,19 +516,19 @@ typedef struct _wheel_event_t {
    * @annotation ["readable", "scriptable"]
    * alt键是否按下。
    */
-  uint8_t alt : 1;
+  bool_t alt;
   /**
    * @property {bool_t} ctrl
    * @annotation ["readable", "scriptable"]
    * ctrl键是否按下。
    */
-  uint8_t ctrl : 1;
+  bool_t ctrl;
   /**
    * @property {bool_t} shift
    * @annotation ["readable", "scriptable"]
    * shift键是否按下。
    */
-  uint8_t shift : 1;
+  bool_t shift;
 } wheel_event_t;
 
 /**
@@ -524,6 +567,12 @@ typedef struct _orientation_event_t {
    * 屏幕方向。
    */
   lcd_orientation_t orientation;
+  /**
+   * @property {int32_t} old_orientation
+   * @annotation ["readable", "scriptable"]
+   * 旧的屏幕方向。
+   */
+  lcd_orientation_t old_orientation;
 } orientation_event_t;
 
 /**
@@ -540,14 +589,16 @@ orientation_event_t* orientation_event_cast(event_t* event);
  * @method orientation_event_init
  * 初始化事件。
  * @param {orientation_event_t*} event event对象。
- * @param {void*} target 事件目标。
  * @param {uint32_t} type 事件类型。
- * @param {int32_t} dy 滚轮的y值。
+ * @param {void*} target 事件目标。
+ * @param {lcd_orientation_t} old_orientation 旧的屏幕方向。
+ * @param {lcd_orientation_t} new_orientation 新的屏幕方向。
  *
  * @return {event_t*} event对象。
  */
 event_t* orientation_event_init(orientation_event_t* event, uint32_t type, void* target,
-                                lcd_orientation_t orientation);
+                                lcd_orientation_t old_orientation,
+                                lcd_orientation_t new_orientation);
 
 /**
  * @class value_change_event_t
@@ -594,6 +645,53 @@ value_change_event_t* value_change_event_cast(event_t* event);
 event_t* value_change_event_init(value_change_event_t* event, uint32_t type, void* target);
 
 /**
+ * @class offset_change_event_t
+ * @annotation ["scriptable"]
+ * @parent event_t
+ * 值变化事件。
+ */
+typedef struct _offset_change_event_t {
+  event_t e;
+  /**
+   * @property {float_t} old_offset
+   * @annotation ["readable"]
+   * 旧值。
+   */
+  float_t old_offset;
+
+  /**
+   * @property {float_t} new_offset
+   * @annotation ["readable"]
+   * 新值。
+   */
+  float_t new_offset;
+} offset_change_event_t;
+
+/**
+ * @method offset_change_event_cast
+ * @annotation ["cast", "scriptable"]
+ * 把event对象转offset_change_event_t对象，主要给脚本语言使用。
+ * @param {event_t*} event event对象。
+ *
+ * @return {offset_change_event_t*} event对象。
+ */
+offset_change_event_t* offset_change_event_cast(event_t* event);
+
+/**
+ * @method offset_change_event_init
+ * 初始化事件。
+ * @param {offset_change_event_t*} event event对象。
+ * @param {void*} target 事件目标。
+ * @param {uint32_t} type 事件类型。
+ * @param {float_t} old_offset 旧的偏移数据。
+ * @param {float_t} new_offset 新的偏移数据。
+ *
+ * @return {event_t*} event对象。
+ */
+event_t* offset_change_event_init(offset_change_event_t* event, uint32_t type, void* target,
+                                  float_t old_offset, float_t new_offset);
+
+/**
  * @class pointer_event_t
  * @annotation ["scriptable"]
  * @parent event_t
@@ -624,38 +722,38 @@ typedef struct _pointer_event_t {
    * @annotation ["readable", "scriptable"]
    * 指针是否按下。
    */
-  uint8_t pressed : 1;
+  bool_t pressed;
 
   /**
    * @property {bool_t} alt
    * @annotation ["readable", "scriptable"]
    * alt键是否按下。
    */
-  uint8_t alt : 1;
+  bool_t alt;
   /**
    * @property {bool_t} ctrl
    * @annotation ["readable", "scriptable"]
    * ctrl键是否按下。
    */
-  uint8_t ctrl : 1;
+  bool_t ctrl;
   /**
    * @property {bool_t} cmd
    * @annotation ["readable", "scriptable"]
    * cmd键是否按下。
    */
-  uint8_t cmd : 1;
+  bool_t cmd;
   /**
    * @property {bool_t} menu
    * @annotation ["readable", "scriptable"]
    * menu键是否按下。
    */
-  uint8_t menu : 1;
+  bool_t menu;
   /**
    * @property {bool_t} shift
    * @annotation ["readable", "scriptable"]
    * shift键是否按下。
    */
-  uint8_t shift : 1;
+  bool_t shift;
 } pointer_event_t;
 
 /**
@@ -701,75 +799,75 @@ typedef struct _key_event_t {
    * @annotation ["readable", "scriptable"]
    * alt键是否按下。
    */
-  uint32_t alt : 1;
+  bool_t alt;
   /**
    * @property {bool_t} lalt
    * @annotation ["readable", "scriptable"]
    * left alt键是否按下。
    */
-  uint32_t lalt : 1;
+  bool_t lalt;
   /**
    * @property {bool_t} ralt
    * @annotation ["readable", "scriptable"]
    * right alt键是否按下。
    */
-  uint32_t ralt : 1;
+  bool_t ralt;
   /**
    * @property {bool_t} ctrl
    * @annotation ["readable", "scriptable"]
    * right alt键是否按下。
    * ctrl键是否按下。
    */
-  uint32_t ctrl : 1;
+  bool_t ctrl;
   /**
    * @property {bool_t} lctrl
    * @annotation ["readable", "scriptable"]
    * left ctrl键是否按下。
    */
-  uint32_t lctrl : 1;
+  bool_t lctrl;
   /**
    * @property {bool_t} rctrl
    * @annotation ["readable", "scriptable"]
    * right ctrl键是否按下。
    */
-  uint32_t rctrl : 1;
+  bool_t rctrl;
   /**
    * @property {bool_t} shift
    * @annotation ["readable", "scriptable"]
    * shift键是否按下。
    */
-  uint32_t shift : 1;
+  bool_t shift;
   /**
    * @property {bool_t} lshift
    * @annotation ["readable", "scriptable"]
    * left shift键是否按下。
    */
-  uint32_t lshift : 1;
+  bool_t lshift;
   /**
    * @property {bool_t} rshift
    * @annotation ["readable", "scriptable"]
    * right shift键是否按下。
    */
-  uint32_t rshift : 1;
+  bool_t rshift;
   /**
    * @property {bool_t} cmd
    * @annotation ["readable", "scriptable"]
    * left shift键是否按下。
    * cmd/win键是否按下。
    */
-  uint32_t cmd : 1;
+  bool_t cmd;
   /**
    * @property {bool_t} menu
    * @annotation ["readable", "scriptable"]
    * menu键是否按下。
    */
-  uint32_t menu : 1;
+  bool_t menu;
   /**
    * @property {bool_t} capslock
    * @annotation ["readable", "scriptable"]
    * capslock键是否按下。
    */
-  uint32_t capslock : 1;
+  bool_t capslock;
 } key_event_t;
 
 /**
@@ -889,12 +987,6 @@ ret_t pointer_event_rotate(pointer_event_t* evt, system_info_t* info);
 typedef struct _multi_gesture_event_t {
   event_t e;
   /**
-   * @property {int64_t} touch_id
-   * @annotation ["readable", "scriptable"]
-   * touch device id。
-   */
-  int64_t touch_id;
-  /**
    * @property {xy_t} x
    * @annotation ["readable", "scriptable"]
    * 中心点x坐标。
@@ -909,21 +1001,15 @@ typedef struct _multi_gesture_event_t {
   /**
    * @property {float} rotation
    * @annotation ["readable", "scriptable"]
-   * 旋转角度(幅度)增量。
+   * 旋转角度(幅度)增量。（单位弧度）
    */
-  float rotation;
+  float_t rotation;
   /**
    * @property {float} distance
    * @annotation ["readable", "scriptable"]
    * 两点间的距离增量。(-1,0)表示缩小，(0-1)表示增加。
    */
-  float distance;
-  /**
-   * @property {uint32_t} fingers 
-   * @annotation ["readable", "scriptable"]
-   * 本事件用到手指数。
-   */
-  uint32_t fingers;
+  float_t distance;
 } multi_gesture_event_t;
 
 /**
@@ -941,18 +1027,107 @@ multi_gesture_event_t* multi_gesture_event_cast(event_t* event);
  * 初始化事件。
  * @param {multi_gesture_event_t*} event event对象。
  * @param {void*} target 事件目标。
- * @param {uint32_t} touch_id touch device id。
  * @param {int32_t} x x的值。
  * @param {int32_t} y y的值。
  * @param {float} rotation 旋转角度(幅度)增量。
  * @param {float} distance 两点间的距离增量。(-1,0)表示缩小，(0-1)表示增加。
- * @param {uint32_t} fingers 本事件用到手指数。
  *
  * @return {event_t*} event对象。
  */
-event_t* multi_gesture_event_init(multi_gesture_event_t* event, void* target, int64_t touch_id,
-                                  int32_t x, int32_t y, float rotation, float distance,
-                                  uint32_t fingers);
+event_t* multi_gesture_event_init(multi_gesture_event_t* event, void* target, int32_t x, int32_t y,
+                                  float rotation, float distance);
+
+/**
+ * @class assets_event_t
+ * @parent event_t
+ * 资源事件，由资源管理器触发。
+ */
+typedef struct _assets_event_t {
+  event_t e;
+  /**
+   * @property {asset_type_t} type 
+   * @annotation ["readable"]
+   * 触发事件的资源类型
+   */
+  asset_type_t type;
+  /**
+   * @property {asset_info_t*} asset_info 
+   * @annotation ["readable"]
+   * 触发事件的资源对象
+   */
+  asset_info_t* asset_info;
+} assets_event_t;
+
+/**
+ * @method assets_event_init
+ * 初始化事件。
+ * @param {window_event_t*} event event对象。
+ * @param {assets_manager_t*} am 事件目标资源管理器。
+ * @param {uint32_t} type 事件类型。
+ * @param {asset_type_t} asset_type 资源类型。
+ * @param {asset_info_t*} asset_info 资源对象。
+ *
+ * @return {event_t*} event对象。
+ */
+event_t* assets_event_init(assets_event_t* event, assets_manager_t* am, uint32_t type,
+                           asset_type_t asset_type, asset_info_t* asset_info);
+
+/**
+ * @class theme_change_event_t
+ * @annotation ["scriptable"]
+ * @parent event_t
+ * 主题变化事件。
+ */
+typedef struct _theme_change_event_t {
+  event_t e;
+  /**
+   * @property {const char*} name
+   * @annotation ["readable", "scriptable"]
+   * 主题名称。
+   */
+  const char* name;
+} theme_change_event_t;
+
+/**
+ * @method theme_change_event_cast
+ * @annotation ["cast", "scriptable"]
+ * 把event对象转theme_change_event_t对象，主要给脚本语言使用。
+ * @param {event_t*} event event对象。
+ *
+ * @return {theme_change_event_t*}  返回event对象。
+ */
+theme_change_event_t* theme_change_event_cast(event_t* event);
+
+/**
+ * @method theme_change_event_init
+ * 初始theme change event。
+ * 
+ * @param {theme_change_event_t*} event event对象。
+ * @param {uint32_t} type 事件类型。
+ * @param {const char*} name 主题名。
+ *
+ * @return {event_t*} 返回event对象。
+ */
+event_t* theme_change_event_init(theme_change_event_t* event, uint32_t type, const char* name);
+
+/**
+ * @class event_t
+ * @annotation ["scriptable"]
+ * 事件基类。
+ */
+/**
+ * @method event_from_name
+ * 将事件名转换成事件的值。
+ * @annotation ["scriptable", "static"]
+ * @param {const char*} name 事件名。
+ *
+ * @return {int32_t} 返回事件的值。
+ */
+int32_t event_from_name(const char* name);
+
+#define STR_ON_EVENT_PREFIX "on:"
+#define STR_GLOBAL_EVENT_PREFIX "global"
+#define STR_VALUE_CHANGED_BY_UI "value_changed_by_ui"
 
 END_C_DECLS
 

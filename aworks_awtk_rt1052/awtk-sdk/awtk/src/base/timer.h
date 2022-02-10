@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  timer manager
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -86,6 +86,22 @@ uint32_t timer_add(timer_func_t on_timer, void* ctx, uint32_t duration);
 ret_t timer_queue(timer_func_t on_timer, void* ctx, uint32_t duration);
 
 /**
+ * @method timer_queue_ex
+ * 用于非GUI线程增加一个timer，本函数向主循环的事件队列中发送一个增加timer的请求。
+ * @annotation ["static"]
+ * @param {timer_func_t} on_timer
+ * timer回调函数，回调函数返回RET_REPEAT，则下次继续执行，否则自动移出。
+ * @param {void*} ctx timer回调函数的上下文。
+ * @param {uint32_t} duration 时间。
+ * @param {tk_destroy_t} on_destroy 回调函数。
+ * @param {void*} on_destroy_ctx 回调函数上下文。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t timer_queue_ex(timer_func_t on_timer, void* ctx, uint32_t duration, tk_destroy_t on_destroy,
+                     void* on_destroy_ctx);
+
+/**
  * @method timer_remove
  * 删除指定的timer。
  * @annotation ["scriptable", "static"]
@@ -96,6 +112,16 @@ ret_t timer_queue(timer_func_t on_timer, void* ctx, uint32_t duration);
 ret_t timer_remove(uint32_t timer_id);
 
 /**
+ * @method timer_remove_all_by_ctx
+ * 根据上下文删除所有对应的timer。
+ * @annotation ["scriptable", "static"]
+ * @param {void*} ctx timer回调函数的上下文。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t timer_remove_all_by_ctx(void* ctx);
+
+/**
  * @method timer_reset
  * 重置指定的timer，重置之后定时器重新开始计时。
  * @annotation ["scriptable", "static"]
@@ -104,6 +130,26 @@ ret_t timer_remove(uint32_t timer_id);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t timer_reset(uint32_t timer_id);
+
+/**
+ * @method timer_suspend
+ * 挂起指定的timer，一般用于不断循环触发的计时器。
+ * @annotation ["scriptable", "static"]
+ * @param {uint32_t} timer_id timerID。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t timer_suspend(uint32_t timer_id);
+
+/**
+ * @method timer_resume
+ * 唤醒挂起指定的timer，并且重置定时器重新开始计时
+ * @annotation ["scriptable", "static"]
+ * @param {uint32_t} timer_id timerID。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t timer_resume(uint32_t timer_id);
 
 /**
  * @method timer_modify
@@ -130,7 +176,6 @@ ret_t timer_set_on_destroy(uint32_t timer_id, tk_destroy_t on_destroy, void* on_
 /**
  * @method timer_find
  * 查找指定ID的timer。
- * @annotation ["private"]
  *
  * @return {timer_info_t*} 返回timer的信息。
  */
@@ -162,6 +207,10 @@ uint32_t timer_count(void);
  * @return {uint32_t} 返回最近的timer到期时间。
  */
 uint32_t timer_next_time(void);
+
+/*internal use*/
+ret_t timer_remove_all_by_ctx_and_type(uint16_t type, void* ctx);
+uint32_t timer_add_with_type(timer_func_t on_timer, void* ctx, uint32_t duration, uint16_t type);
 
 END_C_DECLS
 

@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  use sys tick to implement sleep/get_time_ms64.
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,24 +20,21 @@
  */
 
 #include "rtos.h"
-
-static volatile uint64_t g_sys_tick;
+#include "sys_tick_common.inc"
 
 void SysTick_Handler(void) {
-  g_sys_tick++;
+  tk_sys_tick_inc(1);
   rtos_tick();
 }
 
 uint64_t get_time_ms64() {
-  return g_sys_tick;
+  return tk_sys_tick_get_tick64();
 }
 
 void sleep_ms(uint32_t ms) {
   if (rtos_is_running()) {
     rtos_delay(ms);
   } else {
-    uint64_t start = get_time_ms64();
-    while ((start + ms) > get_time_ms64()) {
-    }
+    tk_sys_tick_sleep_tick(ms);
   }
 }

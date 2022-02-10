@@ -35,24 +35,27 @@ typedef struct _lcd_mem_fragment_t {
   xy_t y;
   wh_t w;
   wh_t h;
+
+  rect_t dirty_rect;
+
   bitmap_t fb;
   graphic_buffer_t* gb;
   pixel_t buff[FRAGMENT_FRAME_BUFFER_SIZE];
 } lcd_mem_fragment_t;
 
-static ret_t lcd_mem_fragment_begin_frame(lcd_t* lcd, const rect_t* dirty_rect) {
+static ret_t lcd_mem_fragment_begin_frame(lcd_t* lcd, const dirty_rects_t* dirty_rects) {
   lcd_mem_fragment_t* mem = (lcd_mem_fragment_t*)lcd;
   uint32_t bpp = bitmap_get_bpp_of_format(LCD_FORMAT);
 
-  mem->x = dirty_rect->x;
-  mem->y = dirty_rect->y;
+  mem->x = dirty_rects->max.x;
+  mem->y = dirty_rects->max.y;
 
   mem->fb.buffer = mem->gb;
-  mem->fb.w = dirty_rect->w;
-  mem->fb.h = dirty_rect->h;
+  mem->fb.w = dirty_rects->max.w;
+  mem->fb.h = dirty_rects->max.h;
   mem->fb.format = LCD_FORMAT;
   mem->fb.flags = BITMAP_FLAG_OPAQUE;
-  mem->fb.line_length = dirty_rect->w * bpp;
+  mem->fb.line_length = dirty_rects->max.w * bpp;
   graphic_buffer_attach(mem->gb, mem->buff, mem->fb.w, mem->fb.h);
 
   return RET_OK;
@@ -185,8 +188,10 @@ static ret_t lcd_mem_fragment_draw_glyph(lcd_t* lcd, glyph_t* glyph, const rect_
   wh_t sw = src->w;
   wh_t sh = src->h;
   wh_t w = lcd->w;
+  uint8_t a = 0;
   color_t color = lcd->text_color;
   uint8_t global_alpha = lcd->global_alpha;
+  uint8_t color_alpha = (color.rgba.a * global_alpha) >> 8;
   uint32_t line_length = mem->fb.line_length;
   uint8_t* fbuff = (uint8_t*)(mem->buff);
   const uint8_t* src_p = glyph->data + glyph->w * sy + sx;
@@ -202,8 +207,7 @@ static ret_t lcd_mem_fragment_draw_glyph(lcd_t* lcd, glyph_t* glyph, const rect_
     pixel_t* d = dst_p;
 
     for (i = 0; i < sw; i++, d++, s++) {
-      uint8_t a = global_alpha > TK_OPACITY_ALPHA ? *s : ((*s * global_alpha) >> 8);
-
+      a = (*s * color_alpha) >> 8;
       if (a >= TK_OPACITY_ALPHA) {
         *d = pixel;
       } else if (a >= TK_TRANSPARENT_ALPHA) {
@@ -218,14 +222,14 @@ static ret_t lcd_mem_fragment_draw_glyph(lcd_t* lcd, glyph_t* glyph, const rect_
   return RET_OK;
 }
 
-static ret_t lcd_mem_fragment_draw_image(lcd_t* lcd, bitmap_t* img, const rect_t* src, const rect_t* dst) {
+static ret_t lcd_mem_fragment_draw_image(lcd_t* lcd, bitmap_t* img, const rectf_t* src, const rectf_t* dst) {
   lcd_mem_fragment_t* mem = (lcd_mem_fragment_t*)lcd;
 
   ret_t ret = RET_OK;
   bitmap_t* fb = &(mem->fb);
   int32_t x = dst->x - mem->x;
   int32_t y = dst->y - mem->y;
-  rect_t d = rect_init(x, y, dst->w, dst->h);
+  rectf_t d = rectf_init(x, y, dst->w, dst->h);
   bool_t is_opaque = (img->flags & BITMAP_FLAG_OPAQUE || img->format == BITMAP_FMT_RGB565) &&
                      lcd->global_alpha >= TK_OPACITY_ALPHA;
 
@@ -233,7 +237,7 @@ static ret_t lcd_mem_fragment_draw_image(lcd_t* lcd, bitmap_t* img, const rect_t
   assert(dst->w <= mem->fb.w && dst->h <= mem->fb.h);
 
   if (img->format == fb->format && is_opaque && src->w == dst->w && src->h == dst->h) {
-    rect_t s = *src;
+    rect_t s = rect_from_rectf(src);
     ret = image_copy(fb, img, &s, x, y);
   } else {
     ret = image_blend(fb, img, &d, src, lcd->global_alpha);
@@ -281,6 +285,14 @@ static ret_t lcd_mem_fragment_resize(lcd_t* lcd, wh_t w, wh_t h, uint32_t line_l
   return RET_OK;
 }
 
+static ret_t lcd_mem_fragment_set_orientation(lcd_t* lcd, lcd_orientation_t old_orientation, lcd_orientation_t new_orientation) {
+  if (tk_is_swap_size_by_orientation(old_orientation, new_orientation)) {
+    return lcd_mem_fragment_resize(lcd, lcd->h, lcd->w, 0);
+  }
+  return RET_OK;
+}
+
+
 static bitmap_format_t lcd_mem_fragment_get_desired_bitmap_format(lcd_t* lcd) {
   return LCD_FORMAT;
 }
@@ -294,12 +306,52 @@ uint8_t* lcd_mem_fragment_get_buff(lcd_t* lcd) {
   return (uint8_t*)mem->buff;
 }
 
+static ret_t lcd_mem_fragment_set_clip_rect(lcd_t* lcd, const rect_t* r) {
+  rect_t dirty_r; 
+  rect_t r_fix = rect_init(0, 0, 0, 0);
+  lcd_mem_fragment_t* mem = (lcd_mem_fragment_t*)lcd;
+  return_value_if_fail(mem != NULL && r != NULL, RET_BAD_PARAMS);
+  lcd_get_dirty_rect(lcd, &dirty_r);
+  mem->dirty_rect = rect_intersect(r, &dirty_r);
+
+  return RET_OK;
+}
+
+static bool_t lcd_mem_fragment_is_rect_in_clip_rect(lcd_t* lcd, xy_t left, xy_t top, xy_t right, xy_t bottom) {
+  lcd_mem_fragment_t* mem = (lcd_mem_fragment_t*)lcd;
+  xy_t clip_left, clip_top, clip_right, clip_bottom;
+  return_value_if_fail(mem != NULL, FALSE);
+  clip_left = mem->dirty_rect.x;
+  clip_top = mem->dirty_rect.y;
+  clip_right = mem->dirty_rect.x + mem->dirty_rect.w - 1;
+  clip_bottom = mem->dirty_rect.y + mem->dirty_rect.h - 1;
+
+  if (left > clip_right || right < clip_left || top > clip_bottom || bottom < clip_top) {
+    return FALSE;
+  }
+  return TRUE;
+}
+
+static ret_t lcd_mem_fragment_get_clip_rect(lcd_t* lcd, rect_t* rect) {
+  lcd_mem_fragment_t* mem = (lcd_mem_fragment_t*)lcd;
+  return_value_if_fail(mem != NULL, RET_BAD_PARAMS);
+  rect->x = mem->dirty_rect.x;
+  rect->y = mem->dirty_rect.y;
+  rect->w = mem->dirty_rect.w;
+  rect->h = mem->dirty_rect.h;
+
+  return RET_OK;
+}
+
 lcd_t* lcd_mem_fragment_create(wh_t w, wh_t h) {
   lcd_mem_fragment_t* mem = &s_lcd_mem_fragment;
   lcd_t* base = (lcd_t*)mem;
   system_info_t* info = system_info();
 
   base->begin_frame = lcd_mem_fragment_begin_frame;
+  base->set_clip_rect = lcd_mem_fragment_set_clip_rect;
+  base->get_clip_rect = lcd_mem_fragment_get_clip_rect;
+  base->is_rect_in_clip_rect = lcd_mem_fragment_is_rect_in_clip_rect;
   base->draw_vline = lcd_mem_fragment_draw_vline;
   base->draw_hline = lcd_mem_fragment_draw_hline;
   base->fill_rect = lcd_mem_fragment_fill_rect;
@@ -313,6 +365,7 @@ lcd_t* lcd_mem_fragment_create(wh_t w, wh_t h) {
   base->destroy = lcd_mem_fragment_destroy;
   base->resize = lcd_mem_fragment_resize;
   base->flush = lcd_mem_fragment_flush;
+  base->set_orientation = lcd_mem_fragment_set_orientation;
 
   base->w = w;
   base->h = h;

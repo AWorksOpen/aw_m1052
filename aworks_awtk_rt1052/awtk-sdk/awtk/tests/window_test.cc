@@ -1,6 +1,7 @@
 ﻿#include "base/window.h"
 #include "base/canvas.h"
 #include "base/widget.h"
+#include "widgets/button.h"
 #include "font_dummy.h"
 #include "lcd_log.h"
 #include "gtest/gtest.h"
@@ -12,6 +13,7 @@ TEST(Window, basic) {
   widget_t* w = window_create(NULL, 10, 20, 30, 40);
 
   value_set_wstr(&v1, L"window");
+  ASSERT_EQ(widget_is_normal_window(w), TRUE);
   ASSERT_EQ(widget_set_prop(w, WIDGET_PROP_TEXT, &v1), RET_OK);
   ASSERT_EQ(widget_get_prop(w, WIDGET_PROP_TEXT, &v2), RET_OK);
   ASSERT_EQ(wcscmp(v1.value.wstr, v2.value.wstr), 0);
@@ -114,4 +116,62 @@ TEST(Window, font_manager) {
   ASSERT_EQ(widget_get_font_manager(w), font_manager());
 
   widget_destroy(w);
+}
+
+TEST(Window, focused_widget) {
+  widget_t* w = window_create(NULL, 0, 0, 300, 400);
+  widget_t* b = button_create(w, 0, 0, 60, 30);
+  widget_set_focusable(b, TRUE);
+  widget_set_name(b, "b1");
+
+  b = button_create(w, 0, 30, 60, 30);
+  widget_set_focusable(b, TRUE);
+  widget_set_name(b, "b2");
+
+  b = button_create(w, 0, 30, 60, 30);
+  widget_set_focusable(b, TRUE);
+  widget_set_name(b, "b3");
+
+  widget_focus_first(w);
+  ASSERT_STREQ(widget_get_focused_widget(b)->name, "b1");
+
+  widget_focus_next(widget_get_focused_widget(b));
+  ASSERT_STREQ(widget_get_focused_widget(b)->name, "b2");
+
+  widget_focus_next(widget_get_focused_widget(b));
+  ASSERT_STREQ(widget_get_focused_widget(b)->name, "b3");
+
+  widget_destroy(w);
+}
+
+TEST(Window, strongly_focus) {
+  value_t v1;
+  value_t v2;
+  widget_t* w = window_create(NULL, 10, 20, 30, 40);
+
+  value_set_bool(&v1, TRUE);
+  ASSERT_EQ(WINDOW_BASE(w)->strongly_focus, FALSE);
+  ASSERT_EQ(widget_set_prop(w, WIDGET_PROP_STRONGLY_FOCUS, &v1), RET_OK);
+
+  ASSERT_EQ(widget_get_prop(w, WIDGET_PROP_STRONGLY_FOCUS, &v2), RET_OK);
+  ASSERT_EQ(WINDOW_BASE(w)->strongly_focus, TRUE);
+  ASSERT_EQ(WINDOW_BASE(w)->strongly_focus, value_bool(&v2));
+}
+
+TEST(Window, open_bin) {
+  widget_t* win = window_open("main");
+  ASSERT_EQ(win != NULL, true);
+  widget_destroy(win);
+}
+
+TEST(Window, open_xml) {
+  widget_t* win = window_open("file://./design/default/ui/main.xml");
+  ASSERT_EQ(win != NULL, true);
+  widget_destroy(win);
+}
+
+TEST(Window, open_local_bin) {
+  widget_t* win = window_open("file://./res/assets/default/raw/ui/main.bin");
+  ASSERT_EQ(win != NULL, true);
+  widget_destroy(win);
 }

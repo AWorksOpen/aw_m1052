@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  log functions
  *
- * Copyright (c) 2019 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2019 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -77,6 +77,8 @@ log_level_t log_get_log_level(void);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t log_set_log_level(log_level_t log_level);
+
+int32_t log_dummy(const char* fmt, ...);
 
 /**
  * @method log_debug
@@ -175,14 +177,18 @@ void awtk_ios_log(const char* message, ...);
   if (log_get_log_level() <= LOG_LEVEL_ERROR) printf(format, ##args)
 #else
 /*MSVC*/
-#define log_debug(format, ...) \
-  if (log_get_log_level() <= LOG_LEVEL_DEBUG) printf(format, __VA_ARGS__);fflush(stdout)
-#define log_info(format, ...) \
-  if (log_get_log_level() <= LOG_LEVEL_INFO) printf(format, __VA_ARGS__);fflush(stdout)
-#define log_warn(format, ...) \
-  if (log_get_log_level() <= LOG_LEVEL_WARN) printf(format, __VA_ARGS__);fflush(stdout)
-#define log_error(format, ...) \
-  if (log_get_log_level() <= LOG_LEVEL_ERROR) printf(format, __VA_ARGS__);fflush(stdout)
+#define log_debug(format, ...)                                             \
+  if (log_get_log_level() <= LOG_LEVEL_DEBUG) printf(format, __VA_ARGS__); \
+  fflush(stdout)
+#define log_info(format, ...)                                             \
+  if (log_get_log_level() <= LOG_LEVEL_INFO) printf(format, __VA_ARGS__); \
+  fflush(stdout)
+#define log_warn(format, ...)                                             \
+  if (log_get_log_level() <= LOG_LEVEL_WARN) printf(format, __VA_ARGS__); \
+  fflush(stdout)
+#define log_error(format, ...)                                             \
+  if (log_get_log_level() <= LOG_LEVEL_ERROR) printf(format, __VA_ARGS__); \
+  fflush(stdout)
 #endif
 #elif defined(HAS_STDIO) || defined(AWTK_WEB)
 #include <stdio.h>
@@ -194,6 +200,15 @@ void awtk_ios_log(const char* message, ...);
   if (log_get_log_level() <= LOG_LEVEL_WARN) printf(format, ##args)
 #define log_error(format, args...) \
   if (log_get_log_level() <= LOG_LEVEL_ERROR) printf(format, ##args)
+#elif defined(log_impl)
+#define log_debug(format, args...) \
+  if (log_get_log_level() <= LOG_LEVEL_DEBUG) log_impl(format, ##args)
+#define log_info(format, args...) \
+  if (log_get_log_level() <= LOG_LEVEL_INFO) log_impl(format, ##args)
+#define log_warn(format, args...) \
+  if (log_get_log_level() <= LOG_LEVEL_WARN) log_impl(format, ##args)
+#define log_error(format, args...) \
+  if (log_get_log_level() <= LOG_LEVEL_ERROR) log_impl(format, ##args)
 #else
 #define log_debug(format, args...)
 #define log_info(format, args...)

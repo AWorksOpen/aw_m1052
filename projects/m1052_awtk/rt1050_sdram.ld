@@ -1,6 +1,6 @@
 MEMORY
 {
-    relocode (rx)          : ORIGIN = 0x2007F000, LENGTH = 4K
+    relocode (rx)          : ORIGIN = 0x2006F000, LENGTH = 4K
     flash (rx)             : ORIGIN = 0x60000000, LENGTH = 8M
     flexspi_drv(rx)        : ORIGIN = 0x80000000, LENGTH = 4K
     code (rx)              : ORIGIN = 0x80002000, LENGTH = 4088K

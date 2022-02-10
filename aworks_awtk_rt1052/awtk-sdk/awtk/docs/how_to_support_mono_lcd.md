@@ -30,9 +30,9 @@ imagegen.exe in_filename out_filename (bgra|bgr565|mono)
 
 > 由于单色图片只有两种颜色，所以在设计图片上只能使用白色 (#ffffff) 和黑色 (#000000)，否则转换出来的效果不是期望的。
 
-## 主题配置
+## 窗体样式配置
 
-主题中只能使用白色 (#ffffff) 和黑色 (#000000) 两种颜色。
+窗体样式中只能使用白色 (#ffffff) 和黑色 (#000000) 两种颜色。
 
 ## 资源生成
 
@@ -48,9 +48,28 @@ python scripts/update_res.py all x1 mono
 
 > demoui 没有考虑单色 LCD，在单色 LCD 上运行效果不佳。
 
-## 预览mono test查看运行效果
+## 预览 mono test 查看运行效果
 
 ```
 ./bin/preview_ui design/default/ui/mono_test.xml 
 ```
 
+## 其它
+
+* 嵌入式系统，请在 awtk\_config.h 中定义下面的宏。
+
+```
+#define WITH_LCD_MONO 1
+```
+
+* awtk-linux-fb，请在 awtk\_config.py 中定义下面的宏。
+
+```
+COMMON_CCFLAGS = COMMON_CCFLAGS + ' -DWITH_LCD_MONO=1 '
+```
+
+## 参考：
+
+* [免费像素字体](https://www.uisdc.com/25-pixel-fonts)
+
+* [Unifont 点阵黑：一款超大字符集免费商用像素字体](https://www.maoken.com/freefonts/3747.html)

@@ -38,7 +38,7 @@ typedef struct _axis_t {
   /**
    * @property {axis_type_t} axis_type
    * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
-   * 坐标轴的类型，可选项有 value、category。
+   * 坐标轴的类型，可选项有 value、category、time。
    */
   axis_type_t axis_type;
   /**
@@ -108,6 +108,12 @@ typedef struct _axis_t {
    */
   axis_title_params_t title;
   /**
+   * @property {axis_time_params_t} time
+   * @annotation ["set_prop","get_prop","readable","persitent","scriptable"]
+   * 时间的参数，比如"{format:Y-M-D hh:mm:ss}"。
+   */
+  axis_time_params_t time;
+  /**
    * @property {float_t} offset
    * @annotation ["set_prop","get_prop","readable","persitent","design","scriptable"]
    * （相对于初始位置的）偏移（像素）。
@@ -145,7 +151,7 @@ typedef struct _axis_t {
   uint8_t painted_before : 1;
 
   /**
-   * @property {series_vtable_t} vt
+   * @property {axis_vtable_t} vt
    * @annotation ["readable"]
    * 虚函数表。
    */
@@ -311,12 +317,12 @@ float_t axis_measure_series_interval(widget_t* widget);
  * @annotation ["private"]
  * @param {widget_t*} widget widget对象。
  * @param {void*} params 测量时需要的参数。
- * @param {fifo_t*} src 原始序列。
- * @param {fifo_t*} dst 坐标序列。
+ * @param {object_t*} src 原始序列。
+ * @param {object_t*} dst 坐标序列。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t axis_measure_series(widget_t* widget, void* sample_params, fifo_t* src, fifo_t* dst);
+ret_t axis_measure_series(widget_t* widget, void* sample_params, object_t* src, object_t* dst);
 
 /**
  * @method axis_cast

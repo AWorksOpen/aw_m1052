@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  native window
  *
- * Copyright (c) 2019 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2019 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -26,6 +26,7 @@
 #include "tkc/value.h"
 #include "tkc/object.h"
 #include "base/canvas.h"
+#include "base/dirty_rects.h"
 
 BEGIN_C_DECLS
 
@@ -44,6 +45,9 @@ typedef struct _native_window_info_t {
 typedef canvas_t* (*native_window_get_canvas_t)(native_window_t* win);
 typedef ret_t (*native_window_move_t)(native_window_t* win, xy_t x, xy_t y);
 typedef ret_t (*native_window_resize_t)(native_window_t* win, wh_t w, wh_t h);
+typedef ret_t (*native_window_set_orientation_t)(native_window_t* win,
+                                                 lcd_orientation_t old_orientation,
+                                                 lcd_orientation_t new_orientation);
 typedef ret_t (*native_window_gl_make_current_t)(native_window_t* win);
 typedef ret_t (*native_window_swap_buffer_t)(native_window_t* win);
 typedef ret_t (*native_window_preprocess_event_t)(native_window_t* win, event_t* e);
@@ -72,17 +76,18 @@ typedef struct _native_window_vtable_t {
   native_window_show_border_t show_border;
   native_window_set_fullscreen_t set_fullscreen;
   native_window_set_cursor_t set_cursor;
+  native_window_set_orientation_t set_orientation;
 } native_window_vtable_t;
 
 /**
  * @class native_window_t
- * @parent object_t
+ * @parent tk_object_t
  * @annotation ["scriptable"]
  * 原生窗口。
  *
  */
 struct _native_window_t {
-  object_t object;
+  tk_object_t object;
 
   void* handle;
   bool_t shared;
@@ -90,10 +95,7 @@ struct _native_window_t {
   rect_t rect;
   float_t ratio;
 
-  bool_t dirty;
-  rect_t dirty_rect;
-  rect_t last_dirty_rect;
-
+  dirty_rects_t dirty_rects;
   const native_window_vtable_t* vt;
 };
 
@@ -124,6 +126,20 @@ ret_t native_window_move(native_window_t* win, xy_t x, xy_t y, bool_t force);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t native_window_resize(native_window_t* win, wh_t w, wh_t h, bool_t force);
+
+/**
+ * @method native_window_set_orientation
+ * 调整窗口旋转。
+ *
+ * @annotation ["scriptable"]
+ * @param {native_window_t*} win win对象。
+ * @param {lcd_orientation_t} old_orientation 旧的旋转角度。
+ * @param {lcd_orientation_t} new_orientation 新的旋转角度。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t native_window_set_orientation(native_window_t* win, lcd_orientation_t old_orientation,
+                                    lcd_orientation_t new_orientation);
 
 /**
  * @method native_window_minimize
@@ -209,6 +225,18 @@ ret_t native_window_set_fullscreen(native_window_t* win, bool_t fullscreen);
 ret_t native_window_set_cursor(native_window_t* win, const char* name, bitmap_t* img);
 
 /**
+ * @method native_window_set_title
+ * 设置程序窗口的名称。
+ *
+ * @annotation ["scriptable"]
+ * @param {native_window_t*} win win对象。
+ * @param {const char*}  app_name 程序窗口的名称。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t native_window_set_title(native_window_t* win, const char* app_name);
+
+/**
  * @method native_window_get_canvas
  * 获取canvas。
  *
@@ -244,13 +272,11 @@ ret_t native_window_get_info(native_window_t* win, native_window_info_t* info);
 
 /*public for window manager only*/
 ret_t native_window_begin_frame(native_window_t* win, lcd_draw_mode_t mode);
-ret_t native_window_paint(native_window_t* win, widget_t* widget);
 ret_t native_window_end_frame(native_window_t* win);
 
 rect_t native_window_calc_dirty_rect(native_window_t* win);
 ret_t native_window_clear_dirty_rect(native_window_t* win);
 ret_t native_window_update_last_dirty_rect(native_window_t* win);
-ret_t native_window_on_resized(native_window_t* win, wh_t w, wh_t h);
 
 #define NATIVE_WINDOW(win) ((native_window_t*)(win))
 

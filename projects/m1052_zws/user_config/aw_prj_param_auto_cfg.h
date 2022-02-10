@@ -31,7 +31,14 @@
 #endif
 
 
+#if defined AW_DEV_IMX1050_WDT1
 
+#ifndef AW_COM_WDT
+#define AW_COM_WDT
+#endif
+
+#define AW_DRV_IMX1050_WDT
+#endif
 
 /*
  * WiFi dependency:

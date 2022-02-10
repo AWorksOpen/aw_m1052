@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  input method interface.
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -112,7 +112,12 @@ typedef enum _input_type_t {
    * @const INPUT_CUSTOM_PASSWORD
    * 使用自定义的密码软键盘。字符串属性值：custom_password
    */
-  INPUT_CUSTOM_PASSWORD
+  INPUT_CUSTOM_PASSWORD,
+  /**
+   * @const INPUT_ASCII
+   * 纯英文文本。字符串属性值：ascii
+   */
+  INPUT_ASCII,
 } input_type_t;
 
 /**
@@ -225,6 +230,13 @@ typedef struct _im_candidates_event_t {
  *
  */
 struct _input_method_t {
+  /**
+   * @property {bool_t} is_native
+   * @annotation ["readable"]
+   * 是否是原生输入法。
+   */
+  bool_t is_native;
+
   /**
    * @property {widget_t*} widget
    * @annotation ["private"]
@@ -513,6 +525,16 @@ ret_t input_method_dispatch_pre_candidates(input_method_t* im, const char* strs,
  * @return {input_method_t*} 成功返回输入法对象，失败返回NULL。
  */
 input_method_t* input_method_create(void);
+
+/**
+ * @method input_method_is_native
+ * 是否是平台原生输入法。
+ *
+ * @param {input_method_t*} im 输入法对象。
+ *
+ * @return {bool_t} 返回TRUE表示是原生输入法，否则表示不是。
+ */
+bool_t input_method_is_native(input_method_t* im);
 
 /**
  * @method input_method_destroy

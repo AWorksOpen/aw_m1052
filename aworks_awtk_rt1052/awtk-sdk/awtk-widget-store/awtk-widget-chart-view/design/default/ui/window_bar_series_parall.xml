@@ -19,8 +19,8 @@
         <y_axis name="y2" axis_type="value" h="25%" y="35%" min="0" max="140" data="[0,20,40,60,80,100,120,140]" disg:custom="container"/>
         <y_axis name="y3" axis_type="value" h="25%" y="65%" min="0" max="140" data="[0,20,40,60,80,100,120,140]" disg:custom="container"/>
         <bar_series name="s1" capacity="7" bar="overlap:true" style="overlap" disg:custom="container"/>
-        <bar_series name="s2" capacity="7" bar="overlap:true" style="overlap" value_axis="y2" disg:custom="container"/>
-        <bar_series name="s3" capacity="7" bar="overlap:true" style="overlap" value_axis="y3" disg:custom="container"/>
+        <bar_series name="s2" capacity="7" bar="overlap:true" style="overlap2" value_axis="y2" disg:custom="container"/>
+        <bar_series name="s3" capacity="7" bar="overlap:true" style="overlap3" value_axis="y3" disg:custom="container"/>
         <tooltip disg:custom="container"/>
     </chart_view>
     <view x="right" y="0" w="101" h="100%" style="seperate"/>

@@ -1,6 +1,7 @@
 ﻿#include "gtest/gtest.h"
 #include "widgets/button.h"
 #include "base/window.h"
+#include "base/style_const.h"
 #include "base/style_mutable.h"
 
 #include <string>
@@ -13,6 +14,18 @@ static ret_t on_style_item(void* ctx, const char* widget_state, const char* id,
   char str[128];
   if (val->type == VALUE_TYPE_STRING) {
     snprintf(str, sizeof(str), "%s,%s,\"%s\";", widget_state, id, value_str(val));
+  } else if (val->type == VALUE_TYPE_GRADIENT) {
+    str_t s;
+    gradient_t g;
+    binary_data_t* bin = value_gradient(val);
+
+    str_init(&s, 100);
+    gradient_init_from_binary(&g, (uint8_t*)(bin->data), bin->size);
+    gradient_to_str(&g, &s);
+
+    snprintf(str, sizeof(str), "%s,%s,\"%s\";", widget_state, id, s.str);
+    gradient_deinit(&g);
+    str_reset(&s);
   } else {
     snprintf(str, sizeof(str), "%s,%s,%d;", widget_state, id, value_int(val));
   }
@@ -31,7 +44,8 @@ TEST(StyleMutable, basic) {
   color_t trans = color_init(0, 0, 0, 0);
   widget_t* w = window_create(NULL, 10, 20, 30, 40);
   widget_t* b = button_create(w, 0, 0, 100, 100);
-  style_mutable_t* s = (style_mutable_t*)style_mutable_create(b, NULL);
+  style_t* style_const = style_const_create();
+  style_mutable_t* s = (style_mutable_t*)style_mutable_create(style_const);
   style_t* style = (style_t*)s;
   const char* state_names[] = {WIDGET_STATE_NORMAL, WIDGET_STATE_PRESSED, WIDGET_STATE_OVER,
                                WIDGET_STATE_DISABLE, NULL};
@@ -43,6 +57,7 @@ TEST(StyleMutable, basic) {
     widget_set_state(b, (const char*)state_names[k]);
     style_notify_widget_state_changed(style, b);
     const char* state = (const char*)widget_get_prop_str(b, WIDGET_PROP_STATE_FOR_STYLE, 0);
+    ASSERT_EQ(tk_str_eq(style_get_style_state(style), state), true);
     for (i = 0; i < n; i++) {
       char font_name[32];
       ASSERT_EQ(style_mutable_set_int(style, state, STYLE_ID_FONT_SIZE, i + 1), RET_OK);
@@ -82,22 +97,17 @@ TEST(StyleMutable, basic) {
 }
 
 TEST(StyleMutable, cast) {
-  widget_t* w = window_create(NULL, 10, 20, 30, 40);
-  widget_t* b = button_create(w, 0, 0, 100, 100);
-  style_t* style_mutable = style_mutable_create(b, NULL);
-
+  style_t* style_mutable = style_mutable_create(NULL);
   ASSERT_EQ(style_is_mutable(style_mutable), TRUE);
   ASSERT_EQ(style_mutable, style_mutable_cast(style_mutable));
-
   style_destroy(style_mutable);
-  widget_destroy(w);
 }
 
 TEST(StyleMutable, copy) {
   color_t c1 = color_init(1, 2, 3, 4);
   color_t c2 = color_init(2, 2, 3, 4);
-  style_t* m1 = style_mutable_create(NULL, NULL);
-  style_t* m2 = style_mutable_create(NULL, NULL);
+  style_t* m1 = style_mutable_create(NULL);
+  style_t* m2 = style_mutable_create(NULL);
 
   style_mutable_set_int(m1, "normal", "font_size", 123);
   style_mutable_set_str(m1, "normal", "font_name", "foo");
@@ -121,4 +131,42 @@ TEST(StyleMutable, copy) {
 
   style_destroy(m1);
   style_destroy(m2);
+}
+
+TEST(StyleMutable, gradient) {
+  gradient_t g;
+  style_t* m1 = style_mutable_create(NULL);
+
+  style_mutable_set_str(m1, "normal", "bg_color",
+                        "linear-gradient(180deg, #FF0000 0%, #0000FF 100%)");
+  ASSERT_EQ(style_get_gradient(m1, "bg_color", &g) != NULL, true);
+  ASSERT_EQ(g.type, GRADIENT_LINEAR);
+  ASSERT_EQ(g.nr, 2u);
+  ASSERT_EQ(g.degree, 180u);
+
+  ASSERT_EQ(g.stops[0].offset, 0.0f);
+  ASSERT_EQ(g.stops[0].color.rgba.r, 0xff);
+  ASSERT_EQ(g.stops[1].offset, 1.0f);
+  ASSERT_EQ(g.stops[1].color.rgba.b, 0xff);
+
+  string str1;
+  style_mutable_foreach(m1, on_style_item, &str1);
+
+  style_destroy(m1);
+}
+
+TEST(StyleMutable, gradient1) {
+  gradient_t g;
+  style_t* m1 = style_mutable_create(NULL);
+
+  style_mutable_set_str(m1, "normal", "bg_color", "#FF0000");
+  ASSERT_EQ(style_get_gradient(m1, "bg_color", &g) != NULL, true);
+  ASSERT_EQ(g.type, GRADIENT_LINEAR);
+  ASSERT_EQ(g.nr, 1u);
+  ASSERT_EQ(g.degree, 0u);
+
+  ASSERT_EQ(g.stops[0].offset, 0.0f);
+  ASSERT_EQ(g.stops[0].color.rgba.r, 0xff);
+
+  style_destroy(m1);
 }

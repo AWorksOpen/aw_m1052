@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  button
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -58,16 +58,22 @@ static ret_t button_on_repeat(const timer_info_t* info) {
   return RET_REPEAT;
 }
 
-static ret_t button_pointer_up_cleanup(widget_t* widget) {
+static ret_t button_pointer_up_cleanup_impl(widget_t* widget, bool_t ungrab) {
   button_t* button = BUTTON(widget);
   return_value_if_fail(button != NULL && widget != NULL, RET_BAD_PARAMS);
 
   button->pressed = FALSE;
   button_remove_timer(widget);
-  widget_ungrab(widget->parent, widget);
+  if (ungrab) {
+    widget_ungrab(widget->parent, widget);
+  }
   widget_set_state(widget, WIDGET_STATE_NORMAL);
 
   return RET_OK;
+}
+
+static ret_t button_pointer_up_cleanup(widget_t* widget) {
+  return button_pointer_up_cleanup_impl(widget, TRUE);
 }
 
 static ret_t button_on_long_press(const timer_info_t* info) {
@@ -75,13 +81,8 @@ static ret_t button_on_long_press(const timer_info_t* info) {
   widget_t* widget = WIDGET(info->ctx);
   return_value_if_fail(widget != NULL, RET_BAD_PARAMS);
 
-  evt.x = 0;
-  evt.y = 0;
-  evt.e = event_init(EVT_LONG_PRESS, widget);
-  evt.e.size = sizeof(pointer_event_t);
-
-  button_pointer_up_cleanup(widget);
-  widget_dispatch(widget, (event_t*)&evt);
+  button_pointer_up_cleanup_impl(widget, FALSE);
+  widget_dispatch(widget, pointer_event_init(&evt, EVT_LONG_PRESS, widget, 1, 1));
 
   return RET_REMOVE;
 }
@@ -112,12 +113,13 @@ static ret_t button_on_event(widget_t* widget, event_t* e) {
       break;
     }
     case EVT_POINTER_UP: {
-      pointer_event_t evt = *(pointer_event_t*)e;
-      if (button->pressed && widget_is_point_in(widget, evt.x, evt.y, FALSE)) {
-        evt.e = event_init(EVT_CLICK, widget);
-        evt.e.size = sizeof(pointer_event_t);
+      pointer_event_t click;
+      pointer_event_t* up = pointer_event_cast(e);
+      pointer_event_init(&click, EVT_CLICK, widget, up->x, up->y);
+
+      if (button->pressed && widget_is_point_in(widget, click.x, click.y, FALSE)) {
         button_pointer_up_cleanup(widget);
-        widget_dispatch(widget, (event_t*)&evt);
+        widget_dispatch(widget, (event_t*)(&click));
       } else {
         button_pointer_up_cleanup(widget);
       }
@@ -221,6 +223,34 @@ static ret_t button_on_destroy(widget_t* widget) {
   return button_remove_timer(widget);
 }
 
+static ret_t button_auto_adjust_size(widget_t* widget) {
+  button_t* button = BUTTON(widget);
+  canvas_t* c = widget_get_canvas(widget);
+  return_value_if_fail(c != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(button != NULL && widget->astyle != NULL, RET_BAD_PARAMS);
+
+  if (!widget->auto_adjust_size || !widget_is_window_created(widget)) {
+    return RET_OK;
+  } else {
+    xy_t w = 0;
+    xy_t h = 0;
+    style_t* style = widget->astyle;
+    int32_t margin = style_get_int(style, STYLE_ID_MARGIN, 2);
+    int32_t margin_top = style_get_int(style, STYLE_ID_MARGIN_TOP, margin);
+    int32_t margin_left = style_get_int(style, STYLE_ID_MARGIN_LEFT, margin);
+    int32_t margin_right = style_get_int(style, STYLE_ID_MARGIN_RIGHT, margin);
+    int32_t margin_bottom = style_get_int(style, STYLE_ID_MARGIN_BOTTOM, margin);
+
+    widget_prepare_text_style(widget, c);
+    h = c->font_size + margin_top + margin_bottom;
+    w = canvas_measure_text(c, widget->text.str, widget->text.size) + margin_left + margin_right;
+    widget->w = w;
+    widget->h = h;
+
+    return RET_OK;
+  }
+}
+
 static const char* const s_button_properties[] = {WIDGET_PROP_REPEAT, WIDGET_PROP_LONG_PRESS_TIME,
                                                   WIDGET_PROP_ENABLE_LONG_PRESS, NULL};
 
@@ -236,6 +266,7 @@ TK_DECL_VTABLE(button) = {.size = sizeof(button_t),
                           .set_prop = button_set_prop,
                           .get_prop = button_get_prop,
                           .get_prop_default_value = button_get_prop_default_value,
+                          .auto_adjust_size = button_auto_adjust_size,
                           .on_destroy = button_on_destroy,
                           .on_paint_self = widget_on_paint_self_default};
 

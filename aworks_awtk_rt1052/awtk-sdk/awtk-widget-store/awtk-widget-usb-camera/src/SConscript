@@ -24,7 +24,7 @@ elif OS_NAME == 'Linux':
     SOURCES += Glob('usb_camera/devices/usb_camera_linux_device_v4l.cpp')
 
 EXPORT_DEF=''
-if OS_NAME == 'Windows':
+if OS_NAME == 'Windows' and os.environ['TOOLS_NAME'] == '':
   EXPORT_DEF = ' /DEF:"src/usb_camera.def" '
 
 if 'BUILD_SHARED' in os.environ and os.environ['BUILD_SHARED'] == 'True':

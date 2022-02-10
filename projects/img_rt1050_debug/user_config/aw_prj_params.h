@@ -100,6 +100,7 @@
 //#define AW_DEV_GPIO_KEY                 /**< \brief 按键 */
 #define AW_DEV_PWM_BUZZER               /**< \brief PWM Buzzer(蜂鸣器，需要配套PWM) */
 #define AW_DEV_GPIO_WDT                 /**< \brief GPIO看门狗 */
+//#define AW_DEV_IMX1050_WDT1             /**< \brief 软件看门狗  */
 //#define AW_DEV_GPIO_I2C_0               /**< \brief GPIO 模拟 I2C */
 
 //#define AW_CFG_SPI_FLASH_MTD           /* SPI flash 使能 标准 SPI FLASH MTD 接口操作 */
@@ -107,7 +108,7 @@
 
 //#define AW_DEV_EXTEND_PCF85063          /**< \brief PCF85063实时时钟(需要配套I2C外设) */
 
-#define AW_DEV_CYW43362_WIFI_SPI_0      /**< CYW43362 WiFi模块(需配套SPI外设) */
+//#define AW_DEV_CYW43362_WIFI_SPI_0      /**< CYW43362 WiFi模块(需配套SPI外设) */
 
 #define AW_DEV_TFT_4_3                /**< \brief TFT-4.3(A、CAP)显示屏 */
 //#define AW_DEV_AP_TFT7_0              /**< \brief AP_TFT7_0显示屏 */

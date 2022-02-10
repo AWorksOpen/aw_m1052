@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  event structs
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -45,6 +45,17 @@ event_t* event_create(uint32_t type) {
 
   return_value_if_fail(e != NULL, NULL);
   *e = event_init(type, NULL);
+
+  return e;
+}
+
+event_t* event_clone(event_t* event) {
+  event_t* e = NULL;
+  return_value_if_fail(event != NULL, NULL);
+  e = TKMEM_ALLOC(event->size);
+  return_value_if_fail(e != NULL, NULL);
+
+  memcpy(e, event, event->size);
 
   return e;
 }
@@ -98,7 +109,7 @@ event_t* progress_event_init(progress_event_t* event, uint32_t percent) {
 
 done_event_t* done_event_cast(event_t* event) {
   return_value_if_fail(event != NULL, NULL);
-  return_value_if_fail(event->type == EVT_PROGRESS, NULL);
+  return_value_if_fail(event->type == EVT_DONE, NULL);
 
   return (done_event_t*)event;
 }
@@ -116,7 +127,7 @@ event_t* done_event_init(done_event_t* event, ret_t result) {
 
 error_event_t* error_event_cast(event_t* event) {
   return_value_if_fail(event != NULL, NULL);
-  return_value_if_fail(event->type == EVT_PROGRESS, NULL);
+  return_value_if_fail(event->type == EVT_ERROR, NULL);
 
   return (error_event_t*)event;
 }
@@ -153,4 +164,9 @@ event_t* cmd_exec_event_init(cmd_exec_event_t* event, uint32_t type, const char*
   event->args = value;
 
   return (event_t*)(event);
+}
+
+uint32_t event_get_type(event_t* event) {
+  return_value_if_fail(event != NULL, EVT_NONE);
+  return event->type;
 }

@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  input stream interface
  *
- * Copyright (c) 2019 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2019 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -100,12 +100,18 @@ int32_t tk_istream_read_len(tk_istream_t* stream, void* buff, uint32_t max_size,
 
     read_bytes = tk_istream_read(stream, p + offset, remain_bytes);
     if (read_bytes <= 0) {
-      if (!object_get_prop_bool(OBJECT(stream), TK_STREAM_PROP_IS_OK, TRUE)) {
+      if (!tk_object_get_prop_bool(TK_OBJECT(stream), TK_STREAM_PROP_IS_OK, TRUE)) {
         log_debug("stream is broken\n");
         break;
       } else {
-        log_debug("not get data\n");
-        continue;
+        now = time_now_ms();
+        if (now > end) {
+          log_debug("timeout\n");
+          break;
+        } else {
+          log_debug("not get data\n");
+          continue;
+        }
       }
     }
 
@@ -116,7 +122,7 @@ int32_t tk_istream_read_len(tk_istream_t* stream, void* buff, uint32_t max_size,
       break;
     }
 
-    if (object_get_prop_bool(OBJECT(stream), TK_STREAM_PROP_IS_EOS, FALSE)) {
+    if (tk_object_get_prop_bool(TK_OBJECT(stream), TK_STREAM_PROP_IS_EOS, FALSE)) {
       log_debug("stream is end\n");
       break;
     }
@@ -125,6 +131,8 @@ int32_t tk_istream_read_len(tk_istream_t* stream, void* buff, uint32_t max_size,
     if (now > end) {
       break;
     }
+
+    log_debug("read: %d/%u\n", offset, max_size);
   } while (remain_bytes > 0);
 
   return offset;

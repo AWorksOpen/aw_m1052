@@ -20,15 +20,15 @@
  */
 
 #include "tkc/utils.h"
-#include "chart_animator.h"
 #include "axis.h"
 #include "series_p.h"
 #include "bar_series_minmax.h"
+#include "chart_animator.h"
 
 extern ret_t bar_series_get_prop(widget_t* widget, const char* name, value_t* v);
 extern ret_t bar_series_set_prop_internal(widget_t* widget, const char* name, const value_t* v);
 extern ret_t bar_series_on_paint_internal(widget_t* widget, canvas_t* c, float_t ox, float_t oy,
-                                          fifo_t* fifo, uint32_t index, uint32_t size,
+                                          object_t* fifo, uint32_t index, uint32_t size,
                                           rect_t* clip_rect, bool_t minmax);
 extern ret_t bar_series_on_paint_self(widget_t* widget, canvas_t* c);
 extern int32_t bar_series_index_of_point_in(widget_t* widget, xy_t x, xy_t y, bool_t is_local);
@@ -40,17 +40,19 @@ extern widget_t* bar_series_create_internal(widget_t* parent, xy_t x, xy_t y, wh
 static ret_t bar_series_minmax_set_value(widget_t* widget, const char* value) {
   const char* token = NULL;
   tokenizer_t tokenizer;
-  series_minmax_data_t v;
-  fifo_t* fifo;
+  series_data_minmax_t v;
+  object_t* fifo;
+  uint32_t capacity;
   series_t* series = SERIES(widget);
   return_value_if_fail(series != NULL && value != NULL, RET_BAD_PARAMS);
 
-  fifo = fifo_create(series->capacity, series->unit_size, NULL, NULL);
+  capacity = widget_get_prop_int(widget, SERIES_PROP_CAPACITY, 0);
+  fifo = series_fifo_default_create(capacity, sizeof(series_data_minmax_t));
   return_value_if_fail(fifo != NULL, RET_OOM);
 
   tokenizer_init(&tokenizer, value, strlen(value), ",");
 
-  while (tokenizer_has_more(&tokenizer) && fifo->size < fifo->capacity) {
+  while (tokenizer_has_more(&tokenizer) && SERIES_FIFO_GET_SIZE(fifo) < capacity) {
     token = tokenizer_next(&tokenizer);
     v.min = tk_atof(token);
 
@@ -58,13 +60,13 @@ static ret_t bar_series_minmax_set_value(widget_t* widget, const char* value) {
       token = tokenizer_next(&tokenizer);
       v.max = tk_atof(token);
 
-      fifo_push(fifo, &v);
+      series_fifo_push(fifo, &v);
     }
   }
 
-  series_set(widget, 0, fifo->buffer, fifo->size);
+  series_set(widget, 0, SERIES_FIFO_DEFAULT(fifo)->buffer, SERIES_FIFO_GET_SIZE(fifo));
 
-  fifo_destroy(fifo);
+  OBJECT_UNREF(fifo);
   tokenizer_deinit(&tokenizer);
 
   return RET_OK;
@@ -83,22 +85,16 @@ static ret_t bar_series_minmax_set_prop(widget_t* widget, const char* name, cons
 }
 
 static ret_t bar_series_minmax_on_paint(widget_t* widget, canvas_t* c, float_t ox, float_t oy,
-                                        fifo_t* fifo, uint32_t index, uint32_t size,
+                                        object_t* fifo, uint32_t index, uint32_t size,
                                         rect_t* clip_rect) {
   return bar_series_on_paint_internal(widget, c, ox, oy, fifo, index, size, clip_rect, TRUE);
-}
-
-static ret_t bar_series_minmax_set(widget_t* widget, uint32_t index, const void* data,
-                                   uint32_t nr) {
-  return series_p_set_with_animator(widget, index, data, nr,
-                                    chart_animator_fifo_minmax_value_create);
 }
 
 static ret_t bar_series_minmax_tooltip_format(void* ctx, const void* data, wstr_t* str) {
   wstr_t temp;
   const wchar_t* title;
   widget_t* widget = WIDGET(ctx);
-  series_minmax_data_t* d = (series_minmax_data_t*)(data);
+  series_data_minmax_t* d = (series_data_minmax_t*)(data);
   return_value_if_fail(widget != NULL && d != NULL && str != NULL, RET_BAD_PARAMS);
 
   wstr_init(str, 0);
@@ -120,14 +116,16 @@ static ret_t bar_series_minmax_tooltip_format(void* ctx, const void* data, wstr_
   return RET_OK;
 }
 
-static const char* s_bar_series_minmax_properties[] = {
-    SERIES_PROP_CAPACITY,        SERIES_PROP_UNIT_SIZE,
-    SERIES_PROP_COVERAGE,        SERIES_PROP_DISPLAY_MODE,
-    SERIES_PROP_VALUE_ANIMATION, SERIES_PROP_TITLE,
-    SERIES_PROP_BAR_OVERLAP,     NULL};
+static const char* s_bar_series_minmax_properties[] = {SERIES_PROP_FIFO,
+                                                       SERIES_PROP_COVERAGE,
+                                                       SERIES_PROP_DISPLAY_MODE,
+                                                       SERIES_PROP_VALUE_ANIMATION,
+                                                       SERIES_PROP_TITLE,
+                                                       SERIES_PROP_BAR_OVERLAP,
+                                                       NULL};
 
 static const series_draw_data_info_t s_series_p_minmax_draw_data_info = {
-    .size = sizeof(series_p_minmax_draw_data_t),
+    .unit_size = sizeof(series_data_draw_minmax_t),
     .compare_in_axis1 = series_p_minmax_draw_data_compare_x,
     .compare_in_axis2 = series_p_minmax_draw_data_compare_y,
     .min_axis1 = series_p_minmax_draw_data_min_x,
@@ -143,18 +141,18 @@ static const series_vtable_t s_bar_series_minmax_internal_vtable = {
     .count = series_p_count,
     .rset = series_p_rset,
     .push = series_p_push,
+    .clear = series_p_clear,
     .at = series_p_at,
     .get_current = series_p_get_current,
     .is_point_in = series_p_is_point_in,
     .index_of_point_in = bar_series_index_of_point_in,
     .to_local = bar_series_to_local,
-    .set = bar_series_minmax_set,
+    .set = series_p_set,
     .on_paint = bar_series_minmax_on_paint,
     .draw_data_info = &s_series_p_minmax_draw_data_info};
 
 TK_DECL_VTABLE(bar_series_minmax) = {.size = sizeof(bar_series_t),
                                      .type = WIDGET_TYPE_BAR_SERIES_MINMAX,
-                                     .enable_pool = TRUE,
                                      .parent = TK_PARENT_VTABLE(series),
                                      .clone_properties = s_bar_series_minmax_properties,
                                      .persistent_properties = s_bar_series_minmax_properties,
@@ -170,7 +168,10 @@ widget_t* bar_series_minmax_create(widget_t* parent, xy_t x, xy_t y, wh_t w, wh_
   series_t* series = SERIES(widget);
   return_value_if_fail(series != NULL, NULL);
 
-  series->unit_size = sizeof(series_minmax_data_t);
+  object_t* fifo = series_fifo_default_create(10, sizeof(series_data_minmax_t));
+  series_p_set_fifo(widget, fifo);
+
+  series->animator_create = chart_animator_fifo_minmax_value_create;
   series->tooltip_format = bar_series_minmax_tooltip_format;
   series->tooltip_format_ctx = widget;
 

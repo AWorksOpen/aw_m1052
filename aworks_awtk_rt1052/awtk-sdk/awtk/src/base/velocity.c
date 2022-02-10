@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  velocity tracker
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -75,7 +75,7 @@ static ret_t velocity_do_update(velocity_t* v, uint32_t time, xy_t x, xy_t y) {
   return RET_OK;
 }
 
-ret_t velocity_update(velocity_t* v, uint32_t time, xy_t x, xy_t y) {
+ret_t velocity_update(velocity_t* v, uint64_t time, xy_t x, xy_t y) {
   return_value_if_fail(v != NULL, RET_BAD_PARAMS);
 
   if (v->time) {

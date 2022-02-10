@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  image_value
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,33 +23,103 @@
 #include "tkc/utils.h"
 #include "image_value/image_value.h"
 
-static ret_t image_value_draw_images(widget_t* widget, canvas_t* c, bitmap_t* bitmap, uint32_t nr) {
+static ret_t image_value_draw_images(widget_t* widget, canvas_t* c,
+                                     char bitmap_name[IMAGE_VALUE_MAX_CHAR_NR][TK_NAME_LEN + 1],
+                                     uint32_t nr) {
   int32_t x = 0;
   int32_t y = 0;
-  uint32_t i = 0;
-  uint32_t w = 0;
-  uint32_t h = 0;
+  int32_t i = 0;
+  int32_t w = 0;
+  int32_t h = 0;
+  float scale_w = 1;
+  float scale_h = 1;
   float_t ratio = c->lcd->ratio;
+  style_t* style = widget->astyle;
+  rect_t content_r = widget_get_content_area(widget);
+  int32_t align_v = style_get_int(style, STYLE_ID_TEXT_ALIGN_V, ALIGN_V_MIDDLE);
+  int32_t align_h = style_get_int(style, STYLE_ID_TEXT_ALIGN_H, ALIGN_H_CENTER);
+  image_draw_type_t draw_type =
+      (image_draw_type_t)style_get_int(style, STYLE_ID_FG_IMAGE_DRAW_TYPE, IMAGE_DRAW_DEFAULT);
 
   for (i = 0; i < nr; i++) {
-    bitmap_t* b = bitmap + i;
-    w += b->w;
-    if (h < b->h) {
-      h = b->h;
+    bitmap_t b;
+    return_value_if_fail(widget_load_image(widget, bitmap_name[i], &b) == RET_OK, RET_BAD_PARAMS);
+    w += b.w;
+    if (h < b.h) {
+      h = b.h;
     }
   }
 
   w = w / ratio;
   h = h / ratio;
-  x = (widget->w - w) >> 1;
-  y = (widget->h - h) >> 1;
+  return_value_if_fail(w > 0 && h > 0 && content_r.w > 0 && content_r.h > 0, RET_BAD_PARAMS);
+
+  scale_h = (float)(content_r.h) / (float)h;
+  scale_w = (float)(content_r.w) / (float)w;
+  switch (draw_type) {
+    case IMAGE_DRAW_SCALE_AUTO: {
+      scale_w = tk_min(scale_w, scale_h);
+      scale_h = scale_w;
+      break;
+    }
+    case IMAGE_DRAW_SCALE_W: {
+      scale_h = scale_w;
+      break;
+    }
+    case IMAGE_DRAW_SCALE_H: {
+      scale_w = scale_h;
+      break;
+    }
+    case IMAGE_DRAW_SCALE: {
+      break;
+    }
+    default: {
+      scale_w = 1;
+      scale_h = 1;
+      break;
+    }
+  }
+
+  w = scale_w * w;
+  h = scale_h * h;
+
+  switch (align_h) {
+    case ALIGN_H_LEFT: {
+      x = content_r.x;
+      break;
+    }
+    case ALIGN_H_RIGHT: {
+      x = content_r.x + content_r.w - w;
+      break;
+    }
+    default: {
+      x = (widget->w - w) / 2;
+      break;
+    }
+  }
+
+  switch (align_v) {
+    case ALIGN_V_TOP: {
+      y = content_r.y;
+      break;
+    }
+    case ALIGN_V_BOTTOM: {
+      y = content_r.y + content_r.h - h;
+      break;
+    }
+    default: {
+      y = (widget->h - h) / 2;
+      break;
+    }
+  }
 
   for (i = 0; i < nr; i++) {
-    bitmap_t* b = bitmap + i;
-    rect_t s = rect_init(0, 0, b->w, b->h);
-    rect_t d = rect_init(x, y, b->w / ratio, b->h / ratio);
+    bitmap_t b;
+    return_value_if_fail(widget_load_image(widget, bitmap_name[i], &b) == RET_OK, RET_BAD_PARAMS);
+    rect_t s = rect_init(0, 0, b.w, b.h);
+    rect_t d = rect_init(x, y, scale_w * b.w / ratio, scale_h * b.h / ratio);
 
-    canvas_draw_image(c, b, &s, &d);
+    canvas_draw_image(c, &b, &s, &d);
 
     x += d.w;
   }
@@ -62,17 +132,16 @@ static ret_t image_value_on_paint_self(widget_t* widget, canvas_t* c) {
   uint32_t nr = 0;
   char sub_name[8];
   const char* format = NULL;
-  char name[TK_NAME_LEN + 1];
   char str[IMAGE_VALUE_MAX_CHAR_NR + 1];
-  bitmap_t bitmap[IMAGE_VALUE_MAX_CHAR_NR];
+  char bitmap_name[IMAGE_VALUE_MAX_CHAR_NR][TK_NAME_LEN + 1];
   image_value_t* image_value = IMAGE_VALUE(widget);
   return_value_if_fail(image_value != NULL && widget != NULL, RET_BAD_PARAMS);
 
   format = image_value->format != NULL ? image_value->format : "%d";
   return_value_if_fail(image_value->image != NULL, RET_BAD_PARAMS);
 
-  memset(bitmap, 0x00, sizeof(bitmap));
-  memset(sub_name, 0x00, sizeof(sub_name));
+  memset(sub_name, 0x0, sizeof(sub_name));
+  memset(bitmap_name, 0x0, sizeof(bitmap_name));
   if (strchr(format, 'd') != NULL || strchr(format, 'x') != NULL || strchr(format, 'X') != NULL) {
     tk_snprintf(str, IMAGE_VALUE_MAX_CHAR_NR, format, tk_roundi(image_value->value));
   } else {
@@ -82,7 +151,6 @@ static ret_t image_value_on_paint_self(widget_t* widget, canvas_t* c) {
   nr = strlen(str);
   return_value_if_fail(nr > 0, RET_BAD_PARAMS);
 
-  name[TK_NAME_LEN] = '\0';
   for (i = 0; i < nr; i++) {
     if (str[i] == '.') {
       strcpy(sub_name, IMAGE_VALUE_MAP_DOT);
@@ -93,11 +161,10 @@ static ret_t image_value_on_paint_self(widget_t* widget, canvas_t* c) {
       sub_name[1] = '\0';
     }
 
-    tk_snprintf(name, TK_NAME_LEN, "%s%s", image_value->image, sub_name);
-    return_value_if_fail(widget_load_image(widget, name, bitmap + i) == RET_OK, RET_BAD_PARAMS);
+    tk_snprintf(bitmap_name[i], TK_NAME_LEN, "%s%s", image_value->image, sub_name);
   }
 
-  return image_value_draw_images(widget, c, bitmap, nr);
+  return image_value_draw_images(widget, c, bitmap_name, nr);
 }
 
 static ret_t image_value_get_prop(widget_t* widget, const char* name, value_t* v) {
@@ -105,13 +172,13 @@ static ret_t image_value_get_prop(widget_t* widget, const char* name, value_t* v
   return_value_if_fail(image_value != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
 
   if (tk_str_eq(name, WIDGET_PROP_VALUE)) {
-    value_set_float(v, image_value->value);
+    value_set_double(v, image_value->value);
     return RET_OK;
   } else if (tk_str_eq(name, WIDGET_PROP_MIN)) {
-    value_set_float(v, image_value->min);
+    value_set_double(v, image_value->min);
     return RET_OK;
   } else if (tk_str_eq(name, WIDGET_PROP_MAX)) {
-    value_set_float(v, image_value->max);
+    value_set_double(v, image_value->max);
     return RET_OK;
   } else if (tk_str_eq(name, WIDGET_PROP_IMAGE)) {
     value_set_str(v, image_value->image);
@@ -120,7 +187,7 @@ static ret_t image_value_get_prop(widget_t* widget, const char* name, value_t* v
     value_set_str(v, image_value->format);
     return RET_OK;
   } else if (tk_str_eq(name, WIDGET_PROP_CLICK_ADD_DELTA)) {
-    value_set_float(v, image_value->click_add_delta);
+    value_set_double(v, image_value->click_add_delta);
     return RET_OK;
   }
 
@@ -131,17 +198,17 @@ static ret_t image_value_set_prop(widget_t* widget, const char* name, const valu
   return_value_if_fail(widget != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
 
   if (tk_str_eq(name, WIDGET_PROP_VALUE)) {
-    return image_value_set_value(widget, value_float(v));
+    return image_value_set_value(widget, value_double(v));
   } else if (tk_str_eq(name, WIDGET_PROP_MIN)) {
-    return image_value_set_min(widget, value_float(v));
+    return image_value_set_min(widget, value_double(v));
   } else if (tk_str_eq(name, WIDGET_PROP_MAX)) {
-    return image_value_set_max(widget, value_float(v));
+    return image_value_set_max(widget, value_double(v));
   } else if (tk_str_eq(name, WIDGET_PROP_IMAGE)) {
     return image_value_set_image(widget, value_str(v));
   } else if (tk_str_eq(name, WIDGET_PROP_FORMAT)) {
     return image_value_set_format(widget, value_str(v));
   } else if (tk_str_eq(name, WIDGET_PROP_CLICK_ADD_DELTA)) {
-    return image_value_set_click_add_delta(widget, value_float(v));
+    return image_value_set_click_add_delta(widget, value_double(v));
   }
 
   return RET_NOT_FOUND;
@@ -162,9 +229,9 @@ ret_t image_value_add_delta(widget_t* widget) {
   return_value_if_fail(image_value != NULL, RET_BAD_PARAMS);
 
   if (image_value->click_add_delta) {
-    float_t value = image_value->value;
-    float_t min = tk_min(image_value->min, image_value->max);
-    float_t max = tk_max(image_value->min, image_value->max);
+    double value = image_value->value;
+    double min = tk_min(image_value->min, image_value->max);
+    double max = tk_max(image_value->min, image_value->max);
     return_value_if_fail(min < max, RET_BAD_PARAMS);
 
     value = image_value->value + image_value->click_add_delta;
@@ -196,11 +263,17 @@ static ret_t image_value_on_event(widget_t* widget, event_t* e) {
       widget_ungrab(widget->parent, widget);
       break;
     }
+    case EVT_CLICK: {
+      image_value_add_delta(widget);
+      break;
+    }
     case EVT_POINTER_UP: {
       if (image_value->pressed) {
-        image_value_add_delta(widget);
+        pointer_event_t evt = *((pointer_event_t*)e);
+        evt.e.type = EVT_CLICK;
+        widget_dispatch(widget, (event_t*)&evt);
+        image_value->pressed = FALSE;
       }
-      image_value->pressed = FALSE;
       widget_ungrab(widget->parent, widget);
       break;
     }
@@ -258,15 +331,15 @@ ret_t image_value_set_format(widget_t* widget, const char* format) {
   return widget_invalidate(widget, NULL);
 }
 
-ret_t image_value_set_value(widget_t* widget, float_t value) {
+ret_t image_value_set_value(widget_t* widget, double value) {
   image_value_t* image_value = IMAGE_VALUE(widget);
   return_value_if_fail(image_value != NULL, RET_BAD_PARAMS);
 
   if (image_value->value != value) {
     value_change_event_t evt;
     value_change_event_init(&evt, EVT_VALUE_WILL_CHANGE, widget);
-    value_set_float(&(evt.old_value), image_value->value);
-    value_set_float(&(evt.new_value), value);
+    value_set_double(&(evt.old_value), image_value->value);
+    value_set_double(&(evt.new_value), value);
 
     if (widget_dispatch(widget, (event_t*)&evt) != RET_STOP) {
       image_value->value = value;
@@ -279,7 +352,7 @@ ret_t image_value_set_value(widget_t* widget, float_t value) {
   return RET_OK;
 }
 
-ret_t image_value_set_click_add_delta(widget_t* widget, float_t click_add_delta) {
+ret_t image_value_set_click_add_delta(widget_t* widget, double click_add_delta) {
   image_value_t* image_value = IMAGE_VALUE(widget);
   return_value_if_fail(image_value != NULL, RET_BAD_PARAMS);
 
@@ -288,7 +361,7 @@ ret_t image_value_set_click_add_delta(widget_t* widget, float_t click_add_delta)
   return RET_OK;
 }
 
-ret_t image_value_set_min(widget_t* widget, float_t min) {
+ret_t image_value_set_min(widget_t* widget, double min) {
   image_value_t* image_value = IMAGE_VALUE(widget);
   return_value_if_fail(image_value != NULL, RET_BAD_PARAMS);
 
@@ -297,7 +370,7 @@ ret_t image_value_set_min(widget_t* widget, float_t min) {
   return RET_OK;
 }
 
-ret_t image_value_set_max(widget_t* widget, float_t max) {
+ret_t image_value_set_max(widget_t* widget, double max) {
   image_value_t* image_value = IMAGE_VALUE(widget);
   return_value_if_fail(image_value != NULL, RET_BAD_PARAMS);
 

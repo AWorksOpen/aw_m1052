@@ -9,6 +9,7 @@
 #include "base/window.h"
 #include "widgets/pages.h"
 #include "base/style_const.h"
+#include "base/style_mutable.h"
 #include "font_dummy.h"
 #include "lcd_log.h"
 #include <stdlib.h>
@@ -49,6 +50,19 @@ TEST(Widget, basic1) {
 
   ASSERT_EQ(widget_set_focused(w, FALSE), RET_OK);
   ASSERT_EQ(w->focused, FALSE);
+
+  widget_destroy(w);
+}
+
+TEST(Widget, move_to_center) {
+  widget_t* w = window_create(NULL, 0, 0, 400, 300);
+  widget_t* b = button_create(w, 0, 0, 100, 60);
+
+  widget_resize(w, 400, 300);
+  ASSERT_EQ(widget_move_to_center(b), RET_OK);
+
+  ASSERT_EQ(b->x, 150);
+  ASSERT_EQ(b->y, 120);
 
   widget_destroy(w);
 }
@@ -301,7 +315,7 @@ TEST(Widget, dirty) {
   ASSERT_EQ(w->dirty, TRUE);
   ASSERT_EQ(b1->dirty, TRUE);
   widget_destroy_children(w);
-  ASSERT_EQ(w->children->size, 0);
+  ASSERT_EQ(w->children->size, 0u);
 
   widget_destroy(w);
 }
@@ -481,17 +495,21 @@ TEST(Widget, widget_get_state_for_style) {
 TEST(Widget, update_style1) {
   widget_t* w = window_create(NULL, 0, 0, 400, 300);
   widget_t* b = button_create(NULL, 1, 0, 10, 20);
-  style_const_t* style = (style_const_t*)(b->astyle);
 
-  ASSERT_EQ(style->data, (const unsigned char*)NULL);
+  ASSERT_EQ(b->astyle == NULL, TRUE);
   widget_use_style(b, "edit_clear");
-  ASSERT_EQ(style->data, (const unsigned char*)NULL);
+  ASSERT_EQ(b->astyle == NULL, TRUE);
+  widget_set_style_color(b, "bg_color", 0xff00ff00);
+  ASSERT_EQ(b->astyle != NULL, TRUE);
+  ASSERT_EQ(style_is_mutable(b->astyle), TRUE);
 
   widget_add_child(w, b);
   ASSERT_EQ(b->need_update_style, TRUE);
   ASSERT_EQ(widget_update_style(b), RET_OK);
   ASSERT_EQ(b->need_update_style, FALSE);
-  ASSERT_NE(style->data, (const unsigned char*)NULL);
+  ASSERT_EQ(style_is_mutable(b->astyle), TRUE);
+  style_mutable_t* style = (style_mutable_t*)(b->astyle);
+  ASSERT_EQ(style->default_style != NULL, TRUE);
 
   widget_destroy(w);
 }
@@ -500,18 +518,21 @@ TEST(Widget, update_style2) {
   widget_t* w = window_create(NULL, 0, 0, 400, 300);
   widget_t* g = group_box_create(NULL, 0, 0, 100, 200);
   widget_t* b = button_create(g, 1, 0, 10, 20);
-  style_const_t* style = (style_const_t*)(b->astyle);
 
-  ASSERT_EQ(style->data, (const unsigned char*)NULL);
+  ASSERT_EQ(b->astyle == NULL, TRUE);
   widget_use_style(b, "edit_clear");
-  ASSERT_EQ(style->data, (const unsigned char*)NULL);
+  ASSERT_EQ(b->astyle == NULL, TRUE);
+  widget_set_style_color(b, "bg_color", 0xff00ff00);
+  ASSERT_EQ(b->astyle != NULL, TRUE);
+  ASSERT_EQ(style_is_mutable(b->astyle), TRUE);
 
   widget_add_child(w, g);
 
   ASSERT_EQ(b->need_update_style, TRUE);
   ASSERT_EQ(widget_update_style(b), RET_OK);
   ASSERT_EQ(b->need_update_style, FALSE);
-  ASSERT_NE(style->data, (const unsigned char*)NULL);
+  style_mutable_t* style = (style_mutable_t*)(b->astyle);
+  ASSERT_EQ(style->default_style != NULL, TRUE);
 
   widget_destroy(w);
 }
@@ -837,12 +858,12 @@ TEST(Widget, calc_icon_text_rect_icon_centre) {
 
   ASSERT_EQ(r_icon.x, ir.x + w / 2);
   ASSERT_EQ(r_icon.y, ir.y + icon_h / 2);
-  ASSERT_EQ(r_icon.w, icon_image_w);
-  ASSERT_EQ(r_icon.h, icon_image_h);
+  ASSERT_EQ(r_icon.w, (int32_t)icon_image_w);
+  ASSERT_EQ(r_icon.h, (int32_t)icon_image_h);
 
-  ASSERT_EQ(r_text.x, ir.x + icon_image_w + spacer + w / 2);
+  ASSERT_EQ(r_text.x, (int32_t)(ir.x + icon_image_w + spacer + w / 2));
   ASSERT_EQ(r_text.y, ir.y);
-  ASSERT_EQ(r_text.w, text_size);
+  ASSERT_EQ(r_text.w, (int32_t)text_size);
   ASSERT_EQ(r_text.h, ir.h);
 }
 
@@ -1016,6 +1037,7 @@ TEST(Widget, move_focus_pages) {
   widget_set_prop_bool(b2, WIDGET_PROP_FOCUSABLE, TRUE);
   widget_set_prop_bool(b3, WIDGET_PROP_FOCUSABLE, TRUE);
 
+  pages_set_active(pages, 0);
   widget_focus_first(w);
   ASSERT_EQ(b0->focused, TRUE);
   ASSERT_EQ(widget_focus_next(b0), RET_OK);
@@ -1141,7 +1163,7 @@ TEST(Widget, off) {
   widget_t* w = button_create(NULL, 0, 0, 0, 0);
 
   ASSERT_EQ(widget_on(w, EVT_MOVE, widget_log_events, NULL) > 0, TRUE);
-  ASSERT_EQ(emitter_size(w->emitter), 1);
+  ASSERT_EQ(emitter_size(w->emitter), 1u);
   ASSERT_EQ(widget_off_by_func(w, EVT_MOVE, widget_log_events, NULL), RET_OK);
 
   widget_destroy(w);
@@ -1156,10 +1178,10 @@ TEST(Widget, off_by_tag) {
   ASSERT_EQ(widget_on_with_tag(w, EVT_MOVE, widget_log_events, NULL, 2) > 0, TRUE);
   ASSERT_EQ(widget_on_with_tag(w, EVT_MOVE, widget_log_events, NULL, 2) > 0, TRUE);
 
-  ASSERT_EQ(emitter_size(w->emitter), 5);
+  ASSERT_EQ(emitter_size(w->emitter), 5u);
 
   ASSERT_EQ(widget_off_by_tag(w, 1), RET_OK);
-  ASSERT_EQ(emitter_size(w->emitter), 2);
+  ASSERT_EQ(emitter_size(w->emitter), 2u);
 
   widget_destroy(w);
 }
@@ -1308,6 +1330,75 @@ TEST(Widget, get_text_utf8) {
   widget_set_text(w, L"中文");
   ASSERT_EQ(widget_get_text_utf8(w, text, sizeof(text)), RET_OK);
   ASSERT_STREQ(text, "中文");
+
+  widget_destroy(w);
+}
+
+TEST(Widget, is_focusable) {
+  widget_t* w = button_create(NULL, 0, 0, 0, 0);
+  ASSERT_EQ(widget_is_focusable(w), FALSE);
+  widget_set_focusable(w, TRUE);
+  ASSERT_EQ(widget_is_focusable(w), TRUE);
+
+  widget_set_enable(w, FALSE);
+  ASSERT_EQ(widget_is_focusable(w), FALSE);
+  widget_set_enable(w, TRUE);
+  ASSERT_EQ(widget_is_focusable(w), TRUE);
+
+  widget_set_sensitive(w, FALSE);
+  ASSERT_EQ(widget_is_focusable(w), FALSE);
+  widget_set_sensitive(w, TRUE);
+  ASSERT_EQ(widget_is_focusable(w), TRUE);
+
+  widget_destroy(w);
+}
+
+TEST(Widget, strongly_foucs) {
+  pointer_event_t e;
+  widget_t* w = window_create(NULL, 0, 0, 400, 300);
+  widget_t* b1 = button_create(w, 0, 50, 100, 30);
+  widget_t* b2 = button_create(w, 0, 100, 100, 30);
+  button_create(w, 0, 150, 100, 30);
+
+  widget_set_focusable(b1, TRUE);
+  widget_set_focusable(b2, TRUE);
+
+  widget_set_focused(b1, TRUE);
+  ASSERT_EQ(b1->focused, TRUE);
+
+  widget_on_pointer_down(w, (pointer_event_t*)pointer_event_init(&e, EVT_POINTER_DOWN, w, 10, 10));
+  ASSERT_EQ(b1->focused, FALSE);
+
+  widget_set_focused(b1, TRUE);
+  widget_set_prop_bool(w, WIDGET_PROP_STRONGLY_FOCUS, TRUE);
+  widget_on_pointer_down(w, (pointer_event_t*)pointer_event_init(&e, EVT_POINTER_DOWN, w, 10, 10));
+  ASSERT_EQ(b1->focused, TRUE);
+}
+
+TEST(Widget, update_style3) {
+  widget_t* w = window_create(NULL, 0, 0, 400, 300);
+  widget_t* b = button_create(w, 1, 0, 10, 20);
+  widget_set_prop_str(w, "theme", "button");
+
+  widget_use_style(b, "round_top");
+  ASSERT_EQ(widget_update_style(b), RET_OK);
+
+  ASSERT_EQ(b->focusable, TRUE);
+  ASSERT_EQ(b->feedback, TRUE);
+
+  widget_destroy(w);
+}
+
+TEST(Widget, update_style4) {
+  widget_t* w = window_create(NULL, 0, 0, 400, 300);
+  widget_t* b = button_create(w, 1, 0, 10, 20);
+  widget_set_prop_str(w, "theme", "button");
+
+  widget_use_style(b, "round_bottom");
+  ASSERT_EQ(widget_update_style(b), RET_OK);
+
+  ASSERT_EQ(b->focusable, TRUE);
+  ASSERT_EQ(b->feedback, FALSE);
 
   widget_destroy(w);
 }

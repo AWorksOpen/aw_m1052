@@ -4,7 +4,7 @@ MEMORY
     ivt (rx)               : ORIGIN = 0x60001000, LENGTH = 4k
     code (rx)              : ORIGIN = 0x60002000, LENGTH = 4088K
     flash (rx)             : ORIGIN = 0x60400000, LENGTH = 4M
-    relocode (rx)          : ORIGIN = 0x2007F000, LENGTH = 4K
+    relocode (rx)          : ORIGIN = 0x2006F000, LENGTH = 4K
     flexspi_drv(rx)        : ORIGIN = 0x80000000, LENGTH = 4K
     dma_heap (rw)          : ORIGIN = 0x80100000, LENGTH = 1M
     heap (rw)              : ORIGIN = 0x80200000, LENGTH = 9M

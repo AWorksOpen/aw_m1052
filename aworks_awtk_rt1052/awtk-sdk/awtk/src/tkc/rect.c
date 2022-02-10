@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  rect struct and utils functions.
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -43,19 +43,38 @@ ret_t rect_merge(rect_t* dr, const rect_t* r) {
   return RET_OK;
 }
 
-bool_t rect_contains(rect_t* r, xy_t x, xy_t y) {
+bool_t rect_contains(const rect_t* r, xy_t x, xy_t y) {
   return_value_if_fail(r != NULL, FALSE);
 
   return (x >= r->x && x < (r->x + r->w)) && (y >= r->y && y < (r->y + r->h));
 }
 
-rect_t rect_init(xy_t x, xy_t y, wh_t w, wh_t h) {
-  rect_t r;
-  r.x = x;
-  r.y = y;
-  r.w = w;
-  r.h = h;
+bool_t rect_has_intersect(const rect_t* r1, const rect_t* r2) {
+  xy_t right1 = 0;
+  xy_t right2 = 0;
+  xy_t bottom1 = 0;
+  xy_t bottom2 = 0;
+  return_value_if_fail(r1 != NULL && r2 != NULL, FALSE);
 
+  right1 = r1->x + r1->w - 1;
+  right2 = r2->x + r2->w - 1;
+  bottom1 = r1->y + r1->h - 1;
+  bottom2 = r2->y + r2->h - 1;
+
+  if (right1 < r2->x || right2 < r1->x || bottom1 < r2->y || bottom2 < r1->y) {
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
+rectf_t rectf_init(float x, float y, float w, float h) {
+  rectf_t r = {x, y, w, h};
+  return r;
+}
+
+rect_t rect_init(xy_t x, xy_t y, wh_t w, wh_t h) {
+  rect_t r = {x, y, w, h};
   return r;
 }
 
@@ -178,4 +197,49 @@ rect_t* rect_scale(rect_t* r, float_t scale) {
   }
 
   return r;
+}
+
+rectf_t* rectf_scale(rectf_t* r, float_t scale) {
+  return_value_if_fail(r != NULL, r);
+
+  if (scale != 1.0f) {
+    r->x = r->x * scale;
+    r->y = r->y * scale;
+    r->w = r->w * scale;
+    r->h = r->h * scale;
+  }
+
+  return r;
+}
+
+rectf_t rect_to_rectf(const rect_t* r) {
+  rectf_t tmp_r = {0};
+  return_value_if_fail(r != NULL, tmp_r);
+  tmp_r.x = (float_t)(r->x);
+  tmp_r.y = (float_t)(r->y);
+  tmp_r.w = (float_t)(r->w);
+  tmp_r.h = (float_t)(r->h);
+
+  return tmp_r;
+}
+
+rect_t rect_from_rectf(const rectf_t* r) {
+  rect_t tmp_r = {0};
+  return_value_if_fail(r != NULL, tmp_r);
+  tmp_r.x = tk_roundi(r->x);
+  tmp_r.y = tk_roundi(r->y);
+  tmp_r.w = tk_roundi(r->w);
+  tmp_r.h = tk_roundi(r->h);
+
+  return tmp_r;
+}
+
+pointf_t pointf_init(float_t x, float_t y) {
+  pointf_t p = {x, y};
+  return p;
+}
+
+point_t point_init(xy_t x, xy_t y) {
+  point_t p = {x, y};
+  return p;
 }

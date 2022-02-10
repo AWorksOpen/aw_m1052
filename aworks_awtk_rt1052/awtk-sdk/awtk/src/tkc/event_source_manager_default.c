@@ -1,9 +1,9 @@
-﻿/**
+/**
  * File:   event_source_manager_default.c
  * Author: AWTK Develop Team
  * Brief:  event manager_default manager_default
  *
- * Copyright (c) 2019 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2019 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -47,7 +47,7 @@ static ret_t event_source_manager_default_dispatch_fds(event_source_manager_t* m
   uint32_t i = 0;
   int32_t fd = 0;
   int32_t ret = 0;
-  int32_t max_fd = 0;
+  int32_t max_fd = -1;
   struct timeval tv = {0, 0};
   event_source_t* iter = NULL;
   event_source_t** sources = NULL;
@@ -70,7 +70,7 @@ static ret_t event_source_manager_default_dispatch_fds(event_source_manager_t* m
     }
   }
 
-  if (max_fd == 0) {
+  if (max_fd < 0) {
     return RET_OK;
   }
 
@@ -84,6 +84,9 @@ static ret_t event_source_manager_default_dispatch_fds(event_source_manager_t* m
 
   for (i = 0; i < manager->dispatching_sources.size; i++) {
     iter = sources[i];
+    if (darray_find(&manager->sources, iter) == NULL) {
+      continue;
+    }
     fd = event_source_get_fd(iter);
 
     if (fd >= 0) {
@@ -116,6 +119,9 @@ static ret_t event_source_manager_default_dispatch_no_fd(event_source_manager_t*
 
   for (i = 0; i < manager->dispatching_sources.size; i++) {
     iter = sources[i];
+    if (darray_find(&manager->sources, iter) == NULL) {
+      continue;
+    }
     fd = event_source_get_fd(iter);
     if (fd >= 0) {
       continue;

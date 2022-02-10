@@ -52,4 +52,4 @@ node index.js samples/number_label.json
 
 生成的控件代码只是一个框架，需要进一步完善才能工作。
 
-请参考 [完善改生成的自定义控件](docs/improve_generated_widget.md)
+请参考 [完善生成的自定义控件](docs/improve_generated_widget.md)

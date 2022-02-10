@@ -1,0 +1,34 @@
+{
+  "name":"drawing_view",
+  "date":"2021-06-14",
+  "team":"AWTK Develop Team",
+  "author":"Li XianJing <xianjimli@hotmail.com>",
+  "desc":"编辑和显示各种图形",
+  "copyright":"Guangzhou ZHIYUAN Electronics Co.,Ltd.",
+  "includes":[],
+  "props": [
+    {
+      "name":"url",
+      "desc":"资源",
+      "type":"char*"
+    },
+    {
+      "name":"show_grid",
+      "desc":"显示网格",
+      "init_value":"TRUE",
+      "type":"bool_t"
+    },
+    {
+      "name":"snap_to_grid",
+      "desc":"显示网格",
+      "init_value":"TRUE",
+      "type":"bool_t"
+    },
+    {
+      "name":"editable",
+      "desc":"是否可编辑",
+      "init_value":"TRUE",
+      "type":"bool_t"
+    }
+  ]
+}

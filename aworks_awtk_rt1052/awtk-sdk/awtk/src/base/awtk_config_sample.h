@@ -4,7 +4,7 @@
  * Author: AWTK Develop Team
  * Brief:  config
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -186,7 +186,7 @@
  */
 
 /**
- * 对于低端平台，如果内存不足以提供完整的FrameBuffer，请定义本宏启用局部FrameBuffer，可大幅度提高渲染性能。
+ * 对于低端平台，如果内存不足以提供完整的FrameBuffer，请定义本宏启用局部FrameBuffer，可大幅度提高渲染性能。(单位是像素个数)
  *
  * #define FRAGMENT_FRAME_BUFFER_SIZE 32 * 1024
  */
@@ -221,6 +221,56 @@
  * 
  * #define WITH_TEXT_BIDI 1
  * 
+ */
+
+/**
+ * 开启自定义的离线 canvas，如果板子使用特殊的画布的话，需要定义该宏来定义特殊离线 canvas 函数
+ * 
+ * #define WITH_CANVAS_OFFLINE_CUSTION 1
+ */
+
+/**
+ * 开启透明色背景的刷新机制，一般使用在多图层的透明背景使用
+ * 
+ * #define WITH_LCD_CLEAR_ALPHA 1
+ */
+
+/**
+ * 如果支持多块不连续的内存块，请定义内存块的数目。
+ * 
+ * #define TK_MAX_MEM_BLOCK_NR 4
+ */
+
+/**
+ * 用于控制窗口动画是否使用缓存。开启后可以降低内存需求(减少2倍framebuffer大小的内存)，如果内存紧缺，在下面情况可以开启：
+ *  1. 界面简单
+ *  2. CPU速度快
+ *
+ * 如果绘制速度慢，而且内存紧缺，建议关闭窗口动画。
+ *
+ * 限制条件：
+ *  1.不支持缩放窗口动画。
+ *  2.不支持对话框高亮策略。
+ * 
+ * #define WITHOUT_WINDOW_ANIMATOR_CACHE 1
+ */
+
+/**
+ * 如果需要配置文件或者使用data_reader/data_writer，请定义本宏。
+ *
+ * #define WITH_DATA_READER_WRITER 1
+ */
+
+/**
+ * 对于低端平台，如果不使用 fscript 模块，请定义本宏。
+ *
+ * #define WITHOUT_FSCRIPT 1
+ */
+
+/**
+ * 对于极简键盘(3keys/5keys)，如果希望激活状态呈现不同的外观效果，请定义本宏。 
+ *
+ * #define WITH_STATE_ACTIVATED 1
  */
 
 #endif /*AWTK_CONFIG_H*/

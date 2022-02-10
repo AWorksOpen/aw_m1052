@@ -20,7 +20,6 @@
  */
 
 #include "tkc/utils.h"
-#include "chart_animator.h"
 #include "axis.h"
 #include "series_p.h"
 #include "bar_series.h"
@@ -42,9 +41,15 @@ ret_t bar_series_get_prop(widget_t* widget, const char* name, value_t* v) {
   return_value_if_true(series_p_get_prop(widget, name, v) == RET_OK, RET_OK);
 
   if (tk_str_eq(name, SERIES_PROP_SERIES_AXIS)) {
+    value_set_str(v, series->series_axis);
+    return RET_OK;
+  } if (tk_str_eq(name, SERIES_PROP_SERIES_AXIS_OBJ)) {
     value_set_pointer(v, series_p_lookup_series_axis(widget, series->series_axis));
     return RET_OK;
   } else if (tk_str_eq(name, SERIES_PROP_VALUE_AXIS)) {
+    value_set_str(v, series->value_axis);
+    return RET_OK;
+  } else if (tk_str_eq(name, SERIES_PROP_VALUE_AXIS_OBJ)) {
     value_set_pointer(v, series_p_lookup_value_axis(widget, series->value_axis));
     return RET_OK;
   } else if (tk_str_eq(name, SERIES_PROP_TITLE)) {
@@ -86,24 +91,26 @@ static ret_t bar_series_set_value(widget_t* widget, const char* value) {
   const char* token = NULL;
   tokenizer_t tokenizer;
   float_t v;
-  fifo_t* fifo;
+  object_t* fifo;
+  uint32_t capacity;
   series_t* series = SERIES(widget);
   return_value_if_fail(series != NULL && value != NULL, RET_BAD_PARAMS);
 
-  fifo = fifo_create(series->capacity, series->unit_size, NULL, NULL);
+  capacity = widget_get_prop_int(widget, SERIES_PROP_CAPACITY, 0);
+  fifo = series_fifo_default_create(capacity, sizeof(float_t));
   return_value_if_fail(fifo != NULL, RET_OOM);
 
   tokenizer_init(&tokenizer, value, strlen(value), ",");
 
-  while (tokenizer_has_more(&tokenizer) && fifo->size < fifo->capacity) {
+  while (tokenizer_has_more(&tokenizer) && SERIES_FIFO_GET_SIZE(fifo) < capacity) {
     token = tokenizer_next(&tokenizer);
     v = tk_atof(token);
-    fifo_push(fifo, &v);
+    series_fifo_push(fifo, &v);
   }
 
-  series_set(widget, 0, fifo->buffer, fifo->size);
+  series_set(widget, 0, SERIES_FIFO_DEFAULT(fifo)->buffer, SERIES_FIFO_GET_SIZE(fifo));
 
-  fifo_destroy(fifo);
+  OBJECT_UNREF(fifo);
   tokenizer_deinit(&tokenizer);
 
   return RET_OK;
@@ -127,7 +134,6 @@ ret_t bar_series_on_destroy(widget_t* widget) {
 
   TKMEM_FREE(series->series_axis);
   TKMEM_FREE(series->value_axis);
-  fifo_destroy(series->base.fifo);
 
   return RET_OK;
 }
@@ -139,7 +145,7 @@ static ret_t bar_series_calc_layout(widget_t* widget, bool_t vertical, float_t* 
   const char* margin1 = vertical ? STYLE_ID_MARGIN_LEFT : STYLE_ID_MARGIN_TOP;
   const char* margin2 = vertical ? STYLE_ID_MARGIN_RIGHT : STYLE_ID_MARGIN_BOTTOM;
   float_t interval;
-  widget_t* saxis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS);
+  widget_t* saxis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS_OBJ);
   bar_series_t* series = BAR_SERIES(widget);
   return_value_if_fail(series != NULL && widget->parent != NULL && saxis != NULL, RET_BAD_PARAMS);
   return_value_if_fail(xoffset != NULL && yoffset != NULL && bar_width != NULL, RET_BAD_PARAMS);
@@ -196,8 +202,8 @@ static bool_t bar_series_is_point_in_bar(widget_t* widget, uint32_t index, xy_t 
   float_t bar_width = 0;
   float_t interval = series_p_get_series_interval(widget);
   bool_t vertical = series_p_is_vertical(widget);
-  widget_t* saxis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS);
-  widget_t* vaxis = widget_get_prop_pointer(widget, SERIES_PROP_VALUE_AXIS);
+  widget_t* saxis = widget_get_prop_pointer(widget, SERIES_PROP_SERIES_AXIS_OBJ);
+  widget_t* vaxis = widget_get_prop_pointer(widget, SERIES_PROP_VALUE_AXIS_OBJ);
   return_value_if_fail(widget != NULL && widget->parent != NULL, FALSE);
   return_value_if_fail(saxis != NULL && vaxis != NULL, FALSE);
 
@@ -231,7 +237,7 @@ static bool_t bar_series_is_point_in_bar(widget_t* widget, uint32_t index, xy_t 
 }
 
 ret_t bar_series_on_paint_internal(widget_t* widget, canvas_t* c, float_t ox, float_t oy,
-                                   fifo_t* fifo, uint32_t index, uint32_t size, rect_t* clip_rect,
+                                   object_t* fifo, uint32_t index, uint32_t size, rect_t* clip_rect,
                                    bool_t minmax) {
   float_t xoffset = 0;
   float_t yoffset = 0;
@@ -275,7 +281,7 @@ ret_t bar_series_on_paint_internal(widget_t* widget, canvas_t* c, float_t ox, fl
 }
 
 static ret_t bar_series_on_paint(widget_t* widget, canvas_t* c, float_t ox, float_t oy,
-                                 fifo_t* fifo, uint32_t index, uint32_t size, rect_t* clip_rect) {
+                                 object_t* fifo, uint32_t index, uint32_t size, rect_t* clip_rect) {
   return bar_series_on_paint_internal(widget, c, ox, oy, fifo, index, size, clip_rect, FALSE);
 }
 
@@ -296,7 +302,6 @@ ret_t bar_series_on_paint_self(widget_t* widget, canvas_t* c) {
   return_value_if_fail(series != NULL, RET_BAD_PARAMS);
 
   bar_series_start_init_if_not_inited(widget);
-  series_p_reset_fifo(widget);
 
   if (series->base.display_mode == SERIES_DISPLAY_COVER) {
     return series_p_on_paint_self_cover(widget, c);
@@ -310,8 +315,10 @@ int32_t bar_series_index_of_point_in(widget_t* widget, xy_t x, xy_t y, bool_t is
   uint32_t begin, end, middle;
   int32_t index = -1;
   series_t* series = SERIES(widget);
-  return_value_if_fail(series != NULL && series->fifo != NULL, -1);
-  return_value_if_true(series->fifo->size == 0, -1);
+  return_value_if_fail(series != NULL, -1);
+
+  return_value_if_fail(series->fifo != NULL, -1);
+  return_value_if_true(SERIES_FIFO_GET_SIZE(series->fifo) == 0, -1);
 
   if (!is_local) {
     widget_to_local(widget, &p);
@@ -353,14 +360,16 @@ ret_t bar_series_to_local(widget_t* widget, uint32_t index, point_t* p) {
   return ret;
 }
 
-static const char* s_bar_series_properties[] = {
-    SERIES_PROP_CAPACITY,        SERIES_PROP_UNIT_SIZE,
-    SERIES_PROP_COVERAGE,        SERIES_PROP_DISPLAY_MODE,
-    SERIES_PROP_VALUE_ANIMATION, SERIES_PROP_TITLE,
-    SERIES_PROP_BAR_OVERLAP,     NULL};
+static const char* s_bar_series_properties[] = {SERIES_PROP_FIFO,
+                                                SERIES_PROP_COVERAGE,
+                                                SERIES_PROP_DISPLAY_MODE,
+                                                SERIES_PROP_VALUE_ANIMATION,
+                                                SERIES_PROP_TITLE,
+                                                SERIES_PROP_BAR_OVERLAP,
+                                                NULL};
 
 static const series_draw_data_info_t s_bar_series_draw_data_info = {
-    .size = sizeof(series_p_draw_data_t),
+    .unit_size = sizeof(series_data_draw_normal_t),
     .compare_in_axis1 = series_p_draw_data_compare_x,
     .compare_in_axis2 = series_p_draw_data_compare_y,
     .min_axis1 = series_p_draw_data_min_x,
@@ -376,18 +385,18 @@ static const series_vtable_t s_bar_series_internal_vtable = {
     .count = series_p_count,
     .rset = series_p_rset,
     .push = series_p_push,
+    .clear = series_p_clear,
     .at = series_p_at,
     .get_current = series_p_get_current,
     .is_point_in = series_p_is_point_in,
     .index_of_point_in = bar_series_index_of_point_in,
     .to_local = bar_series_to_local,
-    .set = series_p_set_default,
+    .set = series_p_set,
     .on_paint = bar_series_on_paint,
     .draw_data_info = &s_bar_series_draw_data_info};
 
 TK_DECL_VTABLE(bar_series) = {.size = sizeof(bar_series_t),
                               .type = WIDGET_TYPE_BAR_SERIES,
-                              .enable_pool = TRUE,
                               .parent = TK_PARENT_VTABLE(series),
                               .clone_properties = s_bar_series_properties,
                               .persistent_properties = s_bar_series_properties,
@@ -409,8 +418,14 @@ widget_t* bar_series_create_internal(widget_t* parent, xy_t x, xy_t y, wh_t w, w
 }
 
 widget_t* bar_series_create(widget_t* parent, xy_t x, xy_t y, wh_t w, wh_t h) {
-  return bar_series_create_internal(parent, x, y, w, h, TK_REF_VTABLE(bar_series),
-                                    &s_bar_series_internal_vtable);
+  widget_t* widget = bar_series_create_internal(parent, x, y, w, h, TK_REF_VTABLE(bar_series),
+                                                &s_bar_series_internal_vtable);
+  return_value_if_fail(widget != NULL, NULL);
+
+  object_t* fifo = series_fifo_default_create(10, sizeof(float_t));
+  series_p_set_fifo(widget, fifo);
+
+  return widget;
 }
 
 widget_t* bar_series_cast(widget_t* widget) {

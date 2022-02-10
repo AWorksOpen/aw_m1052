@@ -12,7 +12,7 @@ void diff_image_to_video_read_image_dispose(void);
 
 int diff_image_to_video_read_image_data(
     const unsigned char *file_data, unsigned int file_data_length,
-    unsigned int frame_number, unsigned char *last_image_data,
+    unsigned int frame_number, unsigned char *last_image_data, unsigned int line_length,
     unsigned int width, unsigned int height, unsigned int channels);
 
 #ifdef __cplusplus

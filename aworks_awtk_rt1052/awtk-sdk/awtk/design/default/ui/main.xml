@@ -8,7 +8,7 @@
       <button focusable="true" name="open:list_view" text="ListView"/>
       <button focusable="true" name="open:slide_view" text="SlideView"/>
       <button focusable="true" name="open:animation" text="Animate Window"/>
-      <button focusable="true" name="open:animator" text="Animate Widget"/>
+      <button focusable="true" name="open:animate_widget" text="Animate Widget"/>
       <button focusable="true" name="open:tab_control" text="Tab Control"/>
       <button focusable="true" name="open:combo_box" text="ComboBox"/>
       <button focusable="true" name="open:rich_text" text="RichText"/>
@@ -20,7 +20,7 @@
       <button focusable="true" name="open:digit_clock" text="Digit Clock"/>
       <button focusable="true" name="open:locale" text="Locale"/>
       <button focusable="true" name="open:images" text="Image"/>
-      <button focusable="true" name="open:guage" text="Guage"/>
+      <button focusable="true" name="open:gauge" text="Gauge"/>
       <button focusable="true" name="open:switch" text="Switch"/>
       <button focusable="true" name="open:text_selector" text="Selector"/>
       <button focusable="true" name="open:image_animation" text="Image Animation"/>
@@ -48,6 +48,9 @@
       <button focusable="true" name="open:draggable" text="Draggable"/>
       <button focusable="true" name="open:rich_text_view" text="RichTextView"/>
       <button focusable="true" name="open:bidi" text="Bidirectional"/>
+      <button focusable="true" name="open:color_tile" text="Color Tile"/>
+      <button focusable="true" name="open:floating_keyboard" text="Floating Keyboard"/>
+      <button focusable="true" name="open:slider" text="Slider"/>
     </view>
     <view x="0" y="0" w="100%" h="100%" children_layout="default(c=1,r=8,m=5,s=5)">
       <button focusable="true" name="open:memtest" text="MemTest"/>
@@ -58,5 +61,5 @@
       <button focusable="true" name="exit" text="Exit"/>
     </view>
   </slide_view>
-  <slide_indicator x="0" y="b" w="100%" h="20" style="blue"/>
+  <slide_indicator x="0" y="b" w="100%" h="20" transition="true" style="blue"/>
 </window>

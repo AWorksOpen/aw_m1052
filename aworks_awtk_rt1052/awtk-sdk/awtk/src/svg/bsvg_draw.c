@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  bsvg_draw
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -240,7 +240,9 @@ ret_t bsvg_draw_path(draw_ctx_t* ctx, const svg_path_t* path) {
       break;
     }
     case SVG_PATH_NULL:
-    default: { break; }
+    default: {
+      break;
+    }
   }
   ctx->last_type = path->type;
 

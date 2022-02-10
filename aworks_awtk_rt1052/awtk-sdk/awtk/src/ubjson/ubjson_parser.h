@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  ubjson parser
  *
- * Copyright (c) 2019 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2019 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -61,7 +61,7 @@ ret_t ubjson_parse(void* data, uint32_t size, ubjson_on_key_value_t on_key_value
  *
  * @return {void*} 返回object表示的数据。
  */
-object_t* ubjson_to_object(void* data, uint32_t size);
+tk_object_t* ubjson_to_object(void* data, uint32_t size);
 
 /**
  * @method ubjson_dump

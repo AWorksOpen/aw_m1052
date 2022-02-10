@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  input stream base on socket
  *
- * Copyright (c) 2019 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2019 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -22,8 +22,8 @@
 #ifndef TK_IOSTREAM_UDP_H
 #define TK_IOSTREAM_UDP_H
 
-#include "tkc/fs.h"
 #include "tkc/iostream.h"
+#include "tkc/socket_helper.h"
 
 BEGIN_C_DECLS
 

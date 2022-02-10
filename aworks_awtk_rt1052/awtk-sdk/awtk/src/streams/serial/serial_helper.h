@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  serial helper functions
  *
- * Copyright (c) 2019 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2019 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -35,12 +35,12 @@ BEGIN_C_DECLS
 typedef HANDLE serial_dev_t;
 
 typedef struct _serial_info_t {
-  int client_fd;
-  int server_fd;
-  bool_t closed;
-  bool_t quited;
   serial_dev_t dev;
-  tk_thread_t* thread;
+  int buff_size;
+  int buff_index;
+  char buff[1];
+  OVERLAPPED read_overlapped;
+  OVERLAPPED write_overlapped;
 } serial_info_t;
 
 #else
